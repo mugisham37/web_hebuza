@@ -3,12 +3,12 @@ import type { NextConfig } from "next";
 // CSP starts report-only (F-SEC-04): enforce in Stage 15 after GA4/Flutterwave/Meet origins are confirmed.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://www.google-analytics.com https://*.analytics.google.com",
-  "frame-src https://checkout.flutterwave.com",
+  "frame-src https://checkout.flutterwave.com https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

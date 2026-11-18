@@ -452,7 +452,7 @@ function DetailsStep({ t, hold, family, mode, language, prepay, onExpired, onPre
     if (contact.email.trim() && !isEmail(contact.email)) e.email = c.details.eEmail;
     for (const q of t.intakeSchema) if (q.required && !intake[q.id]) e[`q_${q.id}`] = c.details.eIntake;
     if (!contact.privacy) e.privacy = c.details.ePrivacy;
-    if (!signedIn && captcha !== "mock-ok") e.captcha = c.details.eCaptcha;
+    if (!signedIn && !captcha) e.captcha = c.details.eCaptcha;
     return e;
   }
   async function submit(withPrepay = prepay) {
@@ -633,7 +633,7 @@ export function CallbackForm({ topics, onDone }: { topics: Topic[]; onDone?: (id
       if (v.email && !isEmail(v.email)) er.email = c.details.eEmail;
       if (!v.topic) er.topic = c.topic.needFamily;
       if (!v.consent) er.consent = c.details.ePrivacy;
-      if (!user && captcha !== "mock-ok") er.captcha = c.details.eCaptcha;
+      if (!user && !captcha) er.captcha = c.details.eCaptcha;
       setErrors(er);
       if (Object.keys(er).length) return;
       setBusy(true);

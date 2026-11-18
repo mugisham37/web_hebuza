@@ -1,6 +1,6 @@
 "use client";
 // Stage 11 atoms + small molecules shared by booking, assistant and staff AI (plan 11 §5.2–5.3, §5.6).
-import { useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useI18n } from "@/lib/i18n/provider";
 import { cx, formatDate, formatMoney } from "@/shared/format";
 import { bkgCopy, fill } from "@/lib/booking/copy";
@@ -159,12 +159,38 @@ export function OfflineBanner({ text }: { text?: string }) {
   if (online) return null;
   return <p role="status" className="flex items-center gap-2 rounded-none bg-warning-bg px-4 py-2.5 text-small text-warning"><Icon name="globe" size={16} aria-hidden />{text ?? c.common.offline}</p>;
 }
-/** shortcut: mock captcha token, swap for Turnstile when site key exists */
+const TURNSTILE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+type TurnstileApi = { render: (el: HTMLElement, o: Record<string, unknown>) => string; remove: (id: string) => void };
+let turnstileLoad: Promise<TurnstileApi> | null = null;
+const loadTurnstile = () =>
+  (turnstileLoad ??= new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    s.async = true;
+    s.onload = () => resolve((window as unknown as { turnstile: TurnstileApi }).turnstile);
+    s.onerror = reject;
+    document.head.appendChild(s);
+  }));
+
+/** Cloudflare Turnstile when NEXT_PUBLIC_TURNSTILE_SITE_KEY is set; otherwise the dev checkbox (`mock-ok`, accepted by a dev API only). */
 export function Captcha({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: string }) {
-  const { c } = useBkg();
+  const { c, locale } = useBkg();
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!TURNSTILE_KEY || !box.current) return;
+    let id: string | undefined;
+    let api: TurnstileApi | undefined;
+    loadTurnstile().then((t) => {
+      api = t;
+      if (box.current) id = t.render(box.current, { sitekey: TURNSTILE_KEY, language: locale === "rw" ? "en" : locale, callback: onChange, "expired-callback": () => onChange(""), "error-callback": () => onChange("") });
+    }, () => onChange(""));
+    return () => { if (id) api?.remove(id); };
+  }, [locale, onChange]);
   return (
     <div className={cx("rounded-none border p-3", error ? "border-danger" : "border-border")}>
-      <Checkbox id="captcha" label={c.details.captcha} checked={value === "mock-ok"} onChange={(e) => onChange(e.target.checked ? "mock-ok" : "")} aria-describedby="captcha-hint" />
+      {TURNSTILE_KEY
+        ? <div ref={box} aria-label={c.details.captcha} />
+        : <Checkbox id="captcha" label={c.details.captcha} checked={value === "mock-ok"} onChange={(e) => onChange(e.target.checked ? "mock-ok" : "")} aria-describedby="captcha-hint" />}
       <p id="captcha-hint" className="mt-1 text-eyebrow text-fg-subtle">{c.details.captchaHint}</p>
       {error && <p className="mt-1 text-small text-danger">{error}</p>}
     </div>
