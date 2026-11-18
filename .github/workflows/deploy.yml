@@ -1,0 +1,20 @@
+# Deploys to Railway (project "hebuza"). Push to main → staging after CI passes; production only by manual "Run workflow".
+# Secrets (repo settings): RAILWAY_TOKEN_STAGING, RAILWAY_TOKEN_PRODUCTION — Railway project tokens scoped to each environment.
+name: deploy
+on:
+  workflow_run: { workflows: [web], types: [completed], branches: [main] }
+  workflow_dispatch:
+    inputs:
+      environment: { type: choice, options: [staging, production], default: staging, description: Target environment }
+concurrency: { group: deploy-${{ inputs.environment || 'staging' }}, cancel-in-progress: false }
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'staging' }}
+    env:
+      RAILWAY_TOKEN: ${{ (inputs.environment || 'staging') == 'production' && secrets.RAILWAY_TOKEN_PRODUCTION || secrets.RAILWAY_TOKEN_STAGING }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g @railway/cli
+      - run: railway up --ci --service hebuza-web --environment ${{ inputs.environment || 'staging' }}
