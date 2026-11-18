@@ -17,13 +17,17 @@ test("ops manager", async ({ page }, info) => {
   await page.getByRole("link", { name: "HBZ-1ZQ9YU", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("HBZ-1ZQ9YU");
   await shot(page, "ops-case");
+  // Shared staging DB: another journey (agent) may move this case between render and click → 409; reload and retry once.
+  for (let attempt = 0; ; attempt++) {
+  if (attempt) await page.reload();
   await page.getByRole("button", { name: /^Change status/ }).click();
   const dlg = page.getByRole("dialog");
   await expect(dlg).toBeVisible();
   await shot(page, "ops-status-dialog");
   // Any allowed, non-locked transition that needs no reason (state moves on across reruns).
   const option = dlg.locator("li button:not([disabled])").filter({ hasNotText: /Reason required|Creates an invoice|quotation/ }).first();
-  await ok(page, "POST", /\/api\/(?!realtime)/, async () => {
+  const res = page.waitForResponse((r) => r.request().method() === "POST" && /\/api\/(?!realtime)/.test(r.url()));
+  await (async () => {
     await option.click();
     await shot(page, "ops-status-picked");
     const next = page.locator("dialog[open]").last(); // the move's own confirm dialog, if it has one
@@ -33,7 +37,12 @@ test("ops manager", async ({ page }, info) => {
     const note = next.locator("textarea").first();
     if (await note.isVisible().catch(() => false)) await note.fill("E2E status change");
     await next.getByRole("button").filter({ hasNotText: /^(Cancel|Close)$/ }).last().click();
-  });
+  })();
+  const r = await res, body = await r.text().catch(() => "");
+  if (r.status() === 409 && body.includes("transition_not_allowed") && !attempt) { await page.waitForTimeout(500); for (let i = issues.length; i--;) if (issues[i].includes("transition_not_allowed")) issues.splice(i, 1); continue; }
+  expect(r.status(), `POST ${r.url()} ${body}`).toBeLessThan(400);
+  break;
+  }
   await shot(page, "ops-status-changed");
 
   await visit(page, "/en/ops/assign/HBZ-1ZQ9YU", "ops-assign");
@@ -74,7 +83,7 @@ test("agent", async ({ page }, info) => {
     break;
   }
   expect(chooser, "no assigned case with an empty deliverable slot").not.toBeNull();
-  const put = page.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes(":9010"));
+  const put = page.waitForResponse((r) => r.request().method() === "PUT" && !r.url().includes("/api/")); // presigned PUT to object storage (MinIO :9010 locally, R2 deployed)
   await (await chooser!).setFiles(PDF);
   expect((await put).status()).toBeLessThan(300);
   await shot(page, "agent-deliverable-uploaded");

@@ -68,8 +68,7 @@ test("client", async ({ page }, info) => {
   await page.screenshot({ path: `${SHOTS}/client-upload-done.png` });
 
   await visit(page, "/en/requests", "client-requests");
-  await page.getByRole("link", { name: "HBZ-2RT8LM" }).click();
-  await expect(page).toHaveURL(/requests\/HBZ-2RT8LM/);
+  await visit(page, "/en/requests/HBZ-2RT8LM", "client-request"); // seeded case; earlier runs' new requests can page it out of the list
   await expect(page.getByText("HBZ-2RT8LM").first()).toBeVisible();
   await page.getByRole("tab", { name: "Messages" }).click();
   const box = page.locator("main textarea, main [contenteditable=true]").first();
