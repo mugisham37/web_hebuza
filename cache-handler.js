@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- CommonJS file loaded by Next as a cache handler */
 // 'use cache' handler (next.config cacheHandlers.default). REDIS_URL set (runtime) → entries + tag invalidations shared
 // across web replicas in Redis; unset → Next's own in-memory LRU (same as no handler, 50 MB = cacheMaxMemorySize default).
 const {
