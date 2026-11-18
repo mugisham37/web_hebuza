@@ -1,0 +1,11 @@
+node_modules
+.next
+.env
+.env.*
+!.env.example
+*.pem
+tsconfig.tsbuildinfo
+e2e
+test-results
+playwright-report
+.turbo
