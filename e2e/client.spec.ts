@@ -38,10 +38,10 @@ test("client", async ({ page }, info) => {
     if (await submit.isVisible()) {
       for (const c of await main.getByRole("checkbox").all()) if (!(await c.isChecked())) await c.check();
       await page.screenshot({ path: `${SHOTS}/client-apply-review.png` });
-      const put = page.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes(":9010"));
+      const put = page.waitForResponse((r) => r.request().method() === "PUT" && !r.url().includes("/api/")); // presigned PUT straight to object storage (MinIO locally, R2 when deployed)
       const done = page.waitForResponse((r) => /\/api\/documents\/[^/]+\/complete/.test(r.url()));
       await submit.click();
-      expect((await put).status()).toBeLessThan(300); // presigned PUT to MinIO
+      expect((await put).status()).toBeLessThan(300);
       expect((await done).status()).toBeLessThan(300);
       break;
     }
@@ -60,7 +60,7 @@ test("client", async ({ page }, info) => {
   await visit(page, "/en/documents", "client-documents");
   await page.getByRole("button", { name: /upload/i }).first().click();
   const dlg = page.getByRole("dialog");
-  const put = page.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes(":9010"));
+  const put = page.waitForResponse((r) => r.request().method() === "PUT" && !r.url().includes("/api/")); // presigned PUT straight to object storage (MinIO locally, R2 when deployed)
   const done = page.waitForResponse((r) => /\/api\/(me\/)?documents\/[^/]+\/complete/.test(r.url()));
   await dlg.locator("input[type=file]").first().setInputFiles({ name: "id.pdf", mimeType: "application/pdf", buffer: Buffer.from(`%PDF-1.4\n% ${Date.now()}\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF`) });
   expect((await put).status()).toBeLessThan(300);
