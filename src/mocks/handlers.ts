@@ -1,0 +1,24 @@
+// All MSW handlers. Each domain file exports `handlers`; new domain files are added here (contract: contract/openapi.json).
+import type { HttpHandler } from "msw";
+import { handlers as adminpeople } from "./handlers-admin-people";
+import { handlers as agent } from "./handlers-agent";
+import { handlers as auth } from "./handlers-auth";
+import { handlers as misc } from "./handlers-misc";
+import { handlers as cataloguedocs } from "./handlers-catalogue-docs";
+import { handlers as c2 } from "./handlers-c2";
+import { handlers as chat } from "./handlers-chat";
+import { handlers as c3 } from "./handlers-c3";
+import { handlers as c4 } from "./handlers-c4";
+import { handlers as financeb } from "./handlers-finance-b";
+import { handlers as financec } from "./handlers-finance-c";
+import { handlers as financed } from "./handlers-finance-d";
+import { handlers as financee } from "./handlers-finance-e";
+import { handlers as finance } from "./handlers-finance";
+import { handlers as flow } from "./handlers-flow";
+import { handlers as lb } from "./handlers-lb";
+import { handlers as lc } from "./handlers-lc";
+import { handlers as opsc } from "./handlers-ops-c";
+import { handlers as opse } from "./handlers-ops-e";
+import { handlers as systemb } from "./handlers-system-b";
+import { handlers as system } from "./handlers-system";
+export const handlers: HttpHandler[] = [...cataloguedocs, ...agent, ...adminpeople, ...auth, ...misc, ...c2, ...chat, ...c3, ...c4, ...financeb, ...financec, ...financed, ...financee, ...finance, ...flow, ...lb, ...lc, ...opsc, ...opse, ...systemb, ...system, ];
