@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
   // Auto-memoization; Rust port runs inside Turbopack, no babel plugin needed.
   reactCompiler: true,
   cacheComponents: true,
+  // Redis-shared when REDIS_URL is set at runtime, else Next's in-memory default (cache-handler.js).
+  cacheHandlers: { default: require.resolve("./cache-handler.js") },
   partialPrefetching: true,
   poweredByHeader: false,
   images: {

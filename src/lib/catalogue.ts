@@ -80,7 +80,6 @@ export async function getFamily(slug: string, l: Locale) {
 
 async function rawDetail(slug: string): Promise<ApiDetail | null> {
   "use cache";
-  cacheLife("hours");
   cacheTag("catalogue", `service:${slug}`);
   const seed = (seedDetails as Record<string, ApiDetail>)[slug] ?? null;
   // Requirements come from the published builder structure (API); copy/steps stay on the snapshot.
@@ -88,6 +87,8 @@ async function rawDetail(slug: string): Promise<ApiDetail | null> {
   const api = await fetch(`${process.env.API_URL}/api/services/${encodeURIComponent(slug)}`)
     .then((r) => (r.ok ? (r.json() as Promise<{ data: ApiDetail }>) : null))
     .catch(() => null);
+  // API unreachable (e.g. at build: no private network) → don't bake the requirement-less snapshot for hours.
+  if (api?.data) cacheLife("hours"); else cacheLife("seconds");
   return api?.data ? { ...(seed ?? api.data), requirements: api.data.requirements } : seed;
 }
 

@@ -46,7 +46,19 @@ const LEGACY_REDIRECTS: Record<string, string> = { "/admin": "/ops", "/dashboard
   // spec cms §routes: /news is served by /updates (the only published news feed; `article` type has no public reader yet).
   "/news": "/updates" };
 
+// Origin protection (Phase L): with ORIGIN_AUTH_SECRET set, only requests through Cloudflare (Transform Rule adds
+// x-origin-auth) or Railway's health check (Host healthcheck.railway.app, unroutable from the public edge) get through.
+function originAuthOk(request: NextRequest): boolean {
+  const secret = process.env.ORIGIN_AUTH_SECRET;
+  if (!secret || request.headers.get("host") === "healthcheck.railway.app") return true;
+  const got = request.headers.get("x-origin-auth") ?? "";
+  let diff = got.length ^ secret.length; // constant-time compare
+  for (let i = 0; i < secret.length; i++) diff |= got.charCodeAt(i) ^ secret.charCodeAt(i);
+  return diff === 0;
+}
+
 export async function proxy(request: NextRequest) {
+  if (!originAuthOk(request)) return new NextResponse("Forbidden", { status: 403 });
   const { pathname, search } = request.nextUrl;
   const [, first, ...rest] = pathname.split("/");
   if (RAW.has(first)) return NextResponse.next();
