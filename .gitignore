@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+blob-report/
+# secrets: only the examples are committed
+.env
+.env.*
+!.env*.example
+*.pem
+.vercel
+.DS_Store
+npm-debug.log*
+pnpm-debug.log*
