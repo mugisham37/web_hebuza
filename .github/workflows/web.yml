@@ -1,0 +1,31 @@
+name: web
+on:
+  push: { branches: [main] }
+  pull_request: {}
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_APP_ENV: ci
+      NEXT_PUBLIC_API_MOCKING: "off"
+      NEXT_PUBLIC_SITE_URL: http://localhost:3100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { package_json_file: package.json }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm, cache-dependency-path: pnpm-lock.yaml }
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        with: { path: .next/cache, key: next-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}, restore-keys: next-${{ hashFiles('pnpm-lock.yaml') }}- }
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm check:layers
+      - run: pnpm check:design
+      - run: pnpm check:mirror
+      # Contract drift: against the deployed/staging server when SERVER_OPENAPI_URL is set (separate repos).
+      - if: ${{ vars.SERVER_OPENAPI_URL != '' }}
+        run: API_URL=${{ vars.SERVER_OPENAPI_URL }} pnpm api:types && git diff --exit-code src/lib/api/schema.d.ts
+      - run: pnpm build
+      # check:mocks is informational only (run locally); e2e needs the full stack (pnpm e2e against server/).
