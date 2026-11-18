@@ -1,0 +1,241 @@
+"use client";
+// W2 worker profile (tabs Overview · Performance · Reviews · History · Documents), W3 review form (?tab=reviews&new=1),
+// status changes (Suspend / Reactivate) and the Offboard entry. Private fields masked; reveal needs a reason and is audited.
+import { useState } from "react";
+import Link from "next/link";
+import { useI18n, localHref } from "@/lib/i18n/provider";
+import { useSession } from "@/lib/auth/session";
+import { cx, formatDate, formatDateTime, formatRelative } from "@/shared/format";
+import { setUrlParams, useUrlParams } from "@/lib/url-state";
+import { newIdempotencyKey } from "@/lib/api/client";
+import { errorCopy } from "@/lib/api/error-copy";
+import { revealWorker, useHistory, useReviews, useSubmitReview, useWorker, useWorkerStatus, type WorkerFull } from "@/lib/workforce";
+import { fill } from "@/content/pages/ops-workforce";
+import { KpiTile, MenuButton, Panel, PanelError, ReasonDialog, EmptyPanel } from "@/components/molecules/ops/ops";
+import { CapacityBar } from "@/components/atoms/ops";
+import { PageHead, SkeletonRows, StarRating } from "@/components/atoms/agent";
+import { ProcPill } from "@/components/atoms/procurement";
+import { Tabs } from "@/components/atoms/tabs";
+import { Button } from "@/components/atoms/button";
+import { Icon } from "@/components/atoms/icon";
+import { Checkbox, Field, Input, Textarea } from "@/components/atoms/field";
+import { useToast } from "@/components/atoms/toast";
+import { usePublicServices } from "@/lib/work/a";
+import { WorkforceDenied, canAdmin, useW } from "@/components/organisms/ops/workforce";
+
+const TABS = ["overview", "performance", "reviews", "history", "documents"] as const;
+type Tab = (typeof TABS)[number];
+
+export function WorkerProfileView({ id }: { id: string }) {
+  const c = useW();
+  const { locale } = useI18n();
+  const { user } = useSession();
+  const p = useUrlParams();
+  const q = useWorker(id);
+  const [dialog, setDialog] = useState<null | "suspend" | "reactivate">(null);
+  const tab: Tab = (TABS as readonly string[]).includes(p.get("tab") ?? "") ? (p.get("tab") as Tab) : "overview";
+  if (user && !user.roles.some((r) => r === "staff:service_manager" || r === "staff:executive")) return <WorkforceDenied />;
+  if (q.isPending) return <SkeletonRows n={6} />;
+  if (q.isError) return <PanelError what={c.title} onRetry={() => q.refetch()} />;
+  const w = q.data;
+  const admin = !!user && canAdmin(user.roles);
+  const L = (s: string) => localHref(locale, s);
+  return (
+    <div className="grid gap-5">
+      <PageHead
+        back={<Link href={L("/ops/workforce")} className="mb-2 inline-flex items-center gap-1 text-small text-fg-muted hover:text-fg"><Icon name="arrowRight" size={14} className="rotate-180" aria-hidden />{c.title}</Link>}
+        title={<span className="flex flex-wrap items-center gap-3">{w.name}<ProcPill state={w.status} machine="worker" /></span>}
+        sub={`${w.role} · ${c.type[w.type]}${w.field ? ` · ${c.type.field}` : ""} · ${w.email}`}
+        actions={admin && w.status !== "terminated" ? (
+          <MenuButton label={c.actions.label} icon="menu" align="right">{(close) => (
+            <div className="grid min-w-48 p-1">
+              {w.status !== "suspended" && <button type="button" className="px-3 py-2 text-left text-small hover:bg-navy-50" onClick={() => { close(); setDialog("suspend"); }}>{c.actions.suspend}</button>}
+              {w.status === "suspended" && <button type="button" className="px-3 py-2 text-left text-small hover:bg-navy-50" onClick={() => { close(); setDialog("reactivate"); }}>{c.actions.reactivate}</button>}
+              <button type="button" className="px-3 py-2 text-left text-small hover:bg-navy-50" onClick={() => { close(); setUrlParams({ tab: "reviews", new: "1" }); }}>{c.actions.review}</button>
+              <Link href={L(`/ops/workforce/${w.id}/offboard`)} className="px-3 py-2 text-small text-danger hover:bg-navy-50">{c.actions.terminate}</Link>
+            </div>
+          )}</MenuButton>
+        ) : null} />
+      {w.sessionsRevoked && <p role="status" className="flex items-center gap-2 bg-danger-bg px-4 py-3 text-small text-danger"><Icon name="lock" size={16} aria-hidden />{c.profile.sessionsRevoked}</p>}
+      <Tabs value={tab} onChange={(t) => setUrlParams({ tab: t === "overview" ? null : t, new: null })} tabs={TABS.map((t) => ({
+        id: t, label: c.tabs[t],
+        content: t !== tab ? null : t === "overview" ? <Overview w={w} admin={admin} /> : t === "performance" ? <Performance w={w} />
+          : t === "reviews" ? <Reviews w={w} admin={admin} /> : t === "history" ? <History id={w.id} /> : <Documents w={w} />,
+      }))} />
+      {dialog && <StatusDialog w={w} kind={dialog} onClose={() => setDialog(null)} />}
+    </div>
+  );
+}
+
+function Overview({ w, admin }: { w: WorkerFull; admin: boolean }) {
+  const SERVICES = usePublicServices().data?.items ?? [];
+  const c = useW();
+  const { locale } = useI18n();
+  const [shown, setShown] = useState<WorkerFull["privateFields"] | null>(null);
+  const [ask, setAsk] = useState(false);
+  const pf = shown ?? w.privateFields;
+  const svc = (s: string) => SERVICES.find((x) => x.slug === s)?.name ?? s;
+  return (
+    <div className="mt-4 grid gap-4 lg:grid-cols-2">
+      <Panel title={c.profile.contract}>
+        <dl className="grid grid-cols-2 gap-3 text-small">
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.contractEnd}</dt><dd>{w.contractEnd ? formatDate(w.contractEnd, locale) : "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.lastLogin}</dt><dd>{w.lastLoginAt ? formatRelative(w.lastLoginAt, locale) : c.profile.never}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.languages}</dt><dd>{w.languages.join(", ").toUpperCase() || "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.districts}</dt><dd>{w.districts.join(", ") || "—"}</dd></div>
+          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.services}</dt><dd>{w.services.map(svc).join(", ") || "—"}</dd></div>
+          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.expertise}</dt><dd>{w.expertise.join(", ") || "—"}</dd></div>
+          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.cols.load}</dt><dd className="flex items-center gap-2"><CapacityBar load={w.load.open} cap={w.load.cap} className="w-32" /><span className="tabular">{w.load.open}/{w.load.cap}</span></dd></div>
+        </dl>
+      </Panel>
+      <Panel title={c.profile.private} action={admin && !shown ? <Button size="sm" variant="secondary" onClick={() => setAsk(true)}><Icon name="lock" size={14} aria-hidden />{c.profile.reveal}</Button> : null}>
+        <dl className="grid gap-3 text-small">
+          {(["address", "phone", "nationalId"] as const).map((k) => <div key={k}><dt className="text-eyebrow text-fg-subtle">{c.profile[k]}</dt><dd className="tabular">{pf[k]}</dd></div>)}
+        </dl>
+        {shown && <p className="mt-3 text-eyebrow text-fg-subtle">{c.profile.revealed}</p>}
+      </Panel>
+      <Panel title={c.profile.openCases} className="lg:col-span-2" action={<Link href={localHref(locale, `/ops/cases?assignee=${w.id}`)} className="text-small text-link underline underline-offset-4">{c.profile.cases}</Link>}>
+        {w.openCases.length ? <ul className="grid gap-1 text-small">{w.openCases.map((x) => <li key={x.ref} className="flex justify-between gap-3"><span className="tabular font-medium">{x.ref}</span><span className="truncate text-fg-muted">{x.title} · {x.client}</span></li>)}</ul>
+          : <p className="text-small text-fg-muted">{c.off.noCases}</p>}
+      </Panel>
+      <ReasonDialog open={ask} onClose={() => setAsk(false)} title={c.profile.revealTitle} description={c.profile.revealReason} audited confirmLabel={c.profile.reveal}
+        options={Object.entries({ payroll: "Payroll / contract query", safety: "Safety or emergency contact", investigation: c.status.reasons.investigation, other: c.status.reasons.other }).map(([value, label]) => ({ value, label }))}
+        onConfirm={async (v) => { const r = await revealWorker(w.id, `${v.reason}${v.note ? `: ${v.note}` : ""}`); setShown(r.privateFields); setAsk(false); }} />
+    </div>
+  );
+}
+
+function Performance({ w }: { w: WorkerFull }) {
+  const c = useW();
+  const fmt = (k: WorkerFull["kpis"][number]) => (k.unit === "pct" ? `${k.value}%` : k.unit === "rating" ? k.value.toFixed(1) : String(k.value));
+  return (
+    <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {w.kpis.map((k) => <KpiTile key={k.key} label={c.kpi[k.key as keyof typeof c.kpi] ?? k.key} value={fmt(k)} tone={k.unit === "pct" && k.value < 80 ? "warning" : "neutral"} />)}
+    </div>
+  );
+}
+
+function Reviews({ w, admin }: { w: WorkerFull; admin: boolean }) {
+  const c = useW();
+  const { locale } = useI18n();
+  const p = useUrlParams();
+  const q = useReviews(w.id);
+  return (
+    <div className="mt-4 grid gap-4">
+      {admin && p.get("new") === "1" ? <ReviewForm w={w} onDone={() => setUrlParams({ new: null })} />
+        : admin && <Button variant="secondary" className="w-fit" onClick={() => setUrlParams({ new: "1" })}><Icon name="plus" size={14} aria-hidden />{c.actions.review}</Button>}
+      {q.isPending ? <SkeletonRows n={2} /> : q.isError ? <PanelError what={c.tabs.reviews} onRetry={() => q.refetch()} /> : !q.data.items.length ? <EmptyPanel title={c.review.none} compact /> : (
+        <ul className="grid gap-2">
+          {q.data.items.map((r) => (
+            <li key={r.id} className="grid gap-1 border border-border bg-white p-4">
+              <p className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{r.period}</span><StarRating value={r.rating} /></p>
+              <p className="text-small">{r.comments}</p>
+              {r.goals && <p className="text-small text-fg-muted">{c.review.goals}: {r.goals}</p>}
+              <p className="text-eyebrow text-fg-subtle">{c.review.status[r.status]} · {fill(c.review.by, { name: r.by.name })} · {formatDate(r.at, locale)}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// PLACEHOLDER(review-fields): spec only names "performance reviews" (D-13).
+function ReviewForm({ w, onDone }: { w: WorkerFull; onDone: () => void }) {
+  const c = useW();
+  const { locale } = useI18n();
+  const toast = useToast();
+  const m = useSubmitReview(w.id);
+  const [key] = useState(newIdempotencyKey);
+  const year = new Date().getFullYear();
+  const [period, setPeriod] = useState(`${year}-H2`);
+  const [rating, setRating] = useState(0);
+  const [goals, setGoals] = useState("");
+  const [comments, setComments] = useState("");
+  const [ack, setAck] = useState(true);
+  const [err, setErr] = useState<Record<string, string>>({});
+  async function submit() {
+    const e: Record<string, string> = {};
+    if (!rating) e.rating = c.review.needRating;
+    if (!comments.trim()) e.comments = c.review.needComments;
+    setErr(e);
+    if (Object.keys(e).length) return;
+    try { await m.mutateAsync({ period, rating, goals, comments, ackRequired: ack, idempotencyKey: key }); toast({ title: c.review.done, tone: "success" }); onDone(); }
+    catch (x) { setErr({ form: errorCopy(x, locale) }); }
+  }
+  return (
+    <form className="grid gap-4 border border-border bg-white p-4 m-rise" onSubmit={(e) => { e.preventDefault(); submit(); }}>
+      <h2 className="text-card-title">{c.review.title}</h2>
+      {err.form && <p role="alert" className="bg-danger-bg px-3 py-2 text-small text-danger">{err.form}</p>}
+      <Field label={c.review.period}>{(a) => <Input id={a.id} value={period} onChange={(e) => setPeriod(e.target.value)} />}</Field>
+      <div className="grid gap-1"><p className="text-label">{c.review.kpis}</p>
+        <p className="text-small text-fg-muted">{c.kpi.onTime}: {w.onTimePct ?? "—"}% · {c.kpi.rating}: {w.rating?.toFixed(1) ?? "—"} · {c.kpi.open}: {w.load.open}</p></div>
+      <fieldset className="grid gap-1"><legend className="text-label">{c.review.rating}</legend>
+        {err.rating && <p className="text-small font-medium text-danger">{err.rating}</p>}
+        <div className="flex gap-1" role="radiogroup" aria-label={c.review.rating}>
+          {[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n}`} onClick={() => setRating(n)}
+            className={cx("flex size-10 items-center justify-center border text-body m-press", n <= rating ? "border-navy-700 bg-gold-400 text-on-gold" : "border-border bg-white")}>{n}</button>)}
+        </div>
+      </fieldset>
+      <Field label={c.review.goals}>{(a) => <Textarea id={a.id} rows={2} maxLength={1000} value={goals} onChange={(e) => setGoals(e.target.value)} />}</Field>
+      <Field label={c.review.comments} error={err.comments}>{(a) => <Textarea id={a.id} aria-invalid={a.invalid} aria-describedby={a.describedBy} rows={3} maxLength={2000} value={comments} onChange={(e) => setComments(e.target.value)} />}</Field>
+      <Checkbox label={c.review.ack} checked={ack} onChange={(e) => setAck(e.target.checked)} />
+      <div className="flex gap-2"><Button type="submit" loading={m.isPending} dots>{c.review.submit}</Button><Button type="button" variant="secondary" onClick={onDone}>×</Button></div>
+    </form>
+  );
+}
+
+function History({ id }: { id: string }) {
+  const c = useW();
+  const { locale } = useI18n();
+  const q = useHistory(id);
+  if (q.isPending) return <div className="mt-4"><SkeletonRows n={3} /></div>;
+  if (q.isError) return <PanelError what={c.tabs.history} onRetry={() => q.refetch()} />;
+  if (!q.data.items.length) return <div className="mt-4"><EmptyPanel title={c.profile.noHistory} compact /></div>;
+  return (
+    <ol className="mt-4 grid gap-2 m-stagger">
+      {q.data.items.map((e, i) => (
+        <li key={e.id} style={{ ["--i" as string]: i }} className="flex flex-wrap items-center justify-between gap-2 border border-border bg-white px-4 py-3 text-small">
+          <span>{e.text}{e.actor ? <span className="text-fg-subtle"> · {e.actor}</span> : null}</span>
+          <time className="text-eyebrow text-fg-subtle tabular" dateTime={e.at}>{formatDateTime(e.at, locale)}</time>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Documents({ w }: { w: WorkerFull }) {
+  const c = useW();
+  const { locale } = useI18n();
+  const docs = [...w.documents.map((d) => ({ name: d.name, exp: d.expiresOn })), ...w.certifications.map((x) => ({ name: x.name, exp: x.expiresOn }))];
+  if (!docs.length) return <div className="mt-4"><EmptyPanel title={c.profile.noDocs} compact /></div>;
+  return (
+    <ul className="mt-4 grid gap-2">
+      {docs.map((d) => <li key={d.name} className="flex items-center justify-between gap-2 border border-border bg-white px-4 py-3 text-small"><span className="flex items-center gap-2"><Icon name="file" size={16} aria-hidden />{d.name}</span>{d.exp && <span className="text-eyebrow text-fg-subtle">{formatDate(d.exp, locale)}</span>}</li>)}
+    </ul>
+  );
+}
+
+function StatusDialog({ w, kind, onClose }: { w: WorkerFull; kind: "suspend" | "reactivate"; onClose: () => void }) {
+  const c = useW();
+  const toast = useToast();
+  const m = useWorkerStatus(w.id);
+  const [key] = useState(newIdempotencyKey);
+  const [reclear, setReclear] = useState(false);
+  const r = c.status.reasons;
+  const opts = kind === "suspend" ? ["performance", "conduct", "investigation", "leave", "other"] : ["resolved", "leave", "other"];
+  return (
+    <ReasonDialog open onClose={onClose} audited destructive={kind === "suspend"}
+      title={fill(kind === "suspend" ? c.status.suspendTitle : c.status.reactivateTitle, { name: w.name })}
+      description={kind === "suspend" ? c.status.suspendBody : c.status.reactivateBody}
+      options={opts.map((v) => ({ value: v, label: r[v as keyof typeof r] }))}
+      extra={kind === "reactivate" ? <Checkbox label={c.status.reclear} checked={reclear} onChange={(e) => setReclear(e.target.checked)} /> : undefined}
+      confirmLabel={kind === "suspend" ? c.actions.suspend : c.actions.reactivate}
+      onConfirm={async (v) => {
+        const to = kind === "suspend" ? "suspended" : reclear ? "onboarding" : "cleared";
+        await m.mutateAsync({ to, reason: `${v.reason}${v.note ? `: ${v.note}` : ""}`, idempotencyKey: key });
+        toast({ title: fill(c.status.done, { name: w.name, status: to }), tone: "success" });
+        onClose();
+      }} />
+  );
+}
