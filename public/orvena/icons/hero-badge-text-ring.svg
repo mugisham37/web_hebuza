@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+                                               >
+                                                <defs>
+                                                    <path id="orvena-badge-ring"
+                                                        d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"></path>
+                                                </defs><text fill="#f4f1ea"
+                                                   >
+                                                    <textPath href="#orvena-badge-ring" startOffset="0">Independent
+                                                        creative studio • Est. 2026 • </textPath>
+                                                </text>
+                                            </svg>
