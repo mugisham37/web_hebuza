@@ -1,0 +1,171 @@
+// CRM lane copy (Stage 10 U9–U11): leads, inbox, customers. rw/fr first drafts, PLACEHOLDER(rw-translation) for native review.
+import type { Locale } from "@/shared/i18n/config";
+
+const en = {
+  leads: {
+    title: "Leads", sub: "Every enquiry in one pipeline. Open leads always have a next step.",
+    kpi: { total: "Total", new: "New", contacted: "Contacted", qualified: "Qualified", quote_sent: "Quote sent", wonMonth: "Won this month" },
+    view: { board: "Board", table: "Table", tasks: "My tasks" }, add: "Add lead", import: "Import CSV", showLost: "Show lost", hideLost: "Hide lost",
+    search: "Search name, company or LD number", owner: "Owner", source: "Source", service: "Service", unassigned: "Unassigned",
+    moveTo: "Move to…", moved: "Moved {name} to {stage}", next: "Next action", overdue: "Overdue", value: "Estimated value", age: "Created",
+    empty: "No leads yet. Add a lead form to a landing page or connect WhatsApp.", emptyCol: "Nothing here",
+    wonBlocked: "Won is set automatically when the first invoice is paid.", convertInstead: "Convert to client",
+    lostTitle: "Why was this lead lost?", lostConfirm: "Mark as lost",
+    reasons: { price: "Price", timing: "Timing", competitor: "Chose a competitor", no_response: "No response", not_eligible: "Not eligible", other: "Other" } as Record<string, string>,
+    bulk: { selected: "{n} selected", assign: "Assign owner", enrol: "Enrol in sequence", tag: "Add tag", export: "Export", enrolled: "{n} enrolled", tagPrompt: "Tag" },
+    exportTitle: "Export leads", exportBody: "Phone numbers are masked. The export is logged with your reason.", exportReasons: { campaign: "Campaign planning", report: "Management report", cleanup: "Data clean-up" } as Record<string, string>, exported: "{n} leads exported",
+    tasks: { overdue: "Overdue", today: "Today", upcoming: "Upcoming", empty: "No follow-ups waiting. Nice.", done: "Task done", complete: "Mark done" },
+  },
+  drawer: {
+    tabs: { activity: "Activity", tasks: "Tasks", notes: "Notes", attribution: "Attribution" }, stage: "Stage", created: "Created {d}",
+    consent: "Consent", history: "Consent history", interest: "Interest", owner: "Owner", value: "Estimated value (RWF)", next: "Next action date",
+    convert: "Convert to client", quote: "Create quote", quoteNo: "Quotations are prepared by a Service Manager.", lost: "Mark as lost", save: "Save",
+    log: "Log a call", logged: "Call logged", note: "Add a note… use @ to mention", addNote: "Add note", addTask: "Add task", taskTitle: "Task", due: "Due",
+    first: "First touch", last: "Last non-direct touch", direct: "Direct (no campaign)", retention: "Will be deleted on {d} if there is no more activity.",
+    openPage: "Open full page", backToLeads: "All leads", notFound: "This lead does not exist or was deleted.",
+    dupTitle: "Possible duplicate", dupBody: "{name} has the same phone or email.", merge: "Merge", conflict: "Changed by someone else. Reloaded.", saved: "Saved",
+  },
+  add: {
+    title: "Add a lead", source: "Source", name: "Name", org: "Company", phone: "Phone", email: "Email", service: "Service of interest", language: "Language",
+    consent: "Consent to marketing", consentNote: "Contacts without consent are saved but never messaged.", next: "Next action date", save: "Save lead",
+    dupWarn: "This looks like an existing contact.", saveAnyway: "Save anyway", created: "Lead {id} created",
+    sources: { event: "Event", manual: "Walk-in", contact_form: "Phone call", referral: "Referral", csv: "Other" } as Record<string, string>,
+    invalidPhone: "Enter a Rwandan or international number.", required: "Required",
+  },
+  importer: {
+    title: "Import leads from CSV", step1: "Upload", step2: "Match columns", step3: "Check rows", pick: "Choose a CSV file", ignore: "Ignore",
+    fields: { name: "Name", phone: "Phone", email: "Email", org: "Company", service: "Service", consent_email: "Email consent", consent_whatsapp: "WhatsApp consent", consent_sms: "SMS consent" } as Record<string, string>,
+    consentNote: "Consent columns must say yes or no. A missing column means no consent.",
+    ok: "Ready", dupFile: "Duplicate in file", dupCrm: "Already in CRM ({id})", invalid: "Invalid", summary: "{ok} ready · {bad} will be skipped",
+    confirm: "Create {n} leads", done: "{created} created, {skipped} skipped", nothing: "Nothing is created until you confirm.",
+  },
+  merge: { title: "Merge leads", body: "Keep one record. The others are marked merged and point to it.", keep: "Keep", done: "Leads merged" },
+  convert: { title: "Convert to client", matched: "Matched by {by}", by: { phone: "phone", email: "email", both: "phone and email" } as Record<string, string>, link: "Link to existing client", invite: "Send account invitation", inviteNote: "Sends the sign-up link if the contact agreed to messages.", none: "No existing client matches this phone or email.", done: "Converted. Stage changes to Won when the first invoice is paid." },
+  inbox: {
+    title: "Inbox", sub: "Web form, WhatsApp, email and SMS in one list.", all: "All", empty: "No conversations yet.", pick: "Pick a conversation",
+    reply: "Write a reply…", send: "Send", window: "Outside the 24-hour window: send an approved template.", template: "Template", sendTemplate: "Send template",
+    actions: "Lead actions", createLead: "Create lead from conversation", openLead: "Open lead {id}", assign: "Assign to", tag: "Add tag", leadCreated: "Lead {id} created", sent: "Sent",
+  },
+  customers: {
+    title: "Customers", sub: "Clients with their marketing history. Totals only.", search: "Search name or Customer ID", empty: "No customers yet.",
+    cols: { name: "Customer", id: "Customer ID", lang: "Language", sector: "Sector", lifetime: "Lifetime revenue", last: "Last active", consent: "Consent" },
+    tabs: { timeline: "Timeline", details: "Details", cases: "Requests", communications: "Messages", notes: "Notes", tasks: "Tasks", attribution: "Attribution" },
+    lifetime: "Lifetime revenue", related: "Related", cases: "Requests", messages: "Messages", ratings: "Ratings", campaigns: "Campaigns", recommended: "Recommended services",
+    district: "District", size: "Size", plan: "Plan", owner: "Owner", phone: "Phone", noCases: "No requests yet.", noComms: "No messages yet.", notFound: "Customer not found.",
+    convert: "Link leads", phoneMasked: "Masked for marketing",
+  },
+};
+type Copy = typeof en;
+
+const fr: Copy = {
+  leads: {
+    title: "Prospects", sub: "Toutes les demandes dans un seul pipeline. Chaque prospect ouvert a une prochaine étape.",
+    kpi: { total: "Total", new: "Nouveaux", contacted: "Contactés", qualified: "Qualifiés", quote_sent: "Devis envoyé", wonMonth: "Gagnés ce mois" },
+    view: { board: "Tableau", table: "Liste", tasks: "Mes tâches" }, add: "Ajouter", import: "Importer un CSV", showLost: "Afficher les perdus", hideLost: "Masquer les perdus",
+    search: "Nom, entreprise ou numéro LD", owner: "Responsable", source: "Source", service: "Service", unassigned: "Non attribué",
+    moveTo: "Déplacer vers…", moved: "{name} déplacé vers {stage}", next: "Prochaine action", overdue: "En retard", value: "Valeur estimée", age: "Créé",
+    empty: "Aucun prospect. Ajoutez un formulaire à une page d'atterrissage ou connectez WhatsApp.", emptyCol: "Rien ici",
+    wonBlocked: "« Gagné » est automatique au paiement de la première facture.", convertInstead: "Convertir en client",
+    lostTitle: "Pourquoi ce prospect est-il perdu ?", lostConfirm: "Marquer perdu",
+    reasons: { price: "Prix", timing: "Calendrier", competitor: "Concurrent choisi", no_response: "Pas de réponse", not_eligible: "Non éligible", other: "Autre" },
+    bulk: { selected: "{n} sélectionnés", assign: "Attribuer", enrol: "Inscrire dans une séquence", tag: "Ajouter une étiquette", export: "Exporter", enrolled: "{n} inscrits", tagPrompt: "Étiquette" },
+    exportTitle: "Exporter les prospects", exportBody: "Les téléphones sont masqués. L'export est consigné avec votre motif.", exportReasons: { campaign: "Préparation de campagne", report: "Rapport de direction", cleanup: "Nettoyage des données" }, exported: "{n} prospects exportés",
+    tasks: { overdue: "En retard", today: "Aujourd'hui", upcoming: "À venir", empty: "Aucun suivi en attente.", done: "Tâche terminée", complete: "Terminer" },
+  },
+  drawer: {
+    tabs: { activity: "Activité", tasks: "Tâches", notes: "Notes", attribution: "Attribution" }, stage: "Étape", created: "Créé {d}",
+    consent: "Consentement", history: "Historique du consentement", interest: "Intérêt", owner: "Responsable", value: "Valeur estimée (RWF)", next: "Date de prochaine action",
+    convert: "Convertir en client", quote: "Créer un devis", quoteNo: "Les devis sont préparés par un responsable de service.", lost: "Marquer perdu", save: "Enregistrer",
+    log: "Noter un appel", logged: "Appel noté", note: "Ajouter une note… @ pour mentionner", addNote: "Ajouter", addTask: "Ajouter une tâche", taskTitle: "Tâche", due: "Échéance",
+    first: "Premier contact", last: "Dernier contact non direct", direct: "Direct (sans campagne)", retention: "Sera supprimé le {d} sans nouvelle activité.",
+    openPage: "Ouvrir la page complète", backToLeads: "Tous les prospects", notFound: "Ce prospect n’existe pas ou a été supprimé.",
+    dupTitle: "Doublon possible", dupBody: "{name} a le même téléphone ou e-mail.", merge: "Fusionner", conflict: "Modifié par quelqu'un d'autre. Rechargé.", saved: "Enregistré",
+  },
+  add: {
+    title: "Ajouter un prospect", source: "Source", name: "Nom", org: "Entreprise", phone: "Téléphone", email: "E-mail", service: "Service souhaité", language: "Langue",
+    consent: "Consentement marketing", consentNote: "Les contacts sans consentement sont enregistrés mais jamais contactés.", next: "Date de prochaine action", save: "Enregistrer",
+    dupWarn: "Ressemble à un contact existant.", saveAnyway: "Enregistrer quand même", created: "Prospect {id} créé",
+    sources: { event: "Événement", manual: "Visite", contact_form: "Appel", referral: "Parrainage", csv: "Autre" },
+    invalidPhone: "Saisissez un numéro rwandais ou international.", required: "Obligatoire",
+  },
+  importer: {
+    title: "Importer des prospects (CSV)", step1: "Fichier", step2: "Colonnes", step3: "Vérification", pick: "Choisir un fichier CSV", ignore: "Ignorer",
+    fields: { name: "Nom", phone: "Téléphone", email: "E-mail", org: "Entreprise", service: "Service", consent_email: "Consentement e-mail", consent_whatsapp: "Consentement WhatsApp", consent_sms: "Consentement SMS" },
+    consentNote: "Les colonnes de consentement doivent indiquer oui ou non. Sans colonne : pas de consentement.",
+    ok: "Prêt", dupFile: "Doublon dans le fichier", dupCrm: "Déjà dans le CRM ({id})", invalid: "Invalide", summary: "{ok} prêts · {bad} ignorés",
+    confirm: "Créer {n} prospects", done: "{created} créés, {skipped} ignorés", nothing: "Rien n'est créé avant votre confirmation.",
+  },
+  merge: { title: "Fusionner", body: "Gardez une fiche. Les autres sont marquées fusionnées.", keep: "Garder", done: "Prospects fusionnés" },
+  convert: { title: "Convertir en client", matched: "Correspondance par {by}", by: { phone: "téléphone", email: "e-mail", both: "téléphone et e-mail" }, link: "Lier au client existant", invite: "Envoyer une invitation", inviteNote: "Envoie le lien d'inscription si le contact a accepté les messages.", none: "Aucun client ne correspond.", done: "Converti. L'étape passe à Gagné au paiement de la première facture." },
+  inbox: {
+    title: "Messages", sub: "Formulaire web, WhatsApp, e-mail et SMS dans une seule liste.", all: "Tous", empty: "Aucune conversation.", pick: "Choisissez une conversation",
+    reply: "Votre réponse…", send: "Envoyer", window: "Hors fenêtre de 24 h : envoyez un modèle validé.", template: "Modèle", sendTemplate: "Envoyer le modèle",
+    actions: "Actions prospect", createLead: "Créer un prospect", openLead: "Ouvrir {id}", assign: "Attribuer à", tag: "Étiqueter", leadCreated: "Prospect {id} créé", sent: "Envoyé",
+  },
+  customers: {
+    title: "Clients", sub: "Clients et historique marketing. Totaux uniquement.", search: "Nom ou identifiant client", empty: "Aucun client.",
+    cols: { name: "Client", id: "Identifiant", lang: "Langue", sector: "Secteur", lifetime: "Revenu total", last: "Dernière activité", consent: "Consentement" },
+    tabs: { timeline: "Chronologie", details: "Détails", cases: "Demandes", communications: "Messages", notes: "Notes", tasks: "Tâches", attribution: "Attribution" },
+    lifetime: "Revenu total", related: "Lié", cases: "Demandes", messages: "Messages", ratings: "Avis", campaigns: "Campagnes", recommended: "Services recommandés",
+    district: "District", size: "Taille", plan: "Formule", owner: "Responsable", phone: "Téléphone", noCases: "Aucune demande.", noComms: "Aucun message.", notFound: "Client introuvable.",
+    convert: "Lier les prospects", phoneMasked: "Masqué pour le marketing",
+  },
+};
+
+const rw: Copy = {
+  leads: {
+    title: "Abashobora kuba abakiriya", sub: "Ibibazo byose ahantu hamwe. Buri wese ufunguye afite igikorwa gikurikira.",
+    kpi: { total: "Bose", new: "Bashya", contacted: "Bavuganywe", qualified: "Bujuje", quote_sent: "Igiciro cyoherejwe", wonMonth: "Babaye abakiriya uku kwezi" },
+    view: { board: "Ikibaho", table: "Imbonerahamwe", tasks: "Imirimo yanjye" }, add: "Ongeraho", import: "Injiza CSV", showLost: "Erekana abatakaye", hideLost: "Hisha abatakaye",
+    search: "Izina, ikigo cyangwa nomero LD", owner: "Ushinzwe", source: "Inkomoko", service: "Serivisi", unassigned: "Ntawe uhawe",
+    moveTo: "Imurira kuri…", moved: "{name} yimuriwe kuri {stage}", next: "Igikorwa gikurikira", overdue: "Byatinze", value: "Agaciro gateganyijwe", age: "Byakozwe",
+    empty: "Nta muntu urahari. Shyira ifishi ku ipaji y'ubukangurambaga cyangwa uhuze WhatsApp.", emptyCol: "Nta kintu",
+    wonBlocked: "Bihinduka 'Yabaye umukiriya' iyo fagitire ya mbere yishyuwe.", convertInstead: "Hindura umukiriya",
+    lostTitle: "Kuki uyu yatakaye?", lostConfirm: "Andika ko yatakaye",
+    reasons: { price: "Igiciro", timing: "Igihe", competitor: "Yahisemo abandi", no_response: "Ntiyasubije", not_eligible: "Ntiyujuje", other: "Ibindi" },
+    bulk: { selected: "{n} batoranyijwe", assign: "Shyiraho ushinzwe", enrol: "Shyira mu ikurikiranya", tag: "Ongeraho ikirango", export: "Sohora", enrolled: "{n} binjijwe", tagPrompt: "Ikirango" },
+    exportTitle: "Sohora urutonde", exportBody: "Nimero za telefoni zirahishwa. Isohora ryandikwa n'impamvu yawe.", exportReasons: { campaign: "Gutegura ubukangurambaga", report: "Raporo y'ubuyobozi", cleanup: "Gusukura amakuru" }, exported: "{n} basohowe",
+    tasks: { overdue: "Byatinze", today: "Uyu munsi", upcoming: "Ibizaza", empty: "Nta gikorwa gitegereje.", done: "Byarangiye", complete: "Byarangiye" },
+  },
+  drawer: {
+    tabs: { activity: "Ibikorwa", tasks: "Imirimo", notes: "Inyandiko", attribution: "Inkomoko" }, stage: "Icyiciro", created: "Byakozwe {d}",
+    consent: "Uruhushya", history: "Amateka y'uruhushya", interest: "Icyo ashaka", owner: "Ushinzwe", value: "Agaciro (RWF)", next: "Itariki y'igikorwa gikurikira",
+    convert: "Hindura umukiriya", quote: "Kora igiciro", quoteNo: "Ibiciro bitegurwa n'umuyobozi wa serivisi.", lost: "Yatakaye", save: "Bika",
+    log: "Andika ko wahamagaye", logged: "Byanditswe", note: "Andika inyandiko… koresha @", addNote: "Ongeraho", addTask: "Ongeraho umurimo", taskTitle: "Umurimo", due: "Itariki",
+    first: "Aho yatangiriye", last: "Aho aherukira (si direct)", direct: "Direct (nta bukangurambaga)", retention: "Bizasibwa ku wa {d} niba nta gikorwa gishya.",
+    openPage: "Fungura paji yose", backToLeads: "Abakiriya bose bashoboka", notFound: "Uyu mukiriya ushoboka ntabaho cyangwa yasibwe.",
+    dupTitle: "Ashobora kuba asanzwe ahari", dupBody: "{name} afite telefoni cyangwa imeyili imwe.", merge: "Huza", conflict: "Byahinduwe n'undi. Byongeye gufungurwa.", saved: "Byabitswe",
+  },
+  add: {
+    title: "Ongeraho ushobora kuba umukiriya", source: "Inkomoko", name: "Izina", org: "Ikigo", phone: "Telefoni", email: "Imeyili", service: "Serivisi ashaka", language: "Ururimi",
+    consent: "Uruhushya rwo kumwandikira", consentNote: "Abatatanze uruhushya babikwa ariko ntibandikirwa.", next: "Itariki y'igikorwa gikurikira", save: "Bika",
+    dupWarn: "Bisa n'uwo dusanganywe.", saveAnyway: "Bika uko biri", created: "{id} yongewemo",
+    sources: { event: "Igikorwa", manual: "Yaje ku biro", contact_form: "Yahamagaye", referral: "Yatumwe", csv: "Ibindi" },
+    invalidPhone: "Andika nimero y'u Rwanda cyangwa mpuzamahanga.", required: "Birakenewe",
+  },
+  importer: {
+    title: "Injiza CSV", step1: "Dosiye", step2: "Huza inkingi", step3: "Genzura", pick: "Hitamo dosiye ya CSV", ignore: "Reka",
+    fields: { name: "Izina", phone: "Telefoni", email: "Imeyili", org: "Ikigo", service: "Serivisi", consent_email: "Uruhushya rw'imeyili", consent_whatsapp: "Uruhushya rwa WhatsApp", consent_sms: "Uruhushya rwa SMS" },
+    consentNote: "Inkingi z'uruhushya zigomba kuvuga yego cyangwa oya. Idahari bivuze ko nta ruhushya.",
+    ok: "Byiteguye", dupFile: "Byisubiyemo muri dosiye", dupCrm: "Asanzwe ahari ({id})", invalid: "Sibyo", summary: "{ok} byiteguye · {bad} bizasimbukwa",
+    confirm: "Injiza {n}", done: "{created} byinjiye, {skipped} byasimbutswe", nothing: "Nta kintu kinjira utaremeza.",
+  },
+  merge: { title: "Huza", body: "Gumana imwe. Izindi zigaragazwa ko zahujwe.", keep: "Gumana", done: "Byahujwe" },
+  convert: { title: "Hindura umukiriya", matched: "Bihuye kuri {by}", by: { phone: "telefoni", email: "imeyili", both: "telefoni n'imeyili" }, link: "Huza n'umukiriya usanzwe", invite: "Ohereza ubutumire", inviteNote: "Yohereza ihuza ryo kwiyandikisha niba yemeye ubutumwa.", none: "Nta mukiriya uhuye.", done: "Byakozwe. Bihinduka 'Yabaye umukiriya' iyo fagitire ya mbere yishyuwe." },
+  inbox: {
+    title: "Ubutumwa", sub: "Ifishi, WhatsApp, imeyili na SMS ahantu hamwe.", all: "Byose", empty: "Nta biganiro.", pick: "Hitamo ikiganiro",
+    reply: "Andika igisubizo…", send: "Ohereza", window: "Amasaha 24 yarenze: ohereza inyandikorugero yemewe.", template: "Inyandikorugero", sendTemplate: "Ohereza",
+    actions: "Ibikorwa", createLead: "Mugire ushobora kuba umukiriya", openLead: "Fungura {id}", assign: "Ha", tag: "Ikirango", leadCreated: "{id} yongewemo", sent: "Byoherejwe",
+  },
+  customers: {
+    title: "Abakiriya", sub: "Abakiriya n'amateka yabo. Igiteranyo gusa.", search: "Izina cyangwa nomero y'umukiriya", empty: "Nta bakiriya.",
+    cols: { name: "Umukiriya", id: "Nomero", lang: "Ururimi", sector: "Urwego", lifetime: "Amafaranga yose", last: "Aheruka", consent: "Uruhushya" },
+    tabs: { timeline: "Amateka", details: "Ibisobanuro", cases: "Ubusabe", communications: "Ubutumwa", notes: "Inyandiko", tasks: "Imirimo", attribution: "Inkomoko" },
+    lifetime: "Amafaranga yose", related: "Bifitanye isano", cases: "Ubusabe", messages: "Ubutumwa", ratings: "Amanota", campaigns: "Ubukangurambaga", recommended: "Serivisi zisabwa",
+    district: "Akarere", size: "Ingano", plan: "Ifatabuguzi", owner: "Ushinzwe", phone: "Telefoni", noCases: "Nta busabe.", noComms: "Nta butumwa.", notFound: "Umukiriya ntabonetse.",
+    convert: "Huza", phoneMasked: "Byahishwe",
+  },
+};
+
+const ALL: Record<Locale, Copy> = { en, rw, fr };
+export const mktCrm = (l: Locale): Copy => ALL[l] ?? en;
