@@ -1,0 +1,56 @@
+{
+  "name": "hebuza-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "ci": "npm run typecheck && npm run lint && npm test && npm run check:layers && npm run check:design && npm run check:mirror && npm run build",
+    "check:layers": "node scripts/check-layers.mjs",
+    "check:design": "node scripts/check-design.mjs",
+    "check:mocks": "node scripts/check-mocks.mjs",
+    "api:types": "openapi-typescript ${API_URL:-http://localhost:4000}/api/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
+    "api:types:file": "openapi-typescript ../server/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
+    "check:mirror": "node scripts/check-mirror.mjs"
+  },
+  "dependencies": {
+    "jose": "^6.0.11",
+    "@gsap/react": "^2.1.2",
+    "@tanstack/react-query": "^5.107.1",
+    "gsap": "^3.13.0",
+    "next": "16.4.5",
+    "openapi-fetch": "^0.17.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.91.0",
+    "server-only": "^0.0.1",
+    "sharp": "0.35.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.5",
+    "msw": "^3.0.4",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^3.2.7",
+    "openapi-typescript": "^7.13.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
+  "packageManager": "pnpm@9.15.9"
+}
