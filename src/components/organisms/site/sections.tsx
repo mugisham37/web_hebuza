@@ -1,0 +1,139 @@
+import Link from "next/link";
+import { cacheLife } from "next/cache";
+import type { Locale } from "@/shared/i18n/config";
+import { localHref } from "@/shared/i18n/config";
+import { cx } from "@/shared/format";
+import { CONTACT, getCopy, waLink } from "@/content/marketing";
+import { FACES } from "@/content/families";
+import { A11Y } from "@/content/pages/accessibility";
+import type { FamilyVM } from "@/lib/catalogue";
+import { ButtonLink } from "@/components/atoms/button";
+import { Tag } from "@/components/atoms/tag";
+import { Icon, WhatsAppGlyph } from "@/components/atoms/icon";
+import { Faces } from "@/components/atoms/brand";
+import { Reveal, RiseOnScroll } from "@/components/atoms/motion";
+import { NewsletterForm } from "@/components/organisms/site/interactive";
+import { CookieSettingsButton } from "@/components/organisms/site/cookie-consent";
+
+
+export function CTACard({ locale, title, body, className }: { locale: Locale; title?: string; body?: string; className?: string }) {
+  const c = getCopy(locale).cta;
+  return (
+    <section className={cx("px-gutter pb-10 md:pb-12", className)}>
+      {/* Two columns: headline on the left; pitch and actions centred on the right (compact, no frame). */}
+      <Reveal preset="card-in" className="container-page relative grid gap-8 overflow-hidden bg-tint p-7 text-navy-700 md:grid-cols-[1fr_1.1fr] md:gap-12 md:p-8 lg:px-16 lg:py-8">
+        <h2 className="max-w-[15ch] self-center text-cta text-fg-heading">{title ?? c.title}</h2>
+        <div className="grid content-center gap-5 self-center md:border-l md:border-navy-200 md:py-2 md:pl-10">
+          <p className="max-w-md text-lead text-fg-muted">{body ?? c.body}</p>
+          <div className="grid w-full max-w-md grid-cols-1 gap-2.5 sm:w-fit sm:grid-cols-2">
+            <ButtonLink href={localHref(locale, "/services")} variant="primary" dots className="justify-center">{c.start}</ButtonLink>
+            <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="group/btn inline-flex h-11 items-center justify-center gap-2.5 border-[1.5px] border-secondary bg-white px-5 text-button text-secondary hover:bg-navy-50"><WhatsAppGlyph size={18} />{c.whatsapp}</a>
+            <a href={CONTACT.phoneHref} className="inline-flex h-11 items-center justify-center gap-2.5 sm:col-span-2 border-[1.5px] border-secondary bg-white px-5 text-button text-secondary hover:bg-navy-50"><Icon name="phone" size={16} />{c.call} {CONTACT.phone}</a>
+          </div>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+/** FAQ: heading column + accordion (native <details>, keyboard and SR friendly). Emits FAQPage JSON-LD. */
+export function FAQBlock({ locale, title, items, side, tag }: { locale: Locale; title: string; items: { q: string; a: string }[]; side?: string; tag?: string }) {
+  const f = getCopy(locale).faq;
+  const ld = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })) };
+  return (
+    <section className="px-gutter py-10 md:py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <Reveal className="container-page grid items-start gap-8 md:grid-cols-[1fr_1.4fr]">
+        <div className="grid content-start gap-3">
+          <span data-reveal><Tag className="eyebrow normal-case">{tag ?? f.tag}</Tag></span>
+          <h2 data-reveal className="text-h2 text-fg-heading">{title}</h2>
+          <p data-reveal className="text-lead text-fg-muted">{side ?? f.side}</p>
+          <span data-reveal><ButtonLink href={localHref(locale, "/faq")} dots>{f.cta}</ButtonLink></span>
+        </div>
+        <div className="divide-y divide-border border-y border-border">
+          {items.map((it) => (
+            <details key={it.q} data-reveal className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-label text-fg-heading [&::-webkit-details-marker]:hidden">
+                {it.q}
+                <span className="relative flex size-7 shrink-0 items-center justify-center bg-ink-100 text-navy-700 transition-colors group-open:bg-secondary group-open:text-on-secondary">
+                  <Icon name="plus" size={16} className="transition-transform duration-(--duration-base) group-open:rotate-45" />
+                </span>
+              </summary>
+              <p className="max-w-2xl pb-4 text-body text-fg-muted">{it.a}</p>
+            </details>
+          ))}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+/** Landing1 footer: marquee notch → wordmark/star + statement + email + faces → columns → newsletter → giant wordmark with floating pills. */
+export function SiteFooter({ locale, families }: { locale: Locale; families: Pick<FamilyVM, "slug" | "name">[] }) {
+  const f = getCopy(locale).footer;
+  const m = getCopy(locale);
+  const L = (p: string) => localHref(locale, p);
+  const helpHrefs = ["/track", "/faq", "/contact", "/book", "/status"];
+  return (
+    <footer className="theme-dark overflow-hidden bg-grad-night-fade text-fg">
+      <div className="container-page px-gutter">
+        <div className="grid gap-10 pt-16 pb-12 sm:grid-cols-2 md:pt-20 lg:grid-cols-4">
+          <div>
+            <p className="text-label">{f.company}</p>
+            <p className="mt-3 max-w-xs text-small text-fg-muted">{f.about}</p>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <a href={`mailto:${CONTACT.email}`} className="text-label-lg text-fg-heading underline decoration-primary/60 underline-offset-[6px] transition-colors hover:decoration-primary">{CONTACT.email}</a>
+              <Faces srcs={FACES.slice(0, 3)} size={36} />
+            </div>
+          </div>
+          <FooterCol title={f.services} links={[...families.map((x) => [x.name, L(`/services/c/${x.slug}`)] as [string, string]), [`${m.services.all} →`, L("/services")]]} />
+          <FooterCol title={f.help} links={f.helpLinks.map((t, i) => [t, L(helpHrefs[i])] as [string, string])} />
+          <div>
+            <p className="text-label">{f.connect}</p>
+            <ul className="mt-3 grid gap-2 text-small text-fg-muted">
+              <li><a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="hover:text-primary">WhatsApp {CONTACT.phone}</a></li>
+              <li><a href={CONTACT.phoneHref} className="hover:text-primary">{CONTACT.phone}</a></li>
+              <li className="flex gap-3 pt-1">{["Facebook", "LinkedIn", "Instagram", "X"].map((s) => <span key={s} className="border border-border-strong px-2.5 py-1 text-eyebrow">{s}</span>)}</li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border py-8"><NewsletterForm label={f.newsletter} placeholder={f.newsletterPlaceholder} done={f.subscribed} error={f.newsletterError} /></div>
+      </div>
+      <RiseOnScroll className="relative mx-auto mt-4 max-w-[96rem] overflow-hidden px-gutter">
+        <p aria-hidden className="-mb-[0.16em] text-center font-display text-[clamp(5rem,22vw,22rem)] leading-[0.9] tracking-[-0.06em] text-white uppercase select-none">Hebuza</p>
+        {f.pills.map((p, i) => (
+          <span key={p} aria-hidden className={cx("absolute inline-flex h-10 animate-float items-center gap-2 px-5 text-label shadow-lg md:h-12",
+            i === 0 ? "top-[38%] left-[16%] bg-primary text-on-gold" : i === 1 ? "top-[46%] left-[44%] bg-white text-ink-900 [animation-delay:-1.5s]" : "top-[36%] right-[10%] bg-sky-200 text-navy-900 [animation-delay:-3s]")}
+            style={{ rotate: `${i === 1 ? 4 : -4}deg` }}>{p}<span className="opacity-50">•••</span></span>
+        ))}
+      </RiseOnScroll>
+      <div className="relative z-10 border-t border-border bg-ink-950 px-gutter py-6 text-center text-small text-fg-muted">
+        © <CopyrightYear /> HEBUZA BUSINESS GROUP LTD ·{" "}
+        <Link href={L("/legal/terms")} className="hover:text-fg-heading">Terms</Link> · <Link href={L("/legal/privacy")} className="hover:text-fg-heading">Privacy</Link> · <Link href={L("/legal/cookies")} className="hover:text-fg-heading">Cookies</Link> · <Link href={L("/accessibility")} className="hover:text-fg-heading">{A11Y[locale].eyebrow}</Link> · <CookieSettingsButton>{m.consent.settings}</CookieSettingsButton>
+      </div>
+    </footer>
+  );
+}
+
+/** Year is cached (Cache Components forbid raw new Date() in prerender); refreshes daily. */
+export async function CopyrightYear() {
+  "use cache";
+  cacheLife("days");
+  return <>{new Date().getFullYear()}</>;
+}
+
+function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
+  return (
+    <div>
+      <p className="text-label">{title}</p>
+      <ul className="mt-3 grid gap-2">{links.map(([l, h]) => <li key={h + l}><Link href={h} className="text-small text-fg-muted transition-colors hover:text-primary">{l}</Link></li>)}</ul>
+    </div>
+  );
+}
+
+/** Page-level BreadcrumbList JSON-LD only (no visible trail on the public site). */
+export function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
+  const ld = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.label, ...(it.href ? { item: it.href } : {}) })) };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />;
+}
+
