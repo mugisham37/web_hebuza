@@ -1,0 +1,143 @@
+// Stage 10 lane CONTENT copy (U3–U8, U19). rw/fr are first drafts for native review, PLACEHOLDER(rw-translation).
+import type { Locale } from "@/shared/i18n/config";
+
+const en = {
+  titles: { content: "Pages & blocks", landing: "Landing pages", knowledge: "Knowledge centre", updates: "Regulatory updates", faqs: "FAQs", media: "Media library", seo: "SEO & tracking", editor: "Editor" },
+  subs: {
+    content: "Pages, homepage blocks and team profiles. Facts like prices come from the catalogue.",
+    landing: "Campaign pages for ads and partners. Kept out of search by default.",
+    knowledge: "Guides and articles in three languages.",
+    updates: "Changes from RRA, RDB and other institutions. Every update needs a source and a review date.",
+    faqs: "Questions shown on the site and used by the assistant once approved.",
+    media: "Images and PDFs. We remove location data and resize images for you.",
+    seo: "Search, analytics, conversions, redirects and site settings.",
+  },
+  types: { page: "Page", landing_page: "Landing page", article: "Article", guide: "Guide", regulatory_update: "Regulatory update", faq: "FAQ", team_member: "Team member", testimonial: "Testimonial", partner_logo: "Partner logo", legal_doc: "Legal page" } as Record<string, string>,
+  views: { all: "All", published: "Published", draft: "Draft", in_review: "In review", scheduled: "Scheduled", stale: "Stale", archived: "Archived" } as Record<string, string>,
+  cols: { title: "Title", locales: "Languages", status: "Status", edited: "Last edited", scheduled: "Scheduled for", actions: "Actions", campaign: "Campaign", visits: "Visits", conversion: "Conversion", category: "Category", views: "Views", ai: "Used by AI", authority: "Institution", reviewBy: "Review by", services: "Services" },
+  list: { search: "Search by title", new: "New {type}", preview: "Preview", duplicate: "Duplicate", archive: "Archive", edit: "Edit", typeFilter: "Type", by: "by {who}" },
+  empty: { title: "No {type} yet.", body: "Start from a template.", start: "Create {type}" },
+  create: { title: "New {type}", name: "Title", locale: "First language", go: "Create and edit", slugNote: "The web address is made from the title. You can change it later." },
+  target: { label: "{n} of {target} guides published", hint: "Target set by the build plan." },
+  insights: { helpful: "Was this helpful?", yes: "Yes", no: "No", zero: "Searches with no results", zeroEmpty: "No zero-result searches this month.", times: "{n}×" },
+  editor: {
+    back: "Back to list", saved: "Saved {t}", saving: "Saving…", offline: "Offline · saved on this device", unsaved: "Unsaved changes", failed: "Couldn't save",
+    structure: "Structure", canvas: "Canvas", settings: "Settings", desktop: "Desktop", phone: "Phone", live: "Live preview", liveIsland: "shown on the live page", duplicate: "Duplicate block", compare: "Compare languages",
+    addBlock: "Add block", slashHint: "Type / in an empty text block to add a block", moveUp: "Move up", moveDown: "Move down", hide: "Hide", show: "Show", remove: "Remove block", removed: "Block removed", hidden: "Hidden",
+    missingVariant: "Not translated yet", copyFrom: "Copy from English", copyNote: "Marked “needs review” until someone edits it.", startBlank: "Start blank", needsReview: "Machine draft: needs review", markReviewed: "Mark as reviewed",
+    reviewOnly: "Editing works on a larger screen. Here you can preview, comment, approve and publish.",
+    presence: "{who} is editing", readOnlyBanner: "{who} is editing this page. Your changes may conflict.", editAnyway: "Edit anyway",
+    heroLocked: "The hero holds the page heading and can't be removed or hidden.",
+    factWarning: "Prices belong in the catalogue. Typed amounts here won't update when prices change.",
+    titleField: "Title", slug: "Web address", excerpt: "Summary", readOnlyRole: "You can comment and approve. Editing stays with marketing.",
+    viewSite: "View on website", previewLink: "Copy preview link", previewCopied: "Preview link copied. It works for 24 hours.",
+    more: "More",
+  },
+  blocks: {
+    heading: "Heading", rich_text: "Text", image: "Image", gallery: "Gallery", video: "Video (YouTube)", callout: "Callout", cta: "Button", service_cards: "Service cards",
+    faq_list: "FAQ list", steps: "Steps", table: "Table", quote: "Quote", form: "Form", stats: "Stats", contact: "Contact details", divider: "Divider",
+    testimonial: "Testimonials", requirements: "Requirements", tip: "Tip",
+    "home.hero": "Home · Hero", "home.tracker": "Home · Tracker", "home.institutions": "Home · Institutions", "home.services": "Home · Services",
+    "home.how": "Home · How it works", "home.pricing": "Home · Pricing", "home.guides": "Home · Guides", "home.cta": "Home · Call to action",
+  } as Record<string, string>,
+  fields: {
+    text: "Text", lines: "One item per line", linesBody: "One step per line. Use “Title | detail”.", label: "Label", href: "Link", variant: "Style", primary: "Primary", secondary: "Secondary",
+    level: "Level", tone: "Tone", info: "Info", warn: "Warning", cite: "Source", caption: "Caption", videoId: "YouTube video ID", videoTitle: "Video title",
+    asset: "Image", pick: "Choose image", services: "Service slugs, comma separated", form: "Form", lead: "Lead form", booking: "Booking", table: "Table (columns separated by |, first row is the header)",
+    stats: "One per line: value | label", headline: "Headline", sub: "Sub-heading", cta: "Button label", faqIds: "FAQ ids, comma separated", none: "No settings for this block.",
+  },
+  panel: { settings: "Settings", seo: "SEO", ai: "AI", history: "History", comments: "Comments" },
+  seo: {
+    title: "Meta title", description: "Meta description", canonical: "Canonical URL", ogTitle: "Social title", ogDescription: "Social description", robots: "Search engines",
+    index: "Show in search", noindex: "Hide from search", keyword: "Focus keyword", snippet: "Search preview", checklist: "Checklist",
+    checks: { title: "Meta title set and ≤ 60 characters", description: "Description set and ≤ 160 characters", keyword: "Focus keyword appears in the title", thin: "At least 300 words (articles and guides)", alt: "Every image has alt text in this language", slug: "Web address set" } as Record<string, string>,
+  },
+  ai: { approved: "Use in the AI assistant", approvedHint: "Only published, current, approved content is used.", factsOnly: "Service facts need a Service Manager to approve AI use.", reviewBy: "Review by", reviewHint: "At most 12 months ahead. After this date the page shows “under review” and leaves the AI.", kb: "Assistant status", serviceFacts: "Contains service facts (fees, requirements)" },
+  history: { empty: "No versions yet.", restore: "Restore v{v}", restoreConfirm: "Restore version {v} as a new draft? The live version stays until you publish.", restored: "Restored as a new draft", diff: "Changes", current: "Current draft", by: "{who} · {t}", added: "Added", removed: "Removed", changed: "Changed" },
+  comments: { empty: "No comments yet.", placeholder: "Add a comment…", post: "Comment", resolve: "Resolve", reopen: "Reopen", resolved: "Resolved", onBlock: "On block: {b}", whole: "Whole page" },
+  workflow: {
+    submit: "Submit for review", reviewer: "Reviewer", submitTitle: "Submit for review", submitted: "Sent for review", approve: "Approve", requestChanges: "Request changes",
+    changesReason: "What needs to change?", approved: "Approved", changesSent: "Changes requested", publish: "Publish", publishNow: "Publish now", schedule: "Schedule…",
+    unschedule: "Unschedule", unpublish: "Unpublish", archive: "Archive", restore: "Restore",
+    needsSm: "Only a Service Manager can approve regulatory updates and service facts.", needsExec: "Legal pages are approved by an executive.", selfApprove: "Someone else must approve what you wrote.",
+    underReview: "Under review by {who}", published: "Published · live in a few seconds", scheduled: "Scheduled for {t}", offlineOff: "Reconnect to publish, submit or approve.",
+  },
+  publish: {
+    title: "Publish", languages: "Languages", blockers: "Fix before publishing", warnings: "Worth checking", none: "Everything is ready.", fallback: "Publish with fallback to English",
+    fallbackHint: "Visitors in missing languages see the English page with a notice.", missing: "Missing: {langs}", go: "Publish", blocked: "Publishing is blocked until the errors are fixed.",
+    codes: {
+      title: "Title missing", slug: "Web address missing", seo_title: "Meta title missing", seo_title_long: "Meta title over 60 characters", seo_desc_long: "Description over 160 characters",
+      alt: "Image without alt text", authority: "Institution missing", source_url: "Source link missing (https)", review_by: "Review date missing", review_by_far: "Review date more than 12 months ahead",
+      needs_review: "Machine draft not reviewed", missing_variant: "Language not created", money: "Typed price in text", thin: "Under 300 words", slug_taken: "Web address already used",
+    } as Record<string, string>,
+  },
+  schedule: { title: "Schedule publishing", at: "Date and time (Kigali)", min: "Pick a time at least 5 minutes from now.", go: "Schedule" },
+  archive: { title: "Archive this page", body: "Its address keeps working: visitors are sent to the page you choose.", target: "Send visitors to", go: "Archive", inNav: "This page is in a menu. Remove it from the menu first." },
+  conflict: { title: "Someone else changed this", body: "Your version and theirs differ. Keep yours as a new draft or take theirs.", mine: "Keep mine as new draft", theirs: "Take theirs", yours: "Yours", their: "Theirs" },
+  landing: {
+    campaign: "Campaign", campaignTag: "Campaign tag", noindex: "Hide from search (recommended for ads)", form: "Lead form", email: "Ask for email (optional field)", service: "Pre-selected service",
+    consents: "Consent checkboxes (always unticked)", thankYou: "Thank-you message", utm: "UTM link builder", source: "Source", medium: "Medium", name: "Campaign", url: "Link", copy: "Copy link",
+    utmHint: "Lowercase, words joined by hyphens.", perf: "Performance", visits: "Visits", starts: "Form starts", submissions: "Submissions", conversion: "Conversion", bySource: "By source",
+    leads: "Leads from this page", events: "Conversion events", wired: "Wired", notWired: "Not seen yet", build: "Build", noLeads: "No leads from this page yet.", path: "Address",
+  },
+  reg: { authority: "Institution", effective: "Effective date", source: "Source link", affects: "Affects", deadline: "Deadline", urgency: "Display tag (optional)", high: "High", medium: "Medium", low: "Low", services: "Affected services", notify: "Notify subscribers", notifyHint: "Opens a campaign draft. Consent and approval rules still apply; nothing is sent automatically.", stale: "Past its review date: shown as “under review” and removed from the AI.", companies: "Companies", individuals: "Individuals" },
+  faq: { question: "Question", answer: "Answer", category: "Category", services: "Linked services", full: "Open full editor", tabs: { all: "All FAQs", unanswered: "Unanswered questions from the assistant" }, unansweredEmpty: "When the assistant goes live, questions it couldn't answer appear here.", new: "New FAQ" },
+  media: {
+    upload: "Upload", drop: "Drop images or PDFs", limits: "JPG, PNG, WebP up to 5 MB · PDF up to 20 MB", processing: "Processing…", stripped: "Location data removed", resized: "Resized", altReq: "Alt text required",
+    missingAlt: "Missing alt", filters: { all: "All", image: "Images", pdf: "PDFs", unused: "Not used", missingAlt: "Missing alt ({l})" } as Record<string, string>, empty: "Upload your first image. We remove location data and resize it for you.",
+    alt: "Alt text", credit: "Credit", licence: "Licence", focal: "Focal point", focalHint: "Click the image where the subject is.", usage: "Used in", unused: "Not used anywhere.", replace: "Replace file",
+    delete: "Delete", inUse: "Used in {n} pages", deleted: "Deleted", tooBig: "{name}: too big", badType: "{name}: file type not accepted", partial: "{ok} of {n} uploaded", retry: "Retry", details: "Details", history: "History", uploadedBy: "Uploaded by {who} · {t}", bytes: "{kb} KB", replaced: "File replaced; links stay the same",
+  },
+  seoPage: {
+    tabs: { seo: "SEO", analytics: "Analytics", conversions: "Conversions", redirects: "Redirects", health: "Site health", nav: "Navigation", settings: "Site settings" } as Record<string, string>,
+    sitemap: "Sitemap", lastGenerated: "Last generated {t}", urls: "{n} addresses", gsc: "Search Console verification token", ga4: "GA4 measurement ID", ga4Bad: "Use the format G-XXXXXXX.",
+    pixel: "Meta Pixel ID", pixelConsent: "Load only after cookie consent", pixelLocked: "Required by our privacy rules; it can't be turned off.", ads: "Google Ads conversion IDs", adsBad: "Use the format AW-XXXXXXXXX.", addAds: "Add ID",
+    events: "Events, last 7 days", saved: "Tracking settings saved", notConnected: "Not connected",
+    redirects: { from: "From", to: "To", code: "Type", hits: "Hits", by: "Created by", add: "Add redirect", loop: "That redirect would loop back on itself.", notFound: "Pages not found", create: "Create redirect", empty: "No redirects yet.", nfEmpty: "No missing pages logged." },
+    health: { broken: "Broken links", fix: "Fix", none: "No broken links found.", speed: "Page speed", run: "Run check", lcp: "LCP", cls: "CLS", inp: "INP", page: "Page", found: "Found on" },
+    nav: { location: "Menu", header: "Header", mobile: "Phone menu", footer: "Footer", label: "Label ({l})", href: "Link", add: "Add item", saved: "Menu saved" },
+    settings: { address: "Address", phone: "Phone", email: "Email", whatsapp: "WhatsApp number", hours: "Office hours ({l})", social: "Social links", network: "Network", url: "URL", announcement: "Announcement bar ({l})", from: "Show from", to: "Until", dismissible: "Visitors can close it", saved: "Site settings saved" },
+  },
+};
+type Copy = typeof en;
+
+const fr: Copy = {
+  ...en,
+  titles: { content: "Pages et blocs", landing: "Pages d'atterrissage", knowledge: "Centre de connaissances", updates: "Actualités réglementaires", faqs: "FAQ", media: "Médiathèque", seo: "SEO et suivi", editor: "Éditeur" },
+  subs: {
+    content: "Pages, blocs d'accueil et profils d'équipe. Les prix viennent du catalogue.",
+    landing: "Pages de campagne pour les annonces. Exclues des moteurs par défaut.",
+    knowledge: "Guides et articles en trois langues.",
+    updates: "Changements de la RRA, du RDB et d'autres institutions. Chaque mise à jour exige une source et une date de révision.",
+    faqs: "Questions affichées sur le site et utilisées par l'assistant une fois validées.",
+    media: "Images et PDF. Nous retirons la localisation et redimensionnons les images.",
+    seo: "Référencement, mesure, conversions, redirections et réglages du site.",
+  },
+  views: { all: "Tous", published: "Publiés", draft: "Brouillons", in_review: "En relecture", scheduled: "Programmés", stale: "À revoir", archived: "Archivés" },
+  cols: { title: "Titre", locales: "Langues", status: "Statut", edited: "Dernière modification", scheduled: "Programmé pour", actions: "Actions", campaign: "Campagne", visits: "Visites", conversion: "Conversion", category: "Catégorie", views: "Vues", ai: "Utilisé par l'IA", authority: "Institution", reviewBy: "À revoir le", services: "Services" },
+  list: { search: "Rechercher par titre", new: "Nouveau : {type}", preview: "Aperçu", duplicate: "Dupliquer", archive: "Archiver", edit: "Modifier", typeFilter: "Type", by: "par {who}" },
+  empty: { title: "Aucun contenu ({type}).", body: "Commencez à partir d'un modèle.", start: "Créer : {type}" },
+  create: { title: "Nouveau : {type}", name: "Titre", locale: "Première langue", go: "Créer et modifier", slugNote: "L'adresse web est tirée du titre. Modifiable ensuite." },
+  workflow: { ...en.workflow, submit: "Envoyer en relecture", approve: "Valider", requestChanges: "Demander des modifications", publish: "Publier", publishNow: "Publier maintenant", schedule: "Programmer…", archive: "Archiver", needsSm: "Seul un responsable de service peut valider les actualités réglementaires et les faits de service.", selfApprove: "Une autre personne doit valider ce que vous avez écrit.", published: "Publié · en ligne dans quelques secondes", offlineOff: "Reconnectez-vous pour publier, envoyer ou valider." },
+  editor: { ...en.editor, back: "Retour à la liste", saved: "Enregistré {t}", saving: "Enregistrement…", offline: "Hors ligne · enregistré sur cet appareil", addBlock: "Ajouter un bloc", live: "Aperçu réel", liveIsland: "affiché sur la page publiée", duplicate: "Dupliquer le bloc", missingVariant: "Pas encore traduit", copyFrom: "Copier depuis l'anglais", startBlank: "Partir de zéro", viewSite: "Voir sur le site", previewLink: "Copier le lien d'aperçu", reviewOnly: "L'édition se fait sur un plus grand écran. Ici : aperçu, commentaires, validation et publication." },
+};
+const rw: Copy = {
+  ...en,
+  titles: { content: "Amapaji n'ibice", landing: "Amapaji y'ubukangurambaga", knowledge: "Ikigo cy'ubumenyi", updates: "Amavugurura y'amategeko", faqs: "Ibibazo bikunze kubazwa", media: "Amafoto n'inyandiko", seo: "SEO n'ikurikirana", editor: "Muhinduzi" },
+  subs: {
+    content: "Amapaji, ibice by'ahabanza n'abakozi. Ibiciro biva mu rutonde rwa serivisi.",
+    landing: "Amapaji yo kwamamaza. Ntagaragara mu ishakiro keretse ubihisemo.",
+    knowledge: "Ubuyobozi n'inyandiko mu ndimi eshatu.",
+    updates: "Impinduka za RRA, RDB n'izindi nzego. Buri vugurura rikenera inkomoko n'itariki yo gusuzuma.",
+    faqs: "Ibibazo bigaragara ku rubuga, bikoreshwa n'umufasha nyuma yo kwemezwa.",
+    media: "Amafoto na PDF. Dukuraho aho ifoto yafatiwe kandi tukayigabanya.",
+    seo: "Ishakiro, isesengura, imibare, kohereza ahandi n'igenamiterere ry'urubuga.",
+  },
+  views: { all: "Byose", published: "Byatangajwe", draft: "Imishinga", in_review: "Birasuzumwa", scheduled: "Biteganyijwe", stale: "Bikeneye kuvugururwa", archived: "Byabitswe" },
+  workflow: { ...en.workflow, submit: "Ohereza gusuzumwa", approve: "Emeza", requestChanges: "Saba impinduka", publish: "Tangaza", publishNow: "Tangaza ubu", schedule: "Teganya…", archive: "Bika", needsSm: "Umuyobozi wa serivisi wenyine ni we wemeza amavugurura y'amategeko n'amakuru ya serivisi.", selfApprove: "Undi muntu agomba kwemeza ibyo wanditse.", published: "Byatangajwe · biragaragara mu kanya", offlineOff: "Ongera ujye ku murandasi kugira ngo utangaze cyangwa wemeze." },
+  editor: { ...en.editor, back: "Subira ku rutonde", saved: "Byabitswe {t}", saving: "Birabikwa…", offline: "Nta murandasi · byabitswe kuri iki gikoresho", addBlock: "Ongeraho igice", live: "Uko bizagaragara", liveIsland: "bigaragara ku rupapuro rwatangajwe", duplicate: "Subiramo igice", missingVariant: "Ntibirahindurwa", copyFrom: "Kopa mu Cyongereza", startBlank: "Tangira ubusa", viewSite: "Reba ku rubuga", previewLink: "Kopa ihuza ryo kureba", reviewOnly: "Guhindura bikorerwa kuri ecran nini. Hano: kureba, gutanga igitekerezo, kwemeza no gutangaza." },
+};
+
+const ALL: Record<Locale, Copy> = { en, fr, rw };
+export const mktContent = (l: Locale): Copy => ALL[l] ?? en;
+export type MktContentCopy = Copy;
