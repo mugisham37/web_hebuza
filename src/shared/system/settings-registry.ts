@@ -48,6 +48,7 @@ export const validWindow = (v: unknown) => {
   return Date.parse(w.end) > Date.parse(w.start) ? null : "end_before_start";
 };
 const none = () => null;
+const validText = (max: number) => (v: unknown) => (typeof v === "string" && v.length <= max ? null : "too_long");
 export const enabledLocales = (v: unknown): string[] => {
   const list = (Array.isArray(v) ? v : String(v ?? "").split(",")).map((x) => String(x).trim()).filter((x) => (LOCALE_OPTIONS as readonly string[]).includes(x));
   return list.length ? [...new Set(["rw", ...list])] : [...LOCALE_OPTIONS];
@@ -71,7 +72,13 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "i18n.default_locale", group: "general", type: "enum", options: LOCALE_OPTIONS, default: "rw", enforcedBy: "proxy.ts locale negotiation", editableBy: SYS, requiresApproval: false, validate: oneOf(LOCALE_OPTIONS) },
   { key: "general.time_zone", group: "general", type: "readonly", default: "Africa/Kigali", enforcedBy: "src/lib/format.ts TIME_ZONE", editableBy: [], requiresApproval: false, validate: none },
   { key: "general.numbering", group: "general", type: "readonly", default: "HBZ-XXXXXX · INV-YYYY-NNNNN", enforcedBy: "API numbering service", editableBy: [], requiresApproval: false, ownedBy: "staff:finance", validate: none },
-  { key: "general.company_identity", group: "general", type: "readonly", default: "HEBUZA Ltd · Sonatube, Kicukiro", enforcedBy: "Invoice & legal renderers", editableBy: [], requiresApproval: false, ownedBy: "staff:finance", validate: none },
+  // F-SET-07: seller identity printed on invoices, quotes, credit notes and receipts. Finance-owned, approval required.
+  { key: "company.legal_name", group: "general", type: "text", default: "HEBUZA Ltd", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: true, ownedBy: "staff:finance", validate: validText(120) },
+  { key: "company.tin", group: "general", type: "text", default: "", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: true, ownedBy: "staff:finance", validate: (v) => (/^\d{0,9}$/.test(String(v ?? "")) ? null : "tin") },
+  { key: "company.vat_no", group: "general", type: "text", default: "", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: true, ownedBy: "staff:finance", validate: validText(40) },
+  { key: "company.ebm_device", group: "general", type: "text", default: "", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: true, ownedBy: "staff:finance", validate: validText(40) },
+  { key: "company.address", group: "general", type: "text", default: "Sonatube, Kicukiro, Kigali", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: true, ownedBy: "staff:finance", validate: validText(200) },
+  { key: "company.invoice_footer", group: "general", type: "text", default: "", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: false, ownedBy: "staff:finance", validate: validText(300) },
   // X-3: refunds above this need an executive. A setting owned by Finance (set.tax); shown read-only here.
   { key: "finance.refund_exec_limit", group: "general", type: "readonly", default: POLICY.refundExecLimit, enforcedBy: "Refund approval chain (rfd.approve.exec)", editableBy: [], requiresApproval: true, ownedBy: "staff:finance", validate: none },
   { key: "general.branches", group: "general", type: "readonly", default: "Sonatube / Kicukiro", enforcedBy: "— (single branch, D-10 PLACEHOLDER)", editableBy: [], requiresApproval: false, validate: none },
@@ -97,6 +104,8 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "notifications.quiet_end_hour", group: "general", type: "int", unit: "h", default: 7, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
   // PRV-breach: regulator-notification window for personal-data incidents (counsel to confirm 48 h vs 72 h).
   { key: "privacy.breach_notify_hours", group: "security", type: "int", unit: "h", default: 48, enforcedBy: "Incident breach timer (system_breach_timer)", editableBy: SYS_EXE, requiresApproval: true, validate: (v) => (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= 168 ? null : "range") },
+  // F-SET-08 payment methods matrix: each method can be switched off (gateway outage, policy). Card also needs flags.card_payments.
+  ...(["mtn-momo", "airtel-money", "card", "bank-transfer"] as const).map((m): SettingDef => ({ key: `payments.method.${m}`, group: "general", type: "bool", default: true, enforcedBy: "Payments initiate / bank-transfer guard", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: false, ownedBy: "staff:finance", validate: bool })),
   // Maintenance (F-SET-11)
   { key: "maintenance.on", group: "maintenance", type: "bool", default: false, enforcedBy: "API write guard (clients read-only) + site banner", editableBy: SYS_EXE, requiresApproval: false, validate: bool },
   { key: "maintenance.message", group: "maintenance", type: "i18n", default: { rw: "", en: "", fr: "" }, enforcedBy: "Public + client layout banner", editableBy: SYS_EXE, requiresApproval: false, validate: validI18n() },
