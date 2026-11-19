@@ -1,5 +1,6 @@
 import { expect, type Page, type TestInfo } from "@playwright/test";
 import { createHmac } from "node:crypto";
+import AxeBuilder from "@axe-core/playwright";
 export const SHOTS = process.env.E2E_SHOTS ?? "/tmp/e2e-shots";
 export type Issues = string[];
 export function watch(page: Page, allow: RegExp[] = []): Issues {
@@ -16,6 +17,15 @@ export async function visit(page: Page, path: string, name: string) {
   if (await page.getByRole("heading", { name: "Oops" }).isVisible()) throw new Error(`error boundary on ${path}\n${(page as unknown as { __issues?: Issues }).__issues?.join("\n") ?? ""}`);
   await expect(page.locator("main, [role=main]").first()).toBeVisible();
   await page.screenshot({ path: `${SHOTS}/${name}.png`, fullPage: false });
+  await a11y(page, name);
+}
+/** WCAG 2.1 A/AA scan (axe). Serious/critical violations become issues, so noIssues() fails the journey. E2E_AXE=0 skips. */
+export async function a11y(page: Page, name: string) {
+  if (process.env.E2E_AXE === "0") return;
+  const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  const issues = (page as unknown as { __issues?: Issues }).__issues;
+  for (const v of r.violations.filter((x) => x.impact === "serious" || x.impact === "critical"))
+    issues?.push(`a11y ${v.impact} ${v.id} on ${name}: ${v.help} (${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(", ")})`);
 }
 const STAFF: Record<string, string> = {
   sm: "diane.mukamana@hebuza.example", agent: "eric.habimana@hebuza.example", ext: "jean-paul.nkurunziza@ingabo.example",
