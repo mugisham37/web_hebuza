@@ -40,10 +40,13 @@ export type ThreadRow = {
   dispute: boolean;
   readOnly: boolean;
 };
+/** doc_request/status = legacy free-text; the rest are typed chat cards (F-MSG-05, server domain/chat/rules). */
 export type Card = {
-  type: "doc_request" | "appointment" | "status";
+  type: "doc_request" | "appointment" | "status" | "document_request" | "payment_request" | "quotation" | "deliverable_ready" | "visit_checkin";
   title: string;
   detail: string;
+  data?: Record<string, unknown>;
+  response?: { action: "accept" | "decline"; at: string };
 };
 export type Msg = {
   id: string;

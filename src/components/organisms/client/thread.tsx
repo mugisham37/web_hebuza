@@ -13,6 +13,8 @@ import { Icon } from "@/components/atoms/icon";
 import { Avatar } from "@/components/atoms/misc";
 import { ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { c2Copy, fill } from "@/content/pages/c2";
+import { chatCardCopy } from "@/content/pages/chat-cards";
+import { localHref } from "@/shared/i18n/config";
 
 type Msg = C.MessageResponse;
 type Conv = C.ConversationResponse;
@@ -265,10 +267,14 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
                         {m.sender_name}
                       </p>
                     )}
-                    {m.content && (
-                      <p className="whitespace-pre-wrap break-words">
-                        {m.content}
-                      </p>
+                    {m.kind === "card" ? (
+                      <ChatCard m={m} onAnswered={() => void msgs.refetch()} />
+                    ) : (
+                      m.content && (
+                        <p className="whitespace-pre-wrap break-words">
+                          {m.content}
+                        </p>
+                      )
                     )}
                     {m.attachments.filter(isAtt).map((a) => (
                       <a
@@ -462,5 +468,54 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
         </p>
       </form>
     </section>
+  );
+}
+
+type CardPayload = { card?: { type?: string; title?: string; detail?: string; data?: Record<string, unknown>; response?: { action: string } } };
+
+/** F-MSG-05 typed card: label, details, amount, and the client's one action (quotation accept/decline). */
+function ChatCard({ m, onAnswered }: { m: Msg; onAnswered: () => void }) {
+  const { locale } = useI18n();
+  const k = chatCardCopy(locale);
+  const card = (m.payload as CardPayload | null)?.card;
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState(false);
+  if (!card) return <p className="whitespace-pre-wrap break-words">{m.content}</p>;
+  const amount = card.data?.amount_rwf;
+  const answer = async (action: "accept" | "decline") => {
+    setBusy(true);
+    setErr(false);
+    try {
+      await unwrap(api.POST("/api/chat/messages/{id}/card-action", { params: { path: { id: m.message_id } }, body: { action } }));
+      onAnswered();
+    } catch {
+      setErr(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="grid gap-1 border border-border bg-white p-3 text-ink-900">
+      <p className="text-eyebrow text-fg-subtle">{k.kinds[card.type ?? ""] ?? card.type}</p>
+      <p className="font-medium break-words">{card.title ?? m.content}</p>
+      {card.detail && <p className="text-small break-words text-fg-muted">{card.detail}</p>}
+      {typeof amount === "number" && <p className="text-small tabular">{amount.toLocaleString(locale)} RWF</p>}
+      {card.type === "quotation" &&
+        (card.response ? (
+          <p className="text-small font-medium">{card.response.action === "accept" ? k.accepted : k.declined}</p>
+        ) : (
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Button size="sm" disabled={busy} onClick={() => void answer("accept")}>{k.accept}</Button>
+            <Button size="sm" variant="outline" disabled={busy} onClick={() => void answer("decline")}>{k.decline}</Button>
+          </div>
+        ))}
+      {card.type === "payment_request" && (
+        <a href={localHref(locale, "/billing")} className="mt-1 text-small underline underline-offset-4">{k.pay}</a>
+      )}
+      {card.type === "deliverable_ready" && (
+        <a href={localHref(locale, "/documents")} className="mt-1 text-small underline underline-offset-4">{k.open}</a>
+      )}
+      {err && <p role="alert" className="text-small text-danger">{k.failed}</p>}
+    </div>
   );
 }

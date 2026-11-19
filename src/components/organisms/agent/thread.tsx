@@ -35,7 +35,7 @@ import { useOnline } from "@/components/atoms/hooks";
 import { EmptyPanel, PanelError } from "@/components/molecules/ops/ops";
 import { Button } from "@/components/atoms/button";
 import { Dialog } from "@/components/atoms/dialog";
-import { Textarea } from "@/components/atoms/field";
+import { Input, Textarea } from "@/components/atoms/field";
 import { Icon } from "@/components/atoms/icon";
 import { Avatar } from "@/components/atoms/misc";
 import { useWs } from "@/lib/agent/ws";
@@ -250,11 +250,13 @@ function Body({
       <div className="flex items-start gap-3 border border-border bg-white p-3">
         <Icon
           name={
-            m.card.type === "appointment"
+            m.card.type === "appointment" || m.card.type === "visit_checkin"
               ? "calendar"
-              : m.card.type === "status"
+              : m.card.type === "status" || m.card.type === "deliverable_ready"
                 ? "check"
-                : "file"
+                : m.card.type === "payment_request" || m.card.type === "quotation"
+                  ? "wallet"
+                  : "file"
           }
           size={18}
           aria-hidden
@@ -265,6 +267,14 @@ function Body({
           <p className="break-words text-small text-fg-muted">
             {m.card.detail}
           </p>
+          {typeof m.card.data?.amount_rwf === "number" && (
+            <p className="text-small tabular">{m.card.data.amount_rwf.toLocaleString()} RWF</p>
+          )}
+          {m.card.response && (
+            <p className="text-eyebrow text-fg-subtle">
+              {m.card.response.action === "accept" ? c.cards.accepted : c.cards.declined}
+            </p>
+          )}
         </div>
       </div>
     );
@@ -764,13 +774,26 @@ function CardDialog({
   onClose: () => void;
   onSend: (card: Card) => void;
 }) {
-  const [type, setType] = useState<Card["type"]>("doc_request");
+  const [type, setType] = useState<Card["type"]>("document_request");
   const [detail, setDetail] = useState("");
+  const [ref, setRef] = useState("");
+  const [amount, setAmount] = useState("");
   const hint = {
-    doc_request: c.cards.docHint,
+    document_request: c.cards.docHint,
     appointment: c.cards.apptHint,
     status: c.cards.statusHint,
-  }[type];
+  }[type as "status"] ?? "";
+  const needsRef = ["document_request", "payment_request", "quotation", "deliverable_ready", "visit_checkin"].includes(type);
+  const needsAmount = type === "payment_request" || type === "quotation";
+  const amt = Number(amount);
+  const data: Record<string, unknown> | undefined = {
+    document_request: { requirement_key: ref || "other", note: detail.trim() },
+    payment_request: { amount_rwf: amt, invoice_ref: ref || undefined },
+    quotation: { amount_rwf: amt, quote_ref: ref },
+    deliverable_ready: { deliverable_id: ref },
+    visit_checkin: { visit_id: ref, at: new Date().toISOString() },
+  }[type as "quotation"];
+  const ok = !!detail.trim() && (!needsRef || type === "payment_request" || !!ref.trim()) && (!needsAmount || (Number.isInteger(amt) && amt > 0));
   return (
     <Dialog
       open={open}
@@ -783,10 +806,12 @@ function CardDialog({
             {c.cancel}
           </Button>
           <Button
-            disabled={!detail.trim()}
+            disabled={!ok}
             onClick={() => (
-              onSend({ type, title: c.cards[type], detail: detail.trim() }),
-              setDetail("")
+              onSend({ type, title: c.cards[type], detail: detail.trim(), ...(data && { data }) }),
+              setDetail(""),
+              setRef(""),
+              setAmount("")
             )}
           >
             {c.cards.insert}
@@ -800,7 +825,7 @@ function CardDialog({
           aria-label={c.cards.pick}
           className="flex flex-wrap gap-2"
         >
-          {(["doc_request", "appointment", "status"] as const).map((t) => (
+          {(["document_request", "payment_request", "quotation", "deliverable_ready", "visit_checkin", "appointment", "status"] as const).map((t) => (
             <button
               key={t}
               type="button"
@@ -818,6 +843,18 @@ function CardDialog({
             </button>
           ))}
         </div>
+        {needsRef && (
+          <label className="grid gap-1 text-small font-medium">
+            {c.cards.ref}
+            <Input value={ref} onChange={(e) => setRef(e.target.value)} maxLength={64} />
+          </label>
+        )}
+        {needsAmount && (
+          <label className="grid gap-1 text-small font-medium">
+            {c.cards.amount}
+            <Input inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/\D/g, ""))} />
+          </label>
+        )}
         <label className="grid gap-1 text-small font-medium">
           {c.cards.detail}
           <Textarea
