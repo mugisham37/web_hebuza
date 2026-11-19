@@ -55,6 +55,7 @@ const en = {
   ebmMissing: "EBM missing",
   phone: { view: "View details", readOnly: "Editing invoices needs a larger screen. Continue on desktop." },
   new: {
+    promo: "Promo code (optional)",
     title: "New invoice", sub: "Standalone, retainer or extra disbursement on a case.", client: "Client", pickClient: "Choose a client",
     case: "Case", caseHint: "Optional: leave empty for a retainer or standalone invoice.", noCase: "No case (standalone)",
     series: "Series", seriesStandard: "Standard", seriesPlan: "Plan renewal / retainer", due: "Due date", dueHint: "Default: {n} days",
@@ -125,6 +126,7 @@ const rw: Copy = {
   ebmMissing: "Nta EBM",
   phone: { view: "Reba ibisobanuro", readOnly: "Guhindura inyemezabuguzi bisaba ecran nini. Komereza kuri mudasobwa." },
   new: {
+    promo: "Code promo (facultatif)",
     title: "Inyemezabuguzi nshya", sub: "Yihariye, iy'ukwezi cyangwa amafaranga y'inyongera kuri dosiye.", client: "Umukiriya", pickClient: "Hitamo umukiriya",
     case: "Dosiye", caseHint: "Si ngombwa: siga ubusa ku y'ukwezi cyangwa yihariye.", noCase: "Nta dosiye (yihariye)",
     series: "Ubwoko", seriesStandard: "Isanzwe", seriesPlan: "Ivugurura / iy'ukwezi", due: "Itariki ntarengwa", dueHint: "Isanzwe: iminsi {n}",
@@ -194,6 +196,7 @@ const fr: Copy = {
   ebmMissing: "EBM manquant",
   phone: { view: "Voir le détail", readOnly: "La modification des factures nécessite un grand écran. Continuez sur ordinateur." },
   new: {
+    promo: "Kode ya poromosiyo (si ngombwa)",
     title: "Nouvelle facture", sub: "Autonome, forfait mensuel ou débours supplémentaire sur un dossier.", client: "Client", pickClient: "Choisir un client",
     case: "Dossier", caseHint: "Facultatif : laissez vide pour un forfait ou une facture autonome.", noCase: "Sans dossier (autonome)",
     series: "Série", seriesStandard: "Standard", seriesPlan: "Renouvellement / forfait", due: "Échéance", dueHint: "Par défaut : {n} jours",

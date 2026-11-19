@@ -15,7 +15,7 @@ import { financeQuotes } from "@/content/pages/finance-quotes";
 import { fill } from "@/content/pages/finance-common";
 import { Button } from "@/components/atoms/button";
 import { Icon } from "@/components/atoms/icon";
-import { DateInput, ErrorSummary, Field, Select } from "@/components/atoms/field";
+import { DateInput, ErrorSummary, Field, Input, Select } from "@/components/atoms/field";
 import { useToast } from "@/components/atoms/toast";
 import { PanelError } from "@/components/molecules/ops/ops";
 import { usePhone } from "@/components/atoms/step-up";
@@ -55,6 +55,7 @@ function Form({ data }: { data: NonNullable<ReturnType<typeof useInvoiceForm>["d
   const [lang, setLang] = useState<Locale>(locale);
   const [lines, setLines] = useState<DocLine[]>([{ kind: "service_fee", label: "", qty: 1, unit: 0 }]);
   const [tried, setTried] = useState(false);
+  const [promo, setPromo] = useState(""); // F-CRM-20: server validates and adds the discount line
   const [issueFor, setIssueFor] = useState<{ key: string; rev: number } | null>(null);
   const [key] = useState(newIdempotencyKey);
   const act = useBAction<{ key: string }>();
@@ -72,7 +73,7 @@ function Form({ data }: { data: NonNullable<ReturnType<typeof useInvoiceForm>["d
   const save = (issue: boolean) => {
     setTried(true);
     if (errors.length) return;
-    const body: NewInvoiceBody = { clientId, caseRef: caseRef || undefined, series, lines, dueAt, lang };
+    const body: NewInvoiceBody = { clientId, caseRef: caseRef || undefined, series, lines, dueAt, lang, ...(promo.trim() && { promoCode: promo.trim().toUpperCase() }) };
     act.mutate({ req: (h) => api.POST("/api/finance/invoices", { body, headers: h }), key }, {
       onSuccess: (r) => {
         toast({ title: c.new.created, tone: "success" });
@@ -114,6 +115,9 @@ function Form({ data }: { data: NonNullable<ReturnType<typeof useInvoiceForm>["d
           <div className="grid gap-4 sm:grid-cols-2">
             <Field id="inv-due" label={c.new.due} hint={fill(c.new.dueHint, { n: data.termsDays })} error={err("inv-due")}>
               {({ id, describedBy, invalid }) => <DateInput id={id} min={data.today} aria-describedby={describedBy} aria-invalid={invalid} value={dueAt} onChange={(e) => setDue(e.target.value)} className="h-11" />}
+            </Field>
+            <Field label={c.new.promo}>
+              {({ id }) => <Input id={id} value={promo} maxLength={32} onChange={(e) => setPromo(e.target.value)} className="h-11 uppercase" />}
             </Field>
             <Field label={c.new.language}>
               {({ id }) => <Select id={id} value={lang} onChange={(e) => setLang(e.target.value as Locale)} className="h-11">{(["en", "rw", "fr"] as const).map((l) => <option key={l} value={l}>{cq.langs[l]}</option>)}</Select>}
