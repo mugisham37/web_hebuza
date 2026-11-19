@@ -35,6 +35,9 @@ import { Skeleton, ErrorState } from "@/components/atoms/feedback";
 import { Avatar } from "@/components/atoms/misc";
 import { Icon } from "@/components/atoms/icon";
 import { useToast } from "@/components/atoms/toast";
+import { Checkbox, Field, Input, Textarea } from "@/components/atoms/field";
+import { api, unwrap } from "@/lib/api/client";
+import { clientMessageCopy } from "@/content/pages/client-message";
 import { StatusPill } from "@/components/atoms/domain";
 import {
   AnswersPanel,
@@ -580,6 +583,7 @@ function Header({
           />
         ))}
         <div className="ml-auto flex flex-wrap gap-2">
+          {c.clientId && <MessageClient clientId={c.clientId} caseRef={c.ref} />}
           <Button
             size="sm"
             variant="ghost"
@@ -828,5 +832,53 @@ function CaseSkeleton() {
         <Skeleton className="h-80" />
       </div>
     </div>
+  );
+}
+
+/** F-NTF-17: one-off message to the case's client (in-app always; email/SMS/WhatsApp through the delivery rules). */
+function MessageClient({ clientId, caseRef }: { clientId: string; caseRef: string }) {
+  const { locale } = useI18n();
+  const k = clientMessageCopy(locale);
+  const toast = useToast();
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [ch, setCh] = useState<("email" | "sms" | "whatsapp")[]>(["email"]);
+  const [busy, setBusy] = useState(false);
+  const toggle = (x: "email" | "sms" | "whatsapp") => setCh((v) => (v.includes(x) ? v.filter((y) => y !== x) : [...v, x]));
+  const send = async () => {
+    setBusy(true);
+    try {
+      await unwrap(api.POST("/api/staff/clients/{id}/notify", { params: { path: { id: clientId } }, body: { title: title.trim(), body: body.trim(), channels: ch, link: `/requests/${caseRef}` } }));
+      toast({ title: k.sent, tone: "success" });
+      setOpen(false);
+      setTitle("");
+      setBody("");
+    } catch (e) {
+      toast({ title: errorCopy(e, locale), tone: "danger" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
+        <Icon name="mail" size={15} aria-hidden />
+        {k.button}
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title={k.title} description={k.hint}
+        footer={<div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setOpen(false)}>{k.cancel}</Button><Button loading={busy} disabled={title.trim().length < 3 || !body.trim()} onClick={() => void send()}>{k.send}</Button></div>}>
+        <div className="grid gap-3">
+          <Field label={k.subject}>{(f) => <Input id={f.id} value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} />}</Field>
+          <Field label={k.body}>{(f) => <Textarea id={f.id} rows={4} value={body} maxLength={1000} onChange={(e) => setBody(e.target.value)} />}</Field>
+          <fieldset className="grid gap-2">
+            <legend className="text-small font-medium">{k.channels}</legend>
+            <div className="flex flex-wrap gap-4">
+              {(["email", "sms", "whatsapp"] as const).map((x) => <Checkbox key={x} label={k[x]} checked={ch.includes(x)} onChange={() => toggle(x)} />)}
+            </div>
+          </fieldset>
+        </div>
+      </Dialog>
+    </>
   );
 }
