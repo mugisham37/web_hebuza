@@ -23,7 +23,7 @@ const STAFF: Record<string, string> = {
   exec: "alice.mutoni@hebuza.example", sysadmin: "innocent.kayitare@hebuza.example", field: "emmanuel.mugabo@hebuza.example",
 };
 export async function staffLogin(page: Page, who: keyof typeof STAFF | string) {
-  const headers = { origin: process.env.E2E_BASE_URL ?? "http://localhost:3000" }; // API CSRF origin check
+  const headers = { origin: process.env.E2E_BASE_URL ?? `http://localhost:${process.env.PORT ?? 3000}` }; // API CSRF origin check
   let last = "";
   for (let i = 0; i < 4; i++) { // TOTP replay guard / auth rate limit: a failed code voids the challenge, so restart
     if (i) await page.waitForTimeout(31_000 - (Date.now() % 30_000));

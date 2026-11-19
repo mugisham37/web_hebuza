@@ -15,7 +15,7 @@ const eslintConfig = defineConfig([
     // Generated / tool output
     "test-results/**",
     "playwright-report/**",
-    "public/mockServiceWorker.js",
+    "apps/**",
     "src/lib/api/schema.d.ts",
   ]),
 ]);
