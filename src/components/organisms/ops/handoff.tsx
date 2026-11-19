@@ -39,7 +39,7 @@ import {
   Panel,
 } from "@/components/molecules/ops/ops";
 import { Button } from "@/components/atoms/button";
-import { Switch } from "@/components/atoms/field";
+import { Input, Select, Switch } from "@/components/atoms/field";
 import { Skeleton } from "@/components/atoms/feedback";
 import { Avatar } from "@/components/atoms/misc";
 import { Icon } from "@/components/atoms/icon";
@@ -1026,6 +1026,8 @@ function RulesForm({
   const [pool, setPool] = useState(data.pool);
   const [cap, setCap] = useState(data.cap);
   const [vip, setVip] = useState(data.vipApproval);
+  const [assignMode, setAssignMode] = useState(data.assignMode ?? "auto");
+  const [threshold, setThreshold] = useState(data.threshold ?? 50);
   const save = useSaveRules();
   const toast = useToast();
   const preview = previewNext({ mode, pool, cap }, agents, c.serviceSlug);
@@ -1103,6 +1105,18 @@ function RulesForm({
               onChange={(e) => setCap(Number(e.target.value))}
             />
           </label>
+          <label className="grid gap-1 text-small">
+            {t.assignMode}
+            <Select value={assignMode} onChange={(e) => setAssignMode(e.target.value as "manual" | "suggest" | "auto")}>
+              {(["manual", "suggest", "auto"] as const).map((m) => <option key={m} value={m}>{t.assignModes[m]}</option>)}
+            </Select>
+          </label>
+          {assignMode === "auto" && (
+            <label className="grid gap-1 text-small">
+              {t.threshold}
+              <Input type="number" min={0} max={100} value={threshold} onChange={(e) => setThreshold(Number(e.target.value))} />
+            </label>
+          )}
           <Switch
             label={t.vip}
             checked={vip}
@@ -1127,7 +1141,7 @@ function RulesForm({
               save.mutate(
                 {
                   slug: c.serviceSlug,
-                  rules: { mode, pool, cap, vipApproval: vip },
+                  rules: { mode, pool, cap, vipApproval: vip, assignMode, threshold },
                 },
                 {
                   onSuccess: () => toast({ title: t.saved, tone: "success" }),

@@ -5652,6 +5652,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/chat/conversations/{id}/complaint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChatController_complaint"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/chat/conversations/{id}/legal-hold": {
         parameters: {
             query?: never;
@@ -14484,6 +14500,7 @@ export interface components {
         AssignDto: {
             agent_id: string;
             helpers?: string[];
+            reviewer_id?: string | null;
         };
         TermsDto: {
             lead: {
@@ -14912,6 +14929,9 @@ export interface components {
         CardActionDto: {
             /** @enum {string} */
             action: "accept" | "decline";
+        };
+        ComplaintDto: {
+            summary: string;
         };
         HoldDto2: {
             on: boolean;
@@ -15353,7 +15373,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1565_0"][];
+            items: components["schemas"]["__s1569_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -15832,17 +15852,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s1985_0"];
+            definition: components["schemas"]["__s1989_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s1989_0"];
+            definition: components["schemas"]["__s1993_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s1993_0"];
+            definition?: components["schemas"]["__s1997_0"];
         };
         CampaignDto: {
             name?: string;
@@ -15904,7 +15924,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s2045_0"];
+            conditions?: components["schemas"]["__s2049_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -17625,73 +17645,29 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1565_0: {
+        __s1569_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1565_0"][];
+            children?: components["schemas"]["__s1569_0"][];
         };
-        __s1566_0: {
+        __s1570_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1566_0"][];
+            children?: components["schemas"]["__s1570_0"][];
         };
-        __s1567_0: {
+        __s1571_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1567_0"][];
-        };
-        __s1985_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1985_0"])[];
-        };
-        __s1986_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1986_0"])[];
-        };
-        __s1987_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1987_0"])[];
-        };
-        __s1988_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1988_0"])[];
+            children?: components["schemas"]["__s1571_0"][];
         };
         __s1989_0: {
             /** @enum {string} */
@@ -17781,7 +17757,7 @@ export interface components {
                 value: unknown;
             } | components["schemas"]["__s1996_0"])[];
         };
-        __s2045_0: {
+        __s1997_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17790,9 +17766,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2045_0"])[];
+            } | components["schemas"]["__s1997_0"])[];
         };
-        __s2046_0: {
+        __s1998_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17801,9 +17777,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2046_0"])[];
+            } | components["schemas"]["__s1998_0"])[];
         };
-        __s2047_0: {
+        __s1999_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17812,9 +17788,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2047_0"])[];
+            } | components["schemas"]["__s1999_0"])[];
         };
-        __s2048_0: {
+        __s2000_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17823,7 +17799,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2048_0"])[];
+            } | components["schemas"]["__s2000_0"])[];
         };
         __s2049_0: {
             /** @enum {string} */
@@ -17901,6 +17877,50 @@ export interface components {
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
             } | components["schemas"]["__s2055_0"])[];
+        };
+        __s2056_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2056_0"])[];
+        };
+        __s2057_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2057_0"])[];
+        };
+        __s2058_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2058_0"])[];
+        };
+        __s2059_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2059_0"])[];
         };
     };
     responses: never;
@@ -29375,6 +29395,36 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["CardActionDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ChatController_complaint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ComplaintDto"];
             };
         };
         responses: {

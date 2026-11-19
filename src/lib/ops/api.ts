@@ -260,12 +260,13 @@ export const useSetStatus = () =>
     } })),
   );
 export const useAssign = () =>
-  useOpsMutation<{ ref: string; agentId: string; helpers?: string[] }>(
+  useOpsMutation<{ ref: string; agentId: string; helpers?: string[]; reviewerId?: string | null }>(
     "assign",
     (v) =>
       unwrap(api.POST("/api/admin/applications/{code}/assign", { params: { path: { code: v.ref } }, body: {
         agent_id: v.agentId,
         helpers: v.helpers,
+        ...(v.reviewerId !== undefined ? { reviewer_id: v.reviewerId } : {}),
       } })),
   );
 export const useClaim = () =>

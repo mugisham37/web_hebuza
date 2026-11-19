@@ -43,7 +43,7 @@ import {
   CopyRef,
 } from "@/components/molecules/ops/ops";
 import { Button } from "@/components/atoms/button";
-import { Switch } from "@/components/atoms/field";
+import { Select, Switch } from "@/components/atoms/field";
 import { Skeleton, ErrorState } from "@/components/atoms/feedback";
 import { Avatar } from "@/components/atoms/misc";
 import { Icon } from "@/components/atoms/icon";
@@ -210,6 +210,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
   const toast = useToast();
   const [showAll, setShowAll] = useState(false);
   const [co, setCo] = useState(false);
+  const [reviewer, setReviewer] = useState("");
   const [leadShare, setLeadShare] = useState(100);
   const [helpers, setHelpers] = useState<Helper[]>([]);
   const [price, setPrice] = useState<number | "">("");
@@ -253,7 +254,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
     if (problems.length) return;
     const hs = co ? helpers : [];
     assign.mutate(
-      { ref: c.ref, agentId: picked.agent.id, helpers: hs.map((h) => h.id) },
+      { ref: c.ref, agentId: picked.agent.id, helpers: hs.map((h) => h.id), reviewerId: reviewer || null },
       {
         onSuccess: () => {
           if (hs.length || isExt)
@@ -527,6 +528,14 @@ function Suggest({ c }: { c: CaseDetailVM }) {
           )}
 
           {picked && (
+            <>
+            <label className="grid gap-1 text-small">
+              {t.reviewer}
+              <Select value={reviewer} onChange={(e) => setReviewer(e.target.value)}>
+                <option value="">{t.reviewerNone}</option>
+                {list.filter((x) => x.agent.id !== picked?.agent.id && !helpers.some((h) => h.id === x.agent.id)).map((x) => <option key={x.agent.id} value={x.agent.id}>{x.agent.name}</option>)}
+              </Select>
+            </label>
             <section
               aria-labelledby="co-h"
               className="grid gap-3 border border-border bg-white p-4"
@@ -562,6 +571,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
                 />
               )}
             </section>
+            </>
           )}
 
           {showInel && <IneligibleList inel={inel} service={c.service} />}

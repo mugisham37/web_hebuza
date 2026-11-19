@@ -218,7 +218,7 @@ export function TicketQueue() {
         onChange={(id) =>
           setUrlParams({ tab: id === "complaints" ? null : id })
         }
-        tabs={TABS.map((id) => ({
+        tabs={[...TABS.map((id) => ({
           id,
           label: c.tabs[id],
           count: id === "resolved" ? undefined : counts?.[id],
@@ -277,7 +277,7 @@ export function TicketQueue() {
                 )}
               </div>
             ),
-        })).concat([{ id: "register", label: c.register.tab, count: undefined, content: p.get("tab") === "register" ? <Register /> : null }])}
+        })), { id: "register", label: c.register.tab, count: undefined, content: p.get("tab") === "register" ? <Register /> : null }]}
       />
       <NewTicketDialog
         open={creating}

@@ -85,6 +85,7 @@ const en = {
     priceRequired: "Enter the agreed price",
     reasonRequired: "Give a reason for the override",
   },
+  reviewer: "Reviewer (optional)", reviewerNone: "No separate reviewer",
   co: {
     title: "Co-assignment",
     toggle: "Add helpers",
@@ -222,6 +223,7 @@ const en = {
   rules: {
     title: "Auto-assign rules · {service}",
     mode: "Mode",
+    assignMode: "Assignment", assignModes: { manual: "Manual only", suggest: "Suggest (SM confirms)", auto: "Auto (top candidate)" } as Record<string, string>, threshold: "Minimum score to auto-assign (0–100)",
     modes: {
       roundRobin: "Round robin",
       leastLoaded: "Least loaded",
@@ -325,6 +327,7 @@ const fr: OpsAssignCopy = {
     priceRequired: "Saisissez le prix convenu",
     reasonRequired: "Indiquez le motif de la modification",
   },
+  reviewer: "Relecteur (facultatif)", reviewerNone: "Pas de relecteur distinct",
   co: {
     title: "Co-attribution",
     toggle: "Ajouter des appuis",
@@ -459,6 +462,7 @@ const fr: OpsAssignCopy = {
   rules: {
     title: "Règles d'attribution · {service}",
     mode: "Mode",
+    assignMode: "Attribution", assignModes: { manual: "Manuelle uniquement", suggest: "Suggestion (validée par le responsable)", auto: "Automatique (meilleur candidat)" }, threshold: "Score minimum pour l'attribution auto (0–100)",
     modes: {
       roundRobin: "Tour de rôle",
       leastLoaded: "Moins chargé",
@@ -560,6 +564,7 @@ const rw: OpsAssignCopy = {
     priceRequired: "Andika igiciro cyumvikanyweho",
     reasonRequired: "Tanga impamvu yo guhindura",
   },
+  reviewer: "Ugenzura (si ngombwa)", reviewerNone: "Nta mugenzuzi wihariye",
   co: {
     title: "Gufatanya",
     toggle: "Ongeraho abafasha",
@@ -694,6 +699,7 @@ const rw: OpsAssignCopy = {
   rules: {
     title: "Amategeko yo kugena · {service}",
     mode: "Uburyo",
+    assignMode: "Uko bihabwa", assignModes: { manual: "Intoki gusa", suggest: "Ibitekerezo (umuyobozi yemeza)", auto: "Byikora (uwa mbere)" }, threshold: "Amanota make yo guhabwa byikora (0–100)",
     modes: {
       roundRobin: "Mu ruziga",
       leastLoaded: "Ufite akazi gake",

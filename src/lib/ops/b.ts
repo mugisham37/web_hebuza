@@ -111,6 +111,8 @@ export type Rules = {
   pool: string[];
   cap: number;
   vipApproval: boolean;
+  assignMode?: "manual" | "suggest" | "auto";
+  threshold?: number;
   preview: string[];
 };
 export type AssignContext = {
