@@ -2,7 +2,7 @@
 // U14 Tickets & disputes (board 14 v2): TK1 queue, TK2 detail, TK3 resolve, TK4 breach + escalation, PK2 phone.
 import { errorCopy } from "@/lib/api/error-copy";
 import { useState, type ReactNode } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, unwrap } from "@/lib/api/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -55,6 +55,7 @@ const STATUS_TONE: Record<Ticket["status"], string> = {
   resolved: "bg-success-bg text-success",
 };
 const PRIO_TONE = {
+  critical: "bg-danger text-white",
   high: "bg-danger-bg text-danger",
   medium: "bg-warning-bg text-warning",
   low: "bg-bg-subtle text-fg-muted",
@@ -396,11 +397,12 @@ function NewTicketDialog({
 
 // ---------------------------------------------------------------- TK2 detail
 type Modal = null | "call" | "refund" | "reassign" | "escalate" | "resolve";
-type RegRow = { source: "ops" | "chat" | "help_desk" | "website"; ref: string; kind: string; subject: string; client: string; caseRef: string | null; status: string; at: string; href: string | null };
+type RegRow = { source: "ops" | "chat" | "help_desk" | "website"; ref: string; kind: string; subject: string; client: string; caseRef: string | null; status: string; at: string; href: string | null; contact?: string; message?: string; assigneeId?: string | null };
 /** F-FBK-03/04/05: every complaint channel in one register (ops, chat disputes, help desk, website enquiries). */
 function Register() {
   const { c, locale } = useT();
   const r = c.register;
+  const [openEnq, setOpenEnq] = useState<RegRow | null>(null);
   const q = useQuery({
     queryKey: ["ops", "register"],
     queryFn: () => unwrap<{ items: RegRow[] }>(api.GET("/api/admin/ops/register")).then((d) => d.items),
@@ -413,7 +415,7 @@ function Register() {
       <table className="w-full min-w-[40rem] text-small">
         <thead className="text-left text-fg-subtle"><tr className="border-b border-border">
           <th className="p-2">{r.cols.ref}</th><th className="p-2">{r.cols.source}</th><th className="p-2">{r.cols.kind}</th>
-          <th className="p-2">{r.cols.subject}</th><th className="p-2">{r.cols.client}</th><th className="p-2">{r.cols.status}</th><th className="p-2">{r.cols.at}</th>
+          <th className="p-2">{r.cols.subject}</th><th className="p-2">{r.cols.client}</th><th className="p-2">{r.cols.status}</th><th className="p-2">{r.cols.at}</th><th className="p-2" />
         </tr></thead>
         <tbody>
           {q.data.map((x) => (
@@ -425,11 +427,56 @@ function Register() {
               <td className="p-2">{x.client}</td>
               <td className="p-2">{x.status === "resolved" ? r.resolved : r.open}</td>
               <td className="p-2 tabular">{formatDate(x.at, locale)}</td>
+              <td className="p-2">{x.source === "website" && x.status !== "resolved" && <Button size="sm" variant="outline" onClick={() => setOpenEnq(x)}>{r.handle}</Button>}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {openEnq && <EnquiryDialog row={openEnq} onClose={() => setOpenEnq(null)} />}
     </div>
+  );
+}
+
+/** F-FBK-05: assign, reply (email), close or convert a website enquiry to a CRM lead. */
+function EnquiryDialog({ row, onClose }: { row: RegRow; onClose: () => void }) {
+  const { c, locale } = useT();
+  const r = c.register;
+  const qc = useQueryClient();
+  const toast = useToast();
+  const agents = useWorkload(0);
+  const [agentId, setAgentId] = useState(row.assigneeId ?? "");
+  const [body, setBody] = useState("");
+  const m = useMutation({
+    mutationFn: (b: { action: "assign" | "reply" | "close" | "convert"; agentId?: string; body?: string }) =>
+      unwrap(api.POST("/api/admin/ops/register/enquiries/{id}", { params: { path: { id: row.ref } }, body: b, headers: { "Idempotency-Key": crypto.randomUUID() } })),
+    onSuccess: (_d, b) => {
+      toast({ tone: "success", title: r.done[b.action] });
+      void qc.invalidateQueries({ queryKey: ["ops", "register"] });
+      if (b.action !== "assign") onClose();
+    },
+    onError: (e) => toast({ tone: "danger", title: errorCopy(e, locale) }),
+  });
+  return (
+    <Dialog open onClose={onClose} title={`${row.client} · ${row.subject}`} description={row.contact}>
+      <div className="grid gap-4">
+        <p className="whitespace-pre-wrap border border-border bg-bg-subtle p-3 text-small">{row.message}</p>
+        <Field label={r.assign}>{(f) => (
+          <div className="flex gap-2">
+            <Select id={f.id} aria-describedby={f.describedBy} value={agentId} onChange={(e) => setAgentId(e.target.value)} className="min-w-0 flex-1">
+              <option value="">—</option>
+              {(agents.data?.agents ?? []).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+            </Select>
+            <Button size="sm" variant="outline" disabled={!agentId} loading={m.isPending && m.variables?.action === "assign"} onClick={() => m.mutate({ action: "assign", agentId })}>{r.assignBtn}</Button>
+          </div>
+        )}</Field>
+        <Field label={r.reply}>{(f) => <Textarea id={f.id} aria-describedby={f.describedBy} rows={4} maxLength={4000} value={body} onChange={(e) => setBody(e.target.value)} />}</Field>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" disabled={!body.trim()} loading={m.isPending && m.variables?.action === "reply"} onClick={() => m.mutate({ action: "reply", body: body.trim() })}>{r.send}</Button>
+          <Button size="sm" variant="outline" loading={m.isPending && m.variables?.action === "convert"} onClick={() => m.mutate({ action: "convert" })}>{r.convert}</Button>
+          <Button size="sm" variant="ghost" loading={m.isPending && m.variables?.action === "close"} onClick={() => m.mutate({ action: "close" })}>{r.close}</Button>
+        </div>
+      </div>
+    </Dialog>
   );
 }
 
@@ -602,6 +649,16 @@ function TicketBody({ t }: { t: TicketDetail }) {
         <span className="text-small text-fg-muted">
           {c.kind[t.kind]} · {c.category[t.category]}
         </span>
+        {open && (
+          <Select
+            aria-label={c.severity}
+            className="h-9 w-auto"
+            value={t.priority}
+            onChange={(e) => void run({ action: "severity", severity: e.target.value as TicketDetail["priority"] }, c.severityChanged)}
+          >
+            {(["critical", "high", "medium", "low"] as const).map((k) => <option key={k} value={k}>{c.priority[k]}</option>)}
+          </Select>
+        )}
       </header>
 
       {overdue > 0 && (

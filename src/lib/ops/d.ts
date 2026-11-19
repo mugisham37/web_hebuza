@@ -27,7 +27,7 @@ export type Ticket = {
   caseRef: string;
   service: string;
   paid: number;
-  priority: "high" | "medium" | "low";
+  priority: "critical" | "high" | "medium" | "low";
   status: TicketStatus;
   owner: { id: string; name: string };
   responseDueAt: string;
@@ -89,12 +89,14 @@ export type TicketAction =
   | {
       action: "resolve";
       summary: string;
+      resolutionKind?: string;
       rootCause: string;
       preventive: string;
       askConfirm: boolean;
     }
   | { action: "confirm"; ok: boolean; score: number | null }
-  | { action: "reopen" };
+  | { action: "reopen" }
+  | { action: "severity"; severity: "critical" | "high" | "medium" | "low" };
 /** One mutation for every ticket action; dispute tickets resolve through the real dispute endpoint first. */
 export function useTicketAction(t: { ref: string; disputeId: string | null }) {
   const qc = useQueryClient();
