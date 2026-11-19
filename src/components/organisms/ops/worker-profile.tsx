@@ -10,7 +10,7 @@ import { setUrlParams, useUrlParams } from "@/lib/url-state";
 import { api, newIdempotencyKey, unwrap } from "@/lib/api/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { errorCopy } from "@/lib/api/error-copy";
-import { revealWorker, useHistory, useReviews, useSubmitReview, useWorker, useWorkerStatus, type WorkerFull } from "@/lib/workforce";
+import { revealWorker, useHistory, useReviews, useIssueContract, useSubmitReview, useWorker, useWorkerStatus, type WorkerFull } from "@/lib/workforce";
 import { fill } from "@/content/pages/ops-workforce";
 import { KpiTile, MenuButton, Panel, PanelError, ReasonDialog, EmptyPanel } from "@/components/molecules/ops/ops";
 import { CapacityBar } from "@/components/atoms/ops";
@@ -19,7 +19,8 @@ import { ProcPill } from "@/components/atoms/procurement";
 import { Tabs } from "@/components/atoms/tabs";
 import { Button } from "@/components/atoms/button";
 import { Icon } from "@/components/atoms/icon";
-import { Checkbox, Field, Input, Textarea } from "@/components/atoms/field";
+import { Checkbox, DateInput, Field, Input, Select, Textarea } from "@/components/atoms/field";
+import { Dialog } from "@/components/atoms/dialog";
 import { useToast } from "@/components/atoms/toast";
 import { usePublicServices } from "@/lib/work/a";
 import { WorkforceDenied, canAdmin, useW } from "@/components/organisms/ops/workforce";
@@ -237,11 +238,62 @@ function Documents({ w }: { w: WorkerFull }) {
   const c = useW();
   const { locale } = useI18n();
   const docs = [...w.documents.map((d) => ({ name: d.name, exp: d.expiresOn })), ...w.certifications.map((x) => ({ name: x.name, exp: x.expiresOn }))];
-  if (!docs.length) return <div className="mt-4"><EmptyPanel title={c.profile.noDocs} compact /></div>;
   return (
-    <ul className="mt-4 grid gap-2">
-      {docs.map((d) => <li key={d.name} className="flex items-center justify-between gap-2 border border-border bg-white px-4 py-3 text-small"><span className="flex items-center gap-2"><Icon name="file" size={16} aria-hidden />{d.name}</span>{d.exp && <span className="text-eyebrow text-fg-subtle">{formatDate(d.exp, locale)}</span>}</li>)}
-    </ul>
+    <div className="mt-4 grid gap-4">
+      {w.type === "external" && <Contracts w={w} />}
+      {!docs.length ? <EmptyPanel title={c.profile.noDocs} compact /> : (
+        <ul className="grid gap-2">
+          {docs.map((d) => <li key={d.name} className="flex items-center justify-between gap-2 border border-border bg-white px-4 py-3 text-small"><span className="flex items-center gap-2"><Icon name="file" size={16} aria-hidden />{d.name}</span>{d.exp && <span className="text-eyebrow text-fg-subtle">{formatDate(d.exp, locale)}</span>}</li>)}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/** F-WRK-04: contract versions of an external worker + issue a new one for signature. */
+function Contracts({ w }: { w: WorkerFull }) {
+  const c = useW().contracts;
+  const { locale } = useI18n();
+  const toast = useToast();
+  const m = useIssueContract(w.id);
+  const [open, setOpen] = useState(false);
+  const [key, setKey] = useState(newIdempotencyKey);
+  const [f, setF] = useState({ kind: "service_agreement" as "service_agreement" | "sla" | "nda" | "licence", start: new Date().toISOString().slice(0, 10), end: "", notice: "30" });
+  const notice = Number(f.notice);
+  const ok = /^\d{4}-\d{2}-\d{2}$/.test(f.start) && (!f.end || f.end > f.start) && Number.isInteger(notice) && notice >= 0;
+  const save = () => m.mutate({ kind: f.kind, start: f.start, end: f.end || null, noticeDays: notice, idempotencyKey: key }, {
+    onSuccess: () => { toast({ tone: "success", title: c.sent }); setOpen(false); setKey(newIdempotencyKey()); },
+    onError: (e) => toast({ tone: "danger", title: e instanceof Error ? e.message : String(e) }),
+  });
+  return (
+    <section className="grid gap-2 border border-border bg-white p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-label">{c.title}</h3>
+        <Button size="sm" variant="outline" onClick={() => setOpen(true)}>{c.issue}</Button>
+      </div>
+      {!w.contracts?.length ? <p className="text-small text-fg-muted">{c.none}</p> : (
+        <ul className="grid gap-1 text-small">
+          {w.contracts.map((d) => (
+            <li key={d.id} className="flex flex-wrap justify-between gap-2">
+              <span>{d.title} v{d.version}</span>
+              <span className="text-fg-subtle tabular">{c.status[d.status] ?? d.status} · {formatDate(d.start, locale)}{d.end ? ` – ${formatDate(d.end, locale)}` : ""}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Dialog open={open} onClose={() => setOpen(false)} title={c.issue} footer={<Button disabled={!ok} loading={m.isPending} onClick={save}>{c.save}</Button>}>
+        <div className="grid gap-3">
+          <Field label={c.kind}>{(a) => (
+            <Select id={a.id} aria-describedby={a.describedBy} value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value as typeof f.kind })}>
+              {Object.entries(c.kinds).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            </Select>
+          )}</Field>
+          <Field label={c.start}>{(a) => <DateInput id={a.id} aria-describedby={a.describedBy} value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} />}</Field>
+          <Field label={c.end}>{(a) => <DateInput id={a.id} aria-describedby={a.describedBy} value={f.end} onChange={(e) => setF({ ...f, end: e.target.value })} />}</Field>
+          <Field label={c.notice}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="number" min={0} max={365} inputMode="numeric" value={f.notice} onChange={(e) => setF({ ...f, notice: e.target.value })} />}</Field>
+        </div>
+      </Dialog>
+    </section>
   );
 }
 

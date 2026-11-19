@@ -43,6 +43,10 @@ export const useCreateWorker = () =>
 export const useWorkerStatus = (id: string) =>
   useInvalidating((v: { to: WorkerStatus; reason: string; reassignments?: { ref: string; to: string }[]; idempotencyKey?: string; stepUp?: string }) =>
     unwrap<WorkerFull>(api.POST("/api/staff/workers/{id}/status", { params: { path: { id } }, body: { to: v.to, reason: v.reason, reassignments: v.reassignments }, headers: hdr(v) })));
+/** F-WRK-04: issue a new contract version to an external worker. */
+export const useIssueContract = (id: string) =>
+  useInvalidating((v: { kind: "service_agreement" | "sla" | "nda" | "licence"; start: string; end: string | null; noticeDays: number; idempotencyKey: string }) =>
+    unwrap(api.POST("/api/staff/workers/{id}/contracts", { params: { path: { id } }, body: { kind: v.kind, start: v.start, end: v.end, noticeDays: v.noticeDays }, headers: hdr({ idempotencyKey: v.idempotencyKey }) })));
 export const useSubmitReview = (id: string) =>
   useInvalidating((v: { period: string; rating: number; goals: string; comments: string; ackRequired: boolean; idempotencyKey: string }) =>
     unwrap<Review>(api.POST("/api/staff/workers/{id}/reviews", { params: { path: { id } }, body: v, headers: hdr({ idempotencyKey: v.idempotencyKey }) })));

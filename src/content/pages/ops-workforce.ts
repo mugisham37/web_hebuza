@@ -19,6 +19,7 @@ const en = {
     sessionsRevoked: "Sessions revoked — this person is signed out everywhere.", noDocs: "No documents yet.", noHistory: "No history yet.", cases: "View cases",
   },
   kpi: { onTime: "On time (30 d)", rating: "Client rating", open: "Open cases", firstResponse: "First response (h)", completed90d: "Completed (90 d)", firstPassPct: "First-pass approval", reassignmentPct: "Reassigned away", revenue90d: "Earned share (90 d, RWF)" },
+  contracts: { title: "Contracts", issue: "Issue contract", kind: "Document", kinds: { service_agreement: "Service agreement", sla: "Service level agreement", nda: "Non-disclosure agreement", licence: "Licence" } as Record<string, string>, start: "Starts", end: "Ends (optional)", notice: "Notice (days)", save: "Send for signature", sent: "Sent for signature.", none: "No contracts yet.", status: { pending_signature: "Awaiting signature", active: "Active", expiring: "Expiring", expired: "Expired", renewed: "Renewed", terminated: "Ended" } as Record<string, string>, externalOnly: "Contracts are issued to external agents." },
   cv: { title: "CV", education: "Education", experience: "Experience", expertise: "Expertise", years: "Years of experience", bio: "Summary", empty: "No CV entered at onboarding yet." },
   actions: { label: "Actions", suspend: "Suspend", reactivate: "Reactivate", terminate: "Offboard…", review: "New review" },
   status: {
@@ -73,6 +74,7 @@ const rw: Copy = {
     sessionsRevoked: "Yasohowe muri konti hose.", noDocs: "Nta nyandiko.", noHistory: "Nta mateka.", cases: "Reba amadosiye",
   },
   kpi: { onTime: "Ku gihe (iminsi 30)", rating: "Amanota y'abakiriya", open: "Amadosiye afunguye", firstResponse: "Igisubizo cya mbere (h)", completed90d: "Byarangiye (iminsi 90)", firstPassPct: "Byemejwe ubwa mbere", reassignmentPct: "Byahawe abandi", revenue90d: "Umugabane winjije (iminsi 90, RWF)" },
+  contracts: { title: "Amasezerano", issue: "Tanga amasezerano", kind: "Inyandiko", kinds: { service_agreement: "Amasezerano ya serivisi", sla: "Amasezerano y'urwego rwa serivisi", nda: "Amasezerano y'ibanga", licence: "Uruhushya" }, start: "Atangira", end: "Arangira (si ngombwa)", notice: "Integuza (iminsi)", save: "Ohereza ngo asinywe", sent: "Byoherejwe gusinywa.", none: "Nta masezerano arahari.", status: { pending_signature: "Ategereje gusinywa", active: "Arakora", expiring: "Ararangira", expired: "Yarangiye", renewed: "Yavuguruwe", terminated: "Yahagaritswe" }, externalOnly: "Amasezerano ahabwa abakozi bo hanze." },
   cv: { title: "Umwirondoro w'akazi", education: "Amashuri", experience: "Uburambe", expertise: "Ubuhanga", years: "Imyaka y'uburambe", bio: "Incamake", empty: "Nta mwirondoro w'akazi uranditswe." },
   actions: { label: "Ibikorwa", suspend: "Hagarika", reactivate: "Subizaho", terminate: "Sezerera…", review: "Isuzuma rishya" },
   status: {
@@ -126,6 +128,7 @@ const fr: Copy = {
     sessionsRevoked: "Sessions révoquées — déconnecté partout.", noDocs: "Aucun document.", noHistory: "Aucun historique.", cases: "Voir les dossiers",
   },
   kpi: { onTime: "À l'heure (30 j)", rating: "Note clients", open: "Dossiers ouverts", firstResponse: "Première réponse (h)", completed90d: "Terminés (90 j)", firstPassPct: "Validés du premier coup", reassignmentPct: "Réattribués", revenue90d: "Part gagnée (90 j, RWF)" },
+  contracts: { title: "Contrats", issue: "Émettre un contrat", kind: "Document", kinds: { service_agreement: "Contrat de service", sla: "Accord de niveau de service", nda: "Accord de confidentialité", licence: "Licence" }, start: "Début", end: "Fin (facultatif)", notice: "Préavis (jours)", save: "Envoyer pour signature", sent: "Envoyé pour signature.", none: "Aucun contrat.", status: { pending_signature: "En attente de signature", active: "Actif", expiring: "Expire bientôt", expired: "Expiré", renewed: "Renouvelé", terminated: "Terminé" }, externalOnly: "Les contrats sont émis aux agents externes." },
   cv: { title: "CV", education: "Formation", experience: "Expérience", expertise: "Expertise", years: "Années d'expérience", bio: "Résumé", empty: "Aucun CV saisi à l'intégration." },
   actions: { label: "Actions", suspend: "Suspendre", reactivate: "Réactiver", terminate: "Départ…", review: "Nouvelle évaluation" },
   status: {
