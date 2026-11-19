@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useI18n, localHref } from "@/lib/i18n/provider";
+import { breachCopy } from "@/content/pages/breach";
 import { cx, formatDate, formatDateTime, formatRelative } from "@/shared/format";
 import { useUrlParams, setUrlParams } from "@/lib/url-state";
 import type { Locale } from "@/shared/i18n/config";
@@ -389,14 +390,15 @@ function CreateIncident({ components, onClose, prefill }: { components: string[]
   const toast = useToast();
   const fail = useFail();
   const mut = useCreateIncident();
-  const [f, setF] = useState({ title: prefill?.title ?? "", sev: prefill?.sev ?? (2 as 1 | 2 | 3), comps: [] as string[], start: "", impact: "" });
+  const [f, setF] = useState({ title: prefill?.title ?? "", sev: prefill?.sev ?? (2 as 1 | 2 | 3), comps: [] as string[], start: "", impact: "", personalData: false });
+  const bc = breachCopy(useI18n().locale);
   const [err, setErr] = useState<{ title?: string; impact?: string; comps?: string }>({});
   const submit = async () => {
     const e = { title: f.title.trim() ? undefined : c.titleErr, impact: f.impact.trim() ? undefined : c.impactErr, comps: f.comps.length ? undefined : c.compErr };
     setErr(e);
     if (e.title || e.impact || e.comps) return;
     try {
-      const inc = await mut.mutateAsync({ title: f.title.trim(), sev: f.sev, components: f.comps, startedAt: f.start ? new Date(f.start).toISOString() : "", impact: f.impact.trim() });
+      const inc = await mut.mutateAsync({ title: f.title.trim(), sev: f.sev, components: f.comps, startedAt: f.start ? new Date(f.start).toISOString() : "", impact: f.impact.trim(), personalData: f.personalData });
       toast({ tone: "success", title: c.created, body: inc.id });
       onClose();
     } catch (x) { fail(x); }
@@ -419,6 +421,7 @@ function CreateIncident({ components, onClose, prefill }: { components: string[]
         </fieldset>
         <Field label={c.start} optional={s.common.optional}>{(i) => <Input id={i.id} type="datetime-local" value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} />}</Field>
         <Field label={c.impact} error={err.impact}>{(i) => <Textarea id={i.id} rows={3} aria-describedby={i.describedBy} aria-invalid={i.invalid} value={f.impact} onChange={(e) => setF({ ...f, impact: e.target.value })} />}</Field>
+        <Checkbox label={bc.flag} checked={f.personalData} onChange={(e) => setF({ ...f, personalData: e.target.checked })} />
       </form>
     </FDialog>
   );

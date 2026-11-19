@@ -14,6 +14,7 @@ import { Panel } from "@/components/molecules/ops/ops";
 import { useNow } from "@/components/atoms/step-up";
 import { useOnline } from "@/components/atoms/hooks";
 import { systemOps } from "@/content/pages/system-ops";
+import { breachCopy } from "@/content/pages/breach";
 import { fill } from "@/content/pages/system-common";
 import { useIncident, useIncidentMutations } from "@/lib/system/f";
 import { INCIDENT_NEXT, RESPONSE_TARGET } from "@/shared/system/incidents";
@@ -78,6 +79,7 @@ function Detail({ i }: { i: IncidentVM }) {
           </Button>
         ))}
       />
+      <BreachPanel i={i} onSave={(reference) => patch.mutate({ patch: { breachNotified: { reference } }, version: i.version }, { onError: onErr })} busy={patch.isPending} now={now} />
       {conflict && <div className="mb-4"><ConflictBanner by={s.common.system} at={i.timeline.at(-1)?.at ?? i.startedAt} onReload={() => { setConflict(false); patch.reset(); }} /></div>}
 
       <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
@@ -184,4 +186,30 @@ function Postmortem({ i, onErr }: { i: IncidentVM; onErr: (e: unknown) => void }
 
 function Meta({ label, children }: { label: string; children: ReactNode }) {
   return <div className="grid gap-1"><span className="text-eyebrow text-fg-subtle">{label}</span><span className="text-small font-medium">{children}</span></div>;
+}
+
+type Breach = { notifyBy: string; notifiedAt?: string; reference?: string };
+/** PRV-breach: regulator-notification deadline for personal-data incidents, with the "notified" record. */
+function BreachPanel({ i, onSave, busy, now }: { i: IncidentVM; onSave: (ref: string) => void; busy: boolean; now: number | null }) {
+  const { locale } = useI18n();
+  const k = breachCopy(locale);
+  const [ref, setRef] = useState("");
+  const b = (i as IncidentVM & { breach?: Breach }).breach;
+  if (!b) return null;
+  const left = now ? Date.parse(b.notifyBy) - now : null;
+  return (
+    <section aria-labelledby="breach-h" className={cx("mb-4 grid gap-2 border p-4", b.notifiedAt ? "border-border" : left !== null && left <= 0 ? "border-danger bg-danger-bg" : "border-warning bg-warning-bg")}>
+      <h2 id="breach-h" className="text-h5">{k.title}</h2>
+      <p className="text-small">{k.due} <time dateTime={b.notifyBy}>{formatDateTime(b.notifyBy, locale)}</time>
+        {b.notifiedAt ? <> · {k.done} <time dateTime={b.notifiedAt}>{formatDateTime(b.notifiedAt, locale)}</time> ({b.reference})</>
+          : left !== null && <> · <strong>{left <= 0 ? k.overdue : `${Math.ceil(left / 3_600_000)} h ${k.left}`}</strong></>}
+      </p>
+      {!b.notifiedAt && (
+        <form className="flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); if (ref.trim()) onSave(ref.trim()); }}>
+          <Field label={k.ref}>{(f) => <Input id={f.id} value={ref} maxLength={80} onChange={(e) => setRef(e.target.value)} />}</Field>
+          <Button type="submit" size="sm" disabled={!ref.trim() || busy}>{k.mark}</Button>
+        </form>
+      )}
+    </section>
+  );
 }

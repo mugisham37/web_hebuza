@@ -100,11 +100,11 @@ export function useStatusPost() {
 export function useCreateIncident() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (v: Pick<IncidentVM, "title" | "sev" | "components" | "startedAt" | "impact">) => unwrap<IncidentVM>(api.POST("/api/staff/x/ops/incidents", { body: v, headers: hdr({ idempotent: true }) })),
+    mutationFn: (v: Pick<IncidentVM, "title" | "sev" | "components" | "startedAt" | "impact"> & { personalData?: boolean }) => unwrap<IncidentVM>(api.POST("/api/staff/x/ops/incidents", { body: v, headers: hdr({ idempotent: true }) })),
     onSettled: () => { qc.invalidateQueries({ queryKey: k.incidents }); qc.invalidateQueries({ queryKey: sysKeys.all }); },
   });
 }
-export type IncidentPatch = { status?: IncidentStatus; postmortem?: Partial<NonNullable<IncidentVM["postmortem"]>> };
+export type IncidentPatch = { status?: IncidentStatus; postmortem?: Partial<NonNullable<IncidentVM["postmortem"]>>; breachNotified?: { reference: string } };
 export function useIncidentMutations(id: string) {
   const qc = useQueryClient();
   const done = (d: IncidentVM) => { qc.setQueryData(k.incident(id), d); qc.invalidateQueries({ queryKey: k.incidents }); };
