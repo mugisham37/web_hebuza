@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { webPushCopy } from "@/content/pages/web-push";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, unwrap } from "@/lib/api/client";
 import { Button } from "@/components/atoms/button";
@@ -49,13 +50,56 @@ export function ChannelSettings() {
   if (q.isError)
     return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
   return (
-    <Editor
-      initial={q.data}
-      key={q.dataUpdatedAt}
-      copy={c.settings.channels}
-      saved={c.saved}
-      failed={c.generic}
-    />
+    <div className="grid gap-6">
+      <Editor
+        initial={q.data}
+        key={q.dataUpdatedAt}
+        copy={c.settings.channels}
+        saved={c.saved}
+        failed={c.generic}
+      />
+      <PushToggle />
+    </div>
+  );
+}
+
+/** F-NTF-18: subscribe this browser to payload-less web push (hidden when the server has no VAPID key). */
+function PushToggle() {
+  const { locale } = useC4();
+  const k = webPushCopy(locale);
+  const toast = useToast();
+  const key = useQuery({ queryKey: ["push", "vapid"], queryFn: () => unwrap<{ publicKey: string | null }>(api.GET("/api/push/vapid-key")) });
+  const [on, setOn] = useState<boolean | null>(null);
+  const supported = typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window;
+  useEffect(() => {
+    if (!supported) return;
+    void navigator.serviceWorker.ready.then((r) => r.pushManager.getSubscription()).then((s) => setOn(!!s));
+  }, [supported]);
+  if (!supported || !key.data?.publicKey || on === null) return null;
+  const toggle = async (next: boolean) => {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const cur = await reg.pushManager.getSubscription();
+      if (!next) {
+        if (cur) {
+          await unwrap(api.DELETE("/api/me/push-subscriptions", { body: { endpoint: cur.endpoint } }));
+          await cur.unsubscribe();
+        }
+        return setOn(false);
+      }
+      if ((await Notification.requestPermission()) !== "granted") return toast({ title: k.blocked, tone: "danger" });
+      const raw = Uint8Array.from(atob(key.data!.publicKey!.replace(/-/g, "+").replace(/_/g, "/")), (ch) => ch.charCodeAt(0));
+      const sub = cur ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: raw }));
+      await unwrap(api.POST("/api/me/push-subscriptions", { body: { endpoint: sub.endpoint } }));
+      setOn(true);
+    } catch {
+      toast({ title: k.failed, tone: "danger" });
+    }
+  };
+  return (
+    <Panel icon="message" title={k.title} body={k.body}>
+      <Switch label={k.on} checked={on} onChange={(e) => void toggle(e.target.checked)} />
+    </Panel>
   );
 }
 

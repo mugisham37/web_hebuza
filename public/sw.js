@@ -65,3 +65,31 @@ self.addEventListener("fetch", (e) => {
   }
   e.respondWith(fetch(request).catch(async () => (await caches.match(OFFLINE)) ?? Response.error()));
 });
+
+// F-NTF-18: payload-less web push → show the newest in-app notification (fetched with the session cookie).
+self.addEventListener("push", (e) => {
+  e.waitUntil((async () => {
+    let n = null;
+    try {
+      const r = await fetch("/api/notifications?limit=1&unread=true", { credentials: "include" });
+      if (r.ok) n = (await r.json())?.data?.notifications?.[0] ?? null;
+    } catch { /* offline: generic notice below */ }
+    await self.registration.showNotification(n?.title ?? "HEBUZA", {
+      body: n?.body || "You have a new update.",
+      icon: "/orvena/brand/favicon.png",
+      badge: "/orvena/brand/favicon.png",
+      tag: n?.id ?? "hebuza",
+      data: { href: n?.href || "/notifications" },
+    });
+  })());
+});
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const href = e.notification.data?.href ?? "/notifications";
+  e.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const open = all.find((c) => new URL(c.url).origin === self.location.origin);
+    if (open) { await open.focus(); return open.navigate(href); }
+    return self.clients.openWindow(href);
+  })());
+});
