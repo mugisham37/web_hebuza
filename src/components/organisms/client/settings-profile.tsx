@@ -70,6 +70,11 @@ export function ProfileSettings() {
     <div className="grid gap-5">
       <PhotoPanel />
       <Panel icon="user" title={p.title} body={p.lede}>
+        {user?.customerNo && (
+          <p className="mb-4 text-small text-fg-muted">
+            {p.customerNo}: <span className="font-mono tabular text-fg">{user.customerNo}</span>
+          </p>
+        )}
         {status === "loading" ? (
           <div className="grid gap-4">
             <Skeleton className="h-12" />

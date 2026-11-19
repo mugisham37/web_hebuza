@@ -15,7 +15,7 @@ const en = {
   show: "Show password",
   hide: "Hide password",
   rules: {
-    len: "At least 8 characters",
+    len: "At least 10 characters",
     num: "One number",
     letter: "One letter",
   },
@@ -142,6 +142,10 @@ const en = {
     doneTitle: "Linked!",
     doneBody: "You'll now see it in My requests.",
     open: "Open my requests",
+    otp: "Code sent by SMS",
+    otpHint: "We texted a 6-digit code to the phone on the request.",
+    otpBad: "That code is wrong or expired.",
+    verify: "Verify and link",
   },
   shell: {
     nav: "Main",
@@ -164,7 +168,7 @@ const rw: Copy = {
   show: "Erekana ijambobanga",
   hide: "Hisha ijambobanga",
   rules: {
-    len: "Nibura inyuguti 8",
+    len: "Nibura inyuguti 10",
     num: "Umubare umwe",
     letter: "Inyuguti imwe",
   },
@@ -298,6 +302,10 @@ const rw: Copy = {
     doneTitle: "Byahujwe!",
     doneBody: "Uzabubona mu busabe bwanjye.",
     open: "Fungura ubusabe bwanjye",
+    otp: "Kode yoherejwe kuri SMS",
+    otpHint: "Twohereje kode y'imibare 6 kuri telefoni iri ku busabe.",
+    otpBad: "Iyo kode si yo cyangwa yarengeje igihe.",
+    verify: "Emeza uhuze",
   },
   shell: {
     nav: "Ibikubiyemo",
@@ -318,7 +326,7 @@ const fr: Copy = {
   show: "Afficher le mot de passe",
   hide: "Masquer le mot de passe",
   rules: {
-    len: "Au moins 8 caractères",
+    len: "Au moins 10 caractères",
     num: "Un chiffre",
     letter: "Une lettre",
   },
@@ -448,6 +456,10 @@ const fr: Copy = {
     doneTitle: "Liée !",
     doneBody: "Vous la verrez dans Mes demandes.",
     open: "Ouvrir mes demandes",
+    otp: "Code reçu par SMS",
+    otpHint: "Nous avons envoyé un code à 6 chiffres au téléphone de la demande.",
+    otpBad: "Ce code est incorrect ou expiré.",
+    verify: "Vérifier et lier",
   },
   shell: {
     nav: "Principal",

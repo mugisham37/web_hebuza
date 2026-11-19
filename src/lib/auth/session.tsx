@@ -20,6 +20,8 @@ export type SessionUser = {
   mfaRequired: boolean;
   /** Absolute session end from the server (F-IAM-11); null = idle timeout only. */
   expiresAt: string | null;
+  /** CRM-01: HBC-YYYY-NNNNNN-C; null for staff and not-yet-registered guests. */
+  customerNo: string | null;
 };
 
 type SessionState = {
@@ -42,7 +44,7 @@ async function fetchSession(): Promise<SessionUser | null> {
     return {
       id: s.userId, name: s.name, email: s.email, phone: s.phone ?? null, roles,
       orgIds: (s as { orgIds?: string[] }).orgIds ?? [], // shortcut: server has no orgs yet (ORG module, Stage 7)
-      language: s.language as SessionUser["language"], emailVerified: s.isEmailVerified, mfaRequired: requiresMfa(roles), expiresAt: s.expiresAt ?? null,
+      language: s.language as SessionUser["language"], emailVerified: s.isEmailVerified, mfaRequired: requiresMfa(roles), expiresAt: s.expiresAt ?? null, customerNo: s.customerNo ?? null,
     };
   } catch (e) {
     if (e instanceof ApiError && (e.isAuth || e.isForbidden)) return null;

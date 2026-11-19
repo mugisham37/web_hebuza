@@ -153,7 +153,7 @@ export function PasswordInput({
 }
 
 export const passwordRules = (p: string) => ({
-  len: p.length >= 8,
+  len: p.length >= 10,
   num: /\d/.test(p),
   letter: /[a-z]/i.test(p),
 });

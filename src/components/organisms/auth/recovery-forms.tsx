@@ -218,8 +218,10 @@ export function ClaimForm() {
   const { status } = useSession();
   const sp = useSearchParams();
   const { pending, error, run } = useSubmit();
-  const [errs, setErrs] = useState<{ code?: string; phone?: string }>({});
+  const [errs, setErrs] = useState<{ code?: string; phone?: string; otp?: string }>({});
   const [done, setDone] = useState(false);
+  // REQ-10: step 2 once the server has texted a code to the case's phone.
+  const [sent, setSent] = useState<{ code: string; phone: string } | null>(null);
 
   if (done)
     return (
@@ -257,7 +259,7 @@ export function ClaimForm() {
       {error && !needsLogin && (
         <Notice>
           {error instanceof ApiError && error.status < 500
-            ? c.claim.mismatch
+            ? sent ? c.claim.otpBad : c.claim.mismatch
             : c.generic}
         </Notice>
       )}
@@ -267,6 +269,15 @@ export function ClaimForm() {
         onSubmit={(e) => {
           e.preventDefault();
           const f = new FormData(e.currentTarget);
+          if (sent) {
+            const otp = String(f.get("otp") ?? "").trim();
+            if (!/^\d{6}$/.test(otp)) return setErrs({ otp: c.claim.otpBad });
+            setErrs({});
+            return run(async () => {
+              await unwrap(api.POST("/api/applications/claim", { body: { ...sent, otp } }));
+              setDone(true);
+            });
+          }
           const code = String(f.get("code") ?? "")
             .trim()
             .toUpperCase();
@@ -278,12 +289,13 @@ export function ClaimForm() {
           setErrs(next);
           if (next.code || next.phone) return;
           run(async () => {
-            await unwrap(
+            const r = await unwrap(
               api.POST("/api/applications/claim", {
                 body: { code, phone: phone! },
               }),
             );
-            setDone(true);
+            if (r.claimed) setDone(true);
+            else setSent({ code, phone: phone! });
           });
         }}
       >
@@ -293,6 +305,7 @@ export function ClaimForm() {
               id={id}
               name="code"
               defaultValue={sp.get("code") ?? ""}
+              readOnly={!!sent}
               autoCapitalize="characters"
               className="font-mono uppercase"
               aria-describedby={describedBy}
@@ -306,11 +319,29 @@ export function ClaimForm() {
               id={id}
               name="phone"
               placeholder="788 123 456"
+              readOnly={!!sent}
               aria-describedby={describedBy}
               aria-invalid={invalid || undefined}
             />
           )}
         </Field>
+        {sent && (
+          <Field label={c.claim.otp} hint={c.claim.otpHint} error={errs.otp}>
+            {({ id, describedBy, invalid }) => (
+              <Input
+                id={id}
+                name="otp"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                autoFocus
+                className="font-mono tabular"
+                aria-describedby={describedBy}
+                aria-invalid={invalid || undefined}
+              />
+            )}
+          </Field>
+        )}
         <Button
           type="submit"
           size="lg"
@@ -319,7 +350,7 @@ export function ClaimForm() {
           disabled={needsLogin}
           className="w-full justify-center"
         >
-          {c.claim.submit}
+          {sent ? c.claim.verify : c.claim.submit}
         </Button>
       </form>
     </>

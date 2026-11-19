@@ -14,6 +14,13 @@ import { c2Copy, fill } from "@/content/pages/c2";
 import { Thread } from "@/components/organisms/client/thread";
 import { toStatus, useRequest, type RequestDetail } from "@/components/molecules/client/requests-data";
 import { NeedRow } from "@/components/molecules/client/client";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api, unwrap } from "@/lib/api/client";
+import { Button } from "@/components/atoms/button";
+import { Dialog } from "@/components/atoms/dialog";
+import { Field, Textarea } from "@/components/atoms/field";
+import { useToast } from "@/components/atoms/toast";
 
 const TAB_IDS = [
   "overview",
@@ -171,9 +178,15 @@ function Overview({ r }: { r: RequestDetail }) {
             <div className="mt-2">
               <OutcomePill outcome={r.outcome} />
             </div>
+            {(r.outcome_institution || r.outcome_ref) && (
+              <p className="mt-2 text-small text-fg-muted">
+                {[r.outcome_institution, r.outcome_ref && fill(c.outcomeRef, { ref: r.outcome_ref }), r.outcome_at && formatDate(r.outcome_at, locale)].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </section>
         )}
         <Deliverables r={r} compact />
+        {r.cancel_mode && <CancelPanel code={r.code} mode={r.cancel_mode} />}
       </div>
     </div>
   );
@@ -303,5 +316,46 @@ function Deliverables({ r, compact }: { r: RequestDetail; compact?: boolean }) {
         ))}
       </ul>
     </section>
+  );
+}
+
+/** REQ-11: cancel before work starts; afterwards only a request a manager decides. */
+function CancelPanel({ code, mode }: { code: string; mode: "cancel" | "request" }) {
+  const { locale } = useI18n();
+  const c = c2Copy(locale).req.cancel;
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+  const m = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/applications/{code}/cancel", { params: { path: { code } }, body: { reason } })),
+    onSuccess: (r) => {
+      setOpen(false);
+      toast({ title: r.state === "cancelled" ? c.done : c.asked, tone: "success" });
+      void qc.invalidateQueries({ queryKey: ["c2"] });
+    },
+    onError: () => toast({ title: c.failed, tone: "danger" }),
+  });
+  const ask = mode === "request";
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)} className="justify-center">{ask ? c.ask : c.open}</Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={ask ? c.askTitle : c.title}
+        description={ask ? c.askLede : c.lede}
+        footer={
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button variant="outline" onClick={() => setOpen(false)}>{c.keep}</Button>
+            <Button onClick={() => m.mutate()} loading={m.isPending} disabled={reason.trim().length < 3}>{c.confirm}</Button>
+          </div>
+        }
+      >
+        <Field label={c.reason}>
+          {({ id, describedBy }) => <Textarea id={id} aria-describedby={describedBy} rows={3} maxLength={1000} value={reason} onChange={(e) => setReason(e.target.value)} />}
+        </Field>
+      </Dialog>
+    </>
   );
 }
