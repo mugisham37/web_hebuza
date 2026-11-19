@@ -28,6 +28,31 @@ const subscribe = (fn: () => void) => {
 function save(c: Consent) {
   document.cookie = `${COOKIE}=v${VERSION}.a${+c.analytics}.m${+c.marketing}; path=/; max-age=${60 * 60 * 24 * 180}; samesite=lax`;
   listeners.forEach((fn) => fn());
+  record(c);
+}
+/** Anonymous banner id so the server ledger can tie a visitor's choices together (F-CMS-15). */
+function anonId() {
+  const k = "hebuza_cid";
+  let id = document.cookie.match(new RegExp(`(?:^|; )${k}=([^;]*)`))?.[1];
+  if (!id) {
+    id = crypto.randomUUID();
+    document.cookie = `${k}=${id}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
+  }
+  return id;
+}
+/** Server-side consent ledger; best-effort (the cookie stays the source of truth for gating). */
+function record(c: Consent) {
+  void fetch("/api/consent", {
+    method: "POST",
+    credentials: "include",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      anon_id: anonId(),
+      source: "cookie_banner",
+      policy_version: `cookies-v${VERSION}`,
+      purposes: { cookies_analytics: c.analytics, cookies_marketing: c.marketing },
+    }),
+  }).catch(() => undefined);
 }
 /** Raw cookie string, "" before choice, "ssr" on the server (render nothing until hydrated). */
 const useRaw = () => useSyncExternalStore(subscribe, read, () => "ssr");
