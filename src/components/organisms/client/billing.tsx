@@ -17,7 +17,7 @@ import { DataTable, type Column } from "@/components/atoms/data-table";
 import { EmptyState, ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { Icon, type IconName } from "@/components/atoms/icon";
 import { useToast } from "@/components/atoms/toast";
-import { Field, Select, Textarea } from "@/components/atoms/field";
+import { Field, Input, Select, Textarea } from "@/components/atoms/field";
 import { daysUntil } from "@/components/molecules/client/api";
 import { saveBlob } from "@/components/molecules/client/zip";
 
@@ -478,6 +478,9 @@ function Plan({
               {fill(c.pastDue, { date: formatDate(s.graceEndsAt, locale) })}
             </p>
           )}
+          {s.scheduledPlanId && s.periodEnd && (
+            <p className="text-fg-subtle">{fill(c.scheduledTo, { plan: s.scheduledPlanId, date: formatDate(s.periodEnd, locale) })}</p>
+          )}
           {s.cancelAtPeriodEnd && s.periodEnd && (
             <p className="text-fg-subtle">{fill(c.cancelScheduled, { date: formatDate(s.periodEnd, locale) })}</p>
           )}
@@ -516,8 +519,93 @@ function Plan({
       >
         {s?.enrolled ? c.managePlan : c.seePlans}
       </a>
+      {s?.enrolled && <ChangePlan s={s} />}
       {s?.enrolled && <CancelPlan s={s} />}
     </div>
+  );
+}
+
+type PlanRow = components["schemas"]["SubscriptionPlanResponse"];
+type Change = components["schemas"]["SubscriptionChangeResponse"];
+/** F-SUB-08: pick a plan → downgrade is scheduled for period end; upgrade shows the prorated amount and pays by MoMo. */
+function ChangePlan({ s }: { s: Sub }) {
+  const { locale } = useI18n();
+  const c = c3Copy(locale).bill;
+  const qc = useQueryClient();
+  const toast = useToast();
+  const [open, setOpen] = useState(false);
+  const [planId, setPlanId] = useState("");
+  const [quote, setQuote] = useState<Change | null>(null);
+  const [phone, setPhone] = useState("");
+  const plans = useQuery({
+    queryKey: ["c3", "plans"],
+    enabled: open,
+    queryFn: () => unwrap<{ plans: PlanRow[] }>(api.GET("/api/me/subscription/plans")).then((d) => d.plans.filter((p) => p.name !== s.planName)),
+  });
+  const fail = () => toast({ title: c3Copy(locale).common.error, tone: "danger" });
+  const close = () => { setOpen(false); setQuote(null); setPlanId(""); };
+  const change = useMutation({
+    mutationFn: () => unwrap<Change>(api.POST("/api/me/subscription/change", { body: { planId } })),
+    onSuccess: (r) => {
+      if (r.action === "scheduled") {
+        toast({ title: fill(c.changeScheduled, { plan: plans.data?.find((p) => p.planId === planId)?.name ?? planId, date: r.effectiveAt ? formatDate(r.effectiveAt, locale) : "" }), tone: "success" });
+        void qc.invalidateQueries({ queryKey: ["c3", "subscription"] });
+        close();
+      } else setQuote(r);
+    },
+    onError: fail,
+  });
+  const pay = useMutation({
+    mutationFn: () =>
+      unwrap(api.POST("/api/payments/initiate", {
+        body: { plan_id: planId, method: "mobile_money", operator: "mtn", phone_number: phone.trim() },
+        headers: { "Idempotency-Key": `plan:${planId}:${s.periodEnd ?? ""}:${phone.trim()}` },
+      })),
+    onSuccess: () => { toast({ title: c.changeSent, tone: "success" }); close(); },
+    onError: fail,
+  });
+  return (
+    <>
+      <Button size="sm" variant="outline" className="justify-self-start" onClick={() => setOpen(true)}>{c.changeTitle}</Button>
+      <Dialog
+        open={open}
+        onClose={close}
+        title={c.changeTitle}
+        footer={
+          quote ? (
+            <Button disabled={phone.trim().length < 9} loading={pay.isPending} onClick={() => pay.mutate()}>{c.changePay}</Button>
+          ) : (
+            <Button disabled={!planId} loading={change.isPending} onClick={() => change.mutate()}>{c.changeCheck}</Button>
+          )
+        }
+      >
+        {plans.isPending ? (
+          <Skeleton className="h-16" />
+        ) : plans.error ? (
+          <ErrorState error={plans.error} onRetry={() => plans.refetch()} />
+        ) : !plans.data.length ? (
+          <EmptyState body={c.changeNone} />
+        ) : quote ? (
+          <div className="grid gap-3">
+            <p>{fill(c.changeUpgrade, { amount: formatMoney(quote.amountRwf, "RWF", locale) })}</p>
+            <Field label={c.changePhone}>
+              {(a) => <Input id={a.id} aria-describedby={a.describedBy} type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />}
+            </Field>
+          </div>
+        ) : (
+          <Field label={c.changePick}>
+            {(a) => (
+              <Select id={a.id} aria-describedby={a.describedBy} value={planId} onChange={(e) => setPlanId(e.target.value)}>
+                <option value="">—</option>
+                {plans.data.map((p) => (
+                  <option key={p.planId} value={p.planId}>{p.name} · {formatMoney(p.amountRwf, "RWF", locale)}</option>
+                ))}
+              </Select>
+            )}
+          </Field>
+        )}
+      </Dialog>
+    </>
   );
 }
 

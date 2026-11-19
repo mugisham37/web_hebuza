@@ -73,6 +73,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/finance/field", label: "wsnav.field" }, // Stage 9 L2 expenses + cash custody
     { href: "/finance/revenue", label: "wsnav.revenue" },
     { href: "/finance/payouts", label: "wsnav.payouts" },
+    { href: "/finance/subscriptions", label: "wsnav.finSubscriptions" }, // F-SUB-09 pause
     { href: "/finance/payables", label: "wsnav.payables" }, // Stage 12 supplier bills
     { href: "/finance/reports", label: "wsnav.reports" },
     { href: "/finance/settings", label: "wsnav.settings" },

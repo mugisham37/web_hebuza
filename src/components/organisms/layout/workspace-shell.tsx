@@ -169,7 +169,7 @@ const NAV_ICON: Record<string, IconName> = {
   conversations: "message", catalogue: "briefcase", workforce: "graduation", knowledge: "search", statuses: "refresh",
   agent: "layers", offers: "sparkle", inbox: "message", calendar: "calendar", clients: "users", earnings: "wallet", performance: "chart", profile: "user",
   finance: "layers", approvals: "shield", quotes: "file", invoices: "fileCheck", payments: "wallet", reconciliation: "refresh",
-  receivables: "clock", refunds: "arrowUpRight", revenue: "chart", payouts: "card", reports: "briefcase",
+  receivables: "clock", refunds: "arrowUpRight", revenue: "chart", payouts: "card", reports: "briefcase", subscriptions: "calendar",
 };
 const navIcon = (href: string): IconName => NAV_ICON[href.split("/").filter(Boolean).at(-1) ?? ""] ?? NAV_ICON[href.split("/")[1]] ?? "layers";
 
