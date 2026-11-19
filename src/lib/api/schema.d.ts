@@ -2868,6 +2868,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/obligations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientCalendarController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/obligations/ics/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClientCalendarController_ics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/documents": {
         parameters: {
             query?: never;
@@ -14217,7 +14249,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1405_0"][];
+            items: components["schemas"]["__s1406_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -14649,17 +14681,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s1790_0"];
+            definition: components["schemas"]["__s1791_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s1794_0"];
+            definition: components["schemas"]["__s1795_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s1798_0"];
+            definition?: components["schemas"]["__s1799_0"];
         };
         CampaignDto: {
             name?: string;
@@ -14721,7 +14753,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s1850_0"];
+            conditions?: components["schemas"]["__s1851_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -15919,6 +15951,18 @@ export interface components {
             paidAt: string;
             applicationCode: string;
         };
+        ClientCalendarResponse: {
+            items: {
+                id: string;
+                label: {
+                    [key: string]: string;
+                };
+                due_date: string;
+                status: string;
+                application_id: string | null;
+            }[];
+            ics_url: string;
+        };
         ClientDashboard: {
             needs: {
                 id: string;
@@ -16271,14 +16315,6 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1405_0: {
-            id: string;
-            href: string;
-            label: {
-                [key: string]: string;
-            };
-            children?: components["schemas"]["__s1405_0"][];
-        };
         __s1406_0: {
             id: string;
             href: string;
@@ -16295,16 +16331,13 @@ export interface components {
             };
             children?: components["schemas"]["__s1407_0"][];
         };
-        __s1790_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1790_0"])[];
+        __s1408_0: {
+            id: string;
+            href: string;
+            label: {
+                [key: string]: string;
+            };
+            children?: components["schemas"]["__s1408_0"][];
         };
         __s1791_0: {
             /** @enum {string} */
@@ -16427,7 +16460,7 @@ export interface components {
                 value: unknown;
             } | components["schemas"]["__s1801_0"])[];
         };
-        __s1850_0: {
+        __s1802_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16436,7 +16469,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1850_0"])[];
+            } | components["schemas"]["__s1802_0"])[];
         };
         __s1851_0: {
             /** @enum {string} */
@@ -16547,6 +16580,17 @@ export interface components {
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
             } | components["schemas"]["__s1860_0"])[];
+        };
+        __s1861_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s1861_0"])[];
         };
     };
     responses: never;
@@ -22477,6 +22521,56 @@ export interface operations {
                                 name: string;
                             }[];
                         };
+                    };
+                };
+            };
+        };
+    };
+    ClientCalendarController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: components["schemas"]["ClientCalendarResponse"];
+                    };
+                };
+            };
+        };
+    };
+    ClientCalendarController_ics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
                     };
                 };
             };
