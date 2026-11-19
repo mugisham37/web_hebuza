@@ -1,13 +1,13 @@
 "use client";
 // U16 Accounting export wizard (board 12 RP3, Fix applied: PLACEHOLDER chart of accounts, balance computed server-side).
 // period + format → account map → preview (debits = credits, else blocked) → step-up export (audited) → download + checksum.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { cx, formatDate } from "@/shared/format";
 import { setUrlParams, useUrlParams } from "@/lib/url-state";
-import { newIdempotencyKey } from "@/lib/api/client";
+import { api, newIdempotencyKey, unwrap } from "@/lib/api/client";
 import { ACCOUNTS, type Account } from "@/shared/finance/journal";
 import { JOURNAL_FORMATS, journalExport, journalPreview, type JournalBody, type JournalFormat } from "@/lib/finance/a";
 import { fill } from "@/content/pages/finance-common";
@@ -61,8 +61,16 @@ export function AccountingExport() {
   const from = params.get("from") ?? (today ? `${today.slice(0, 8)}01` : "");
   const to = params.get("to") ?? today;
   const format = ((JOURNAL_FORMATS as readonly string[]).includes(params.get("format") ?? "") ? params.get("format") : "generic_csv") as JournalFormat;
-  // shortcut: account map lives in component state (resets on refresh), persist per user via /api/finance/settings when accounts mapping ships (lane F).
+  // The team's saved account mapping (finance settings); defaults until someone saves one.
+  const saved = useQuery({
+    queryKey: ["finance", "journal-map"],
+    queryFn: () => unwrap<{ map: Record<string, string> | null }>(api.GET("/api/finance/exports/journal/map")),
+  });
   const [map, setMap] = useState<Record<Account, string>>({ ...ACCOUNTS });
+  const [loadedMap, setLoadedMap] = useState(false);
+  useEffect(() => {
+    if (saved.data?.map && !loadedMap) { setMap((m) => ({ ...m, ...saved.data!.map })); setLoadedMap(true); }
+  }, [saved.data, loadedMap]);
   const [errors, setErrors] = useState<{ field: string; message: string }[]>([]);
   const [key] = useState(newIdempotencyKey);
   const [done, setDone] = useState<Done | null>(null);
@@ -80,7 +88,11 @@ export function AccountingExport() {
     } else if (step === "map") {
       const e = ACCS.filter((a) => !CODE.test(map[a])).map((a) => ({ field: `j-${a}`, message: `${c.accounts[a]}: ${c.codeError}` }));
       setErrors(e);
-      if (!e.length) go("preview");
+      if (!e.length) {
+        // Saving the mapping is best-effort: the export still uses the map in hand.
+        void api.PUT("/api/finance/exports/journal/map", { body: { map } }).catch(() => undefined);
+        go("preview");
+      }
       else requestAnimationFrame(() => document.getElementById("j-errors")?.focus());
     }
   }

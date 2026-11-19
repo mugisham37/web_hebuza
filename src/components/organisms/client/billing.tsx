@@ -940,24 +940,27 @@ function range(p: Period, now = new Date()): [Date, Date] {
   return [new Date(y, 0, 1), new Date(y + 1, 0, 1)];
 }
 
-function Statements({ invoices, receipts, loading }: { invoices: Invoice[]; receipts: Receipt[]; loading: boolean }) {
+function Statements({ loading }: { invoices?: Invoice[]; receipts?: Receipt[]; loading: boolean }) {
   const { locale } = useI18n();
   const c = c3Copy(locale).bill;
   const s = c.statements;
   const [period, setPeriod] = useState<Period>("thisMonth");
   const [from, to] = range(period);
-  const inside = (d: string) => { const t = new Date(d); return t >= from && t < to; };
-  // shortcut: statement built client-side from invoices + receipts; use a server statement endpoint when FIN ships one.
-  const rows: (string | number)[][] = [
-    ...invoices.filter((i) => inside(i.issuedAt)).map((i) => [i.issuedAt.slice(0, 10), "invoice", i.number, i.service, i.amount, i.currency, i.status]),
-    ...receipts.filter((r) => inside(r.paidAt)).map((r) => [r.paidAt.slice(0, 10), "payment", r.number, r.invoiceNumber, -r.amount, r.currency, r.method]),
-  ].sort((a, b) => String(a[0]).localeCompare(String(b[0])));
+  const day = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  // The statement of record comes from the server (finance invoices, receipts, credit notes, opening balance).
+  const q = useQuery({
+    queryKey: ["c3", "statement", day(from), day(to)],
+    queryFn: () => unwrap<components["schemas"]["ClientStatement"]>(api.GET("/api/me/statement", { params: { query: { from: day(from), to: day(to) } } })),
+  });
+  const rows: (string | number)[][] = (q.data?.rows ?? []).map((r) => [r.date, r.type, r.number, r.detail, r.amount, q.data!.currency]);
   const download = () => {
     const esc = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
-    const csv = [["date", "type", "number", "detail", "amount", "currency", "status"], ...rows].map((r) => r.map(esc).join(",")).join("\r\n");
-    saveBlob(new Blob([csv], { type: "text/csv" }), `statement-${period}-${from.toISOString().slice(0, 7)}.csv`);
+    const csv = [["date", "type", "number", "detail", "amount", "currency"], ["", "opening", "", "", q.data?.opening ?? 0, "RWF"], ...rows, ["", "closing", "", "", q.data?.closing ?? 0, "RWF"]]
+      .map((r) => r.map(esc).join(",")).join("\r\n");
+    saveBlob(new Blob([csv], { type: "text/csv" }), `statement-${period}-${day(from).slice(0, 7)}.csv`);
   };
-  if (loading) return <Skeleton className="h-24 " />;
+  if (q.error) return <ErrorState error={q.error} onRetry={() => q.refetch()} />;
+  if (loading || q.isPending) return <Skeleton className="h-24 " />;
   return (
     <div className="grid max-w-xl gap-4 border border-border bg-surface p-6">
       <p className="text-fg-subtle">{s.hint}</p>

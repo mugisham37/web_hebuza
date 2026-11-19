@@ -45,7 +45,7 @@ async function fetchSession(): Promise<SessionUser | null> {
     const roles = normalizeRoles(s);
     return {
       id: s.userId, name: s.name, email: s.email, phone: s.phone ?? null, roles,
-      orgIds: (s as { orgIds?: string[] }).orgIds ?? [], // shortcut: server has no orgs yet (ORG module, Stage 7)
+      orgIds: s.orgIds ?? [],
       language: s.language as SessionUser["language"], emailVerified: s.isEmailVerified, mfaRequired: requiresMfa(roles), expiresAt: s.expiresAt ?? null, customerNo: s.customerNo ?? null,
       activeRole: ((s as { activeRole?: string }).activeRole as Role | undefined) ?? null,
     };
