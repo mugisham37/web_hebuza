@@ -12,7 +12,7 @@ import {
 } from "@/shared/domain/case-status";
 
 export type RequestSummary =
-  C.ApplicationSummaryResponse;
+  C.ApplicationSummaryResponse & { group_code?: string | null };
 
 // shortcut: needs/timeline/payments/deliverables are mock-only extensions of the detail + ★GET /api/me/dashboard (spec CLP §11);
 // drop these types for schema ones once the server ships them.

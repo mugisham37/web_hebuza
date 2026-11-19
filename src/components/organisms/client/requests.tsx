@@ -45,6 +45,7 @@ export function RequestsList() {
       (!svc || r.service_name === svc) &&
       (!needle ||
         r.code.toLowerCase().includes(needle) ||
+        (r.group_code ?? "").toLowerCase().includes(needle) ||
         r.service_name.toLowerCase().includes(needle)),
   );
   const filtered = !!(needle || svc || tab !== "all");
@@ -66,14 +67,17 @@ export function RequestsList() {
     {
       key: "code",
       header: c.cols.code,
-      sortValue: (r) => r.code,
+      sortValue: (r) => `${r.group_code ?? ""}${r.code}`, // REQ-02: basket cases sort together under their RG code
       cell: (r) => (
-        <Link
-          href={localHref(locale, `/requests/${r.code}`)}
-          className="font-medium tabular underline-offset-4 hover:underline"
-        >
-          {r.code}
-        </Link>
+        <span className="grid">
+          <Link
+            href={localHref(locale, `/requests/${r.code}`)}
+            className="font-medium tabular underline-offset-4 hover:underline"
+          >
+            {r.code}
+          </Link>
+          {r.group_code && <span className="text-small text-fg-subtle tabular">{r.group_code}</span>}
+        </span>
       ),
     },
     {
