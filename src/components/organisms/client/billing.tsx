@@ -479,7 +479,7 @@ function Plan({
             </p>
           )}
           {s.scheduledPlanId && s.periodEnd && (
-            <p className="text-fg-subtle">{fill(c.scheduledTo, { plan: s.scheduledPlanId, date: formatDate(s.periodEnd, locale) })}</p>
+            <p className="text-fg-subtle">{fill(c.scheduledTo, { plan: s.scheduledPlanName ?? s.scheduledPlanId, date: formatDate(s.periodEnd, locale) })}</p>
           )}
           {s.cancelAtPeriodEnd && s.periodEnd && (
             <p className="text-fg-subtle">{fill(c.cancelScheduled, { date: formatDate(s.periodEnd, locale) })}</p>
