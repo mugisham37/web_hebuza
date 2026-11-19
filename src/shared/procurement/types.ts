@@ -112,7 +112,7 @@ export type ProcNote = { id: string; kind: string; text: string; ref?: string; h
 export type ProcSummary = {
   tiles: {
     contracts60: number; contracts90: number; billsDueWeek: number; billsDueWeekCount: number; overdue: number; overdueCount: number;
-    notInvoiced: number; depositsOutstanding: number; budgetUsedPct: number;
+    notInvoiced: number; depositsOutstanding: number; budgetUsedPct: number; awaitingApproval: number;
   };
   banner: { leaseDays?: number; leaseRef?: string; billsDue: number; requests: number };
   balances: { vendorId: string; name: string; balance: number }[];

@@ -12,6 +12,7 @@ import { fill } from "@/content/pages/agent-common";
 import { opsCommon } from "@/content/pages/ops-common";
 import { agentToday } from "@/content/pages/agent-today";
 import { useSummary, useMyCases, type AgentCaseVM } from "@/lib/agent/api";
+import { useEarnings } from "@/lib/agent/e";
 import { rowAction, ACTION_TAB } from "@/shared/agent/core";
 import {
   useStripOffers,
@@ -669,6 +670,9 @@ function Kpis() {
   const { wsHref } = useWs();
   const q = useMetrics();
   const m = q.data;
+  // F-RPT-09: earnings this month (paid + scheduled + pending, before deductions) from the earnings API.
+  const e = useEarnings("").data;
+  const bar = e?.months.find((b) => b.month === e.month);
   if (q.error)
     return <PanelError what={t.kpi.what} onRetry={() => q.refetch()} />;
   if (!m) return <SkeletonRows n={1} className="h-24" />;
@@ -677,7 +681,7 @@ function Kpis() {
       href={localHref(locale, wsHref("/agent/performance"))}
       className="grid gap-3 border border-border bg-white p-4 m-rise m-lift"
     >
-      <span className="grid grid-cols-3 gap-2">
+      <span className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <span>
           <span className="block text-eyebrow text-fg-muted">
             {t.kpi.onTime}
@@ -700,6 +704,14 @@ function Kpis() {
             {t.kpi.cases}
           </span>
           <span className="text-card-title tabular">{m.completedCount}</span>
+        </span>
+        <span>
+          <span className="block text-eyebrow text-fg-muted">
+            {t.kpi.earnings}
+          </span>
+          <span className="text-card-title tabular">
+            {bar ? formatMoney(bar.paid + bar.scheduled + bar.pending, "RWF", locale) : "—"}
+          </span>
         </span>
       </span>
       <span className="flex items-center justify-between gap-2 text-eyebrow text-fg-muted">

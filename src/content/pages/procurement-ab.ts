@@ -7,7 +7,7 @@ const en = {
     lease: "Office lease ends in {n} days", billsDue: "{n} bills due this week", requests: "{n} requests to process",
     tiles: {
       contracts: "Contracts expiring", contractsSub: "{n} in 90 days", contractsVal: "{n} in 60 d", billsWeek: "Bills due this week", overdue: "Overdue",
-      notInvoiced: "Received not invoiced", deposits: "Deposits outstanding", budget: "Budget used", budgetVal: "{pct}% of year",
+      notInvoiced: "Received not invoiced", deposits: "Deposits outstanding", budget: "Budget used", budgetVal: "{pct}% of year", awaiting: "Requests awaiting approval",
     },
     obligations: "Upcoming obligations", balances: "Top supplier balances", noBalances: "No open supplier balances.",
     firstTitle: "No suppliers yet.", firstBody: "Add your landlord and utilities first.", addSupplier: "Add supplier",
@@ -119,7 +119,7 @@ const rw: AbCopy = {
     lease: "Ubukode bw'ibiro burarangira mu minsi {n}", billsDue: "Fagitire {n} zigomba kwishyurwa iki cyumweru", requests: "Ubusabe {n} bwo gukurikirana",
     tiles: {
       contracts: "Amasezerano arangira", contractsSub: "{n} mu minsi 90", contractsVal: "{n} mu minsi 60", billsWeek: "Fagitire z'iki cyumweru", overdue: "Zarenze igihe",
-      notInvoiced: "Byakiriwe nta fagitire", deposits: "Ingwate zitarasubizwa", budget: "Ingengo yakoreshejwe", budgetVal: "{pct}% by'umwaka",
+      notInvoiced: "Byakiriwe nta fagitire", deposits: "Ingwate zitarasubizwa", budget: "Ingengo yakoreshejwe", budgetVal: "{pct}% by'umwaka", awaiting: "Ibisabwa bitegereje kwemezwa",
     },
     obligations: "Ibigomba gukorwa vuba", balances: "Abo tubereyemo umwenda cyane", noBalances: "Nta mwenda w'abatanga serivisi.",
     firstTitle: "Nta batanga serivisi barahari.", firstBody: "Banza wongeremo nyir'inzu n'abatanga amazi n'umuriro.", addSupplier: "Ongeramo utanga serivisi",
@@ -229,7 +229,7 @@ const fr: AbCopy = {
     lease: "Le bail des bureaux se termine dans {n} jours", billsDue: "{n} factures dues cette semaine", requests: "{n} demandes à traiter",
     tiles: {
       contracts: "Contrats à échéance", contractsSub: "{n} sous 90 j", contractsVal: "{n} sous 60 j", billsWeek: "Factures de la semaine", overdue: "En retard",
-      notInvoiced: "Reçu non facturé", deposits: "Dépôts en cours", budget: "Budget consommé", budgetVal: "{pct} % de l'année",
+      notInvoiced: "Reçu non facturé", deposits: "Dépôts en cours", budget: "Budget consommé", budgetVal: "{pct} % de l'année", awaiting: "Demandes en attente d'approbation",
     },
     obligations: "Échéances à venir", balances: "Principaux soldes fournisseurs", noBalances: "Aucun solde fournisseur ouvert.",
     firstTitle: "Aucun fournisseur.", firstBody: "Ajoutez d'abord votre bailleur et vos services publics.", addSupplier: "Ajouter un fournisseur",

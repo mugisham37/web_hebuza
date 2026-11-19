@@ -47,8 +47,8 @@ export function ProcHome() {
 
       {q.isError ? <PanelErr onRetry={() => q.refetch()} /> : s?.firstRun ? <FirstRun checklist={s.checklist} /> : (
         <>
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6 m-stagger">
-            {!s ? [0, 1, 2, 3, 4, 5].map((i) => <li key={i} className="h-28 m-shimmer" />) : (
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 m-stagger">
+            {!s ? [0, 1, 2, 3, 4, 5, 6].map((i) => <li key={i} className="h-28 m-shimmer" />) : (
               <>
                 <Tile i={0} icon="calendar" label={c.tiles.contracts} href="/procurement/contracts?status=expiring" value={fill(c.tiles.contractsVal, { n: s.tiles.contracts60 })} sub={fill(c.tiles.contractsSub, { n: s.tiles.contracts90 })} />
                 <Tile i={1} icon="file" label={c.tiles.billsWeek} href="/procurement/bills?view=due_week" value={<Amount value={s.tiles.billsDueWeek} size="lg" className="font-semibold" />} sub={String(s.tiles.billsDueWeekCount)} />
@@ -56,6 +56,7 @@ export function ProcHome() {
                 <Tile i={3} icon="check" label={c.tiles.notInvoiced} href="/procurement/receipts?view=not_invoiced" value={String(s.tiles.notInvoiced)} />
                 <Tile i={4} icon="wallet" label={c.tiles.deposits} href="/procurement/deposits?tab=deposit" value={<Amount value={s.tiles.depositsOutstanding} size="lg" className="font-semibold" />} />
                 <Tile i={5} icon="chart" label={c.tiles.budget} href="/procurement/reports?tab=spend" value={fill(c.tiles.budgetVal, { pct: s.tiles.budgetUsedPct })} />
+                <Tile i={6} icon="fileCheck" label={c.tiles.awaiting} href="/procurement/requests" value={String(s.tiles.awaitingApproval)} />
               </>
             )}
           </ul>

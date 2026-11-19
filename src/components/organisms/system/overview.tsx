@@ -219,7 +219,7 @@ function HealthCard({ card, onRetry, i }: { card?: OverviewVM["health"]; onRetry
             <ul className="grid gap-1.5">
               {cs.map((x) => (
                 <li key={x.key} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-small">
-                  <span className="min-w-0">{x.name}{x.health !== "operational" && <span className="block text-eyebrow text-fg-muted">{x.detail}</span>}</span>
+                  <span className="min-w-0">{x.name}{x.detail && <span className="block text-eyebrow text-fg-muted">{x.detail}</span>}</span>
                   <HealthPill health={x.health} />
                 </li>
               ))}
