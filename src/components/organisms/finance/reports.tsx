@@ -77,6 +77,7 @@ export function ReportsLibrary() {
           <Input type="search" value={term} placeholder={c.search} onChange={(e) => setUrlParams({ q: e.target.value || null })} className="pl-9" />
         </label>
       } />
+      <Link href={localHref(locale, "/finance/reports/definitions")} className="w-fit text-small underline underline-offset-4">{reportSubscribeCopy(locale).definitions}</Link>
       {cat.isError && <PanelError what={c.title} onRetry={() => cat.refetch()} />}
       {keys.length === 0 ? <EmptyPanel title={fill(c.noMatch, { q: term })} compact /> : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 m-stagger">
@@ -216,7 +217,7 @@ export function ReportView({ reportKey }: { reportKey: ReportKey }) {
         period={<PeriodLabel from={d.meta.period.from} to={d.meta.period.to} />}
         generatedAt={d.meta.generatedAt} freshness={d.meta.freshness}
         definitions={[...d.columns.map((col) => ({ key: c.cols[col.key] ?? col.key, text: c.defs[col.key] ?? "" }))]}
-        actions={<div className="flex flex-wrap items-center gap-2"><ExportMenu formats={["csv", "xlsx", "pdf"]} job={job.data ?? null} onPick={exportAs} disabled={!online || !d.rows.length} /><SubscribeControl reportKey={reportKey} /></div>}
+        actions={<div className="flex flex-wrap items-center gap-2"><ExportMenu formats={["csv", "xlsx", "pdf"]} job={job.data ?? null} onPick={exportAs} disabled={!online || !d.rows.length} /><SubscribeControl reportKey={reportKey} /><SavedViews reportKey={reportKey} current={Object.fromEntries(base)} /></div>}
         filters={
           <>
             <label className="grid gap-1 text-eyebrow text-fg-muted">{c.from}<DateInput value={d.meta.period.from} onChange={(e) => setUrlParams({ from: e.target.value || null })} className="w-40" /></label>
@@ -239,6 +240,7 @@ export function ReportView({ reportKey }: { reportKey: ReportKey }) {
           </>
         }
       >
+        <TargetLights d={d} cols={c.cols} />
         {(reportKey === "fin.revenue_reconciliation" || reportKey === "fin.revenue_share") && (
           <p className="flex items-center gap-2 bg-bg-tint px-4 py-3 text-small"><Icon name="sparkle" size={16} aria-hidden className="text-navy-600" />{c.eligibleNote}</p>
         )}
@@ -355,5 +357,92 @@ function SubscribeControl({ reportKey }: { reportKey: ReportKey }) {
         </div>
       </Dialog>
     </>
+  );
+}
+
+type Light = { metric: string; target: number; actual: number; light: "green" | "amber" | "red" };
+const LIGHT = { green: "bg-success", amber: "bg-warning", red: "bg-danger" } as const;
+/** F-RPT-08/10: period total vs the executive's target (scaled to the period), with a text label next to the colour. */
+function TargetLights({ d, cols }: { d: ReportData; cols: Record<string, string> }) {
+  const { locale } = useI18n();
+  const k = reportSubscribeCopy(locale);
+  const t = (d as ReportData & { targets?: Light[] }).targets ?? [];
+  if (!t.length) return null;
+  return (
+    <ul aria-label={k.targets} className="flex flex-wrap gap-3">
+      {t.map((x) => (
+        <li key={x.metric} className="flex items-center gap-2 border border-border px-3 py-2 text-small">
+          <span aria-hidden className={cx("size-2.5 rounded-full", LIGHT[x.light])} />
+          <span className="font-medium">{cols[x.metric] ?? x.metric}</span>
+          <span className="tabular">{formatNumber(x.actual, locale)} / {formatNumber(x.target, locale)}</span>
+          <span className="text-fg-subtle">{k[x.light]}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type View = { id: string; name: string; filters: Record<string, string> };
+/** F-RPT-06: per-user saved filter sets for this report. */
+function SavedViews({ reportKey, current }: { reportKey: ReportKey; current: Record<string, string> }) {
+  const { locale } = useI18n();
+  const k = reportSubscribeCopy(locale);
+  const toast = useToast();
+  const qc = useQueryClient();
+  const [name, setName] = useState("");
+  const [open, setOpen] = useState(false);
+  const key = ["reports", "views", reportKey];
+  const q = useQuery({ queryKey: key, queryFn: () => unwrap<{ items: View[] }>(api.GET("/api/reports/{key}/views", { params: { path: { key: reportKey } } })) });
+  const save = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/reports/{key}/views", { params: { path: { key: reportKey } }, body: { name, filters: current } })),
+    onSuccess: () => (void qc.invalidateQueries({ queryKey: key }), setOpen(false), setName("")),
+    onError: () => toast({ title: k.failed, tone: "danger" }),
+  });
+  const del = useMutation({
+    mutationFn: (id: string) => unwrap(api.DELETE("/api/reports/views/{id}", { params: { path: { id } } })),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: key }),
+  });
+  return (
+    <>
+      {(q.data?.items ?? []).map((v) => (
+        <span key={v.id} className="inline-flex items-center">
+          <button type="button" onClick={() => setUrlParams({ from: v.filters.from ?? null, to: v.filters.to ?? null, group: v.filters.group ?? null })} className="h-8 bg-bg-subtle px-3 text-small hover:bg-border-strong">{v.name}</button>
+          <button type="button" aria-label={`${k.deleteView}: ${v.name}`} onClick={() => del.mutate(v.id)} className="h-8 px-2 text-small text-fg-subtle hover:text-fg"><Icon name="x" size={12} aria-hidden /></button>
+        </span>
+      ))}
+      <Button size="sm" variant="outline" onClick={() => setOpen(true)}>{k.saveView}</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title={k.saveView}
+        footer={<div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setOpen(false)}>{k.cancel}</Button><Button disabled={!name.trim() || save.isPending} onClick={() => save.mutate()}>{k.saveView}</Button></div>}>
+        <label className="grid gap-1 text-small font-medium">{k.viewName}<Input value={name} maxLength={60} onChange={(e) => setName(e.target.value)} /></label>
+      </Dialog>
+    </>
+  );
+}
+
+type MetricDef = { key: string; unit: string; owner: string; label: Record<string, string>; definition: Record<string, string> };
+/** F-RPT-11: data definitions page — the server's metric registry, the same text every report frame and export carries. */
+export function MetricDefinitions() {
+  const { locale } = useI18n();
+  const k = reportSubscribeCopy(locale);
+  const c = useRp();
+  const q = useQuery({ queryKey: ["reports", "definitions"], queryFn: () => unwrap<{ items: MetricDef[] }>(api.GET("/api/reports/definitions")) });
+  const back = <Link href={localHref(locale, "/finance/reports")} className="mb-2 inline-flex items-center gap-1.5 text-small text-fg-muted hover:text-fg"><Icon name="arrowRight" size={14} aria-hidden className="rotate-180" />{c.back}</Link>;
+  return (
+    <div className="grid gap-4">
+      <PageHead title={k.definitions} back={back} />
+      {q.isError ? <PanelError what={c.failed} onRetry={() => q.refetch()} />
+        : !q.data ? <div aria-hidden className="h-40 m-shimmer" />
+        : !q.data.items.length ? <EmptyPanel title={c.empty.rows} body={c.empty.rowsBody} />
+        : (
+          <dl className="grid gap-px border border-border bg-border">
+            {q.data.items.map((m) => (
+              <div key={m.key} className="grid gap-1 bg-white p-4 sm:grid-cols-[14rem_1fr]">
+                <dt className="font-medium">{m.label[locale] ?? m.label.en} <span className="text-eyebrow text-fg-subtle">· {m.unit}</span></dt>
+                <dd className="text-small text-fg-muted">{m.definition[locale] ?? m.definition.en}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+    </div>
   );
 }

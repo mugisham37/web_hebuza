@@ -740,6 +740,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/finance/subscriptions/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SubscriptionsController_finPlans"];
+        put?: never;
+        post: operations["SubscriptionsController_createPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/finance/subscriptions/plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["SubscriptionsController_updatePlan"];
+        trace?: never;
+    };
     "/api/finance/subscriptions": {
         parameters: {
             query?: never;
@@ -7332,6 +7364,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reports/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportsController_targets"];
+        put: operations["ReportsController_setTarget"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/{key}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportsController_views"];
+        put?: never;
+        post: operations["ReportsController_saveView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/views/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["ReportsController_deleteView"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reports/subscriptions": {
         parameters: {
             query?: never;
@@ -13354,6 +13434,18 @@ export interface components {
         ChangePlanDto: {
             planId: string;
         };
+        PlanDto: {
+            name: string;
+            /** @enum {string} */
+            interval: "month" | "year";
+            amountRwf: number;
+            maxApplicationsPerMonth: number | null;
+            description: string | null;
+            features: string[];
+            isPublic: boolean;
+            isActive: boolean;
+            sortOrder: number;
+        };
         PauseDto: {
             days: number;
         };
@@ -14732,7 +14824,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1487_0"][];
+            items: components["schemas"]["__s1503_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -14779,6 +14871,20 @@ export interface components {
             contact: string;
             topic: string;
             message: string;
+        };
+        TargetDto: {
+            report: string;
+            metric: string;
+            monthly: number;
+            /** @enum {string} */
+            direction: "up" | "down";
+        };
+        ViewDto2: {
+            name: string;
+            /** @default {} */
+            filters?: {
+                [key: string]: string;
+            };
         };
         SubscriptionDto: {
             report: string;
@@ -15182,17 +15288,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s1883_0"];
+            definition: components["schemas"]["__s1909_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s1887_0"];
+            definition: components["schemas"]["__s1913_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s1891_0"];
+            definition?: components["schemas"]["__s1917_0"];
         };
         CampaignDto: {
             name?: string;
@@ -15254,7 +15360,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s1943_0"];
+            conditions?: components["schemas"]["__s1969_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -16891,31 +16997,31 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1487_0: {
+        __s1503_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1487_0"][];
+            children?: components["schemas"]["__s1503_0"][];
         };
-        __s1488_0: {
+        __s1504_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1488_0"][];
+            children?: components["schemas"]["__s1504_0"][];
         };
-        __s1489_0: {
+        __s1505_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1489_0"][];
+            children?: components["schemas"]["__s1505_0"][];
         };
-        __s1883_0: {
+        __s1909_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16924,9 +17030,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1883_0"])[];
+            } | components["schemas"]["__s1909_0"])[];
         };
-        __s1884_0: {
+        __s1910_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16935,9 +17041,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1884_0"])[];
+            } | components["schemas"]["__s1910_0"])[];
         };
-        __s1885_0: {
+        __s1911_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16946,9 +17052,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1885_0"])[];
+            } | components["schemas"]["__s1911_0"])[];
         };
-        __s1886_0: {
+        __s1912_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16957,9 +17063,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1886_0"])[];
+            } | components["schemas"]["__s1912_0"])[];
         };
-        __s1887_0: {
+        __s1913_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16968,9 +17074,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1887_0"])[];
+            } | components["schemas"]["__s1913_0"])[];
         };
-        __s1888_0: {
+        __s1914_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16979,9 +17085,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1888_0"])[];
+            } | components["schemas"]["__s1914_0"])[];
         };
-        __s1889_0: {
+        __s1915_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -16990,9 +17096,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1889_0"])[];
+            } | components["schemas"]["__s1915_0"])[];
         };
-        __s1890_0: {
+        __s1916_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17001,9 +17107,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1890_0"])[];
+            } | components["schemas"]["__s1916_0"])[];
         };
-        __s1891_0: {
+        __s1917_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17012,9 +17118,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1891_0"])[];
+            } | components["schemas"]["__s1917_0"])[];
         };
-        __s1892_0: {
+        __s1918_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17023,9 +17129,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1892_0"])[];
+            } | components["schemas"]["__s1918_0"])[];
         };
-        __s1893_0: {
+        __s1919_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17034,9 +17140,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1893_0"])[];
+            } | components["schemas"]["__s1919_0"])[];
         };
-        __s1894_0: {
+        __s1920_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17045,9 +17151,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1894_0"])[];
+            } | components["schemas"]["__s1920_0"])[];
         };
-        __s1943_0: {
+        __s1969_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17056,9 +17162,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1943_0"])[];
+            } | components["schemas"]["__s1969_0"])[];
         };
-        __s1944_0: {
+        __s1970_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17067,9 +17173,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1944_0"])[];
+            } | components["schemas"]["__s1970_0"])[];
         };
-        __s1945_0: {
+        __s1971_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17078,9 +17184,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1945_0"])[];
+            } | components["schemas"]["__s1971_0"])[];
         };
-        __s1946_0: {
+        __s1972_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17089,9 +17195,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1946_0"])[];
+            } | components["schemas"]["__s1972_0"])[];
         };
-        __s1947_0: {
+        __s1973_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17100,9 +17206,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1947_0"])[];
+            } | components["schemas"]["__s1973_0"])[];
         };
-        __s1948_0: {
+        __s1974_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17111,9 +17217,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1948_0"])[];
+            } | components["schemas"]["__s1974_0"])[];
         };
-        __s1949_0: {
+        __s1975_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17122,9 +17228,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1949_0"])[];
+            } | components["schemas"]["__s1975_0"])[];
         };
-        __s1950_0: {
+        __s1976_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17133,9 +17239,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1950_0"])[];
+            } | components["schemas"]["__s1976_0"])[];
         };
-        __s1951_0: {
+        __s1977_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17144,9 +17250,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1951_0"])[];
+            } | components["schemas"]["__s1977_0"])[];
         };
-        __s1952_0: {
+        __s1978_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17155,9 +17261,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1952_0"])[];
+            } | components["schemas"]["__s1978_0"])[];
         };
-        __s1953_0: {
+        __s1979_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17166,7 +17272,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1953_0"])[];
+            } | components["schemas"]["__s1979_0"])[];
         };
     };
     responses: never;
@@ -18909,6 +19015,88 @@ export interface operations {
                         message: string;
                         errorType: string | null;
                         data: components["schemas"]["SubscriptionChangeResponse"];
+                    };
+                };
+            };
+        };
+    };
+    SubscriptionsController_finPlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: components["schemas"]["SubscriptionPlanListResponse"];
+                    };
+                };
+            };
+        };
+    };
+    SubscriptionsController_createPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: components["schemas"]["SubscriptionPlanResponse"];
+                    };
+                };
+            };
+        };
+    };
+    SubscriptionsController_updatePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: components["schemas"]["SubscriptionPlanResponse"];
                     };
                 };
             };
@@ -31980,6 +32168,140 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_targets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_setTarget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TargetDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_views: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_saveView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ViewDto2"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_deleteView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
