@@ -48,6 +48,14 @@ export const validWindow = (v: unknown) => {
   return Date.parse(w.end) > Date.parse(w.start) ? null : "end_before_start";
 };
 const none = () => null;
+export const enabledLocales = (v: unknown): string[] => {
+  const list = (Array.isArray(v) ? v : String(v ?? "").split(",")).map((x) => String(x).trim()).filter((x) => (LOCALE_OPTIONS as readonly string[]).includes(x));
+  return list.length ? [...new Set(["rw", ...list])] : [...LOCALE_OPTIONS];
+};
+const validLocales = (v: unknown) => {
+  const list = String(v ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  return list.length && list.every((x) => (LOCALE_OPTIONS as readonly string[]).includes(x)) && list.includes("rw") ? null : "locales";
+};
 const validHour = (v: unknown) => (Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 23 ? null : "range");
 const bool = (v: unknown) => (typeof v === "boolean" ? null : "type");
 const oneOf = (opts: readonly string[]) => (v: unknown) => (opts.includes(String(v)) ? null : "type");
@@ -98,7 +106,9 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "uploads.max_message_mb", group: "uploads", type: "readonly", unit: "mb", default: 25, enforcedBy: "API upload guard (per message)", editableBy: [], requiresApproval: false, validate: none },
   { key: "uploads.allowed_types", group: "uploads", type: "readonly", default: "pdf, jpg, png, heic, docx, xlsx, csv · DOCM/XLSM rejected", enforcedBy: "API content-type sniffing", editableBy: [], requiresApproval: false, validate: none },
   // Languages (F-SET-10)
-  { key: "i18n.enabled_locales", group: "languages", type: "readonly", default: ["rw", "en", "fr"], enforcedBy: "src/lib/i18n/config.ts locales (deploy)", editableBy: [], requiresApproval: false, validate: none },
+  // F-SET-10: comma-separated subset of rw,en,fr; Kinyarwanda (default) can't be disabled. Hides the others from the
+  // language switcher (public settings) and steers notification language; URLs keep working for bookmarks.
+  { key: "i18n.enabled_locales", group: "languages", type: "text", default: "rw,en,fr", enforcedBy: "Language switcher + notification language (platform public settings)", editableBy: SYS_EXE, requiresApproval: false, validate: validLocales },
   // Flags (F-SET-12): one bool per module + audience
   ...FLAG_KEYS.map((k): SettingDef => ({ key: `flags.${k}`, group: "flags", type: "bool", default: k === "whatsapp_channel" || k === "consultation_booking", enforcedBy: `Feature gate useFlag("${k}") + API module guard`, editableBy: SYS_EXE, requiresApproval: false, validate: bool })),
 ];
