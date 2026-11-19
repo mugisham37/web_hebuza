@@ -18,7 +18,8 @@ const en = {
     never: "Never", languages: "Languages", districts: "Districts", expertise: "Expertise", services: "Services", certs: "Certifications", openCases: "Open cases",
     sessionsRevoked: "Sessions revoked — this person is signed out everywhere.", noDocs: "No documents yet.", noHistory: "No history yet.", cases: "View cases",
   },
-  kpi: { onTime: "On time (30 d)", rating: "Client rating", open: "Open cases", firstResponse: "First response (h)" },
+  kpi: { onTime: "On time (30 d)", rating: "Client rating", open: "Open cases", firstResponse: "First response (h)", completed90d: "Completed (90 d)", firstPassPct: "First-pass approval", reassignmentPct: "Reassigned away", revenue90d: "Earned share (90 d, RWF)" },
+  cv: { title: "CV", education: "Education", experience: "Experience", expertise: "Expertise", years: "Years of experience", bio: "Summary", empty: "No CV entered at onboarding yet." },
   actions: { label: "Actions", suspend: "Suspend", reactivate: "Reactivate", terminate: "Offboard…", review: "New review" },
   status: {
     suspendTitle: "Suspend {name}", suspendBody: "They're signed out everywhere and can't take new work until reactivated.", reactivateTitle: "Reactivate {name}",
@@ -71,7 +72,8 @@ const rw: Copy = {
     never: "Ntarinjira", languages: "Indimi", districts: "Uturere", expertise: "Ubuhanga", services: "Serivisi", certs: "Impamyabushobozi", openCases: "Amadosiye afunguye",
     sessionsRevoked: "Yasohowe muri konti hose.", noDocs: "Nta nyandiko.", noHistory: "Nta mateka.", cases: "Reba amadosiye",
   },
-  kpi: { onTime: "Ku gihe (iminsi 30)", rating: "Amanota y'abakiriya", open: "Amadosiye afunguye", firstResponse: "Igisubizo cya mbere (h)" },
+  kpi: { onTime: "Ku gihe (iminsi 30)", rating: "Amanota y'abakiriya", open: "Amadosiye afunguye", firstResponse: "Igisubizo cya mbere (h)", completed90d: "Byarangiye (iminsi 90)", firstPassPct: "Byemejwe ubwa mbere", reassignmentPct: "Byahawe abandi", revenue90d: "Umugabane winjije (iminsi 90, RWF)" },
+  cv: { title: "Umwirondoro w'akazi", education: "Amashuri", experience: "Uburambe", expertise: "Ubuhanga", years: "Imyaka y'uburambe", bio: "Incamake", empty: "Nta mwirondoro w'akazi uranditswe." },
   actions: { label: "Ibikorwa", suspend: "Hagarika", reactivate: "Subizaho", terminate: "Sezerera…", review: "Isuzuma rishya" },
   status: {
     suspendTitle: "Hagarika {name}", suspendBody: "Arasohorwa hose kandi ntashobora gufata akazi gashya kugeza asubijweho.", reactivateTitle: "Subizaho {name}",
@@ -123,7 +125,8 @@ const fr: Copy = {
     never: "Jamais", languages: "Langues", districts: "Districts", expertise: "Expertise", services: "Services", certs: "Certifications", openCases: "Dossiers ouverts",
     sessionsRevoked: "Sessions révoquées — déconnecté partout.", noDocs: "Aucun document.", noHistory: "Aucun historique.", cases: "Voir les dossiers",
   },
-  kpi: { onTime: "À l'heure (30 j)", rating: "Note clients", open: "Dossiers ouverts", firstResponse: "Première réponse (h)" },
+  kpi: { onTime: "À l'heure (30 j)", rating: "Note clients", open: "Dossiers ouverts", firstResponse: "Première réponse (h)", completed90d: "Terminés (90 j)", firstPassPct: "Validés du premier coup", reassignmentPct: "Réattribués", revenue90d: "Part gagnée (90 j, RWF)" },
+  cv: { title: "CV", education: "Formation", experience: "Expérience", expertise: "Expertise", years: "Années d'expérience", bio: "Résumé", empty: "Aucun CV saisi à l'intégration." },
   actions: { label: "Actions", suspend: "Suspendre", reactivate: "Réactiver", terminate: "Départ…", review: "Nouvelle évaluation" },
   status: {
     suspendTitle: "Suspendre {name}", suspendBody: "Déconnecté partout, aucune nouvelle tâche jusqu'à la réactivation.", reactivateTitle: "Réactiver {name}",

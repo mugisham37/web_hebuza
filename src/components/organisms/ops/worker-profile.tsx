@@ -113,7 +113,34 @@ function Performance({ w }: { w: WorkerFull }) {
   return (
     <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
       {w.kpis.map((k) => <KpiTile key={k.key} label={c.kpi[k.key as keyof typeof c.kpi] ?? k.key} value={fmt(k)} tone={k.unit === "pct" && k.value < 80 ? "warning" : "neutral"} />)}
+      {w.outcomes && (["completed90d", "firstPassPct", "reassignmentPct", "revenue90d"] as const).map((k) => {
+        const v = w.outcomes![k];
+        return <KpiTile key={k} label={c.kpi[k]} value={v == null ? "—" : k.endsWith("Pct") ? `${v}%` : v.toLocaleString()} tone="neutral" />;
+      })}
+      <Cv w={w} />
     </div>
+  );
+}
+
+/** F-WRK-02: the worker's structured CV from onboarding. */
+function Cv({ w }: { w: WorkerFull }) {
+  const c = useW().cv;
+  const cv = w.cv;
+  const line = (x: unknown) => (typeof x === "string" ? x : Object.values((x ?? {}) as Record<string, unknown>).filter((v) => typeof v === "string" && v).join(" · "));
+  const has = cv && (cv.education.length || cv.experience.length || cv.expertise.length || cv.bio);
+  return (
+    <section className="col-span-2 grid gap-2 border border-border bg-white p-4 lg:col-span-4">
+      <h3 className="text-label">{c.title}</h3>
+      {!has ? <p className="text-small text-fg-muted">{c.empty}</p> : (
+        <dl className="grid gap-3 text-small sm:grid-cols-2">
+          {cv!.bio && <div className="sm:col-span-2"><dt className="text-fg-subtle">{c.bio}</dt><dd>{cv!.bio}</dd></div>}
+          {cv!.years && <div><dt className="text-fg-subtle">{c.years}</dt><dd>{cv!.years}</dd></div>}
+          {!!cv!.expertise.length && <div><dt className="text-fg-subtle">{c.expertise}</dt><dd>{cv!.expertise.join(", ")}</dd></div>}
+          {!!cv!.education.length && <div><dt className="text-fg-subtle">{c.education}</dt><dd><ul>{cv!.education.map((x, i) => <li key={i}>{line(x)}</li>)}</ul></dd></div>}
+          {!!cv!.experience.length && <div><dt className="text-fg-subtle">{c.experience}</dt><dd><ul>{cv!.experience.map((x, i) => <li key={i}>{line(x)}</li>)}</ul></dd></div>}
+        </dl>
+      )}
+    </section>
   );
 }
 
