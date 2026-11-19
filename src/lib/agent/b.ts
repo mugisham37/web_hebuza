@@ -25,6 +25,8 @@ export type QcDoc = {
   version: number;
   qc_status: "pending" | "accepted" | "rejected";
   qc_notes: { reason?: string; note?: string } | null;
+  /** F-DOC-12 advisory OCR suggestion (server: null until OCR runs). */
+  ocr_suggestion?: { kind: string; confidence: number } | null;
   created_at: string;
   x_agent: {
     label: string;

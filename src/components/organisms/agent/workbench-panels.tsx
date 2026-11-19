@@ -1,4 +1,5 @@
 "use client";
+import { ocrCopy } from "@/content/pages/ocr";
 import { useWs } from "@/lib/agent/ws";
 // Workbench tab panels: Brief (WB1/WB4), Documents QC (WB2/WB3), Timeline, Time (WC5), Money.
 import { errorCopy } from "@/lib/api/error-copy";
@@ -406,6 +407,9 @@ export function DocumentsTab({
                       {d.original_filename} ·{" "}
                       {(d.file_size_bytes / 1e6).toFixed(1)} MB ·{" "}
                       {fill(w.docs.version, { v: d.version })}
+                      {d.ocr_suggestion && d.ocr_suggestion.kind !== "other" && (
+                        <> · {ocrCopy(locale).label} {ocrCopy(locale).kinds[d.ocr_suggestion.kind] ?? d.ocr_suggestion.kind} ({Math.round(d.ocr_suggestion.confidence * 100)}%)</>
+                      )}
                     </p>
                     <ul className="flex flex-wrap gap-x-3 gap-y-1 text-eyebrow">
                       <li className={legible ? "text-success" : "text-warning"}>
