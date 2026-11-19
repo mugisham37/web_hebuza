@@ -246,6 +246,7 @@
     "agreements": "Amasezerano",
     "actions": "Ibikorwa biteganyijwe",
     "meetings": "Inama",
+    "commissions": "Komisiyo",
     "approvals": "Ibyemezo",
     "users": "Abakoresha",
     "roles": "Inshingano",
@@ -273,7 +274,8 @@
     "templates": "Inyandikorugero",
     "feedback": "Ibitekerezo",
     "seo": "SEO n'ikurikirana",
-    "assistant": "Umufasha"
+    "assistant": "Umufasha",
+    "targets": "Intego"
   },
   "sessionExpiry": {
     "title": "Uracyahari?",

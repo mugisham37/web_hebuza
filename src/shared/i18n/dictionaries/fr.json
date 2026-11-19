@@ -246,6 +246,7 @@
     "agreements": "Accords",
     "actions": "Plans d'action",
     "meetings": "Réunions",
+    "commissions": "Commissions",
     "approvals": "Approbations",
     "users": "Utilisateurs",
     "roles": "Rôles",
@@ -273,7 +274,8 @@
     "templates": "Modèles",
     "feedback": "Avis",
     "seo": "SEO et suivi",
-    "assistant": "Assistant"
+    "assistant": "Assistant",
+    "targets": "Objectifs"
   },
   "sessionExpiry": {
     "title": "Toujours là ?",

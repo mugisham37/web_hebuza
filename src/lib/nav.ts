@@ -116,15 +116,13 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
   ] },
   partners: { stage: 13, items: [
     { href: "/partners", label: "wsnav.overview" },
-    { href: "/partners/agreements", label: "wsnav.agreements" },
-    { href: "/partners/actions", label: "wsnav.actions" },
-    { href: "/partners/meetings", label: "wsnav.meetings" },
-    { href: "/partners/reports", label: "wsnav.reports" },
+    { href: "/partners/commissions", label: "wsnav.commissions" },
   ] },
   exec: { stage: 14, items: [
     { href: "/exec", label: "wsnav.overview" },
     { href: "/exec/reports", label: "wsnav.reports" },
     { href: "/exec/approvals", label: "wsnav.approvals" },
+    { href: "/exec/targets", label: "wsnav.targets" },
   ] },
   system: { stage: 6, items: [
     { href: "/system", label: "wsnav.overview" },

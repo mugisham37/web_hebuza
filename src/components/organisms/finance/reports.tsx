@@ -446,3 +446,68 @@ export function MetricDefinitions() {
     </div>
   );
 }
+
+type TargetRow = { id: string; report: ReportKey; metric: string; monthly: number; direction: "up" | "down" };
+/** F-RPT-10 executive targets screen: set / remove a monthly target per report metric. */
+export function ReportTargets() {
+  const { locale } = useI18n();
+  const k = reportSubscribeCopy(locale);
+  const c = useRp();
+  const toast = useToast();
+  const qc = useQueryClient();
+  const [report, setReport] = useState<ReportKey>(REPORT_KEYS[0]);
+  const [metric, setMetric] = useState("");
+  const [monthly, setMonthly] = useState("");
+  const [direction, setDirection] = useState<"up" | "down">("up");
+  const list = useQuery({ queryKey: ["reports", "targets"], queryFn: () => unwrap<{ items: TargetRow[] }>(api.GET("/api/reports/targets")) });
+  const cols = useReport(report, "");
+  const metrics = cols.data?.columns.map((x) => x.key) ?? [];
+  const save = useMutation({
+    mutationFn: (b: { report: ReportKey; metric: string; monthly: number; direction: "up" | "down" }) => unwrap(api.PUT("/api/reports/targets", { body: b })),
+    onSuccess: () => (void qc.invalidateQueries({ queryKey: ["reports", "targets"] }), setMonthly(""), toast({ title: k.saved.split(".")[0], tone: "success" })),
+    onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }),
+  });
+  const m = metric || metrics[0] || "";
+  const amount = Number(monthly);
+  return (
+    <div className="grid gap-6">
+      <PageHead title={k.targetsTitle} sub={k.targetsLede} />
+      <form className="grid gap-3 border border-border bg-white p-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end" onSubmit={(e) => { e.preventDefault(); if (m && amount > 0) save.mutate({ report, metric: m, monthly: amount, direction }); }}>
+        <label className="grid gap-1 text-small font-medium">{k.report}
+          <Select value={report} onChange={(e) => (setReport(e.target.value as ReportKey), setMetric(""))}>{REPORT_KEYS.map((r) => <option key={r} value={r}>{c.reports[r].title}</option>)}</Select>
+        </label>
+        <label className="grid gap-1 text-small font-medium">{k.metric}
+          <Select value={m} onChange={(e) => setMetric(e.target.value)} disabled={!metrics.length}>{metrics.map((x) => <option key={x} value={x}>{c.cols[x] ?? x}</option>)}</Select>
+        </label>
+        <label className="grid gap-1 text-small font-medium">{k.monthly}
+          <Input inputMode="numeric" value={monthly} onChange={(e) => setMonthly(e.target.value.replace(/\D/g, ""))} />
+        </label>
+        <label className="grid gap-1 text-small font-medium">{k.direction}
+          <Select value={direction} onChange={(e) => setDirection(e.target.value as "up" | "down")}><option value="up">{k.up}</option><option value="down">{k.down}</option></Select>
+        </label>
+        <Button type="submit" disabled={!m || !(amount > 0) || save.isPending}>{k.setTarget}</Button>
+      </form>
+      {list.isError ? <PanelError what={k.targetsTitle} onRetry={() => list.refetch()} />
+        : !list.data ? <div aria-hidden className="h-24 m-shimmer" />
+        : !list.data.items.length ? <EmptyPanel title={k.none} compact />
+        : (
+          <div role="region" aria-label={k.targetsTitle} tabIndex={0} className="overflow-x-auto border border-border">
+            <table className="w-full min-w-[32rem] text-small">
+              <thead className="bg-ink-100 text-eyebrow text-fg-subtle"><tr><th className="p-3 text-left">{k.report}</th><th className="p-3 text-left">{k.metric}</th><th className="p-3 text-right">{k.monthly}</th><th className="p-3 text-left">{k.direction}</th><th className="p-3"><span className="sr-only">{k.remove}</span></th></tr></thead>
+              <tbody>
+                {list.data.items.map((t) => (
+                  <tr key={t.id} className="border-t border-border">
+                    <td className="p-3">{c.reports[t.report]?.title ?? t.report}</td>
+                    <td className="p-3">{c.cols[t.metric] ?? t.metric}</td>
+                    <td className="p-3 text-right tabular">{formatNumber(t.monthly, locale)}</td>
+                    <td className="p-3">{t.direction === "up" ? k.up : k.down}</td>
+                    <td className="p-3 text-right"><Button size="sm" variant="outline" disabled={save.isPending} onClick={() => save.mutate({ report: t.report, metric: t.metric, monthly: 0, direction: t.direction })}>{k.remove}</Button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+    </div>
+  );
+}

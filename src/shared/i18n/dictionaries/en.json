@@ -246,6 +246,7 @@
     "agreements": "Agreements",
     "actions": "Action plans",
     "meetings": "Meetings",
+    "commissions": "Commissions",
     "approvals": "Approvals",
     "users": "Users",
     "roles": "Roles",
@@ -273,7 +274,8 @@
     "templates": "Templates",
     "feedback": "Feedback",
     "seo": "SEO & tracking",
-    "assistant": "Assistant"
+    "assistant": "Assistant",
+    "targets": "Targets"
   },
   "sessionExpiry": {
     "title": "Still there?",
