@@ -40,7 +40,7 @@ import { Button } from "@/components/atoms/button";
 import { Dialog } from "@/components/atoms/dialog";
 import { Avatar } from "@/components/atoms/misc";
 import { Icon } from "@/components/atoms/icon";
-import { Select, Switch, Checkbox } from "@/components/atoms/field";
+import { Field, Input, Select, Switch, Checkbox } from "@/components/atoms/field";
 import { Skeleton } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { useStepUp, StepUpCancelled, usePhone, useNow } from "@/components/atoms/step-up";
@@ -673,6 +673,8 @@ function DrawerBody({ a }: { a: AgentDetail }) {
   const all = useWorkload(0);
   const now = useNow(60_000);
   const [cap, setCapV] = useState(a.cap);
+  const [perDay, setPerDay] = useState(a.dailyCap != null ? String(a.dailyCap) : "");
+  const perDayN = perDay.trim() ? Number(perDay) : null;
   const [reason, setReason] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const today = now
@@ -683,14 +685,15 @@ function DrawerBody({ a }: { a: AgentDetail }) {
     : [];
 
   const saveCap = async () => {
-    if (cap === a.cap) return setErr(c.drawer.capSame);
+    if (cap === a.cap && perDayN === (a.dailyCap ?? null)) return setErr(c.drawer.capSame);
+    if (perDayN !== null && (!Number.isInteger(perDayN) || perDayN < 1 || perDayN > 100)) return setErr(c.drawer.perDayErr);
     if (!reason) return setErr(c.drawer.capReasonErr);
     setErr(null);
     const old = a.cap;
     try {
       const token = await stepUp.request(c.drawer.cap);
       const label = c.drawer.capReasons[reason];
-      await setCap.mutateAsync({ id: a.id, cap, reason: label, token });
+      await setCap.mutateAsync({ id: a.id, cap, perDay: perDayN, reason: label, token });
       toast({
         title: fill(c.drawer.capSaved, { n: a.name.split(" ")[0], c: cap }),
         tone: "success",
@@ -879,6 +882,9 @@ function DrawerBody({ a }: { a: AgentDetail }) {
             ))}
           </Select>
         </div>
+        <Field label={c.drawer.perDay} hint={fill(c.drawer.perDayHint, { n: a.assignedToday ?? 0 })}>
+          {(f) => <Input id={f.id} aria-describedby={f.describedBy} type="number" min={1} max={100} inputMode="numeric" className="max-w-32" value={perDay} onChange={(e) => setPerDay(e.target.value)} />}
+        </Field>
         {err && (
           <p role="alert" className="text-small font-medium text-danger">
             {err}

@@ -64,7 +64,9 @@ const en = {
   inel: {
     notAuthorised: "Not authorised for {service}",
     onLeave: "On leave until {d}",
-    atCap: "Daily cap reached ({load}/{cap})",
+    atCap: "At capacity ({load}/{cap} open)",
+    dailyCap: "Daily intake limit reached",
+    offDuty: "Off duty",
     conflict: "Conflict of interest (related to client)",
     notCleared: "Background check pending",
   } as Record<string, string>,
@@ -301,7 +303,9 @@ const fr: OpsAssignCopy = {
   inel: {
     notAuthorised: "Non habilité pour {service}",
     onLeave: "En congé jusqu'au {d}",
-    atCap: "Plafond journalier atteint ({load}/{cap})",
+    atCap: "Capacité atteinte ({load}/{cap} ouverts)",
+    dailyCap: "Limite d'attribution du jour atteinte",
+    offDuty: "Hors service",
     conflict: "Conflit d'intérêts (lié au client)",
     notCleared: "Vérification en cours",
   },
@@ -535,7 +539,9 @@ const rw: OpsAssignCopy = {
   inel: {
     notAuthorised: "Ntiyemerewe {service}",
     onLeave: "Ari mu kiruhuko kugeza {d}",
-    atCap: "Yageze ku ntarengwa y'umunsi ({load}/{cap})",
+    atCap: "Yuzuye ({load}/{cap} afunguye)",
+    dailyCap: "Yageze ku ntarengwa y'umunsi",
+    offDuty: "Ntari mu kazi",
     conflict: "Inyungu zivuguruzanya (afitanye isano n'umukiriya)",
     notCleared: "Igenzura ntirirarangira",
   },

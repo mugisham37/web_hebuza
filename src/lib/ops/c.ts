@@ -179,6 +179,8 @@ export type AgentDetail = WorkloadAgent & {
   cases: AgentCase[];
   spark: number[];
   leave: { from: string; to: string; state: "approved" | "pending" }[];
+  dailyCap?: number | null;
+  assignedToday?: number;
 };
 export const useWorkload = (week: number) =>
   useQuery({
@@ -196,10 +198,10 @@ export const useAgentDetail = (id: string | null) =>
     enabled: !!id,
   });
 export const useSetCap = () =>
-  useCMutation<{ id: string; cap: number; reason: string; token: string }>(
+  useCMutation<{ id: string; cap: number; perDay?: number | null; reason: string; token: string }>(
     "workload",
     (v) =>
-      unwrap(api.PATCH("/api/admin/agents/{id}/settings", { params: { path: { id: v.id } }, body: { daily_case_cap: v.cap }, headers: hdr({ stepUp: v.token, audit: v.reason }) })),
+      unwrap(api.PATCH("/api/admin/agents/{id}/settings", { params: { path: { id: v.id } }, body: { daily_case_cap: v.cap, ...(v.perDay !== undefined ? { new_per_day: v.perDay } : {}) }, headers: hdr({ stepUp: v.token, audit: v.reason }) })),
   );
 export const useRebalance = () =>
   useCMutation<
