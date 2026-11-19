@@ -1,6 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useUrlParams } from "@/lib/url-state";
+import { cx } from "@/shared/format";
 import type { components } from "@/lib/api/schema";
 import { api, unwrap } from "@/lib/api/client";
 import { localHref } from "@/shared/i18n/config";
@@ -20,6 +22,8 @@ export function ClientCalendar() {
   const k = calendarCopy(locale);
   const [copied, setCopied] = useState(false);
   const q = useQuery({ queryKey: ["c4", "obligations"], queryFn: () => unwrap<Res>(api.GET("/api/me/obligations")) });
+  // ?rule=<code> (from a regulatory update, F-CMS-10) highlights that rule's deadlines and lists them first.
+  const rule = useUrlParams().get("rule");
   const label = (l: Record<string, string>) => l[locale] ?? l.en ?? Object.values(l)[0] ?? "";
   return (
     <>
@@ -34,8 +38,8 @@ export function ClientCalendar() {
             <EmptyState title={k.empty} body={k.emptyBody} />
           ) : (
             <ul className="grid gap-2">
-              {q.data.items.map((o) => (
-                <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 border border-border p-4">
+              {(rule ? [...q.data.items].sort((a, b) => Number(b.rule_code === rule) - Number(a.rule_code === rule)) : q.data.items).map((o) => (
+                <li key={o.id} aria-current={o.rule_code === rule ? "true" : undefined} className={cx("flex flex-wrap items-center justify-between gap-3 border p-4", o.rule_code === rule ? "border-gold-400 bg-gold-100" : "border-border")}>
                   <div className="min-w-0">
                     <p className="text-body font-medium break-words">{label(o.label)}</p>
                     <p className="text-small text-fg-subtle">

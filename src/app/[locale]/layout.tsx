@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { TermsGate } from "@/components/organisms/auth/terms-gate";
 import type { Metadata, Viewport } from "next";
 import { Archivo, Host_Grotesk, Inter } from "next/font/google";
 import { locales } from "@/shared/i18n/config";
@@ -51,7 +52,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <body>
         <I18nProvider locale={locale} dict={dict}>
           {/* Shell chrome reads usePathname(), which suspends on [param] routes without generateStaticParams; this boundary lets those prerender. */}
-          <Providers><Suspense>{children}</Suspense></Providers>
+          <Providers><Suspense>{children}</Suspense><Suspense><TermsGate /></Suspense></Providers>
         </I18nProvider>
         <WebVitals />
         <ServiceWorker />
