@@ -33,10 +33,10 @@ export const qs = (o: Record<string, string | number | boolean | undefined | nul
   return s ? `?${s}` : "";
 };
 
-/** shortcut: badges by 30 s polling, upgrade to SSE when a marketing realtime channel exists. */
+/** Badges update live from the `mkt.note` SSE frame (lib/realtime); slow polling stays as a fallback when the stream drops. */
 export const useMktShell = () =>
-  useQuery({ queryKey: mktKeys.shell(), queryFn: () => unwrap<{ badges: MktBadges; me: Staff | null; nextScheduled?: { label: string; at: string; href: string } }>(api.GET("/api/admin/mkt/shell")), refetchInterval: 30_000 });
+  useQuery({ queryKey: mktKeys.shell(), queryFn: () => unwrap<{ badges: MktBadges; me: Staff | null; nextScheduled?: { label: string; at: string; href: string } }>(api.GET("/api/admin/mkt/shell")), refetchInterval: 5 * 60_000 });
 export const useMktNotes = () =>
-  useQuery({ queryKey: mktKeys.notes(), queryFn: () => unwrap<{ items: MktNote[] }>(api.GET("/api/admin/mkt/notifications")), refetchInterval: 60_000 });
+  useQuery({ queryKey: mktKeys.notes(), queryFn: () => unwrap<{ items: MktNote[] }>(api.GET("/api/admin/mkt/notifications")), refetchInterval: 5 * 60_000 });
 export const useStaff = () =>
   useQuery({ queryKey: mktKeys.staff(), queryFn: () => unwrap<{ items: Staff[] }>(api.GET("/api/admin/mkt/staff")), staleTime: 5 * 60_000 });

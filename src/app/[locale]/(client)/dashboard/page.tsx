@@ -3,6 +3,7 @@ import { getI18n } from "@/lib/i18n/server";
 import { getServices } from "@/lib/catalogue";
 import { c2Copy } from "@/content/pages/c2";
 import { DashboardView } from "@/components/organisms/client/dashboard";
+import { TestimonialPrompt } from "@/components/organisms/client/testimonial-prompt";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await getI18n(params);
@@ -16,5 +17,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     .toSorted((a, b) => Number(b.featured) - Number(a.featured) || b.popular - a.popular)
     .slice(0, 3)
     .map(({ slug, name, fromFee }) => ({ slug, name, fromFee }));
-  return <DashboardView recs={recs} />;
+  return (
+    <div className="grid gap-6">
+      <TestimonialPrompt />
+      <DashboardView recs={recs} />
+    </div>
+  );
 }

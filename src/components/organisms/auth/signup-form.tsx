@@ -1,4 +1,5 @@
 "use client";
+import { useUrlParams } from "@/lib/url-state";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -45,7 +46,9 @@ export function SignupForm({
   const router = useRouter();
   const refresh = useRefreshSession();
   const { pending, error, run } = useSubmit();
-  const [type, setType] = useState<IdType>("phone");
+  // Marketing invite links (/signup?name=&email=|phone=) prefill the form.
+  const invite = useUrlParams();
+  const [type, setType] = useState<IdType>(invite.get("email") ? "email" : "phone");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [password, setPassword] = useState("");
   const [lang, setLang] = useState<Locale>(locale);
@@ -133,6 +136,7 @@ export function SignupForm({
             <Input id={id}
               name="name"
               autoComplete="name"
+              defaultValue={invite.get("name") ?? undefined}
               aria-describedby={describedBy}
               aria-invalid={invalid || undefined}
             />

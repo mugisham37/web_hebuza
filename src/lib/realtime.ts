@@ -18,6 +18,7 @@ type Frame = { type: string; conversation_id?: string } & Record<
 /** Event type → query keys (prefixes) it makes stale. Unknown types are ignored. */
 export function keysFor(f: Frame): QueryKey[] {
   if (f.type === "notification") return [qk.notifications];
+  if (f.type === "mkt.note") return [["mkt", "shell"], ["mkt", "notes"]]; // marketing badges + bell
   if (f.type.startsWith("chat.")) {
     const cid = f.conversation_id;
     return [

@@ -3,6 +3,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { api, unwrap, ApiError } from "@/lib/api/client";
+import { useSession } from "@/lib/auth/session";
 import type { components } from "@/lib/api/schema";
 import {
   LC,
@@ -347,7 +348,24 @@ function Verify({
 function Detail({ d }: { d: TrackDetail }) {
   const { locale } = useI18n();
   const c = LC[locale].track;
-  const [notify, setNotify] = useState(true); // shortcut: local only, persist via notification prefs API when it exists
+  // "Notify me" = the account's request-update channels (notification preferences, category "requests"); signed-out viewers keep it local.
+  const { user } = useSession();
+  const [notify, setNotifyState] = useState(true);
+  useEffect(() => {
+    if (!user) return;
+    let live = true;
+    void unwrap<{ matrix?: Record<string, Record<string, boolean>> }>(api.GET("/api/me/notification-preferences"))
+      .then((p) => { if (live) setNotifyState(Object.values(p.matrix?.requests ?? { email: true }).some(Boolean)); })
+      .catch(() => null);
+    return () => { live = false; };
+  }, [user]);
+  const setNotify = (v: boolean) => {
+    setNotifyState(v);
+    if (!user) return;
+    void unwrap<{ matrix?: Record<string, Record<string, boolean>> }>(api.GET("/api/me/notification-preferences"))
+      .then((p) => unwrap(api.PUT("/api/me/notification-preferences", { body: { matrix: { ...p.matrix, requests: { ...p.matrix?.requests, email: v, sms: v, whatsapp: v } } } as never })))
+      .catch(() => setNotifyState(!v)); // revert on failure
+  };
   return (
     <section className="overflow-hidden border border-border bg-white">
       <div className="grid gap-8 p-6 lg:grid-cols-[1fr_1.1fr]">
