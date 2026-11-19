@@ -214,3 +214,8 @@ export function commonMoves(
   }
   return { allowed, blockedCount };
 }
+
+/** REQ-11: what the client may do: cancel outright before work starts, only *request* it while work runs. */
+export function clientCancelMode(s: CaseStatus): "cancel" | "request" | null {
+  return EARLY.includes(s) ? "cancel" : LATE.includes(s) ? "request" : null;
+}

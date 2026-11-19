@@ -17,6 +17,9 @@ export type Agent = {
   languages: string[];
   conflictWith?: string[]; // client ids
   cost?: number; // agreed price for externals
+  duty?: string; // "away" blocks new work (F-WRK-09)
+  dailyCap?: number | null;
+  assignedToday?: number;
 };
 export type CaseForRanking = {
   service: string;
@@ -28,8 +31,33 @@ export type CaseForRanking = {
 
 export type Ineligible = {
   agent: Agent;
-  reason: "notAuthorised" | "onLeave" | "atCap" | "conflict" | "notCleared";
+  reason: "notAuthorised" | "onLeave" | "atCap" | "dailyCap" | "offDuty" | "conflict" | "notCleared" | "contractExpired";
 };
+
+/** ASN-05/09, WRK-06/12: the same eligibility for ranked suggestions and manual assignment. */
+export function ineligibleReason(
+  c: Pick<CaseForRanking, "service" | "clientId">,
+  a: Agent & { contractUntil?: string | null },
+  today = new Date().toISOString().slice(0, 10),
+): Ineligible["reason"] | null {
+  return !a.services.includes(c.service)
+    ? "notAuthorised"
+    : a.cleared === false
+      ? "notCleared"
+      : a.onLeaveUntil && a.onLeaveUntil >= today
+        ? "onLeave"
+        : a.contractUntil && a.contractUntil.slice(0, 10) < today
+          ? "contractExpired"
+          : a.duty === "away"
+            ? "offDuty"
+          : a.load >= a.cap
+            ? "atCap"
+          : a.dailyCap != null && (a.assignedToday ?? 0) >= a.dailyCap
+            ? "dailyCap"
+            : a.conflictWith?.includes(c.clientId)
+              ? "conflict"
+              : null;
+}
 export type Suggestion = { agent: Agent; score: number; reasons: string[] };
 
 export const WEIGHTS = {
@@ -49,17 +77,7 @@ export function rankAgents(
 ): { suggestions: Suggestion[]; ineligible: Ineligible[] } {
   const ineligible: Ineligible[] = [];
   const pool = agents.filter((a) => {
-    const reason: Ineligible["reason"] | null = !a.services.includes(c.service)
-      ? "notAuthorised"
-      : a.cleared === false
-        ? "notCleared"
-        : a.onLeaveUntil && a.onLeaveUntil >= today
-          ? "onLeave"
-          : a.load >= a.cap
-            ? "atCap"
-            : a.conflictWith?.includes(c.clientId)
-              ? "conflict"
-              : null;
+    const reason = ineligibleReason(c, a, today);
     if (reason) ineligible.push({ agent: a, reason });
     return !reason && (c.includeExternal || !a.external);
   });

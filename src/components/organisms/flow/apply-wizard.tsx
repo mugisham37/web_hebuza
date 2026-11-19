@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toFieldDefs, type PublishedField } from "@/lib/flow/form-fields";
+import { isVisible } from "@/shared/catalogue/form-rules";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { api, unwrap, ApiError, newIdempotencyKey } from "@/lib/api/client";
@@ -15,6 +16,7 @@ import {
   flowCopy,
   fill,
   type FieldDef,
+  type FieldDefV,
   type FlowCopy,
 } from "@/content/pages/flow";
 import { laCopy } from "@/content/pages/la";
@@ -116,7 +118,7 @@ export function validateStep(
   step: number,
   d: Draft,
   c: FlowCopy,
-  fields: FieldDef[],
+  fields: FieldDefV[],
   reqs: string[],
   files: Record<string, unknown>, // File or a picked library document
   hasTiers: boolean,
@@ -138,6 +140,19 @@ export function validateStep(
   if (step === 2) {
     for (const f of fields) {
       const v = d.data[f.key];
+      if (!isVisible({ id: f.key, type: f.type, visibleIf: f.visibleIf }, d.data)) continue; // hidden branch
+      if (f.type === "group") {
+        const rows = (v as Record<string, unknown>[] | undefined) ?? [];
+        if (!("optional" in f && f.optional) && !rows.length) e[f.key] = c.required;
+        else if (rows.some((r) => f.children.some((ch) => !("optional" in ch && ch.optional) && !String(r?.[ch.key] ?? "").trim()))) e[f.key] = c.required;
+        else if (f.totalField && rows.length && rows.reduce((t, r) => t + (Number(r?.[f.totalField!]) || 0), 0) !== 100)
+          e[f.key] = fill(c.details.sharesTotal, { n: rows.reduce((t, r) => t + (Number(r?.[f.totalField!]) || 0), 0) });
+        continue;
+      }
+      if (f.type === "file") {
+        if (!f.optional && !files[f.key]) e[f.key] = c.required; // the File itself, not the remembered name (lost on reload)
+        continue;
+      }
       if (f.type === "ranked") {
         if (!(v as string[] | undefined)?.[0]?.trim()) e[f.key] = c.required;
       } else if (f.type === "shareholders") {
@@ -176,7 +191,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     staleTime: 5 * 60_000,
   });
   const published = form.data ? toFieldDefs(form.data.fields, locale) : [];
-  const fields = published.length ? published : (c.fields[svc.slug] ?? c.fields.default);
+  const fields: FieldDefV[] = published.length ? published : (c.fields[svc.slug] ?? c.fields.default);
   const L = (p: string) => localHref(locale, p);
   // ORG-08: the active company (switcher on /orgs) files the request when the client may submit for it.
   const orgs = useQuery({
@@ -785,16 +800,26 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
           )}
 
           {step === 2 &&
-            fields.map((f) => (
-              <DynField
-                key={f.key}
-                f={f}
-                c={c}
-                value={draft.data[f.key]}
-                error={errors[f.key]}
-                onChange={(v) => setData(f.key, v)}
-              />
-            ))}
+            fields
+              .filter((f) => isVisible({ id: f.key, type: f.type, visibleIf: f.visibleIf }, draft.data))
+              .map((f) => (
+                <DynField
+                  key={f.key}
+                  f={f}
+                  c={c}
+                  value={draft.data[f.key]}
+                  error={errors[f.key]}
+                  onChange={(v) => setData(f.key, v)}
+                  onFile={(file) => {
+                    // Inline file field: same client checks as the Documents step; the server's upload policy runs on send.
+                    if (file.size > MAX_UPLOAD_MB * 1024 * 1024)
+                      return setErrors((e) => ({ ...e, [f.key]: fill(c.docs.tooBig, { mb: MAX_UPLOAD_MB }) }));
+                    setErrors((e) => omit(e, f.key));
+                    setFiles((all) => ({ ...all, [f.key]: file }));
+                    setData(f.key, file.name);
+                  }}
+                />
+              ))}
 
           {step === 3 &&
             (svc.requirements.length === 0 ? (
@@ -1219,13 +1244,45 @@ function DynField({
   value,
   error,
   onChange,
+  onFile,
 }: {
   f: FieldDef;
   c: FlowCopy;
   value: unknown;
   error?: string;
   onChange: (v: unknown) => void;
+  onFile?: (f: File) => void;
 }) {
+  if (f.type === "file")
+    return (
+      <div id={f.key} className="grid gap-2">
+        <p className="text-label">{f.label}{f.optional ? <span className="text-small text-fg-subtle"> ({c.optional})</span> : null}</p>
+        {f.hint && <p className="text-small text-fg-subtle">{f.hint}</p>}
+        {typeof value === "string" && value && <p className="flex items-center gap-2 text-small"><Icon name="fileCheck" size={16} aria-hidden />{value}</p>}
+        <FileDrop accept="application/pdf,image/*" camera onFiles={([file]) => file && onFile?.(file)} />
+        {error && <p role="alert" className="text-small font-medium text-danger">{error}</p>}
+      </div>
+    );
+  if (f.type === "group") {
+    const rows = (value as Record<string, unknown>[] | undefined) ?? [];
+    const setRow = (i: number, k: string, v: unknown) => onChange(rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
+    return (
+      <fieldset id={f.key} className="grid gap-3">
+        <legend className="text-label">{f.label}</legend>
+        {f.hint && <p className="text-small text-fg-subtle">{f.hint}</p>}
+        {error && <p role="alert" className="text-small font-medium text-danger">{error}</p>}
+        {rows.map((r, i) => (
+          <div key={i} className="grid gap-3 border border-border p-3 sm:grid-cols-2">
+            {f.children.filter((ch) => ch.type !== "file" && ch.type !== "group").map((ch) => (
+              <DynField key={ch.key} f={{ ...ch, key: `${f.key}-${i}-${ch.key}` } as FieldDef} c={c} value={r[ch.key]} onChange={(v) => setRow(i, ch.key, v)} />
+            ))}
+            <Button type="button" size="sm" variant="ghost" className="justify-self-start" onClick={() => onChange(rows.filter((_, j) => j !== i))}>{c.details.remove}</Button>
+          </div>
+        ))}
+        <Button type="button" size="sm" variant="outline" className="justify-self-start" onClick={() => onChange([...rows, {}])}>{c.details.addRow}</Button>
+      </fieldset>
+    );
+  }
   if (f.type === "ranked") {
     const list =
       (value as string[] | undefined) ?? Array<string>(f.count).fill("");

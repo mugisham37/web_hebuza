@@ -23,7 +23,13 @@ export type FieldDef =
       hint?: string;
       options: string[];
     }
-  | { key: string; type: "shareholders"; label: string; hint?: string };
+  | { key: string; type: "shareholders"; label: string; hint?: string }
+  /** Builder file field: uploaded inline, sent as a case document (requirement key = field key) after submit. */
+  | { key: string; type: "file"; label: string; hint?: string; optional?: boolean }
+  /** Builder repeating group: rows of child fields; `totalField` must add up to 100 across rows. */
+  | { key: string; type: "group"; label: string; hint?: string; optional?: boolean; children: FieldDef[]; totalField?: string | null };
+/** Builder visibleIf: shown only when another answer equals the value (see shared/catalogue/form-rules). */
+export type FieldDefV = FieldDef & { visibleIf?: { field: string; equals: string } | null };
 
 const en = {
   steps: ["Eligibility", "About you", "Details", "Documents", "Review"],
@@ -91,6 +97,7 @@ const en = {
     titleHi: "details",
     sharesTotal: "Shares add up to {n}%. They must total 100%.",
     addShareholder: "Add shareholder",
+    addRow: "Add row",
     remove: "Remove",
     name: "Name",
     percent: "Share %",
@@ -353,6 +360,7 @@ const rw: FlowCopy = {
     titleHi: "serivisi",
     sharesTotal: "Imigabane igeze kuri {n}%. Igomba kuba 100%.",
     addShareholder: "Ongeramo umunyamigabane",
+    addRow: "Ongeraho umurongo",
     remove: "Kuraho",
     name: "Izina",
     percent: "Imigabane %",
@@ -614,6 +622,7 @@ const fr: FlowCopy = {
     titleHi: "service",
     sharesTotal: "Les parts totalisent {n} %. Elles doivent faire 100 %.",
     addShareholder: "Ajouter un actionnaire",
+    addRow: "Ajouter une ligne",
     remove: "Retirer",
     name: "Nom",
     percent: "Parts %",

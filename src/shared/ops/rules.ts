@@ -134,3 +134,13 @@ export function previewNext(
   return out;
 }
 /** Co-assignment shares: total and whether they add up to exactly 100 %. */
+
+/** ASN-08: share of the SLA used, pause-aware (deadline already carries paused time, so remove it from both sides). */
+export function slaUsedPct(submittedAt: string, deadline: string, pausedMs: number, now = Date.now()): number {
+  const start = Date.parse(submittedAt);
+  const total = Date.parse(deadline) - start - pausedMs;
+  return total > 0 ? Math.round(((now - start - pausedMs) / total) * 100) : 100;
+}
+/** The escalation steps reached: 80 → assignee, 100 → service manager, 150 → executive digest. */
+export const SLA_STEPS = [80, 100, 150] as const;
+export const slaStepsReached = (pct: number) => SLA_STEPS.filter((s) => pct >= s);
