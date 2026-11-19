@@ -289,7 +289,7 @@ export function ClaimForm() {
           setErrs(next);
           if (next.code || next.phone) return;
           run(async () => {
-            const r = await unwrap(
+            const r = await unwrap<{ claimed: boolean; otpSent: boolean }>(
               api.POST("/api/applications/claim", {
                 body: { code, phone: phone! },
               }),

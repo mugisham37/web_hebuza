@@ -324,11 +324,11 @@ function CancelPanel({ code, mode }: { code: string; mode: "cancel" | "request" 
   const { locale } = useI18n();
   const c = c2Copy(locale).req.cancel;
   const qc = useQueryClient();
-  const { toast } = useToast();
+  const toast = useToast();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const m = useMutation({
-    mutationFn: () => unwrap(api.POST("/api/applications/{code}/cancel", { params: { path: { code } }, body: { reason } })),
+    mutationFn: () => unwrap<{ state: "cancelled" | "requested" }>(api.POST("/api/applications/{code}/cancel", { params: { path: { code } }, body: { reason } })),
     onSuccess: (r) => {
       setOpen(false);
       toast({ title: r.state === "cancelled" ? c.done : c.asked, tone: "success" });

@@ -51,6 +51,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/ops/sla", label: "wsnav.sla" },
     { href: "/ops/reviews", label: "wsnav.reviews" },
     { href: "/ops/tickets", label: "wsnav.tickets" },
+    { href: "/ops/companies", label: "wsnav.companies" },
     { href: "/ops/conversations", label: "wsnav.conversations" },
     { href: "/ops/bookings", label: "wsnav.bookings" },
     { href: "/ops/catalogue", label: "wsnav.catalogue" },

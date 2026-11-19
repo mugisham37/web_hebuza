@@ -19,7 +19,8 @@ import {
   useC4,
 } from "@/components/molecules/client/client";
 
-type Role = "owner" | "admin" | "member";
+type Role = "owner" | "admin" | "viewer";
+type VStatus = "unverified" | "pending_verification" | "verified" | "rejected";
 type Member = {
   id: string;
   name: string;
@@ -27,7 +28,10 @@ type Member = {
   role: Role;
   pending?: boolean;
 };
-type Org = { id: string; name: string; myRole: Role; members: Member[] };
+type Org = { id: string; name: string; myRole: Role; members: Member[]; customerNo: string | null; verificationStatus: VStatus; verificationNote: string | null };
+const TYPES = ["sole_proprietor", "ltd", "plc", "cooperative", "ngo", "branch_foreign", "partnership", "other"] as const;
+const SIZES = ["micro", "small", "medium", "large"] as const;
+const TONE: Record<VStatus, "success" | "warning" | "danger" | undefined> = { verified: "success", pending_verification: "warning", rejected: "danger", unverified: undefined };
 type Data = { activeOrgId: string | null; orgs: Org[] };
 const KEY = ["c4", "orgs"];
 
@@ -42,6 +46,12 @@ export function OrgsView() {
     queryFn: () => unwrap<Data>(api.GET("/api/me/orgs")),
   });
   const [inviteTo, setInviteTo] = useState<Org | null>(null);
+  const [adding, setAdding] = useState(false);
+  const verify = useMutation({
+    mutationFn: (org: Org) => unwrap(api.POST("/api/organizations/{id}/verification-request", { params: { path: { id: org.id } } })),
+    onSuccess: () => done(o.askedVerify)(),
+    onError: () => fail(),
+  });
   const [removing, setRemoving] = useState<{ org: Org; m: Member } | null>(
     null,
   );
@@ -86,6 +96,9 @@ export function OrgsView() {
   return (
     <>
       <PageHead title={o.title} lede={o.lede} />
+      <div className="mb-4 flex justify-end">
+        <Button dots onClick={() => setAdding(true)}>{o.add}</Button>
+      </div>
       {!orgs.length ? (
         <EmptyState title={o.none} body={o.noneBody} />
       ) : (
@@ -109,7 +122,7 @@ export function OrgsView() {
             }
           />
           {orgs.map((org) => {
-            const manage = org.myRole !== "member";
+            const manage = org.myRole !== "viewer";
             return (
               <Panel
                 key={org.id}
@@ -131,6 +144,14 @@ export function OrgsView() {
                   )
                 }
               >
+                <div className="mb-4 flex flex-wrap items-center gap-2 text-small">
+                  <Badge tone={TONE[org.verificationStatus]}>{o.status[org.verificationStatus]}</Badge>
+                  {org.customerNo && <span className="text-fg-muted">{o.customerNo}: <span className="font-mono tabular">{org.customerNo}</span></span>}
+                  {manage && (org.verificationStatus === "unverified" || org.verificationStatus === "rejected") && (
+                    <Button size="sm" variant="outline" loading={verify.isPending && verify.variables?.id === org.id} onClick={() => verify.mutate(org)} title={o.verifyHint}>{o.askVerify}</Button>
+                  )}
+                  {org.verificationStatus === "rejected" && org.verificationNote && <p className="basis-full text-danger">{org.verificationNote}</p>}
+                </div>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h3 className="text-fg-heading text-label">
                     {o.members} ({org.members.length})
@@ -178,6 +199,7 @@ export function OrgsView() {
           })}
         </div>
       )}
+      {adding && <AddOrg onClose={() => setAdding(false)} onDone={done(o.created)} />}
       {inviteTo && (
         <Invite
           org={inviteTo}
@@ -269,8 +291,8 @@ function Invite({
         </Field>
         <Field label={o.role}>
           {({ id }) => (
-            <Select id={id} name="role" defaultValue="member">
-              <option value="member">{o.roles.member}</option>
+            <Select id={id} name="role" defaultValue="viewer">
+              <option value="viewer">{o.roles.viewer}</option>
               {org.myRole === "owner" && (
                 <option value="admin">{o.roles.admin}</option>
               )}
@@ -289,6 +311,79 @@ function Invite({
           <Button type="submit" dots loading={send.isPending}>
             {o.send}
           </Button>
+        </div>
+      </form>
+    </Dialog>
+  );
+}
+
+/** ORG-01: register a company (identity + address); the creator becomes its owner. */
+function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
+  const { c } = useC4();
+  const { t } = useI18n();
+  const o = c.orgs;
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const save = useMutation({
+    mutationFn: (body: Record<string, string | null>) =>
+      unwrap(api.POST("/api/me/orgs", { body: body as never })), // cast: FormData strings mapped to the DTO shape below
+    onSuccess: () => { onDone(); onClose(); },
+  });
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const v = (k: string) => String(f.get(k) ?? "").trim() || null;
+    const errs: Record<string, string> = {};
+    if (!v("legalName")) errs["org-legalName"] = c.required;
+    const tin = v("tin");
+    if (tin && !/^\d{9}$/.test(tin)) errs["org-tin"] = o.badTin;
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
+    save.mutate({
+      legalName: v("legalName"), tradeName: v("tradeName"), orgType: v("orgType"), tin, rdbNumber: v("rdbNumber"),
+      registeredOn: v("registeredOn"), province: v("province"), district: v("district"), phone: v("phone") ? toE164(v("phone")!) ?? v("phone") : null,
+      email: v("email"), website: v("website"), sizeBand: v("sizeBand"),
+    });
+  }
+  const text = (name: string, label: string, extra: React.ComponentProps<"input"> = {}) => (
+    <Field id={`org-${name}`} label={label} error={errors[`org-${name}`]} optional={name !== "legalName" ? t("common.optional") : undefined}>
+      {({ id, describedBy, invalid }) => <Input id={id} name={name} aria-describedby={describedBy} aria-invalid={invalid || undefined} {...extra} />}
+    </Field>
+  );
+  return (
+    <Dialog open onClose={onClose} title={o.addTitle} description={o.addLede}>
+      <form noValidate onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <ErrorSummary title={c.fixErrors} errors={Object.entries(errors).map(([field, message]) => ({ field, message }))} />
+        </div>
+        {text("legalName", o.legalName)}
+        {text("tradeName", o.tradeName)}
+        <Field label={o.orgType}>
+          {({ id }) => (
+            <Select id={id} name="orgType" defaultValue="ltd">
+              {TYPES.map((k) => <option key={k} value={k}>{o.types[k]}</option>)}
+            </Select>
+          )}
+        </Field>
+        <Field label={o.sizeBand} optional={t("common.optional")}>
+          {({ id }) => (
+            <Select id={id} name="sizeBand" defaultValue="">
+              <option value="">—</option>
+              {SIZES.map((k) => <option key={k} value={k}>{o.sizes[k]}</option>)}
+            </Select>
+          )}
+        </Field>
+        {text("tin", o.tin, { inputMode: "numeric", maxLength: 9 })}
+        {text("rdbNumber", o.rdb)}
+        {text("registeredOn", o.registeredOn, { type: "date" })}
+        {text("province", o.province)}
+        {text("district", o.district)}
+        {text("phone", o.phone, { type: "tel" })}
+        {text("email", o.email, { type: "email" })}
+        {text("website", o.website, { type: "url" })}
+        {save.isError && <p role="alert" className="text-small font-medium text-danger sm:col-span-2">{c.generic}</p>}
+        <div className="flex flex-wrap justify-end gap-2 sm:col-span-2">
+          <Button type="button" variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button type="submit" dots loading={save.isPending}>{o.create}</Button>
         </div>
       </form>
     </Dialog>

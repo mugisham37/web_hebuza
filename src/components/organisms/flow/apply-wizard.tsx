@@ -289,7 +289,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
       let group: string | undefined;
       if (basket.length && user) {
         // REQ-02: signed-in basket = one request group, one transaction.
-        const g = await unwrap(api.POST("/api/applications/submit-basket", {
+        const g = await unwrap<{ group_code: string; items: Submitted[] }>(api.POST("/api/applications/submit-basket", {
           headers: { "Idempotency-Key": draft.idem },
           body: {
             idempotency_key: draft.idem,
