@@ -12,7 +12,7 @@ const en = {
   copied: "Link copied",
   ask: "Ask HEBUZA",
   due: "Due",
-  status: { upcoming: "Upcoming", in_progress: "In progress", done: "Done", missed: "Missed", waived: "Not needed" } as Record<string, string>,
+  status: { upcoming: "Upcoming", in_progress: "In progress", done: "Done", missed: "Missed", skipped: "Not needed" } as Record<string, string>,
 };
 type Copy = typeof en;
 const fr: Copy = {
@@ -26,7 +26,7 @@ const fr: Copy = {
   copied: "Lien copié",
   ask: "Demander à HEBUZA",
   due: "Échéance",
-  status: { upcoming: "À venir", in_progress: "En cours", done: "Fait", missed: "Manquée", waived: "Non requis" },
+  status: { upcoming: "À venir", in_progress: "En cours", done: "Fait", missed: "Manquée", skipped: "Non requis" },
 };
 const rw: Copy = {
   title: "Ingengabihe y'inshingano",
@@ -39,6 +39,6 @@ const rw: Copy = {
   copied: "Link yakoporowe",
   ask: "Baza HEBUZA",
   due: "Itariki ntarengwa",
-  status: { upcoming: "Biri imbere", in_progress: "Birakorwa", done: "Byarangiye", missed: "Byarenze", waived: "Ntibikenewe" },
+  status: { upcoming: "Biri imbere", in_progress: "Birakorwa", done: "Byarangiye", missed: "Byarenze", skipped: "Ntibikenewe" },
 };
 export const calendarCopy = (l: Locale) => ({ en, fr, rw })[l];

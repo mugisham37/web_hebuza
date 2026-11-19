@@ -12,7 +12,7 @@ import { ListSkeleton, PageHead, useC4 } from "@/components/molecules/client/cli
 import { calendarCopy } from "@/content/pages/client-calendar";
 
 type Res = components["schemas"]["ClientCalendarResponse"];
-const TONE = { upcoming: "info", in_progress: "warning", done: "success", missed: "danger", waived: "neutral" } as const;
+const TONE = { upcoming: "info", in_progress: "warning", done: "success", missed: "danger", skipped: "neutral" } as const;
 
 /** F-CAL-04 client compliance calendar: deadlines list, private ICS subscription link, "ask HEBUZA". */
 export function ClientCalendar() {
