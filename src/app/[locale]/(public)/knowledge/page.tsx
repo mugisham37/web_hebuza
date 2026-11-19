@@ -35,7 +35,7 @@ export default async function KnowledgePage({
   const L = (p: string) => localHref(locale, p);
   const GUIDES = await getGuides();
   const feat = GUIDES.find((g) => g.featured) ?? GUIDES[0];
-  const ft = feat.t[locale];
+  const ft = feat?.t[locale];
   const rest = GUIDES.filter((g) => g !== feat);
   return (
     <>
@@ -67,70 +67,81 @@ export default async function KnowledgePage({
         </div>
       </section>
 
-      <section className="px-gutter pb-10">
-        <Reveal
-          preset="card-in"
-          className="container-page grid overflow-hidden border-2 border-navy-700 bg-surface md:grid-cols-[1fr_1.2fr]"
-        >
-          <div className="relative min-h-56">
-            <Image
-              src={feat.img}
-              alt=""
-              fill
-              sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col gap-4 p-6 md:p-10">
-            <p className="flex flex-wrap items-center gap-3 text-small">
-              <Tag variant="navy">{k.cats[feat.cat]}</Tag>
-              <Tag variant="neutral">{k.featured}</Tag>
-              {formatDate(feat.date, locale)}
-              <Star className="size-2.5 text-gold-600" />
-              {k.minRead.replace("{n}", String(feat.read))}
-            </p>
-            <h2 className="text-h2">{ft.title}</h2>
-            <p className="text-body text-fg-muted">{ft.excerpt}</p>
-            <div className="mt-auto flex flex-wrap items-center justify-between gap-4">
-              <p className="text-small text-fg-subtle">{k.by}</p>
-              <ButtonLink href={L(`/knowledge/${feat.slug}`)} dots>
-                {k.read}
-                <span className="sr-only">: {ft.title}</span>
-              </ButtonLink>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      <section className="px-gutter pb-[var(--spacing-section-sm)]">
-        <div className="container-page">
-          <KnowledgeBrowser
-            copy={k}
-            cats={(Object.keys(k.cats) as GuideCat[]).map((v) => ({
-              v,
-              label: k.cats[v],
-            }))}
-            items={rest.map((g) => ({
-              cat: g.cat,
-              haystack:
-                `${g.t[locale].title} ${g.t[locale].excerpt} ${g.t[locale].overview} ${k.cats[g.cat]}`.toLowerCase(),
-            }))}
-            cards={rest.map((g) => (
-              <GuideCard
-                key={g.slug}
-                img={g.img}
-                tag={k.cats[g.cat]}
-                date={formatDate(g.date, locale)}
-                read={k.minRead.replace("{n}", String(g.read))}
-                title={g.t[locale].title}
-                excerpt={g.t[locale].excerpt}
-                href={L(`/knowledge/${g.slug}`)}
+      {feat && ft ? (
+        <>
+        <section className="px-gutter pb-10">
+          <Reveal
+            preset="card-in"
+            className="container-page grid overflow-hidden border-2 border-navy-700 bg-surface md:grid-cols-[1fr_1.2fr]"
+          >
+            <div className="relative min-h-56">
+              <Image
+                src={feat.img}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
               />
-            ))}
-          />
-          <p className="mt-8 text-small text-fg-subtle">{c.exampleNote}</p>
-        </div>
-      </section>
+            </div>
+            <div className="flex flex-col gap-4 p-6 md:p-10">
+              <p className="flex flex-wrap items-center gap-3 text-small">
+                <Tag variant="navy">{k.cats[feat.cat]}</Tag>
+                <Tag variant="neutral">{k.featured}</Tag>
+                {formatDate(feat.date, locale)}
+                <Star className="size-2.5 text-gold-600" />
+                {k.minRead.replace("{n}", String(feat.read))}
+              </p>
+              <h2 className="text-h2">{ft.title}</h2>
+              <p className="text-body text-fg-muted">{ft.excerpt}</p>
+              <div className="mt-auto flex flex-wrap items-center justify-between gap-4">
+                <p className="text-small text-fg-subtle">{k.by}</p>
+                <ButtonLink href={L(`/knowledge/${feat.slug}`)} dots>
+                  {k.read}
+                  <span className="sr-only">: {ft.title}</span>
+                </ButtonLink>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+  
+        <section className="px-gutter pb-[var(--spacing-section-sm)]">
+          <div className="container-page">
+            <KnowledgeBrowser
+              copy={k}
+              cats={(Object.keys(k.cats) as GuideCat[]).map((v) => ({
+                v,
+                label: k.cats[v],
+              }))}
+              items={rest.map((g) => ({
+                cat: g.cat,
+                haystack:
+                  `${g.t[locale].title} ${g.t[locale].excerpt} ${g.t[locale].overview} ${k.cats[g.cat]}`.toLowerCase(),
+              }))}
+              cards={rest.map((g) => (
+                <GuideCard
+                  key={g.slug}
+                  img={g.img}
+                  tag={k.cats[g.cat]}
+                  date={formatDate(g.date, locale)}
+                  read={k.minRead.replace("{n}", String(g.read))}
+                  title={g.t[locale].title}
+                  excerpt={g.t[locale].excerpt}
+                  href={L(`/knowledge/${g.slug}`)}
+                />
+              ))}
+            />
+            <p className="mt-8 text-small text-fg-subtle">{c.exampleNote}</p>
+          </div>
+        </section>
+        </>
+      ) : (
+        <section className="px-gutter pb-[var(--spacing-section-sm)]">
+          <div className="container-page border-2 border-navy-700 bg-surface p-8">
+            <p className="text-h4">{k.noneT}</p>
+            <p className="mt-2 text-muted">{k.noneB}</p>
+          </div>
+        </section>
+      )}
 
       <section className="px-gutter pb-[var(--spacing-section-sm)]">
         <div className="container-page grid gap-6 theme-dark bg-grad-navy-depth p-7 text-fg md:grid-cols-[1fr_auto] md:items-center md:p-10">

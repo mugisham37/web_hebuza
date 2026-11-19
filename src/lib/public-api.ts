@@ -3,7 +3,7 @@ import { cacheLife } from "next/cache";
 
 /**
  * Public API read for `'use cache'` functions (catalogue, CMS). 404 → null. When the API can't be reached during
- * `next build` the result is `empty` with a seconds-long cache life, so the page is regenerated on its first request
+ * `next build` the result is `empty` with a one-minute cache life, so the page is regenerated on its first request
  * instead of failing the build or baking an empty page for hours; at runtime a failure throws to the error boundary.
  */
 export async function publicGet<T>(path: string, empty: T): Promise<T | null> {
@@ -14,7 +14,7 @@ export async function publicGet<T>(path: string, empty: T): Promise<T | null> {
     return ((await r.json()) as { data: T }).data;
   }
   if (process.env.NEXT_PHASE === "phase-production-build") {
-    cacheLife("seconds");
+    cacheLife("minutes"); // short-lived ("seconds") caches are not prerenderable with cacheComponents; 1 min regen
     return empty;
   }
   throw new Error(`Public API ${path} unavailable (${r?.status ?? "unreachable"})`);
