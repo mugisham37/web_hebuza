@@ -11,6 +11,7 @@ const en = {
   listLabel: "Payout batches",
   empty: ["No payout batches yet", "Build the first batch from approved allocations."],
   emptyView: ["No batch in this state", "Switch view or build a new batch."],
+  dests: { title: "Payout destinations to verify", sub: "Call the worker back on a known number before verifying.", empty: "No destinations waiting.", verify: "Verify", fail: "Mark failed", done: "Destination updated", load: "payout destinations", denied: "Only finance can verify payout destinations." },
   load: { batches: "payout batches", batch: "this batch", preview: "the batch preview" },
   builder: {
     title: "Build payout batch", back: "Payouts", steps: ["Month", "Lines", "Confirm"],
@@ -67,6 +68,7 @@ const rw: Copy = {
   listLabel: "Ibyiciro byo kwishyura",
   empty: ["Nta cyiciro kirabaho", "Kora icyiciro cya mbere uhereye ku igabanywa ryemejwe."],
   emptyView: ["Nta cyiciro kiri muri iyi miterere", "Hindura cyangwa ukore icyiciro gishya."],
+  dests: { title: "Aho kwishyurirwa hategereje kwemezwa", sub: "Hamagara umukozi kuri nimero izwi mbere yo kwemeza.", empty: "Nta hantu hategereje.", verify: "Emeza", fail: "Byanze", done: "Byavuguruwe", load: "aho kwishyurirwa", denied: "Imari yonyine ni yo yemeza aho kwishyurirwa." },
   load: { batches: "ibyiciro", batch: "iki cyiciro", preview: "isuzuma ry'icyiciro" },
   builder: {
     title: "Kora icyiciro cyo kwishyura", back: "Kwishyura abakozi", steps: ["Ukwezi", "Imirongo", "Emeza"],
@@ -122,6 +124,7 @@ const fr: Copy = {
   listLabel: "Lots de paiement",
   empty: ["Aucun lot pour l'instant", "Préparez le premier lot à partir des répartitions approuvées."],
   emptyView: ["Aucun lot dans cet état", "Changez de vue ou préparez un lot."],
+  dests: { title: "Destinations de paiement à vérifier", sub: "Rappelez l'agent sur un numéro connu avant de vérifier.", empty: "Aucune destination en attente.", verify: "Vérifier", fail: "Marquer en échec", done: "Destination mise à jour", load: "les destinations de paiement", denied: "Seule la finance peut vérifier les destinations de paiement." },
   load: { batches: "les lots", batch: "ce lot", preview: "l'aperçu du lot" },
   builder: {
     title: "Préparer un lot de paiement", back: "Paiements agents", steps: ["Mois", "Lignes", "Confirmer"],

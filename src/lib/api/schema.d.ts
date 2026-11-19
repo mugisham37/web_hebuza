@@ -7172,6 +7172,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/staff/payout-destinations/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["WorkStaffController_pendingDestinations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/staff/workers/{id}/work": {
         parameters: {
             query?: never;
@@ -33038,6 +33054,30 @@ export interface operations {
                 "application/json": components["schemas"]["FirmAssignDto"];
             };
         };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    WorkStaffController_pendingDestinations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             "2XX": {
                 headers: {

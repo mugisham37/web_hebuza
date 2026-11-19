@@ -26,7 +26,8 @@ import { ApprovalChain, ConflictDialog, HistoryTab, MoneyTile } from "@/componen
 import { ArtNoBatches, ArtReconciled } from "@/components/atoms/finance-art";
 import { errorCopy } from "@/lib/api/error-copy";
 import { DesktopOnly, LaneBanner, Steps, TextDialog, useActor, useMoneyText, useP, useRunner } from "@/components/molecules/finance/revenue";
-import { api, unwrap, type ActionOf } from "@/lib/api/client";
+import { api, unwrap, ApiError, type ActionOf } from "@/lib/api/client";
+import { usePendingDestinations, useWorkDecision, type PendingDest } from "@/lib/workforce";
 
 const backLink = (href: string, label: string) => (
   <ButtonLink href={href} variant="ghost" size="sm" className="-ml-3 mb-2"><Icon name="arrowRight" size={14} aria-hidden className="rotate-180" />{label}</ButtonLink>
@@ -74,8 +75,38 @@ export function PayoutsView() {
               ? <EmptyPanel title={p.emptyView[0]} body={p.emptyView[1]} />
               : <EmptyPanel title={p.empty[0]} body={p.empty[1]} action={<div className="grid justify-items-center gap-3"><ArtNoBatches />{!execOnly && <ButtonLink href={localHref(locale, "/finance/payouts/new")} size="sm" dots>{p.create}</ButtonLink>}</div>} />} />
         )}
+        {!execOnly && <PendingDestinations />}
       </div>
     </div>
+  );
+}
+
+/** F-WRK payout-destination call-back verification, for finance (sup.bank.verify). */
+function PendingDestinations() {
+  const d = useP().dests;
+  const q = usePendingDestinations();
+  if (q.isError && q.error instanceof ApiError && q.error.isForbidden) return null; // not a finance verifier: hide, the server enforces
+  return (
+    <Panel title={d.title}>
+      <p className="mb-3 text-small text-fg-muted">{d.sub}</p>
+      {q.isPending ? <SkeletonRows n={2} /> : q.isError ? <PanelError what={d.load} onRetry={() => q.refetch()} /> : !q.data.length ? <EmptyPanel compact title={d.empty} /> : (
+        <ul className="grid gap-2">{q.data.map((x) => <DestRow key={x.workerId} x={x} />)}</ul>
+      )}
+    </Panel>
+  );
+}
+function DestRow({ x }: { x: PendingDest }) {
+  const d = useP().dests;
+  const toast = useToast();
+  const { locale } = useI18n();
+  const m = useWorkDecision(x.workerId);
+  const go = (result: "verify" | "fail") => m.mutate({ k: "payout", result }, { onSuccess: () => toast({ title: d.done, tone: "success" }), onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }) });
+  return (
+    <li className="flex flex-wrap items-center gap-3 border border-border px-3 py-2">
+      <span className="min-w-0 flex-1 break-words"><span className="font-medium">{x.workerId}</span> · {x.label} ···{x.last4}</span>
+      <Button size="sm" loading={m.isPending} onClick={() => go("verify")}>{d.verify}</Button>
+      <Button size="sm" variant="secondary" disabled={m.isPending} onClick={() => go("fail")}>{d.fail}</Button>
+    </li>
   );
 }
 

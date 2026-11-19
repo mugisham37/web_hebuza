@@ -6,6 +6,7 @@ const COPY: Record<string, Record<"rw" | "en" | "fr", string>> = {
   payment_pending: { en: "A payment is already in progress.", fr: "Un paiement est déjà en cours.", rw: "Hari ubwishyu buri gukorwa." },
   forbidden: { en: "You don't have access to this.", fr: "Vous n'avez pas accès.", rw: "Nta burenganzira ufite kuri ibi." },
   not_found: { en: "We couldn't find that.", fr: "Introuvable.", rw: "Ntibibonetse." },
+  lane_closed: { en: "This case closed over 30 days ago, so the chat is read-only. Contact support for help.", fr: "Ce dossier est clos depuis plus de 30 jours : la discussion est en lecture seule. Contactez le support.", rw: "Iyi dosiye yafunzwe hashize iminsi irenga 30, ikiganiro gisomwa gusa. Vugana n'ubufasha." },
   rate_limited: { en: "Too many tries. Wait a moment.", fr: "Trop de tentatives. Patientez.", rw: "Wagerageje kenshi. Tegereza gato." },
   same_approver: { en: "A different person must approve this.", fr: "Une autre personne doit approuver.", rw: "Undi muntu agomba kwemeza ibi." },
   reason_required: { en: "Give a reason.", fr: "Indiquez une raison.", rw: "Tanga impamvu." },

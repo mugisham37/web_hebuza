@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, unwrap } from "@/lib/api/client";
+import { api, unwrap, ApiError } from "@/lib/api/client";
+import { errorCopy } from "@/lib/api/error-copy";
 import { putPresigned } from "@/lib/api/upload";
 import type { components } from "@/lib/api/schema";
 import type * as C from "@/lib/client/types";
@@ -106,6 +107,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [fileErr, setFileErr] = useState<string | null>(null);
+  const [closed, setClosed] = useState(false); // F-MSG-18: client lane read-only 30 days after close (409 lane_closed)
   const picker = useRef<HTMLInputElement>(null);
   const end = useRef<HTMLDivElement>(null);
   const typedAt = useRef(0);
@@ -169,7 +171,8 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
       );
       await qc.invalidateQueries({ queryKey: key });
       patch(o.id, null);
-    } catch {
+    } catch (e) {
+      if (e instanceof ApiError && e.errorType === "lane_closed") setClosed(true);
       patch(o.id, navigator.onLine ? "failed" : "queued");
     }
   }
@@ -436,6 +439,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
         <div ref={end} />
       </div>
 
+      {closed && <p role="status" className="border-l-4 border-l-info bg-tint px-3 py-2 text-small">{errorCopy(new ApiError(409, "lane_closed", "", null), locale)}</p>}
       <form
         className="grid gap-3 border-t border-border p-3 sm:p-4"
         onSubmit={(e) => {
