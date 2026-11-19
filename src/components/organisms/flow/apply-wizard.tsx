@@ -2,6 +2,7 @@
 import { useOnline } from "@/components/atoms/hooks";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { api, unwrap, ApiError, newIdempotencyKey } from "@/lib/api/client";
@@ -168,6 +169,19 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
   const questions = la.questions[svc.family] ?? la.fallback;
   const fields = c.fields[svc.slug] ?? c.fields.default;
   const L = (p: string) => localHref(locale, p);
+  // ORG-08: the active company (switcher on /orgs) files the request when the client may submit for it.
+  const orgs = useQuery({
+    queryKey: ["c4", "orgs"],
+    queryFn: () => unwrap<{ activeOrgId: string | null; orgs: { id: string; name: string; myRole: string }[] }>(api.GET("/api/me/orgs")),
+    enabled: !!user?.roles.includes("client"),
+  });
+  // ORG-06: with the profile_reuse consent, empty personal fields prefill from the saved profile (client still reviews).
+  const prefill = useQuery({
+    queryKey: ["prefill", svc.slug, orgs.data?.activeOrgId ?? "me"],
+    queryFn: () => unwrap<{ consent: boolean; values: Record<string, string> }>(api.GET("/api/me/prefill", { params: { query: { service: svc.slug, party: orgs.data?.activeOrgId ?? "me" } } })),
+    enabled: !!user?.roles.includes("client") && !orgs.isPending,
+  });
+  const actingOrg = orgs.data?.orgs.find((o) => o.id === orgs.data?.activeOrgId && o.myRole !== "viewer") ?? null;
 
   // The shell only renders this after the session resolves (client-side), so localStorage is safe in initialisers.
   const [stored] = useState(() => read<Draft>(draftKey(svc.slug)));
@@ -231,6 +245,22 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     update({ person: { ...draft.person, [k]: v } });
   const setData = (k: string, v: unknown) =>
     update({ data: { ...draft.data, [k]: v } });
+  // Fill only empty fields, once per prefill result, so nothing the client typed is overwritten.
+  const pv = prefill.data?.values;
+  useEffect(() => {
+    if (!pv) return;
+    setDraft((d) => ({
+      ...d,
+      person: {
+        ...d.person,
+        fullName: d.person.fullName || pv["person.full_name"] || "",
+        nationalId: d.person.nationalId || pv["person.national_id"] || "",
+        dob: d.person.dob || pv["person.dob"] || "",
+        email: d.person.email || pv["person.email"] || "",
+        phone: d.person.phone || (pv["person.phone"] ?? "").replace(/^\+250/, ""),
+      },
+    }));
+  }, [pv]);
   const tier = svc.tiers.find((t) => t.key === draft.tier);
   const go = (step: number) => {
     setErrors({});
@@ -274,6 +304,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
           idempotency_key: d.idem, // same key across retries → the server replays instead of double-creating (F-REQ-02)
           personal_info: person(),
           service_data: d.data,
+          organization_id: actingOrg?.id ?? null,
         },
       }),
     );
@@ -293,6 +324,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
           headers: { "Idempotency-Key": draft.idem },
           body: {
             idempotency_key: draft.idem,
+            organization_id: actingOrg?.id ?? null,
             personal_info: person(),
             items: [{ d: draft, slug: svc.slug }, ...basket.map((b) => ({ d: b.draft, slug: b.slug }))].map(({ d, slug }) => ({
               service_slug: slug, tier: d.tier || "standard", is_urgent: d.tier === "urgent", service_data: d.data,
@@ -547,6 +579,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
             </span>
           </Notice>
         )}
+        {actingOrg && <Notice tone="info">{fill(c.done.actingFor, { org: actingOrg.name })}</Notice>}
         {serverError && <Notice>{serverError}</Notice>}
         {errorList.length > 0 && (
           <div className="mb-6">

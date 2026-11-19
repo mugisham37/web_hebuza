@@ -18,7 +18,7 @@ import { authCopy } from "@/content/pages/client-auth";
 import { fill } from "@/content/pages/c4";
 import { Panel, useC4 } from "@/components/molecules/client/client";
 
-type ConsentKey = "processing" | "marketing" | "analytics";
+type ConsentKey = "processing" | "marketing" | "analytics" | "profileReuse";
 type Consents = Record<ConsentKey, boolean> & { processingLocked: boolean };
 type Export = {
   status: "none" | "pending" | "ready";
@@ -73,7 +73,7 @@ export function PrivacySettings() {
           />
         ) : (
           <ul className="divide-y divide-border">
-            {(["processing", "marketing", "analytics"] as const).map((k) => {
+            {(["processing", "marketing", "analytics", "profileReuse"] as const).map((k) => {
               const locked =
                 k === "processing" && consents.data.processingLocked;
               return (

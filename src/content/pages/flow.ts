@@ -132,6 +132,7 @@ const en = {
     titleHi: "submitted!",
     copy: "Copy reference",
     group: "Group reference {code}: one reference for all these requests.",
+    actingFor: "You are applying for {org}. Switch to your personal account under Companies to apply for yourself.",
     copied: "Copied",
     next: "What happens next",
     nextSteps: [
@@ -392,6 +393,7 @@ const rw: FlowCopy = {
     titleHi: "bwoherejwe!",
     copy: "Koporora nimero",
     group: "Nimero y'itsinda {code}: imwe ku busabe bwose.",
+    actingFor: "Urimo gusaba mu izina rya {org}. Hindura ujye kuri konti bwite muri Ibigo kugira ngo usabe ku giti cyawe.",
     copied: "Byakoporowe",
     next: "Ibikurikira",
     nextSteps: [
@@ -652,6 +654,7 @@ const fr: FlowCopy = {
     titleHi: "envoyée !",
     copy: "Copier la référence",
     group: "Référence de groupe {code} : une seule pour toutes ces demandes.",
+    actingFor: "Vous faites la demande pour {org}. Passez à votre compte personnel dans Entreprises pour demander à titre personnel.",
     copied: "Copié",
     next: "Et ensuite",
     nextSteps: [

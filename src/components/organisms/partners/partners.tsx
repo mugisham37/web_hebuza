@@ -773,7 +773,7 @@ export function PartnerDetail({ id }: { id: string }) {
         <ul className="divide-y divide-border border border-border bg-white text-small">
           {d.commissions.map((m) => (
             <li key={m.id} className="px-4 py-3 tabular">
-              {formatMoney(Number(m.amount), locale)} ·{" "}
+              {formatMoney(Number(m.amount), "RWF", locale)} ·{" "}
               {Number(m.rateBps) / 100}% · {L(c.comStatus, m.status)}
             </li>
           ))}
@@ -836,7 +836,7 @@ export function PartnerDetail({ id }: { id: string }) {
                         : `${sc.actionsOnTimePct}%`,
                     ],
                     [c.score.referrals, sc.referrals],
-                    [c.score.revenue, formatMoney(sc.revenue, locale)],
+                    [c.score.revenue, formatMoney(sc.revenue, "RWF", locale)],
                     [
                       c.score.lastContact,
                       d.lastContactAt
@@ -1002,11 +1002,11 @@ export function PartnerCommissions() {
                   <td className="px-4 py-3">{r.partner}</td>
                   <td className="px-4 py-3 font-mono">{r.caseCode ?? "—"}</td>
                   <td className="px-4 py-3 tabular">
-                    {formatMoney(r.baseAmount, locale)}
+                    {formatMoney(r.baseAmount, "RWF", locale)}
                   </td>
                   <td className="px-4 py-3 tabular">{r.rateBps / 100}%</td>
                   <td className="px-4 py-3 tabular">
-                    {formatMoney(r.amount, locale)}
+                    {formatMoney(r.amount, "RWF", locale)}
                   </td>
                   <td className="px-4 py-3">{c.comStatus[r.status]}</td>
                   <td className="px-4 py-3">

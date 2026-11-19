@@ -2,7 +2,8 @@
 import { api, unwrap } from "@/lib/api/client";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useI18n } from "@/lib/i18n/provider";
+import Link from "next/link";
+import { useI18n, localHref } from "@/lib/i18n/provider";
 import { Button } from "@/components/atoms/button";
 import { Field, Input, Select, ErrorSummary } from "@/components/atoms/field";
 import { EmptyState, ErrorState } from "@/components/atoms/feedback";
@@ -37,7 +38,7 @@ const KEY = ["c4", "orgs"];
 
 /** Client organisations (ORG module): list, switch acting company, members, invite, remove. */
 export function OrgsView() {
-  const { c } = useC4();
+  const { c, locale } = useC4();
   const o = c.orgs;
   const qc = useQueryClient();
   const toast = useToast();
@@ -145,6 +146,7 @@ export function OrgsView() {
                 }
               >
                 <div className="mb-4 flex flex-wrap items-center gap-2 text-small">
+                  <Link href={localHref(locale, `/orgs/${org.id}`)} className="font-medium text-link underline underline-offset-2">{o.open}</Link>
                   <Badge tone={TONE[org.verificationStatus]}>{o.status[org.verificationStatus]}</Badge>
                   {org.customerNo && <span className="text-fg-muted">{o.customerNo}: <span className="font-mono tabular">{org.customerNo}</span></span>}
                   {manage && (org.verificationStatus === "unverified" || org.verificationStatus === "rejected") && (
