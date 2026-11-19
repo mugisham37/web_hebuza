@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "smoke:prod": "node scripts/smoke-prod.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint/",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
