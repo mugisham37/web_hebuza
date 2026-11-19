@@ -9,6 +9,7 @@ import { Icon, type IconName } from "@/components/atoms/icon";
 import { Money } from "@/components/atoms/domain";
 import { ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { c2Copy, fill } from "@/content/pages/c2";
+import { NpsCard } from "@/components/organisms/client/nps-card";
 import { bucket, useDashboard } from "@/components/molecules/client/requests-data";
 import { NeedRow, RequestRow } from "@/components/molecules/client/client";
 
@@ -73,6 +74,7 @@ export function DashboardView({ recs }: { recs: Rec[] }) {
 
   return (
     <div className="grid gap-6">
+      <NpsCard />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-fg-heading text-h3">

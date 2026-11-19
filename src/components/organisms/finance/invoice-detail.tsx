@@ -26,9 +26,10 @@ import { useOnline } from "@/components/atoms/hooks";
 import { Amount, DocNumber, EbmBadge, FinStatus, MethodTag, SeriesTag } from "@/components/atoms/finance";
 import { HistoryTab, LineEditor, NoAccess, TotalsPanel, useStepUpAction } from "@/components/molecules/finance/finance";
 import { BackLink, DocumentPreview, Meta, fresh, useBError } from "@/components/molecules/finance/finance";
+import { CaseDisbursements } from "@/components/organisms/finance/case-disbursements";
 
 type Q = ReturnType<typeof useInvoice>;
-const TABS = ["details", "payments", "credit", "documents", "reminders", "history"] as const;
+const TABS = ["details", "payments", "credit", "documents", "reminders", "disbursements", "history"] as const;
 
 export function InvoiceView({ no }: { no: string }) {
   const { locale } = useI18n();
@@ -64,6 +65,7 @@ export function InvoiceView({ no }: { no: string }) {
           { id: "credit", label: c.tabs.credit, count: d.creditNotes.length, content: <CreditTab d={d} /> },
           { id: "documents", label: c.tabs.documents, content: <DocsTab d={d} /> },
           { id: "reminders", label: c.tabs.reminders, count: d.reminders.length, content: <RemindersTab d={d} /> },
+          ...(inv.caseRef ? [{ id: "disbursements", label: c.tabs.disbursements, content: <CaseDisbursements caseRef={inv.caseRef} /> }] : []),
           { id: "history", label: c.tabs.history, content: <div className="pt-4"><HistoryTab resourceType="invoice" resourceId={inv.key} /></div> },
         ]} />
         <Side d={d} q={q} />

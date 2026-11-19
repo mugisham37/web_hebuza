@@ -435,8 +435,9 @@ function ExportPanel({ bt }: { bt: BatchView }) {
   const gen = async (k: ExportFile["kind"]) => {
     setBusy(k);
     try {
-      const x = await unwrap<ExportFile & { content: string; rows: number }>(api.GET("/api/finance/payouts/batches/{no}/export", { params: { path: { no: bt.no }, query: { format: k } } }));
-      const url = URL.createObjectURL(new Blob([x.content], { type: "text/plain" }));
+      const x = await unwrap<ExportFile & { content: string; encoding?: "base64"; mime?: string; rows: number }>(api.GET("/api/finance/payouts/batches/{no}/export", { params: { path: { no: bt.no }, query: { format: k } } }));
+      const body = x.encoding === "base64" ? Uint8Array.from(atob(x.content), (ch) => ch.charCodeAt(0)) : x.content;
+      const url = URL.createObjectURL(new Blob([body], { type: x.mime ?? "text/plain" }));
       const a = document.createElement("a");
       a.href = url; a.download = x.name; a.click();
       URL.revokeObjectURL(url);

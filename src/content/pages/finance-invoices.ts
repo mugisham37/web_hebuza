@@ -16,7 +16,8 @@ const en = {
   totalsRow: "Totals for this filter ({n} invoices)",
   empty: { title: "No invoices here", body: "Issue one from an accepted quote, or create a standalone invoice.", filtered: "Nothing matches these filters.", renewals: "No renewal invoices yet. The monthly renewal job creates them." },
   back: "All invoices",
-  tabs: { details: "Details", payments: "Payments", credit: "Credit notes", documents: "Documents", reminders: "Reminders", history: "History" } as Record<string, string>,
+  tabs: { details: "Details", payments: "Payments", credit: "Credit notes", documents: "Documents", reminders: "Reminders", history: "History", disbursements: "Disbursements" } as Record<string, string>,
+  dsb: { intro: "Third-party costs paid for this case. Each one adds a pass-through line to the case's draft invoice so the client is rebilled.", vendor: "Vendor", label: "What was paid", amount: "Amount (RWF)", bill: "Vendor bill no. (optional)", add: "Record disbursement", added: "Disbursement recorded on draft {key}.", empty: "No disbursements on this case.", err: "disbursements", pick: "Choose a vendor", noVendors: "No vendors you can use. Ask procurement to add the vendor first." },
   fields: { client: "Client", case: "Case reference", issued: "Issue date", due: "Due date", series: "Series", language: "PDF language", quote: "From quote", none: "—" },
   side: {
     balance: "Balance due", payments: "Payments", noPayments: "No confirmed payments yet.", ebm: "EBM receipt number",
@@ -85,7 +86,8 @@ const rw: Copy = {
   totalsRow: "Igiteranyo cy'iri yungurura ({n})",
   empty: { title: "Nta nyemezabuguzi hano", body: "Yitange uhereye ku nyemezabiciro yemewe, cyangwa ukore inyemezabuguzi yihariye.", filtered: "Nta kintu gihuye n'iyungurura.", renewals: "Nta nyemezabuguzi z'ivugurura ziraboneka. Igikorwa cya buri kwezi ni cyo kizikora." },
   back: "Inyemezabuguzi zose",
-  tabs: { details: "Ibisobanuro", payments: "Ubwishyu", credit: "Inyemezabuguzi zisubiza", documents: "Inyandiko", reminders: "Ibyibutsa", history: "Amateka" },
+  tabs: { details: "Ibisobanuro", payments: "Ubwishyu", credit: "Inyemezabuguzi zisubiza", documents: "Inyandiko", reminders: "Ibyibutsa", history: "Amateka", disbursements: "Ibyishyuwe abandi" },
+  dsb: { intro: "Amafaranga yishyuwe abandi kuri iyi dosiye. Buri imwe yongera umurongo kuri fagitire y'agateganyo kugira ngo umukiriya ayishyure.", vendor: "Utanga serivisi", label: "Icyishyuwe", amount: "Amafaranga (RWF)", bill: "Nimero ya fagitire ye (si ngombwa)", add: "Andika icyishyuwe", added: "Byanditswe kuri fagitire y'agateganyo {key}.", empty: "Nta byishyuwe abandi kuri iyi dosiye.", err: "ibyishyuwe abandi", pick: "Hitamo utanga serivisi", noVendors: "Nta batanga serivisi uhari. Saba abashinzwe kugura kubanza kumwandika." },
   fields: { client: "Umukiriya", case: "Dosiye", issued: "Itariki yatangiweho", due: "Itariki ntarengwa", series: "Ubwoko", language: "Ururimi rwa PDF", quote: "Bivuye ku nyemezabiciro", none: "—" },
   side: {
     balance: "Ibisigaye kwishyurwa", payments: "Ubwishyu", noPayments: "Nta bwishyu bwemejwe buraboneka.", ebm: "Nimero ya EBM",
@@ -153,7 +155,8 @@ const fr: Copy = {
   totalsRow: "Totaux pour ce filtre ({n} factures)",
   empty: { title: "Aucune facture ici", body: "Émettez-en une depuis un devis accepté, ou créez une facture autonome.", filtered: "Rien ne correspond à ces filtres.", renewals: "Aucune facture de renouvellement. Le traitement mensuel les crée." },
   back: "Toutes les factures",
-  tabs: { details: "Détails", payments: "Paiements", credit: "Avoirs", documents: "Documents", reminders: "Relances", history: "Historique" },
+  tabs: { details: "Détails", payments: "Paiements", credit: "Avoirs", documents: "Documents", reminders: "Relances", history: "Historique", disbursements: "Débours" },
+  dsb: { intro: "Frais tiers payés pour ce dossier. Chacun ajoute une ligne de débours au brouillon de facture du dossier pour refacturer le client.", vendor: "Fournisseur", label: "Objet du paiement", amount: "Montant (RWF)", bill: "N° de facture fournisseur (facultatif)", add: "Enregistrer le débours", added: "Débours enregistré sur le brouillon {key}.", empty: "Aucun débours sur ce dossier.", err: "débours", pick: "Choisir un fournisseur", noVendors: "Aucun fournisseur disponible. Demandez aux achats de l'ajouter." },
   fields: { client: "Client", case: "Dossier", issued: "Date d'émission", due: "Échéance", series: "Série", language: "Langue du PDF", quote: "Issue du devis", none: "—" },
   side: {
     balance: "Solde dû", payments: "Paiements", noPayments: "Aucun paiement confirmé.", ebm: "Numéro de reçu EBM",

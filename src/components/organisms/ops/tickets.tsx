@@ -2,6 +2,8 @@
 // U14 Tickets & disputes (board 14 v2): TK1 queue, TK2 detail, TK3 resolve, TK4 breach + escalation, PK2 phone.
 import { errorCopy } from "@/lib/api/error-copy";
 import { useState, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api, unwrap } from "@/lib/api/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useI18n, localHref } from "@/lib/i18n/provider";
@@ -211,7 +213,7 @@ export function TicketQueue() {
         />
       </label>
       <Tabs
-        value={tab}
+        value={p.get("tab") === "register" ? "register" : tab}
         onChange={(id) =>
           setUrlParams({ tab: id === "complaints" ? null : id })
         }
@@ -274,7 +276,7 @@ export function TicketQueue() {
                 )}
               </div>
             ),
-        }))}
+        })).concat([{ id: "register", label: c.register.tab, count: undefined, content: p.get("tab") === "register" ? <Register /> : null }])}
       />
       <NewTicketDialog
         open={creating}
@@ -394,6 +396,43 @@ function NewTicketDialog({
 
 // ---------------------------------------------------------------- TK2 detail
 type Modal = null | "call" | "refund" | "reassign" | "escalate" | "resolve";
+type RegRow = { source: "ops" | "chat" | "help_desk" | "website"; ref: string; kind: string; subject: string; client: string; caseRef: string | null; status: string; at: string; href: string | null };
+/** F-FBK-03/04/05: every complaint channel in one register (ops, chat disputes, help desk, website enquiries). */
+function Register() {
+  const { c, locale } = useT();
+  const r = c.register;
+  const q = useQuery({
+    queryKey: ["ops", "register"],
+    queryFn: () => unwrap<{ items: RegRow[] }>(api.GET("/api/admin/ops/register")).then((d) => d.items),
+  });
+  if (q.isPending) return <div className="pt-3"><Skeleton className="h-24 w-full" /></div>;
+  if (q.isError) return <div className="pt-3"><PanelError what={r.tab} onRetry={() => void q.refetch()} /></div>;
+  if (!q.data.length) return <div className="pt-3"><EmptyPanel compact title={r.empty} /></div>;
+  return (
+    <div className="overflow-x-auto pt-3">
+      <table className="w-full min-w-[40rem] text-small">
+        <thead className="text-left text-fg-subtle"><tr className="border-b border-border">
+          <th className="p-2">{r.cols.ref}</th><th className="p-2">{r.cols.source}</th><th className="p-2">{r.cols.kind}</th>
+          <th className="p-2">{r.cols.subject}</th><th className="p-2">{r.cols.client}</th><th className="p-2">{r.cols.status}</th><th className="p-2">{r.cols.at}</th>
+        </tr></thead>
+        <tbody>
+          {q.data.map((x) => (
+            <tr key={`${x.source}:${x.ref}`} className="border-b border-border last:border-0">
+              <td className="p-2 font-mono">{x.href ? <a className="underline" href={localHref(locale, x.href)}>{x.ref}</a> : x.ref}{x.caseRef ? <span className="block text-fg-subtle">{x.caseRef}</span> : null}</td>
+              <td className="p-2">{r.sources[x.source]}</td>
+              <td className="p-2">{r.kinds[x.kind] ?? x.kind}</td>
+              <td className="p-2">{x.subject}</td>
+              <td className="p-2">{x.client}</td>
+              <td className="p-2">{x.status === "resolved" ? r.resolved : r.open}</td>
+              <td className="p-2 tabular">{formatDate(x.at, locale)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function TicketView({ ticketRef }: { ticketRef: string }) {
   const { c, locale } = useT();
   const q = useTicket(ticketRef);
@@ -1124,6 +1163,7 @@ function ResolveDialog({
   [
     {
       summary: string;
+      resolutionKind: string;
       rootCause: string;
       preventive: string;
       askConfirm: boolean;
@@ -1132,6 +1172,7 @@ function ResolveDialog({
 >) {
   const [summary, setSummary] = useState("");
   const [rootCause, setRootCause] = useState("agent_delay");
+  const [kind, setKind] = useState("fixed");
   const [preventive, setPreventive] = useState("");
   const [askConfirm, setAsk] = useState(true);
   const [err, setErr] = useState<string>();
@@ -1140,6 +1181,7 @@ function ResolveDialog({
     setErr(undefined);
     onSave({
       summary: summary.trim(),
+      resolutionKind: kind,
       rootCause,
       preventive: preventive.trim(),
       askConfirm,
@@ -1162,6 +1204,11 @@ function ResolveDialog({
             onChange={(e) => setSummary(e.target.value)}
           />
 )}</Field>
+        <Field label={c.resolutionKind}>{(f) => (
+          <Select id={f.id} aria-describedby={f.describedBy} value={kind} onChange={(e) => setKind(e.target.value)}>
+            {Object.entries(c.resolutionKinds).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </Select>
+        )}</Field>
         <Field label={c.rootCause}>{(f) => (
 <Select id={f.id} aria-describedby={f.describedBy} aria-invalid={f.invalid || undefined}
             value={rootCause}
