@@ -22,7 +22,8 @@ export function TeamProfileCard({ className }: { className?: string }) {
   const toast = useToast();
   const q = useQuery({ queryKey: ["me", "team-profile"], queryFn: () => unwrap<Mine>(api.GET("/api/me/team-profile")) });
   const [f, setF] = useState({ optIn: false, title: "", bio: "" });
-  useEffect(() => { if (q.data) setF({ optIn: q.data.optIn, title: q.data.title, bio: q.data.bio }); }, [q.data]);
+  const [seen, setSeen] = useState<Mine | undefined>();
+  if (q.data && q.data !== seen) { setSeen(q.data); setF({ optIn: q.data.optIn, title: q.data.title, bio: q.data.bio }); }
   const m = useMutation({
     mutationFn: () => unwrap<Mine>(api.PUT("/api/me/team-profile", { body: { optIn: f.optIn, title: f.title.trim(), bio: f.bio.trim() } })),
     onSuccess: (d) => { qc.setQueryData(["me", "team-profile"], d); toast({ tone: "success", title: c.saved }); },

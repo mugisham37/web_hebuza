@@ -68,9 +68,7 @@ export function AccountingExport() {
   });
   const [map, setMap] = useState<Record<Account, string>>({ ...ACCOUNTS });
   const [loadedMap, setLoadedMap] = useState(false);
-  useEffect(() => {
-    if (saved.data?.map && !loadedMap) { setMap((m) => ({ ...m, ...saved.data!.map })); setLoadedMap(true); }
-  }, [saved.data, loadedMap]);
+  if (saved.data?.map && !loadedMap) { setLoadedMap(true); setMap((m) => ({ ...m, ...saved.data!.map })); }
   const [errors, setErrors] = useState<{ field: string; message: string }[]>([]);
   const [key] = useState(newIdempotencyKey);
   const [done, setDone] = useState<Done | null>(null);

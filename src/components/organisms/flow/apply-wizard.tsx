@@ -214,9 +214,6 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     retry: false,
   });
   const aiAnswers = aiDraft.data?.serviceSlug === svc.slug ? aiDraft.data.answers : null;
-  useEffect(() => {
-    if (aiAnswers) setDraft((d) => ({ ...d, data: { ...aiAnswers, ...d.data } }));
-  }, [aiAnswers]);
   const actingOrg = orgs.data?.orgs.find((o) => o.id === orgs.data?.activeOrgId && o.myRole !== "viewer") ?? null;
 
   // The shell only renders this after the session resolves (client-side), so localStorage is safe in initialisers.
@@ -242,6 +239,9 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
         savedAt: 0,
       },
   );
+  const [aiSeen, setAiSeen] = useState<typeof aiAnswers>(null);
+  if (aiAnswers && aiAnswers !== aiSeen) { setAiSeen(aiAnswers); setDraft((d) => ({ ...d, data: { ...aiAnswers, ...d.data } })); }
+
   const [basket, setBasket] = useState<BasketItem[]>(() =>
     (read<BasketItem[]>(BASKET) ?? []).filter((b) => b.slug !== svc.slug),
   );
@@ -283,8 +283,9 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     update({ data: { ...draft.data, [k]: v } });
   // Fill only empty fields, once per prefill result, so nothing the client typed is overwritten.
   const pv = prefill.data?.values;
-  useEffect(() => {
-    if (!pv) return;
+  const [pvSeen, setPvSeen] = useState<typeof pv>(undefined);
+  if (pv && pv !== pvSeen) {
+    setPvSeen(pv);
     setDraft((d) => ({
       ...d,
       person: {
@@ -301,7 +302,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
         ...d.data,
       },
     }));
-  }, [pv]);
+  }
   const tier = svc.tiers.find((t) => t.key === draft.tier);
   const go = (step: number) => {
     setErrors({});
