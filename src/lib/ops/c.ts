@@ -214,7 +214,7 @@ export const useRebalance = () =>
 
 export type Approval = {
   id: string;
-  kind: "leave" | "skill" | "due";
+  kind: "leave" | "skill" | "due" | "cancel";
   agentId: string;
   agentName: string;
   state: "pending" | "approved" | "declined";

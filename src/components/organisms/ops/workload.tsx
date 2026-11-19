@@ -1042,7 +1042,7 @@ function ApprovalsTab() {
         aria-label={c.tabs.approvals}
         className="flex flex-wrap gap-1"
       >
-        {(["all", "leave", "skill", "due"] as const).map((k) => (
+        {(["all", "leave", "skill", "due", "cancel"] as const).map((k) => (
           <button
             key={k}
             role="tab"
@@ -1117,7 +1117,9 @@ function ApprovalCard({ a }: { a: Approval }) {
       ? "calendar"
       : a.kind === "skill"
         ? "graduation"
-        : "refresh";
+        : a.kind === "cancel"
+          ? "x"
+          : "refresh";
   return (
     <li className="grid gap-3 border border-border bg-white p-4 sm:grid-cols-[2.5rem_1fr_auto] sm:items-start">
       <span
@@ -1187,6 +1189,11 @@ function ApprovalCard({ a }: { a: Approval }) {
               </span>
             )}
           </>
+        )}
+        {a.kind === "cancel" && (
+          <p className="text-small text-fg-muted">
+            <Link href={localHref(locale, `/ops/cases/${a.ref}`)} className="tabular underline underline-offset-2">{a.ref}</Link> · {a.service} · {a.reason}
+          </p>
         )}
         {a.kind === "due" && (
           <>
