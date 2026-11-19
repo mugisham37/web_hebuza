@@ -1,6 +1,6 @@
 // Mirror of server/src/domain/finance/numbering.ts — UI display only; the server enforces.
 // Gapless document numbers (A-4, D6): PREFIX-YYYY-NNNNN per series per year; void keeps its number.
-// shortcut: sequence locking is in-memory per tab session, upgrade is server SELECT … FOR UPDATE.
+// Numbers are assigned by the server at issue (row-locked counter); this file only formats and previews them.
 export type NumberSeries = "INV" | "QUO" | "RCPT" | "CN" | "RFD";
 
 export const formatNo = (series: NumberSeries, year: number, n: number) => `${series}-${year}-${String(n).padStart(5, "0")}`;

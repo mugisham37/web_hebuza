@@ -32,8 +32,8 @@ export function useCtx() {
   const now = useNow();
   const finance = !!user?.roles.includes("staff:finance");
   const exec = !!user?.roles.includes("staff:executive");
-  // shortcut: "today" uses the browser's UTC date, not Africa/Kigali, upgrade with a tz-aware date helper in lib/format.
-  const today = now ? new Date(now).toISOString().slice(0, 10) : null;
+  // Effective dates are Kigali calendar days (en-CA formats as YYYY-MM-DD).
+  const today = now ? new Date(now).toLocaleDateString("en-CA", { timeZone: "Africa/Kigali" }) : null;
   return { now: now ?? 0, me: user?.id ?? "", finance, exec, online, canEdit: finance && online && !!today, today: today ?? "", year: now ? new Date(now).getUTCFullYear() : 2026 };
 }
 
