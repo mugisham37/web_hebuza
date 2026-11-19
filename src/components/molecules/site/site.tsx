@@ -144,7 +144,7 @@ export function ServiceCard({ s, locale, familyName, tone }: { s: ServiceVM; loc
   const t = CARD_TONES[tone ?? slugHash(s.slug) % CARD_TONES.length];
   const muted = t.dark ? "text-white/70" : "text-navy-900/70";
   return (
-    <Link data-reveal href={localHref(locale, `/services/${s.slug}`)}
+    <Link data-reveal href={localHref(locale, `/services/${s.slugs[locale]}`)}
       className={cx("group flex flex-col p-5 transition-[translate,box-shadow] duration-(--duration-slow) ease-(--ease-out-expo) hover:-translate-y-1 hover:shadow-[0_14px_32px_-12px_rgb(16_42_94/0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-6", t.bg, t.dark && "theme-dark")}>
       <div className={cx("flex items-center justify-between gap-3 text-eyebrow uppercase", muted)}>
         <span className="truncate">{s.subArea?.name ?? familyName}</span>

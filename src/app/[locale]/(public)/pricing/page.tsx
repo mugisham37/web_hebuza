@@ -60,6 +60,7 @@ export default async function PricingPage({ params }: Props) {
     const urg = s.tiers.find((t) => t.key === "urgent");
     return {
       slug: s.slug,
+      path: s.slugs[locale],
       name: s.name,
       family: s.family,
       area: famName.get(s.family) ?? s.family,

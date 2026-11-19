@@ -101,7 +101,7 @@ export function HelpPanel({
           )}
         </p>
         <ButtonLink
-          href={localHref(locale, `/services/${svc.slug}`)}
+          href={localHref(locale, `/services/${svc.slugs[locale]}`)}
           size="sm"
           dots
           className="justify-self-start"

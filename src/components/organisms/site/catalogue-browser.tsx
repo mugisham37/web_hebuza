@@ -11,7 +11,7 @@ import { waLink } from "@/content/marketing";
 import { matches } from "@/components/molecules/site/search";
 
 export type BrowserFamily = { slug: string; name: string; short: string; count: number };
-export type BrowserService = { slug: string; family: string; name: string; haystack: string; price: number | null; days: number; popular: number; planCovered: boolean; html: number };
+export type BrowserService = { slug: string; path: string; family: string; name: string; haystack: string; price: number | null; days: number; popular: number; planCovered: boolean; html: number };
 
 type Copy = { search: string; quick: string[]; all: string; showing: string; clear: string; sortPopular: string; sortPrice: string; sortFast: string; covered: string; noResultsTitle: string; noResultsBody: string; popularInstead: string; viewArea: string; more: string; whatsapp: string; consult: string; filters: string; area: string; price: string; any: string; upTo: string; turnaround: string; within: string; show: string };
 
@@ -148,7 +148,7 @@ export function CatalogueBrowser({ families, services, cards, copy }: { families
             <ButtonLink href={localHref(locale, "/book")} dots>{copy.consult}</ButtonLink>
           </div>
           <p className="mt-2 flex flex-wrap justify-center gap-2 text-small text-white/65">{copy.popularInstead}
-            {[...services].sort((a, b) => b.popular - a.popular).slice(0, 3).map((s) => <Link key={s.slug} href={localHref(locale, `/services/${s.slug}`)} className="bg-white/10 px-3 py-1 text-white hover:bg-white/20">{s.name}</Link>)}
+            {[...services].sort((a, b) => b.popular - a.popular).slice(0, 3).map((s) => <Link key={s.slug} href={localHref(locale, `/services/${s.path}`)} className="bg-white/10 px-3 py-1 text-white hover:bg-white/20">{s.name}</Link>)}
           </p>
         </div>
       ) : (

@@ -17,6 +17,8 @@ import { FeeBreakdown } from "@/components/organisms/site/interactive";
 
 export type ExplorerService = {
   slug: string;
+  /** public slug for this locale (F-CAT-07) */
+  path: string;
   name: string;
   family: string;
   area: string | null;
@@ -196,7 +198,7 @@ export function PricingExplorer({
                   </div>
                   <h3 className="mt-3 text-h3">
                     <Link
-                      href={L(`/services/${s.slug}`)}
+                      href={L(`/services/${s.path}`)}
                       className="hover:underline"
                     >
                       {s.name}

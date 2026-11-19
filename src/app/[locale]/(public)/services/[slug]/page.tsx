@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getI18n } from "@/lib/i18n/server";
 import { locales, localHref } from "@/shared/i18n/config";
-import { getFamily, getService, getServices } from "@/lib/catalogue";
+import { getFamily, getService, getServices, PRERENDER_TOP } from "@/lib/catalogue";
 import { getServiceFaqs } from "@/lib/marketing/cms/read";
 import { getCopy, waLink } from "@/content/marketing";
 import { FAMILIES } from "@/content/families";
@@ -24,7 +24,7 @@ import { laCopy } from "@/content/pages/la";
 const WHO_ICONS = ["user", "sparkle", "building", "users"] as const;
 
 export async function generateStaticParams() {
-  const services = await getServices("en");
+  const services = (await getServices("en")).slice(0, PRERENDER_TOP); // sorted by 30-day volume
   // Cache Components needs ≥1 param; with the API down at build, one sentinel renders notFound() and real slugs render on request.
   return locales.flatMap((locale) => (services.length ? services.map((s) => s.slugs[locale]) : ["_"]).map((slug) => ({ locale, slug })));
 }
@@ -47,7 +47,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const { locale } = await getI18n(params);
   const s = await getService(slug, locale);
   if (!s) notFound();
-  // shortcut: internal links use the canonical slug and hop once to the locale slug; link localized slugs directly if SEO asks.
+  // Old/other-locale slugs (internal links already use the locale slug) 308 to this locale's slug.
   if (slug !== s.slugs[locale]) permanentRedirect(localHref(locale, `/services/${s.slugs[locale]}`));
   const m = getCopy(locale);
   const d = m.detail;
@@ -75,7 +75,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const last = words[words.length - 1];
   const docs = s.requirements;
   const ld = {
-    "@context": "https://schema.org", "@type": "Service", name: s.name, description: s.summary, areaServed: s.markets, url: `${SITE_URL}/${locale}/services/${s.slug}`,
+    "@context": "https://schema.org", "@type": "Service", name: s.name, description: s.summary, areaServed: s.markets, url: `${SITE_URL}/${locale}/services/${s.slugs[locale]}`,
     provider: { "@type": "ProfessionalService", name: "HEBUZA BUSINESS GROUP LTD" },
     ...(quote ? {} : { offers: { "@type": "Offer", price: s.fromFee, priceCurrency: "RWF" } }),
   };

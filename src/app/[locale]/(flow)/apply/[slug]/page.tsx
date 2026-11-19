@@ -4,7 +4,11 @@ import { getI18n } from "@/lib/i18n/server";
 import { getService, getServices } from "@/lib/catalogue";
 import { ApplyWizard } from "@/components/organisms/flow/apply-wizard";
 
-export const generateStaticParams = async () => (await getServices("en")).map((s) => ({ slug: s.slug }));
+// Only the top services prerender (≥1 param required); the rest render on demand.
+export const generateStaticParams = async () => {
+  const top = (await getServices("en")).slice(0, 3).map((s) => ({ slug: s.slug }));
+  return top.length ? top : [{ slug: "_" }];
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

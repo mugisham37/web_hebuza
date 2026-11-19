@@ -1,6 +1,7 @@
 "use client";
 // Consent-gated tags (F-CRM-10, spec AC "analytics declined → no GA4 request") + first-party touch capture.
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Script from "next/script";
 import { useConsent } from "@/components/organisms/site/cookie-consent";
 import { captureTouch } from "@/lib/marketing/use-attribution";
@@ -10,7 +11,18 @@ const PIXEL = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export function ConsentGatedTags() {
   const c = useConsent();
+  const path = usePathname();
   useEffect(() => { captureTouch(); }, [c?.analytics]); // re-run after consent so the touch moves to the 90-day cookie
+  // F-CRM-16 first-party page views, only with analytics consent; anonymous id, no query string.
+  useEffect(() => {
+    if (!c?.analytics || !path) return;
+    let id = "";
+    try { id = localStorage.getItem("hbz_vid") ?? ""; if (!id) { id = crypto.randomUUID().replace(/-/g, ""); localStorage.setItem("hbz_vid", id); } } catch { /* storage blocked: send without id */ }
+    const locale = path.split("/")[1];
+    const body = JSON.stringify({ name: "page_view", path, ...(["rw", "en", "fr"].includes(locale) && { locale }), ...(id && { visitor: id }), ...(document.referrer && { referrer: document.referrer }) });
+    if (!navigator.sendBeacon?.("/api/events", new Blob([body], { type: "application/json" })))
+      void fetch("/api/events", { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true }).catch(() => null);
+  }, [path, c?.analytics]);
   return (
     <>
       {c?.analytics && GA4 && /^G-[A-Z0-9]+$/.test(GA4) && (

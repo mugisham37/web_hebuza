@@ -263,7 +263,7 @@ export default async function GuidePage({ params }: Props) {
                         .join(" · ")}
                     </p>
                   </div>
-                  <ButtonLink href={L(`/services/${svc.slug}`)} size="sm" dots>
+                  <ButtonLink href={L(`/services/${svc.slugs[locale]}`)} size="sm" dots>
                     {k.apply}
                     <span className="sr-only">: {svc.name}</span>
                   </ButtonLink>
@@ -298,7 +298,7 @@ export default async function GuidePage({ params }: Props) {
         <section className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t-[3px] border-rule bg-sky-50 p-7 md:p-10">
           <h2 className="text-h2">{k.ctaT}</h2>
           <ButtonLink
-            href={L(svc ? `/services/${svc.slug}` : "/services")}
+            href={L(svc ? `/services/${svc.slugs[locale]}` : "/services")}
             variant="primary"
             dots
           >

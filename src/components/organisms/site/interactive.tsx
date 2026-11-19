@@ -48,7 +48,7 @@ export function TrackForm({ copy }: { copy: { title: string; body: string; label
   );
 }
 
-type Suggest = { slug: string; name: string; family: string };
+type Suggest = { slug: string; path: string; name: string; family: string };
 
 /** Hero/catalogue search with instant suggestions over the catalogue (F-CAT-02 lite; server search later). */
 export function ServiceSearch({ items, placeholder, size = "lg" }: { items: Suggest[]; placeholder: string; size?: "lg" | "md" }) {
@@ -64,7 +64,7 @@ export function ServiceSearch({ items, placeholder, size = "lg" }: { items: Sugg
   }, [q, items]);
   const go = (path: string) => { setOpen(false); router.push(localHref(locale, path)); };
   return (
-    <form role="search" className="relative w-full" onSubmit={(e) => { e.preventDefault(); if (results[active]) go(`/services/${results[active].slug}`); else go(`/services?q=${encodeURIComponent(q)}`); }}>
+    <form role="search" className="relative w-full" onSubmit={(e) => { e.preventDefault(); if (results[active]) go(`/services/${results[active].path}`); else go(`/services?q=${encodeURIComponent(q)}`); }}>
       <Icon name="search" size={20} className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-fg-subtle" />
       <input value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(0); }} onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 150)}
         onKeyDown={(e) => { if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, results.length - 1)); } if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); } if (e.key === "Escape") setOpen(false); }}
@@ -74,7 +74,7 @@ export function ServiceSearch({ items, placeholder, size = "lg" }: { items: Sugg
         <ul id="svc-suggest" role="listbox" className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden border border-border bg-white p-1.5 shadow-lg">
           {results.map((r, i) => (
             <li key={r.slug} role="option" aria-selected={i === active}>
-              <Link href={localHref(locale, `/services/${r.slug}`)} className={cx("flex items-center justify-between gap-3 px-4 py-3", i === active ? "bg-navy-50 text-navy-700" : "hover:bg-ink-50")}>
+              <Link href={localHref(locale, `/services/${r.path}`)} className={cx("flex items-center justify-between gap-3 px-4 py-3", i === active ? "bg-navy-50 text-navy-700" : "hover:bg-ink-50")}>
                 <span className="text-body">{r.name}</span><span className="shrink-0 text-eyebrow text-fg-subtle">{r.family}</span>
               </Link>
             </li>

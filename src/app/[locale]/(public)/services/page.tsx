@@ -66,7 +66,7 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
         <div className="container-page">
           <CatalogueBrowser
             families={families.filter((f) => f.count).map((f) => ({ slug: f.slug, name: f.name, short: f.short, count: f.count }))}
-            services={services.map((s, i) => ({ slug: s.slug, family: s.family, name: s.name, haystack: `${s.name} ${s.summary} ${s.subArea?.name ?? ""} ${famName(s.family)}`.toLowerCase(), price: s.priceMode === "quote" ? null : s.fromFee, days: s.tiers[0]?.days ?? 99, popular: s.popular, planCovered: s.planCovered, html: i }))}
+            services={services.map((s, i) => ({ slug: s.slug, path: s.slugs[locale], family: s.family, name: s.name, haystack: `${s.name} ${s.summary} ${s.subArea?.name ?? ""} ${famName(s.family)}`.toLowerCase(), price: s.priceMode === "quote" ? null : s.fromFee, days: s.tiers[0]?.days ?? 99, popular: s.popular, planCovered: s.planCovered, html: i }))}
             cards={cards}
             copy={{ ...c, whatsapp: m.cta.whatsapp, consult: m.hero.secondary }}
           />

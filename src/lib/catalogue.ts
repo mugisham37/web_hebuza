@@ -136,4 +136,7 @@ export async function getPlans(): Promise<PlanVM[]> {
     .map((p) => ({ id: p.planId, name: p.name, amount: p.amountRwf, interval: p.interval, maxApps: p.maxApplicationsPerMonth, description: p.description, features: p.features, badge: p.badge }));
 }
 
+/** Build fan-out cap: only the most-requested services prerender; the rest render on first request and stay cached (ISR). */
+export const PRERENDER_TOP = 12;
+
 export const totalFee = (t: Tier) => t.fee + t.governmentFee;

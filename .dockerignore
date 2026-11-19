@@ -9,3 +9,8 @@ e2e
 test-results
 playwright-report
 .turbo
+docs
+coverage
+*.log
+tsconfig.tmp.json
+tsconfig.scratch.json

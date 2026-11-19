@@ -49,6 +49,8 @@ export function PayToggle({ copy }: { copy: P["toggle"] }) {
 
 export type FeeRow = {
   slug: string;
+  /** public slug for this locale (F-CAT-07) */
+  path: string;
   name: string;
   family: string;
   area: string;
@@ -167,7 +169,7 @@ export function FeeTable({
                 <tr key={r.slug} className="hover:bg-navy-50">
                   <th scope="row" className="px-4 py-3 font-medium">
                     <Link
-                      href={localHref(locale, `/services/${r.slug}`)}
+                      href={localHref(locale, `/services/${r.path}`)}
                       className="hover:underline"
                     >
                       {r.name}

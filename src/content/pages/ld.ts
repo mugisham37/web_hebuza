@@ -220,7 +220,7 @@ const en = {
     copied: "Link copied",
     relatedT: "Related guides",
     ctaT: "Let us do it for you",
-    ctaB: "Start a request",
+    calendarT: "In the compliance calendar", calendarB: "Track these deadlines in your HEBUZA calendar so you get reminders.", ctaB: "Start a request",
   },
   updates: {
     meta: "Rule changes at RRA, RDB, RSSB and others, explained: who it affects and what to do.",
@@ -256,7 +256,7 @@ const en = {
     contents: "Contents",
     relatedT: "Related updates",
     ctaT: "Let us do it for you",
-    ctaB: "Start a request",
+    calendarT: "In the compliance calendar", calendarB: "Track these deadlines in your HEBUZA calendar so you get reminders.", ctaB: "Start a request",
   },
   campaign: {
     formT: "Get started in 2 minutes",
@@ -518,7 +518,7 @@ const fr: LdCopy = {
     copied: "Lien copié",
     relatedT: "Guides associés",
     ctaT: "Laissez-nous faire",
-    ctaB: "Lancer une demande",
+    calendarT: "Dans le calendrier de conformité", calendarB: "Suivez ces échéances dans votre calendrier HEBUZA pour recevoir des rappels.", ctaB: "Lancer une demande",
   },
   updates: {
     meta: "Les changements de règles à la RRA, la RDB, la RSSB et ailleurs, expliqués : qui est concerné et quoi faire.",
@@ -555,7 +555,7 @@ const fr: LdCopy = {
     contents: "Sommaire",
     relatedT: "Mises à jour associées",
     ctaT: "Laissez-nous faire",
-    ctaB: "Lancer une demande",
+    calendarT: "Dans le calendrier de conformité", calendarB: "Suivez ces échéances dans votre calendrier HEBUZA pour recevoir des rappels.", ctaB: "Lancer une demande",
   },
   campaign: {
     formT: "Commencez en 2 minutes",
@@ -816,7 +816,7 @@ const rw: LdCopy = {
     copied: "Link yakoporowe",
     relatedT: "Andi mabwiriza",
     ctaT: "Reka tubigukorere",
-    ctaB: "Tangira ubusabe",
+    calendarT: "Mu ngengabihe y'iyubahirizwa", calendarB: "Kurikirana aya matariki mu ngengabihe yawe ya HEBUZA kugira ngo ubone ibyibutsa.", ctaB: "Tangira ubusabe",
   },
   updates: {
     meta: "Impinduka z'amategeko muri RRA, RDB, RSSB n'ahandi, zisobanuwe: abo bireba n'icyo gukora.",
@@ -852,7 +852,7 @@ const rw: LdCopy = {
     contents: "Ibikubiyemo",
     relatedT: "Izindi mpinduka",
     ctaT: "Reka tubigukorere",
-    ctaB: "Tangira ubusabe",
+    calendarT: "Mu ngengabihe y'iyubahirizwa", calendarB: "Kurikirana aya matariki mu ngengabihe yawe ya HEBUZA kugira ngo ubone ibyibutsa.", ctaB: "Tangira ubusabe",
   },
   campaign: {
     formT: "Tangira mu minota 2",

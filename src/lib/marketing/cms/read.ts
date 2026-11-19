@@ -77,7 +77,7 @@ export async function getGuides(): Promise<GuideVM[]> {
 }
 export const getGuide = async (slug: string) => (await getGuides()).find((g) => g.slug === slug) ?? null;
 
-export type UpdateVM = Update & Served;
+export type UpdateVM = Update & Served & { /** F-CMS-10 linked compliance-calendar rule codes */ calendar: string[] };
 export async function getUpdates(): Promise<UpdateVM[]> {
   const draft = await isDraft();
   return (await ofType("regulatory_update", draft)).flatMap((e) => {
@@ -86,7 +86,7 @@ export async function getUpdates(): Promise<UpdateVM[]> {
     const reg = e.meta.regulatory;
     const by = (id: string) => e.blocks.find((b) => b.id === id && !b.hidden);
     return [{
-      ...r.served, slug: e.key, inst: (reg?.authority ?? "RRA") as Institution, affects: (reg?.affects ?? []) as Affects[], date: reg?.effectiveAt ?? e.createdAt.slice(0, 10),
+      ...r.served, slug: e.key, calendar: reg?.calendarRules ?? [], inst: (reg?.authority ?? "RRA") as Institution, affects: (reg?.affects ?? []) as Affects[], date: reg?.effectiveAt ?? e.createdAt.slice(0, 10),
       deadline: reg?.deadline, visual: (e.meta.guide?.category === "doc" ? "doc" : "calendar") as Update["visual"], service: e.serviceSlugs[0] ?? "",
       img: e.meta.guide?.image ?? "/hebuza/updates/monthly-vat-return-reminder.jpg", // PLACEHOLDER(default-update-image)
       t: Object.fromEntries(LOCALES.map((l) => {

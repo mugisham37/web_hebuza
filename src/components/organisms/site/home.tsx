@@ -18,7 +18,7 @@ import { PricingExplorer } from "@/components/organisms/site/pricing-explorer";
 
 const GUIDE_IMG: Record<string, string> = images as unknown as Record<string, string>;
 
-export function HomeHero({ locale, search }: { locale: Locale; search: { slug: string; name: string; family: string }[] }) {
+export function HomeHero({ locale, search }: { locale: Locale; search: { slug: string; path: string; name: string; family: string }[] }) {
   const h = getCopy(locale).hero;
   const L = (p: string) => localHref(locale, p);
   return (
@@ -106,7 +106,7 @@ export function ServicesShowcase({ locale, families, total }: { locale: Locale; 
     return (
       <FamilyCard key={f.slug} size={size} n={families.indexOf(f) + 1} title={f.name} href={localHref(locale, `/services/c/${f.slug}`)} photo={f.photo} popularLabel={c.popular}
         viewAll={c.viewAll.replace("{n}", String(f.count))}
-        rows={take.map((s) => ({ name: s.name, href: localHref(locale, `/services/${s.slug}`), popular: top > 0 && s.popular === top }))} />
+        rows={take.map((s) => ({ name: s.name, href: localHref(locale, `/services/${s.slugs[locale]}`), popular: top > 0 && s.popular === top }))} />
     );
   };
   const minis = families.filter((f) => f.count === 1);
@@ -162,6 +162,7 @@ export function PricingTeaser({ locale, services, families, plans }: { locale: L
   const p = getCopy(locale).pricing;
   const famName = (slug: string) => families.find((f) => f.slug === slug)?.name ?? "";
   const items = services.map((s) => ({
+    path: s.slugs[locale],
     slug: s.slug, name: s.name, family: s.family, area: s.subArea?.name ?? null, priceMode: s.priceMode, fromFee: s.fromFee, tiers: s.tiers, planCovered: s.planCovered,
     haystack: `${s.name} ${famName(s.family)} ${s.subArea?.name ?? ""} ${s.slug.replace(/-/g, " ")}`,
   }));

@@ -73,6 +73,13 @@ export default async function UpdatePage({ params }: Props) {
             <section id="who" className="scroll-mt-28"><h2 className="text-h3">{up.who}</h2><p className="mt-2 text-body text-fg-muted">{t.who}</p></section>
             <section id="todo" className="scroll-mt-28"><h2 className="text-h3">{up.todo}</h2><ol className="mt-2 grid list-decimal gap-1 pl-5 text-body">{t.todo.map((x) => <li key={x}>{x}</li>)}</ol></section>
             {u.deadline && <section id="deadline" className="scroll-mt-28"><DeadlineBlock u={u} c={up} locale={locale} /></section>}
+            {u.calendar.length > 0 && (
+              <section id="calendar" aria-labelledby="cal-h" className="scroll-mt-28 border-l-[3px] border-rule bg-info-bg p-5">
+                <h2 id="cal-h" className="text-h3">{up.calendarT}</h2>
+                <p className="mt-2 text-body text-fg-muted">{up.calendarB}</p>
+                <ul className="mt-3 flex flex-wrap gap-2">{u.calendar.map((code) => <li key={code}><Link href={L(`/dashboard/calendar?rule=${encodeURIComponent(code)}`)} className="inline-flex h-9 items-center border border-border-strong bg-white px-3 text-small font-medium hover:bg-navy-50">{code} →</Link></li>)}</ul>
+              </section>
+            )}
           </div>
           <aside className="grid content-start gap-8">
             <HelpPanel svc={svc} c={up} locale={locale} />
@@ -92,7 +99,7 @@ export default async function UpdatePage({ params }: Props) {
 
         <section className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t-[3px] border-rule bg-sky-50 p-7 md:p-10">
           <h2 className="text-h2">{up.ctaT}</h2>
-          <ButtonLink href={L(svc ? `/services/${svc.slug}` : "/services")} variant="primary" dots>{up.ctaB}</ButtonLink>
+          <ButtonLink href={L(svc ? `/services/${svc.slugs[locale]}` : "/services")} variant="primary" dots>{up.ctaB}</ButtonLink>
         </section>
         <p className="mt-6 text-small text-fg-subtle">{c.exampleNote}</p>
       </div>

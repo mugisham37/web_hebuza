@@ -3,7 +3,7 @@ import { pageMeta } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { getI18n } from "@/lib/i18n/server";
 import { locales, localHref } from "@/shared/i18n/config";
-import { getFamily } from "@/lib/catalogue";
+import { getFamilies, getFamily } from "@/lib/catalogue";
 import { FAMILIES, FACES } from "@/content/families";
 import { getCopy } from "@/content/marketing";
 import { images } from "@/lib/assets";
@@ -16,8 +16,9 @@ import { HeroIntro, Reveal } from "@/components/atoms/motion";
 import { CardFan, GuideCard, ServiceCard, cardTones, SectionHead } from "@/components/molecules/site/site";
 import { Breadcrumb, CTACard, FAQBlock } from "@/components/organisms/site/sections";
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) => FAMILIES.map((f) => ({ locale, family: f.slug })));
+export async function generateStaticParams() {
+  const fams = (await getFamilies("en")).map((f) => f.slug); // live categories (F-CAT-01), not the static art list
+  return locales.flatMap((locale) => (fams.length ? fams : ["_"]).map((family) => ({ locale, family })));
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/services/c/[family]">): Promise<Metadata> {

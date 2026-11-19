@@ -28,7 +28,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const { locale } = await getI18n(params);
   const [families, services, plans, order] = await Promise.all([getFamilies(locale), getServices(locale), getPlans(), getHomeSections()]);
   const total = families.reduce((n, f) => n + f.count, 0);
-  const search = services.map((s) => ({ slug: s.slug, name: s.name, family: families.find((f) => f.slug === s.family)?.name ?? "" }));
+  const search = services.map((s) => ({ slug: s.slug, path: s.slugs[locale], name: s.name, family: families.find((f) => f.slug === s.family)?.name ?? "" }));
   const org = {
     "@context": "https://schema.org", "@type": "ProfessionalService", name: "HEBUZA BUSINESS GROUP LTD", url: `${SITE_URL}/${locale}`,
     telephone: CONTACT.phoneHref.slice(4), email: CONTACT.email, areaServed: "RW", address: { "@type": "PostalAddress", addressLocality: "Kigali", addressCountry: "RW" },
