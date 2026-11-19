@@ -7,7 +7,8 @@ import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { cx, formatDate, formatDateTime, formatRelative } from "@/shared/format";
 import { setUrlParams, useUrlParams } from "@/lib/url-state";
-import { newIdempotencyKey } from "@/lib/api/client";
+import { api, newIdempotencyKey, unwrap } from "@/lib/api/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { errorCopy } from "@/lib/api/error-copy";
 import { revealWorker, useHistory, useReviews, useSubmitReview, useWorker, useWorkerStatus, type WorkerFull } from "@/lib/workforce";
 import { fill } from "@/content/pages/ops-workforce";
@@ -98,6 +99,7 @@ function Overview({ w, admin }: { w: WorkerFull; admin: boolean }) {
         {w.openCases.length ? <ul className="grid gap-1 text-small">{w.openCases.map((x) => <li key={x.ref} className="flex justify-between gap-3"><span className="tabular font-medium">{x.ref}</span><span className="truncate text-fg-muted">{x.title} · {x.client}</span></li>)}</ul>
           : <p className="text-small text-fg-muted">{c.off.noCases}</p>}
       </Panel>
+      {admin && <Blocks agentId={w.id} />}
       <ReasonDialog open={ask} onClose={() => setAsk(false)} title={c.profile.revealTitle} description={c.profile.revealReason} audited confirmLabel={c.profile.reveal}
         options={Object.entries({ payroll: "Payroll / contract query", safety: "Safety or emergency contact", investigation: c.status.reasons.investigation, other: c.status.reasons.other }).map(([value, label]) => ({ value, label }))}
         onConfirm={async (v) => { const r = await revealWorker(w.id, `${v.reason}${v.note ? `: ${v.note}` : ""}`); setShown(r.privateFields); setAsk(false); }} />
@@ -237,5 +239,49 @@ function StatusDialog({ w, kind, onClose }: { w: WorkerFull; kind: "suspend" | "
         toast({ title: fill(c.status.done, { name: w.name, status: to }), tone: "success" });
         onClose();
       }} />
+  );
+}
+
+/** ASN-09: "never assign" restrictions for this worker (feeds ranking + manual assign eligibility). */
+function Blocks({ agentId }: { agentId: string }) {
+  const c = useW().blocks;
+  const qc = useQueryClient();
+  const toast = useToast();
+  const [client, setClient] = useState("");
+  const [reason, setReason] = useState("");
+  const key = ["ops", "blocks", agentId];
+  const q = useQuery({
+    queryKey: key,
+    queryFn: () => unwrap<{ blocks: { id: string; clientName: string; reason: string }[] }>(api.GET("/api/admin/ops/assignment-blocks", { params: { query: { agentId } } })),
+  });
+  const add = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/admin/ops/assignment-blocks", { body: { agentId, clientId: client.trim(), reason: reason.trim() } })),
+    onSuccess: () => { toast({ title: c.added, tone: "success" }); setClient(""); setReason(""); void qc.invalidateQueries({ queryKey: key }); },
+    onError: () => toast({ title: c.failed, tone: "danger" }),
+  });
+  const del = useMutation({
+    mutationFn: (id: string) => unwrap(api.DELETE("/api/admin/ops/assignment-blocks/{id}", { params: { path: { id } } })),
+    onSuccess: () => { toast({ title: c.removed, tone: "success" }); void qc.invalidateQueries({ queryKey: key }); },
+    onError: () => toast({ title: c.failed, tone: "danger" }),
+  });
+  return (
+    <Panel title={c.title} className="lg:col-span-2">
+      <p className="mb-3 text-small text-fg-muted">{c.lede}</p>
+      {q.isPending ? <SkeletonRows n={2} /> : q.isError ? <PanelError what={c.title} onRetry={() => q.refetch()} /> : q.data.blocks.length ? (
+        <ul className="mb-4 divide-y divide-border text-small">
+          {q.data.blocks.map((b) => (
+            <li key={b.id} className="flex flex-wrap items-center gap-3 py-2">
+              <span className="flex-1 basis-48"><span className="font-medium">{b.clientName}</span> · {b.reason}</span>
+              <Button size="sm" variant="ghost" loading={del.isPending && del.variables === b.id} onClick={() => del.mutate(b.id)}>{c.remove}</Button>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="mb-4 text-small text-fg-muted">{c.none}</p>}
+      <form className="grid gap-3 sm:grid-cols-[1fr_2fr_auto] sm:items-end" onSubmit={(e) => { e.preventDefault(); if (client.trim() && reason.trim().length >= 3) add.mutate(); }}>
+        <Field label={c.client}>{({ id }) => <Input id={id} value={client} onChange={(e) => setClient(e.target.value)} className="font-mono" />}</Field>
+        <Field label={c.reason}>{({ id }) => <Input id={id} value={reason} onChange={(e) => setReason(e.target.value)} maxLength={500} />}</Field>
+        <Button type="submit" loading={add.isPending} disabled={!client.trim() || reason.trim().length < 3}>{c.add}</Button>
+      </form>
+    </Panel>
   );
 }

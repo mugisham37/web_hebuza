@@ -11,6 +11,7 @@ const en = {
   empty: ["Nobody matches these filters.", "Clear a filter or add a person."],
   shown: "{n} people",
   tabs: { overview: "Overview", performance: "Performance", reviews: "Reviews", history: "History", documents: "Documents" },
+    blocks: { title: "Never assign to", lede: "Clients this person must never be assigned to (conflict of interest).", client: "Client customer ID", reason: "Reason", add: "Add restriction", remove: "Remove", none: "No restrictions.", added: "Restriction added", removed: "Restriction removed", failed: "Could not save. Check the customer ID." },
   profile: {
     private: "Private details", address: "Address", phone: "Private phone", nationalId: "National ID", reveal: "Reveal", revealTitle: "Reveal private details",
     revealReason: "Why do you need to see this? It's recorded.", revealed: "Revealed — this view was recorded", contract: "Contract", contractEnd: "Ends", lastLogin: "Last sign-in",
@@ -63,6 +64,7 @@ const rw: Copy = {
   empty: ["Nta muntu uhuye n'ibyo wahisemo.", "Kuraho muyunguruzi cyangwa wongeremo umuntu."],
   shown: "Abantu {n}",
   tabs: { overview: "Incamake", performance: "Imikorere", reviews: "Isuzuma", history: "Amateka", documents: "Inyandiko" },
+    blocks: { title: "Ntazahabwa", lede: "Abakiriya uyu muntu atagomba guhabwa (inyungu zivuguruzanya).", client: "Nimero y'umukiriya", reason: "Impamvu", add: "Ongeraho ikibuza", remove: "Kuraho", none: "Nta kibuza.", added: "Ikibuza cyongeweho", removed: "Ikibuza cyakuweho", failed: "Ntibyabitswe. Reba nimero y'umukiriya." },
   profile: {
     private: "Amakuru bwite", address: "Aderesi", phone: "Telefone bwite", nationalId: "Indangamuntu", reveal: "Erekana", revealTitle: "Erekana amakuru bwite",
     revealReason: "Kuki ukeneye kubibona? Biranditswe.", revealed: "Byagaragajwe — byanditswe", contract: "Amasezerano", contractEnd: "Birangira", lastLogin: "Yinjiye bwa nyuma",
@@ -114,6 +116,7 @@ const fr: Copy = {
   empty: ["Personne ne correspond à ces filtres.", "Retirez un filtre ou ajoutez une personne."],
   shown: "{n} personnes",
   tabs: { overview: "Aperçu", performance: "Performance", reviews: "Évaluations", history: "Historique", documents: "Documents" },
+    blocks: { title: "Ne jamais affecter à", lede: "Clients auxquels cette personne ne doit jamais être affectée (conflit d'intérêts).", client: "N° client", reason: "Motif", add: "Ajouter une restriction", remove: "Retirer", none: "Aucune restriction.", added: "Restriction ajoutée", removed: "Restriction retirée", failed: "Enregistrement impossible. Vérifiez le n° client." },
   profile: {
     private: "Données privées", address: "Adresse", phone: "Téléphone privé", nationalId: "Pièce d'identité", reveal: "Afficher", revealTitle: "Afficher les données privées",
     revealReason: "Pourquoi devez-vous les voir ? C'est journalisé.", revealed: "Affiché — consultation journalisée", contract: "Contrat", contractEnd: "Fin", lastLogin: "Dernière connexion",
