@@ -181,6 +181,18 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     queryFn: () => unwrap<{ consent: boolean; values: Record<string, string> }>(api.GET("/api/me/prefill", { params: { query: { service: svc.slug, party: orgs.data?.activeOrgId ?? "me" } } })),
     enabled: !!user?.roles.includes("client") && !orgs.isPending,
   });
+  // REQ-14: ?draft=<id> loads an assistant draft into empty answers; the client still reviews and submits.
+  const [aiDraftId] = useState(() => (typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("draft")));
+  const aiDraft = useQuery({
+    queryKey: ["ai-draft", aiDraftId],
+    queryFn: () => unwrap<{ serviceSlug: string; answers: Record<string, string> }>(api.GET("/api/assistant/drafts/{id}", { params: { path: { id: aiDraftId! } } })),
+    enabled: !!aiDraftId,
+    retry: false,
+  });
+  const aiAnswers = aiDraft.data?.serviceSlug === svc.slug ? aiDraft.data.answers : null;
+  useEffect(() => {
+    if (aiAnswers) setDraft((d) => ({ ...d, data: { ...aiAnswers, ...d.data } }));
+  }, [aiAnswers]);
   const actingOrg = orgs.data?.orgs.find((o) => o.id === orgs.data?.activeOrgId && o.myRole !== "viewer") ?? null;
 
   // The shell only renders this after the session resolves (client-side), so localStorage is safe in initialisers.
@@ -310,6 +322,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
           personal_info: person(),
           service_data: d.data,
           organization_id: actingOrg?.id ?? null,
+          ai_draft_id: slug === svc.slug && aiAnswers ? aiDraftId : null,
         },
       }),
     );
@@ -584,6 +597,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
             </span>
           </Notice>
         )}
+        {aiAnswers && <Notice tone="info">{c.done.aiDraft}</Notice>}
         {actingOrg && <Notice tone="info">{fill(c.done.actingFor, { org: actingOrg.name })}</Notice>}
         {serverError && <Notice>{serverError}</Notice>}
         {errorList.length > 0 && (
