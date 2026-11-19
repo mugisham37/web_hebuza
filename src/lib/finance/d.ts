@@ -9,7 +9,7 @@ import type { Locale } from "@/shared/i18n/config";
 import { api, unwrap } from "@/lib/api/client";
 import { hdr } from "@/lib/finance/api";
 
-// ---------------------------------------------------------------- shapes (mock: src/mocks/handlers-finance-d.ts)
+// ---------------------------------------------------------------- shapes
 export type Channel = "email" | "whatsapp" | "sms";
 export type Reminder = { at: string; channel: Channel; lang: Locale; by: string; scheduledFor?: string };
 export type ArClient = {

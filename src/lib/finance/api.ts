@@ -4,7 +4,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toQuery } from "@/lib/api/query";
 import { api, unwrap } from "@/lib/api/client";
-import type { AuditEvent } from "@/mocks/audit";
+import type { AuditEvent } from "@/lib/audit-event";
 import type { ApprovalItem, ApprovalType, FinNote, FinSummary, FinanceSettingKey, SettingChange, SettingRow } from "@/shared/finance/types";
 
 export const finKeys = {

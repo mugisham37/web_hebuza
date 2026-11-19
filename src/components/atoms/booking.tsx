@@ -159,7 +159,7 @@ export function OfflineBanner({ text }: { text?: string }) {
   if (online) return null;
   return <p role="status" className="flex items-center gap-2 rounded-none bg-warning-bg px-4 py-2.5 text-small text-warning"><Icon name="globe" size={16} aria-hidden />{text ?? c.common.offline}</p>;
 }
-const TURNSTILE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+const TURNSTILE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 type TurnstileApi = { render: (el: HTMLElement, o: Record<string, unknown>) => string; remove: (id: string) => void };
 let turnstileLoad: Promise<TurnstileApi> | null = null;
 const loadTurnstile = () =>
@@ -172,12 +172,12 @@ const loadTurnstile = () =>
     document.head.appendChild(s);
   }));
 
-/** Cloudflare Turnstile when NEXT_PUBLIC_TURNSTILE_SITE_KEY is set; otherwise the dev checkbox (`mock-ok`, accepted by a dev API only). */
+/** Cloudflare Turnstile; without NEXT_PUBLIC_TURNSTILE_SITE_KEY (local) Cloudflare's always-pass test key renders the same widget. */
 export function Captcha({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: string }) {
   const { c, locale } = useBkg();
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!TURNSTILE_KEY || !box.current) return;
+    if (!box.current) return;
     let id: string | undefined;
     let api: TurnstileApi | undefined;
     loadTurnstile().then((t) => {
@@ -188,9 +188,7 @@ export function Captcha({ value, onChange, error }: { value: string; onChange: (
   }, [locale, onChange]);
   return (
     <div className={cx("rounded-none border p-3", error ? "border-danger" : "border-border")}>
-      {TURNSTILE_KEY
-        ? <div ref={box} aria-label={c.details.captcha} />
-        : <Checkbox id="captcha" label={c.details.captcha} checked={value === "mock-ok"} onChange={(e) => onChange(e.target.checked ? "mock-ok" : "")} aria-describedby="captcha-hint" />}
+      <div ref={box} aria-label={c.details.captcha} />
       <p id="captcha-hint" className="mt-1 text-eyebrow text-fg-subtle">{c.details.captchaHint}</p>
       {error && <p className="mt-1 text-small text-danger">{error}</p>}
     </div>

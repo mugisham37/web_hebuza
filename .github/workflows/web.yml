@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_APP_ENV: ci
-      NEXT_PUBLIC_API_MOCKING: "off"
       NEXT_PUBLIC_SITE_URL: http://localhost:3100
     steps:
       - uses: actions/checkout@v4
@@ -31,4 +30,3 @@ jobs:
       - if: ${{ vars.SERVER_OPENAPI_URL != '' }}
         run: API_URL=${{ vars.SERVER_OPENAPI_URL }} pnpm api:types && git diff --exit-code src/lib/api/schema.d.ts
       - run: pnpm build
-      # check:mocks is informational only (run locally); e2e needs the full stack (pnpm e2e against server/).

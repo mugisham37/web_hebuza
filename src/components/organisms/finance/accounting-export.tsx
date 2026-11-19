@@ -19,7 +19,7 @@ import { PageHead, useNow } from "@/components/atoms/agent";
 import { useOnline } from "@/components/atoms/hooks";
 import { usePhone } from "@/components/atoms/step-up";
 import { EmptyPanel, Panel, PanelError } from "@/components/molecules/ops/ops";
-import { Amount, DemoValue, PeriodLabel } from "@/components/atoms/finance";
+import { Amount, PeriodLabel } from "@/components/atoms/finance";
 import { useStepUpAction } from "@/components/molecules/finance/finance";
 import { useRp } from "@/components/organisms/finance/reports";
 
@@ -179,7 +179,7 @@ export function AccountingExport() {
                             <tbody>
                               {pv.data.byAccount.map((r) => (
                                 <tr key={r.account} className="border-t border-border">
-                                  <th scope="row" className="p-3 text-left font-normal"><span className="mr-2 bg-ink-100 px-1.5 py-0.5 text-eyebrow tabular"><DemoValue>{r.code}</DemoValue></span>{c.accounts[r.account]}</th>
+                                  <th scope="row" className="p-3 text-left font-normal"><span className="mr-2 bg-ink-100 px-1.5 py-0.5 text-eyebrow tabular">{r.code}</span>{c.accounts[r.account]}</th>
                                   <td className="p-3 text-right">{r.debit ? <Amount value={r.debit} size="sm" /> : "—"}</td>
                                   <td className="p-3 text-right">{r.credit ? <Amount value={r.credit} size="sm" /> : "—"}</td>
                                 </tr>

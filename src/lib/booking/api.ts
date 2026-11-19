@@ -6,7 +6,7 @@ import type {
   AdminBookings, AiSessionRow, AiSettings, AiTranscript, Availability, Booking, BookingAnalytics, CallbackRequest, Cluster, ConsultationType, CopilotResult, EvalRun,
   HandoffItem, Hold, KbSource, SessionSummary, SlotsResponse, StaffBooking, Adviser,
 } from "@/shared/booking/types";
-import type { AuditEvent } from "@/mocks/audit";
+import type { AuditEvent } from "@/lib/audit-event";
 
 export class BkgError extends ApiError {
   constructor(status: number, errorType: string | null, message: string, public data: Record<string, unknown> | null) { super(status, errorType, message, null); }

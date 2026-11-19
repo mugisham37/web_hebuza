@@ -25,9 +25,6 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
-  // Dummy data (MSW) is on unless explicitly turned off, e.g. once NEXT_PUBLIC_API_URL points at the real backend.
-  // Dummy data (MSW) only while no backend is configured: API_URL set → real API, proxied same-origin (cookies just work).
-  env: { NEXT_PUBLIC_API_MOCKING: process.env.NEXT_PUBLIC_API_MOCKING ?? (process.env.API_URL ? "off" : "on") },
   // Self-hosting (plan §3): standalone server, ≥2 instances. DEPLOYMENT_VERSION (e.g. the git SHA) pins asset/version-skew
   // handling; NEXT_SERVER_ACTIONS_ENCRYPTION_KEY must be the same on every instance (read from env by Next at build/run).
   output: "standalone",

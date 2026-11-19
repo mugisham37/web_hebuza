@@ -4,7 +4,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toQuery } from "@/lib/api/query";
 
-import type { AuditEvent } from "@/mocks/audit";
+import type { AuditEvent } from "@/lib/audit-event";
 import type { ApprovalLimits, ProcAlert, ProcApproval, ProcApprovalKind, ProcNote, ProcSettings, ProcSummary } from "@/shared/procurement/types";
 import { api, unwrap } from "@/lib/api/client";
 import { hdr } from "@/lib/finance/api";

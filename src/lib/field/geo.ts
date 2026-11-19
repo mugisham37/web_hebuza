@@ -3,13 +3,6 @@ import type { Fix } from "@/shared/field/types";
 export * from "@/shared/field/geo";
 
 export type GeoError = "denied" | "unavailable" | "timeout" | "unsupported";
-/** Test seam: e2e sets localStorage["field.geoTimeoutMs"] (mock builds only). */
-function geoTimeout() {
-  if (process.env.NEXT_PUBLIC_API_MOCKING === "on") {
-    try { const v = Number(localStorage.getItem("field.geoTimeoutMs")); if (v > 0) return v; } catch {}
-  }
-  return 20_000;
-}
 
 /**
  * Up to three one-shot fixes within the timeout, keeping the best accuracy; `onProgress` streams ±m.
@@ -17,7 +10,7 @@ function geoTimeout() {
  */
 export async function getFix(o: { battery: boolean; onProgress?: (accuracyM: number) => void; signal?: AbortSignal }): Promise<{ fix: Fix; error?: GeoError }> {
   if (typeof navigator === "undefined" || !navigator.geolocation) return { fix: null, error: "unsupported" };
-  const deadline = Date.now() + geoTimeout();
+  const deadline = Date.now() + 20_000;
   let best: Fix = null;
   let lastErr: GeoError | undefined;
   for (let i = 0; i < 3 && Date.now() < deadline && !o.signal?.aborted; i++) {

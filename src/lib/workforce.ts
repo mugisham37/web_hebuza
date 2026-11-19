@@ -8,7 +8,7 @@ const hdr = (o: { idempotencyKey?: string; stepUp?: string }) => ({
   ...(o.stepUp && { "X-Step-Up-Token": o.stepUp }),
 });
 import type { Review, WorkerDetail, WorkerEvent, WorkerRow, WorkerStatus } from "@/shared/procurement/types";
-import type { AuditEvent } from "@/mocks/audit";
+import type { AuditEvent } from "@/lib/audit-event";
 
 export type WorkerFull = WorkerDetail & { sessionsRevoked: boolean };
 const K = ["workforce"] as const;

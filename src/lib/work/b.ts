@@ -1,5 +1,5 @@
 "use client";
-// Lane B data: onboarding & clearance (plan §7.4), credentials. Mock contract in src/mocks/handlers-work-b.ts.
+// Lane B data: onboarding & clearance (plan §7.4), credentials.
 import { api, unwrap } from "@/lib/api/client";
 import { asMime } from "@/lib/api/upload";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

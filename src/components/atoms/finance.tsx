@@ -203,10 +203,3 @@ export function FxNote({ rate, at, currency, demo = true }: { rate: number; at: 
     </p>
   );
 }
-
-/** Synthetic value (mock mode): dotted underline + tooltip. */
-export function DemoValue({ children }: { children: ReactNode }) {
-  const f = useF();
-  if (process.env.NEXT_PUBLIC_API_MOCKING !== "on") return <>{children}</>;
-  return <Tooltip content={f.demo}><span className="underline decoration-dotted underline-offset-4">{children}</span></Tooltip>;
-}
