@@ -206,6 +206,18 @@ const en = {
     noPlanBody:
       "You pay per request. A plan bundles regular services at a monthly price.",
     managePlan: "Change plan",
+    usage80: "You have used 80% or more of this period's applications.",
+    cancelPlan: "Cancel plan",
+    cancelTitle: "Cancel your plan?",
+    cancelBody: "At period end you keep coverage until {date}; now ends coverage today with no refund.",
+    cancelWhen: "When",
+    cancelAtEnd: "At period end",
+    cancelNow: "Now",
+    cancelReason: "Why are you leaving?",
+    cancelConfirm: "Confirm cancellation",
+    cancelScheduled: "Cancels on {date}",
+    undoCancel: "Keep my plan",
+    pastDue: "Payment overdue — coverage ends {date}",
     methodsHint: "Saved for faster checkout. We never store full card numbers.",
     noMethods:
       "No saved payment methods. You can save one at your next payment.",
@@ -422,6 +434,18 @@ const rw: Copy = {
     noPlanBody:
       "Wishyura kuri buri sabwa. Gahunda ihuriza hamwe serivisi zihoraho ku giciro cya buri kwezi.",
     managePlan: "Hindura gahunda",
+    usage80: "Mumaze gukoresha 80% cyangwa birenga by'ubusabe bw'iki gihe.",
+    cancelPlan: "Hagarika gahunda",
+    cancelTitle: "Urashaka guhagarika gahunda?",
+    cancelBody: "Ku iherezo ry'igihe ukomeza kurindwa kugeza {date}; ubu bihagarara uyu munsi nta gusubizwa.",
+    cancelWhen: "Ryari",
+    cancelAtEnd: "Ku iherezo ry'igihe",
+    cancelNow: "Ubu",
+    cancelReason: "Ni iki gitumye ugenda?",
+    cancelConfirm: "Emeza guhagarika",
+    cancelScheduled: "Izahagarara ku {date}",
+    undoCancel: "Gumana gahunda yanjye",
+    pastDue: "Ubwishyu bwatinze — kurindwa birangira {date}",
     methodsHint:
       "Bibitswe kugira ngo wishyure vuba. Ntitubika nimero zuzuye z'amakarita.",
     noMethods:
@@ -641,6 +665,18 @@ const fr: Copy = {
     noPlanBody:
       "Vous payez à la demande. Un forfait regroupe les services réguliers à prix mensuel.",
     managePlan: "Changer de forfait",
+    usage80: "Vous avez utilisé au moins 80 % des demandes de cette période.",
+    cancelPlan: "Résilier le forfait",
+    cancelTitle: "Résilier votre forfait ?",
+    cancelBody: "En fin de période, la couverture reste active jusqu'au {date} ; maintenant, elle s'arrête aujourd'hui sans remboursement.",
+    cancelWhen: "Quand",
+    cancelAtEnd: "En fin de période",
+    cancelNow: "Maintenant",
+    cancelReason: "Pourquoi partez-vous ?",
+    cancelConfirm: "Confirmer la résiliation",
+    cancelScheduled: "Résiliation le {date}",
+    undoCancel: "Garder mon forfait",
+    pastDue: "Paiement en retard — la couverture prend fin le {date}",
     methodsHint:
       "Enregistrés pour payer plus vite. Nous ne stockons jamais le numéro complet des cartes.",
     noMethods:

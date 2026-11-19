@@ -118,7 +118,7 @@ export function BillingPage() {
               action={
                 toPay[0] && (
                   <a
-                    href={localHref(locale, `/pay/${toPay[0].number}`)}
+                    href={localHref(locale, `/pay/${toPay[0].requestCode ?? toPay[0].number}`)}
                     className={buttonClass({
                       size: "sm",
                       className: "shrink-0",
@@ -473,10 +473,21 @@ function Plan({
             {s.planName}
             <Badge tone="success">{c.planActive}</Badge>
           </p>
+          {s.status === "past_due" && s.graceEndsAt && (
+            <p role="status" className="bg-danger-bg px-3 py-2 text-small text-danger">
+              {fill(c.pastDue, { date: formatDate(s.graceEndsAt, locale) })}
+            </p>
+          )}
+          {s.cancelAtPeriodEnd && s.periodEnd && (
+            <p className="text-fg-subtle">{fill(c.cancelScheduled, { date: formatDate(s.periodEnd, locale) })}</p>
+          )}
           {s.periodEnd && (
             <p className="text-fg-subtle">
               {fill(c.renews, { date: formatDate(s.periodEnd, locale) })}
             </p>
+          )}
+          {s.usageWarning && (
+            <p role="status" className="bg-warning-bg px-3 py-2 text-small">{c.usage80}</p>
           )}
           {s.maxApplicationsPerMonth != null && (
             <progress
@@ -505,7 +516,72 @@ function Plan({
       >
         {s?.enrolled ? c.managePlan : c.seePlans}
       </a>
+      {s?.enrolled && <CancelPlan s={s} />}
     </div>
+  );
+}
+
+/** F-SUB-07: two-step cancel (when + reason), or undo a scheduled cancellation. */
+function CancelPlan({ s }: { s: Sub }) {
+  const { locale } = useI18n();
+  const c = c3Copy(locale).bill;
+  const qc = useQueryClient();
+  const toast = useToast();
+  const [open, setOpen] = useState(false);
+  const [when, setWhen] = useState<"period_end" | "now">("period_end");
+  const [reason, setReason] = useState("");
+  const done = () => {
+    setOpen(false);
+    void qc.invalidateQueries({ queryKey: ["c3", "subscription"] });
+  };
+  const fail = () => toast({ title: c3Copy(locale).common.error, tone: "danger" });
+  const cancel = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/me/subscription/cancel", { body: { when, reason: reason.trim() } })),
+    onSuccess: done,
+    onError: fail,
+  });
+  const undo = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/me/subscription/undo-cancel")),
+    onSuccess: done,
+    onError: fail,
+  });
+  if (s.cancelAtPeriodEnd)
+    return (
+      <Button size="sm" variant="ghost" className="justify-self-start" loading={undo.isPending} onClick={() => undo.mutate()}>
+        {c.undoCancel}
+      </Button>
+    );
+  return (
+    <>
+      <Button size="sm" variant="ghost" className="justify-self-start" onClick={() => setOpen(true)}>
+        {c.cancelPlan}
+      </Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={c.cancelTitle}
+        description={fill(c.cancelBody, { date: s.periodEnd ? formatDate(s.periodEnd, locale) : "" })}
+        footer={
+          <Button variant="danger" disabled={!reason.trim()} loading={cancel.isPending} onClick={() => cancel.mutate()}>
+            {c.cancelConfirm}
+          </Button>
+        }
+      >
+        <div className="grid gap-3">
+          <Field label={c.cancelWhen}>
+            {(a) => (
+              <Select id={a.id} aria-describedby={a.describedBy} value={when} onChange={(e) => setWhen(e.target.value as "period_end" | "now")}>
+                <option value="period_end">{c.cancelAtEnd}</option>
+                <option value="now">{c.cancelNow}</option>
+              </Select>
+            )}
+          </Field>
+          <Field label={c.cancelReason}>
+            {(a) => <Textarea id={a.id} aria-describedby={a.describedBy} rows={3} maxLength={500} value={reason} onChange={(e) => setReason(e.target.value)} />}
+          </Field>
+        </div>
+      </Dialog>
+    </>
   );
 }
 
