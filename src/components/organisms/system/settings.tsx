@@ -12,6 +12,7 @@ import { fill, sysError } from "@/content/pages/system-common";
 import { cx, formatDateTime, formatRelative } from "@/shared/format";
 import { ApiError } from "@/lib/api/client";
 import { errorState } from "@/lib/system/api";
+import { useAudit } from "@/lib/system/e";
 import { approversFor, CHANGE_TTL_MS } from "@/shared/system/approvals";
 import { SETTING_GROUPS, parseCidr, settingDef, settingsIn, type SettingDef } from "@/shared/system/settings-registry";
 import {
@@ -203,6 +204,7 @@ export function SettingsView({ group }: { group: string }) {
               ) : (
                 <GroupBody g={g} c={c} valueOf={valueOf} set={set} errFor={errFor} values={q.data!.values} toned={toned} disabled={!online} />
               )}
+              <ChangeHistory g={g} c={c} />
             </>
           )}
         </div>
@@ -216,6 +218,32 @@ export function SettingsView({ group }: { group: string }) {
       )}
       {su.dialog}
     </div>
+  );
+}
+
+/** F-SET-03: setting audit entries (config.setting.changed and kin) for this group, newest first, before → after. */
+function ChangeHistory({ g, c }: { g: SettingGroup; c: C }) {
+  const { locale } = useI18n();
+  const h = c.history;
+  const q = useAudit("resource_type=setting");
+  const rows = (q.data?.pages ?? []).flatMap((p) => p.items).filter((e) => settingDef(e.resourceId)?.group === g);
+  if (q.isError && q.error instanceof ApiError && q.error.isForbidden) return null; // audit is sysadmin-only; the page itself stays usable
+  return (
+    <Card title={h.title}>
+      <p className="mb-3 text-small text-fg-muted">{h.sub}</p>
+      {q.isPending ? <SkeletonRows n={3} /> : q.isError ? <PanelError what={h.title} onRetry={() => q.refetch()} /> : !rows.length ? <EmptyPanel compact title={h.empty} /> : (
+        <ol className="grid gap-3">
+          {rows.map((e) => (
+            <li key={e.id} className="grid gap-2 border-b border-border pb-3 last:border-0">
+              <p className="flex flex-wrap gap-x-2 text-small"><span className="font-medium">{c.fields[e.resourceId]?.[0] ?? e.resourceId}</span>
+                <span className="text-fg-muted">{h.by} {e.actorLabel} · <time dateTime={e.at}>{formatDateTime(e.at, locale)}</time></span></p>
+              <DiffView before={e.details.before} after={e.details.after} />
+            </li>
+          ))}
+        </ol>
+      )}
+      {q.hasNextPage && <Button variant="outline" size="sm" className="mt-3" loading={q.isFetchingNextPage} onClick={() => void q.fetchNextPage()}>{h.more}</Button>}
+    </Card>
   );
 }
 

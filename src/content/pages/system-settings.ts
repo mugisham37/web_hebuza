@@ -3,6 +3,7 @@ import type { Locale } from "@/shared/i18n/config";
 
 const en = {
   title: "Settings",
+  history: { title: "Change history", sub: "Every saved change, with who made it and the value before and after.", empty: "No changes to this group yet.", more: "Show more", by: "by" },
   sub: "Every setting names what enforces it. Security changes need a second sysadmin.",
   cards: { sessions: "Sessions", ip: "IP allowlists", protection: "Sign-in protection" },
   groupsLabel: "Settings groups",
@@ -99,6 +100,7 @@ type Copy = typeof en;
 
 const fr: Copy = {
   title: "Paramètres",
+  history: { title: "Historique des modifications", sub: "Chaque modification enregistrée, avec son auteur et les valeurs avant et après.", empty: "Aucune modification pour ce groupe.", more: "Afficher plus", by: "par" },
   sub: "Chaque paramètre indique ce qui l'applique. Les changements de sécurité exigent un second administrateur.",
   cards: { sessions: "Sessions", ip: "Listes d'IP autorisées", protection: "Protection de connexion" },
   groupsLabel: "Groupes de paramètres",
@@ -194,6 +196,7 @@ const fr: Copy = {
 
 const rw: Copy = {
   title: "Igenamiterere",
+  history: { title: "Amateka y'impinduka", sub: "Buri mpinduka yabitswe, uwayikoze n'agaciro mbere na nyuma.", empty: "Nta mpinduka muri iri tsinda.", more: "Erekana ibindi", by: "na" },
   sub: "Buri genamiterere ryerekana igiturishyira mu bikorwa. Impinduka z'umutekano zisaba undi muyobozi wa sisitemu.",
   cards: { sessions: "Amasesiyo", ip: "Aderesi za IP zemewe", protection: "Kurinda kwinjira" },
   groupsLabel: "Amatsinda y'igenamiterere",

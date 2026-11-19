@@ -103,7 +103,7 @@ function DestRow({ x }: { x: PendingDest }) {
   const go = (result: "verify" | "fail") => m.mutate({ k: "payout", result }, { onSuccess: () => toast({ title: d.done, tone: "success" }), onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }) });
   return (
     <li className="flex flex-wrap items-center gap-3 border border-border px-3 py-2">
-      <span className="min-w-0 flex-1 break-words"><span className="font-medium">{x.workerId}</span> · {x.label} ···{x.last4}</span>
+      <span className="min-w-0 flex-1 break-words"><span className="font-medium">{x.name}</span> · {x.label} ···{x.last4}</span>
       <Button size="sm" loading={m.isPending} onClick={() => go("verify")}>{d.verify}</Button>
       <Button size="sm" variant="secondary" disabled={m.isPending} onClick={() => go("fail")}>{d.fail}</Button>
     </li>

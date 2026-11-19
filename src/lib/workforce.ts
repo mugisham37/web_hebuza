@@ -63,7 +63,7 @@ export type StaffWork = {
 };
 export const useStaffWork = (id: string) =>
   useQuery({ queryKey: [...K, "work", id], queryFn: () => unwrap<StaffWork>(api.GET("/api/staff/workers/{id}/work", { params: { path: { id } } })) });
-export type PendingDest = { workerId: string; method: string; label: string; last4: string; status: string; coolingUntil: string | null };
+export type PendingDest = { workerId: string; name: string; method: string; label: string; last4: string; status: string; coolingUntil: string | null };
 export const usePendingDestinations = () =>
   useQuery({ queryKey: [...K, "dests"], queryFn: () => unwrap<PendingDest[]>(api.GET("/api/staff/payout-destinations/pending")), retry: false });
 export type WorkDecision =
