@@ -20,5 +20,5 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 5"], viewport: { width: 360, height: 780 } }, grep: /@mobile/ },
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
-  webServer: remote ? undefined : { command: `npx next start -p ${PORT}`, port: PORT, reuseExistingServer: false // never silently reuse a `next dev` server: journeys must hit the production build },
+  webServer: remote ? undefined : { command: `npx next start -p ${PORT}`, port: PORT, reuseExistingServer: false }, // never reuse a `next dev` server: journeys must hit the production build
 });
