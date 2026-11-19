@@ -1060,6 +1060,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_activity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/sessions": {
         parameters: {
             query?: never;
@@ -14716,7 +14732,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1486_0"][];
+            items: components["schemas"]["__s1487_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -15166,17 +15182,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s1882_0"];
+            definition: components["schemas"]["__s1883_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s1886_0"];
+            definition: components["schemas"]["__s1887_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s1890_0"];
+            definition?: components["schemas"]["__s1891_0"];
         };
         CampaignDto: {
             name?: string;
@@ -15238,7 +15254,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s1942_0"];
+            conditions?: components["schemas"]["__s1943_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -16875,14 +16891,6 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1486_0: {
-            id: string;
-            href: string;
-            label: {
-                [key: string]: string;
-            };
-            children?: components["schemas"]["__s1486_0"][];
-        };
         __s1487_0: {
             id: string;
             href: string;
@@ -16899,16 +16907,13 @@ export interface components {
             };
             children?: components["schemas"]["__s1488_0"][];
         };
-        __s1882_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s1882_0"])[];
+        __s1489_0: {
+            id: string;
+            href: string;
+            label: {
+                [key: string]: string;
+            };
+            children?: components["schemas"]["__s1489_0"][];
         };
         __s1883_0: {
             /** @enum {string} */
@@ -17031,7 +17036,7 @@ export interface components {
                 value: unknown;
             } | components["schemas"]["__s1893_0"])[];
         };
-        __s1942_0: {
+        __s1894_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -17040,7 +17045,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s1942_0"])[];
+            } | components["schemas"]["__s1894_0"])[];
         };
         __s1943_0: {
             /** @enum {string} */
@@ -17151,6 +17156,17 @@ export interface components {
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
             } | components["schemas"]["__s1952_0"])[];
+        };
+        __s1953_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s1953_0"])[];
         };
     };
     responses: never;
@@ -19525,6 +19541,32 @@ export interface operations {
                         data: {
                             deleted: boolean;
                             scheduledAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    AuthController_activity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: {
+                            expiresAt: string;
                         };
                     };
                 };
