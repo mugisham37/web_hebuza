@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { Button } from "@/components/atoms/button";
 import { Field, Input, Select, ErrorSummary } from "@/components/atoms/field";
+import { orgComplianceCopy } from "@/content/pages/org-compliance";
 import { EmptyState, ErrorState } from "@/components/atoms/feedback";
 import { Dialog } from "@/components/atoms/dialog";
 import { Avatar } from "@/components/atoms/misc";
@@ -324,9 +325,10 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
   const { c } = useC4();
   const { t } = useI18n();
   const o = c.orgs;
+  const oc = orgComplianceCopy(useI18n().locale);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const save = useMutation({
-    mutationFn: (body: Record<string, string | null>) =>
+    mutationFn: (body: Record<string, string | boolean | null>) =>
       unwrap(api.POST("/api/me/orgs", { body: body as never })), // cast: FormData strings mapped to the DTO shape below
     onSuccess: () => { onDone(); onClose(); },
   });
@@ -344,6 +346,7 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
       legalName: v("legalName"), tradeName: v("tradeName"), orgType: v("orgType"), tin, rdbNumber: v("rdbNumber"),
       registeredOn: v("registeredOn"), province: v("province"), district: v("district"), phone: v("phone") ? toE164(v("phone")!) ?? v("phone") : null,
       email: v("email"), website: v("website"), sizeBand: v("sizeBand"),
+      vatRegistered: f.get("vatRegistered") === "on", vatPeriod: (v("vatPeriod") as "monthly" | "quarterly" | null) ?? "monthly", employer: f.get("employer") === "on",
     });
   }
   const text = (name: string, label: string, extra: React.ComponentProps<"input"> = {}) => (
@@ -375,6 +378,14 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
           )}
         </Field>
         {text("tin", o.tin, { inputMode: "numeric", maxLength: 9 })}
+        <fieldset className="grid gap-2 sm:col-span-2">
+          <legend className="text-small font-medium">{oc.legend}</legend>
+          <label className="flex items-center gap-2 text-small"><input type="checkbox" name="vatRegistered" className="size-4" />{oc.vat}</label>
+          <label className="grid gap-1 text-small">{oc.vatPeriod}
+            <Select name="vatPeriod" defaultValue="monthly"><option value="monthly">{oc.monthly}</option><option value="quarterly">{oc.quarterly}</option></Select>
+          </label>
+          <label className="flex items-center gap-2 text-small"><input type="checkbox" name="employer" className="size-4" />{oc.employer}</label>
+        </fieldset>
         {text("rdbNumber", o.rdb)}
         {text("registeredOn", o.registeredOn, { type: "date" })}
         {text("province", o.province)}
