@@ -5,6 +5,7 @@ import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { stripLocale } from "@/shared/i18n/config";
 import { useSession } from "@/lib/auth/session";
+import { api } from "@/lib/api/client";
 import { ROLE_META, type Role, type Workspace } from "@/shared/auth/roles";
 import { WORKSPACE_NAV, QUICK_ACTIONS, navFor, type NavItem } from "@/lib/nav";
 import { cx } from "@/shared/format";
@@ -149,6 +150,22 @@ function UserMenu() {
             <p className="text-label">{user.name}</p>
             <p className="text-small text-fg-subtle">{user.roles.map((r) => t(`role.${r}`)).join(" · ")}</p>
           </div>
+          {user.roles.length > 1 && (
+            <div className="border-b border-border py-1" role="group" aria-label={t("nav.workAs")}>
+              <p className="px-3 pt-1 text-eyebrow text-fg-subtle">{t("nav.workAs")}</p>
+              {user.roles.filter((r): r is Exclude<Role, "visitor"> => r !== "visitor").map((r) => (
+                <button key={r} role="menuitemradio" aria-checked={(user.activeRole ?? user.roles[0]) === r} type="button"
+                  className={cx("w-full px-3 py-2 text-left hover:bg-navy-50", (user.activeRole ?? user.roles[0]) === r && "font-medium")}
+                  onClick={async () => {
+                    setOpen(false);
+                    await api.POST("/api/auth/active-role", { body: { role: r } });
+                    window.location.assign(localHref(locale, ROLE_META[r].home));
+                  }}>
+                  {t(`role.${r}`)}
+                </button>
+              ))}
+            </div>
+          )}
           <Link role="menuitem" href={localHref(locale, "/settings")} className="block px-3 py-2 hover:bg-navy-50" onClick={() => setOpen(false)}>{t("wsnav.settings")}</Link>
           <button role="menuitem" type="button" className="w-full px-3 py-2 text-left hover:bg-navy-50"
             onClick={onSignOut}>{t("nav.signOut")}</button>

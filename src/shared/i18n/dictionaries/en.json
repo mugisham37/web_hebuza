@@ -49,7 +49,8 @@
     "signup": "Create account",
     "start": "Start a request",
     "dashboard": "My dashboard",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "workAs": "Work as"
   },
   "workspace": {
     "switch": "Switch workspace",

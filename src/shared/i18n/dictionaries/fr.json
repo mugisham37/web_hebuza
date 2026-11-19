@@ -49,7 +49,8 @@
     "signup": "Créer un compte",
     "start": "Faire une demande",
     "dashboard": "Mon tableau de bord",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "workAs": "Travailler en tant que"
   },
   "workspace": {
     "switch": "Changer d'espace",
