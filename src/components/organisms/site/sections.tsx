@@ -7,6 +7,7 @@ import { CONTACT, getCopy, waLink } from "@/content/marketing";
 import { FACES } from "@/content/families";
 import { A11Y } from "@/content/pages/accessibility";
 import type { FamilyVM } from "@/lib/catalogue";
+import type { PublicSite } from "@/lib/marketing/cms/read";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
 import { Icon, WhatsAppGlyph } from "@/components/atoms/icon";
@@ -69,11 +70,16 @@ export function FAQBlock({ locale, title, items, side, tag }: { locale: Locale; 
 }
 
 /** Landing1 footer: marquee notch → wordmark/star + statement + email + faces → columns → newsletter → giant wordmark with floating pills. */
-export function SiteFooter({ locale, families }: { locale: Locale; families: Pick<FamilyVM, "slug" | "name">[] }) {
+export function SiteFooter({ locale, families, site }: { locale: Locale; families: Pick<FamilyVM, "slug" | "name">[]; site?: PublicSite }) {
   const f = getCopy(locale).footer;
   const m = getCopy(locale);
   const L = (p: string) => localHref(locale, p);
   const helpHrefs = ["/track", "/faq", "/contact", "/book", "/status"];
+  // F-CMS-07: CMS footer nav and contact settings win when set; the built-in links are the defaults.
+  const cmsLinks = (site?.nav.footer ?? []).map((n) => [n.label[locale] ?? n.label.en ?? n.id, n.href.startsWith("/") ? L(n.href) : n.href] as [string, string]);
+  const email = site?.settings?.email || CONTACT.email;
+  const phone = site?.settings?.phone || CONTACT.phone;
+  const social = site?.settings?.social?.length ? site.settings.social : null;
   return (
     <footer className="theme-dark overflow-hidden bg-grad-night-fade text-fg">
       <div className="container-page px-gutter">
@@ -82,18 +88,19 @@ export function SiteFooter({ locale, families }: { locale: Locale; families: Pic
             <p className="text-label">{f.company}</p>
             <p className="mt-3 max-w-xs text-small text-fg-muted">{f.about}</p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <a href={`mailto:${CONTACT.email}`} className="text-label-lg text-fg-heading underline decoration-primary/60 underline-offset-[6px] transition-colors hover:decoration-primary">{CONTACT.email}</a>
+              <a href={`mailto:${email}`} className="text-label-lg text-fg-heading underline decoration-primary/60 underline-offset-[6px] transition-colors hover:decoration-primary">{email}</a>
               <Faces srcs={FACES.slice(0, 3)} size={36} />
             </div>
           </div>
           <FooterCol title={f.services} links={[...families.map((x) => [x.name, L(`/services/c/${x.slug}`)] as [string, string]), [`${m.services.all} →`, L("/services")]]} />
-          <FooterCol title={f.help} links={f.helpLinks.map((t, i) => [t, L(helpHrefs[i])] as [string, string])} />
+          <FooterCol title={f.help} links={cmsLinks.length ? cmsLinks : f.helpLinks.map((t, i) => [t, L(helpHrefs[i])] as [string, string])} />
           <div>
             <p className="text-label">{f.connect}</p>
             <ul className="mt-3 grid gap-2 text-small text-fg-muted">
-              <li><a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="hover:text-primary">WhatsApp {CONTACT.phone}</a></li>
-              <li><a href={CONTACT.phoneHref} className="hover:text-primary">{CONTACT.phone}</a></li>
-              <li className="flex gap-3 pt-1">{["Facebook", "LinkedIn", "Instagram", "X"].map((s) => <span key={s} className="border border-border-strong px-2.5 py-1 text-eyebrow">{s}</span>)}</li>
+              <li><a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="hover:text-primary">WhatsApp {phone}</a></li>
+              <li><a href={`tel:${phone.replace(/\s/g, "")}`} className="hover:text-primary">{phone}</a></li>
+              <li className="flex flex-wrap gap-3 pt-1">{social ? social.map((s) => <a key={s.url} href={s.url} target="_blank" rel="noopener" className="border border-border-strong px-2.5 py-1 text-eyebrow hover:text-primary">{s.network}</a>)
+                : ["Facebook", "LinkedIn", "Instagram", "X"].map((s) => <span key={s} className="border border-border-strong px-2.5 py-1 text-eyebrow">{s}</span>)}</li>
             </ul>
           </div>
         </div>

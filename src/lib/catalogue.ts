@@ -16,7 +16,7 @@ type ApiService = L10n & {
   pricing_tiers: ApiTier[]; pricing_mode: "fixed" | "range" | "quote" | string; from_fee: number | null;
   plan_covered: boolean; is_featured: boolean; volume30d: number | null; price_bands: { min_amount_rwf: number; max_amount_rwf?: number | null; fee_type: string; fee_rwf?: number | null; fee_percent?: number | null; min_fee_rwf?: number | null; max_fee_rwf?: number | null; sort_order: number }[]; range_basis_label: string | null; status: string;
   engagement_type: string; eligibility: L3[]; deliverables: L3[]; turnaround_days_min: number | null; turnaround_days_max: number | null; delivery_mode: string | null;
-  seo: Partial<Record<Locale, { title?: string; description?: string; og_image?: string }>>; related_slugs: string[];
+  seo: Partial<Record<Locale, { title?: string; description?: string; og_image?: string }>>; related_slugs: string[]; fee_explainer: L3 | null; markets: string[];
 };
 type L3 = Record<Locale, string>;
 type ApiCategory = L3 & { slug: string; name_rw: string; name_en: string; name_fr: string; description_rw: string | null; description_en: string | null; description_fr: string | null; sort_order: number; is_active: boolean };
@@ -30,7 +30,7 @@ export type ServiceVM = {
   consultation: boolean; deliveryMode: string | null; turnaround: { min: number | null; max: number | null };
 };
 export type ServiceDetailVM = ServiceVM & { bands: { min: number; max: number | null; fee: number; rate: number; minFee: number | null; maxFee: number | null }[]; description: string | null; requirements: string[]; steps: string[];
-  eligibility: string[]; deliverables: string[]; seo: { title?: string; description?: string; og_image?: string }; related: string[] };
+  eligibility: string[]; deliverables: string[]; seo: { title?: string; description?: string; og_image?: string }; related: string[]; feeExplainer: string | null; markets: string[] };
 export type FamilyVM = Omit<FamilyMeta, "name" | "blurb" | "short" | "promise"> & { name: string; blurb: string; short: string; promise: string; count: number; subAreas: { slug: string; name: string; count: number }[]; services: ServiceVM[] };
 export type PlanVM = { id: string; name: string; amount: number; interval: string; maxApps: number | null; description: string; features: string[]; badge: string | null };
 
@@ -120,6 +120,8 @@ export async function getService(slug: string, l: Locale): Promise<ServiceDetail
     deliverables: (s.deliverables ?? []).map((x) => x[l] || x.en).filter(Boolean),
     seo: s.seo?.[l] ?? {},
     related: s.related_slugs ?? [],
+    feeExplainer: s.fee_explainer ? s.fee_explainer[l] || s.fee_explainer.en || null : null,
+    markets: s.markets ?? ["RW"],
   };
 }
 

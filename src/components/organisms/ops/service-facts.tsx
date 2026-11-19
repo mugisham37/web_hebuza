@@ -28,6 +28,8 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
     deliverables: (service.deliverables ?? []) as L3[],
     seo: (service.seo ?? {}) as Partial<Record<Lang, { title?: string; description?: string; og_image?: string }>>,
     related: (service.related_slugs ?? []).join(", "),
+    fee: (service.fee_explainer ?? { rw: "", en: "", fr: "" }) as L3,
+    markets: (service.markets ?? ["RW"]).join(", "),
   }));
   const seo = f.seo[lang] ?? {};
   const setSeo = (k: "title" | "description" | "og_image", v: string) => setF((x) => ({ ...x, seo: { ...x.seo, [lang]: { ...x.seo[lang], [k]: v } } }));
@@ -39,6 +41,8 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
         turnaround_days_min: f.turnaround_days_min, turnaround_days_max: f.turnaround_days_max,
         eligibility: f.eligibility, deliverables: f.deliverables, seo: f.seo,
         related_slugs: f.related.split(",").map((x) => x.trim()).filter(Boolean),
+        fee_explainer: f.fee.rw.trim() || f.fee.en.trim() || f.fee.fr.trim() ? f.fee : null,
+        markets: f.markets.split(",").map((x) => x.trim().toUpperCase()).filter((x) => /^[A-Z]{2}$/.test(x)),
       },
       { onSuccess: () => toast({ title: c.saved, tone: "success" }), onError: () => toast({ title: c.failed, tone: "danger" }) },
     );
@@ -69,6 +73,8 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
         <Field label={`${c.og} (${lang})`}>{(a) => <Input id={a.id} type="url" maxLength={500} value={seo.og_image ?? ""} onChange={(e) => setSeo("og_image", e.target.value)} />}</Field>
       </div>
       <Field label={`${c.seoDesc} (${lang})`} hint={`${(seo.description ?? "").length}/170`}>{(a) => <Textarea id={a.id} aria-describedby={a.describedBy} rows={2} maxLength={170} value={seo.description ?? ""} onChange={(e) => setSeo("description", e.target.value)} />}</Field>
+      <Field label={`${c.feeExplainer} (${lang})`}>{(a) => <Textarea id={a.id} rows={2} maxLength={2000} value={f.fee[lang]} onChange={(e) => setF((x) => ({ ...x, fee: { ...x.fee, [lang]: e.target.value } }))} />}</Field>
+      <Field label={c.markets}>{(a) => <Input id={a.id} value={f.markets} onChange={(e) => setF((x) => ({ ...x, markets: e.target.value }))} />}</Field>
       <Field label={c.related}>{(a) => <Input id={a.id} value={f.related} onChange={(e) => setF((x) => ({ ...x, related: e.target.value }))} />}</Field>
       <div><Button type="button" onClick={submit} disabled={save.isPending || rangeBad}>{c.save}</Button></div>
     </section>

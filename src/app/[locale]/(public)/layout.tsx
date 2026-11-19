@@ -1,6 +1,7 @@
 import { ViewTransition } from "react";
 import { getI18n } from "@/lib/i18n/server";
 import { getFamilies } from "@/lib/catalogue";
+import { getSite } from "@/lib/marketing/cms/read";
 import { getCopy } from "@/content/marketing";
 import { SiteHeader } from "@/components/organisms/site/site-header";
 import { ZigzagBand } from "@/components/atoms/brand";
@@ -13,7 +14,7 @@ import { CookieConsent } from "@/components/organisms/site/cookie-consent";
 
 export default async function PublicLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale, t } = await getI18n(params);
-  const families = await getFamilies(locale);
+  const [families, site] = await Promise.all([getFamilies(locale), getSite()]);
   const m = getCopy(locale);
   const total = families.reduce((n, f) => n + f.count, 0);
   return (
@@ -30,7 +31,7 @@ export default async function PublicLayout({ children, params }: LayoutProps<"/[
       {/* Every public page ends on white; blend it into the footer (grad-night-fade starts navy-900). */}
       {/* Starts from the page's last section colour (--color-page-end, white unless a page marks its last section with data-page-end). */}
       <ZigzagBand from="page-end" to="navy-900" />
-      <SiteFooter locale={locale} families={families} />
+      <SiteFooter locale={locale} families={families} site={site} />
       <BackToTop top={m.utility.top} />
       <LazyAssistantLauncher />
       <CookieConsent copy={m.consent} />

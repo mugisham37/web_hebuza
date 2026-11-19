@@ -324,7 +324,7 @@ export const useService = (slug: string) =>
       unwrap<ServiceDetail>(api.GET("/api/admin/services/{slug}", { params: { path: { slug } } })),
   });
 /** F-CAT-05/07/08/09 public facts on the service record (PATCH merges; the API revalidates the public page). */
-export type ServiceFactsIn = Pick<ServiceDetail, "engagement_type" | "eligibility" | "deliverables" | "turnaround_days_min" | "turnaround_days_max" | "delivery_mode" | "seo" | "related_slugs">;
+export type ServiceFactsIn = Pick<ServiceDetail, "engagement_type" | "eligibility" | "deliverables" | "turnaround_days_min" | "turnaround_days_max" | "delivery_mode" | "seo" | "related_slugs" | "fee_explainer" | "markets">;
 export function useSaveServiceFacts(slug: string) {
   const qc = useQueryClient();
   return useMutation({

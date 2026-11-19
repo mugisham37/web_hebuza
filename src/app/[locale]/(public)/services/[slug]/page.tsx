@@ -59,7 +59,9 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const cta = s.consultation ? { href: L(`/book?service=${s.slug}`), label: d.book } : { href: L(`/apply/${s.slug}`), label: m.card.apply };
   const tier = s.tiers[0];
   const time = s.turnaround.min != null && s.turnaround.max != null ? d.facts.days.replace("{min}", String(s.turnaround.min)).replace("{max}", String(s.turnaround.max)) : tier?.eta ?? "—";
-  const where = s.deliveryMode ? d.facts.modes[s.deliveryMode as keyof typeof d.facts.modes] ?? d.facts.nationwide : d.facts.nationwide;
+  const markets = s.markets.length > 1 || s.markets[0] !== "RW" ? ` · ${s.markets.join(", ")}` : "";
+  const mode = s.deliveryMode ? d.facts.modes[s.deliveryMode as keyof typeof d.facts.modes] : undefined;
+  const where = `${mode ?? d.facts.nationwide}${markets}`;
   const la = laCopy(locale);
   const paused = s.paused;
   const bands: PriceBand[] | null = s.bands.length ? s.bands : null;
@@ -69,7 +71,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const last = words[words.length - 1];
   const docs = s.requirements;
   const ld = {
-    "@context": "https://schema.org", "@type": "Service", name: s.name, description: s.summary, areaServed: "RW", url: `${SITE_URL}/${locale}/services/${s.slug}`,
+    "@context": "https://schema.org", "@type": "Service", name: s.name, description: s.summary, areaServed: s.markets, url: `${SITE_URL}/${locale}/services/${s.slug}`,
     provider: { "@type": "ProfessionalService", name: "HEBUZA BUSINESS GROUP LTD" },
     ...(quote ? {} : { offers: { "@type": "Offer", price: s.fromFee, priceCurrency: "RWF" } }),
   };
@@ -108,6 +110,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
         <a href={waLink(`${s.name} — HEBUZA`)} target="_blank" rel="noopener" className="inline-flex h-12 items-center justify-center gap-2 border border-border-strong text-button text-fg hover:bg-bg-subtle"><WhatsAppGlyph size={18} />{paused ? la.price.pausedWa : d.ask}</a>
         <Link href={L(`/book?service=${s.slug}`)} className="text-center text-small text-link underline-offset-4 hover:text-link-hover hover:underline">{d.consult} →</Link>
       </div>
+      {s.feeExplainer && <p className="mt-4 text-small text-fg-muted">{s.feeExplainer}</p>}
       <p className={`mt-4 px-4 py-2 text-center text-small ${s.planCovered ? "bg-gold-100 text-gold-800" : "bg-bg-subtle text-fg-subtle"}`}>{s.planCovered ? d.covered : d.notCovered}</p>
     </div>
   );

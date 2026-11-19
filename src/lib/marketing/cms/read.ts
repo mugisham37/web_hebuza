@@ -5,7 +5,7 @@ import "server-only";
 import { cacheTag } from "next/cache";
 import { cookies, draftMode } from "next/headers";
 import type { Campaign, Guide, GuideCat, Institution, Affects, Update } from "@/content/pages/ld";
-import type { BlockShape, CmsEntry, CmsType, CmsVariant, Locale, RichDoc } from "@/shared/marketing/types";
+import type { BlockShape, CmsEntry, CmsType, CmsVariant, Locale, NavNode, RichDoc, SiteSettings } from "@/shared/marketing/types";
 import { LOCALES } from "@/shared/marketing/types";
 import { docText, kbEligible, liveLocales, resolveVariant } from "@/shared/marketing/cms/rules";
 import { publicGet } from "@/lib/public-api";
@@ -219,4 +219,12 @@ export async function kbSources(): Promise<{ id: string; type: CmsType; locale: 
 export async function slugParams(type: "guide" | "regulatory_update" | "landing_page", locales: readonly Locale[]) {
   const slugs = (await entries()).filter((e) => e.type === type && liveLocales(e).length).map((e) => e.key);
   return locales.flatMap((locale) => (slugs.length ? slugs : ["_"]).map((slug) => ({ locale, slug })));
+}
+
+export type PublicSite = { nav: Record<"header" | "mobile" | "footer", NavNode[]>; settings: SiteSettings | null };
+/** F-CMS-07 nav + site settings (GET /api/content/site), dropped by the cms:nav / cms:settings tags. */
+export async function getSite(): Promise<PublicSite> {
+  "use cache";
+  cacheTag("cms", "cms:nav", "cms:settings");
+  return (await publicGet<PublicSite>("/content/site", { nav: { header: [], mobile: [], footer: [] }, settings: null })) ?? { nav: { header: [], mobile: [], footer: [] }, settings: null };
 }
