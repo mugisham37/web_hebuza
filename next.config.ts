@@ -1,14 +1,21 @@
 import type { NextConfig } from "next";
 
-// CSP starts report-only (F-SEC-04): enforce in Stage 15 after GA4/Flutterwave/Meet origins are confirmed.
+// F-SEC-04 CSP, enforced. Origins: GA4/GTM, Meta pixel, Turnstile, Flutterwave checkout, YouTube embeds, direct-to-R2
+// presigned uploads (connect) and the telemetry beacon. CSP_EXTRA_ORIGINS (space-separated) adds e.g. local MinIO in dev.
+const extra = [process.env.CSP_EXTRA_ORIGINS ?? "", process.env.NEXT_PUBLIC_TELEMETRY_URL ? new URL(process.env.NEXT_PUBLIC_TELEMETRY_URL).origin : ""]
+  .join(" ").trim();
+const dev = process.env.NODE_ENV !== "production";
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com",
+  // 'unsafe-eval' only in dev (React refresh); 'unsafe-inline' stays until Next nonces are wired for inline JSON-LD/pixels.
+  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://connect.facebook.net https://challenges.cloudflare.com https://checkout.flutterwave.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
+  `img-src 'self' data: blob: https:${dev ? " http://localhost:*" : ""}`,
+  "media-src 'self' blob: data: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://*.analytics.google.com",
-  "frame-src https://checkout.flutterwave.com https://challenges.cloudflare.com",
+  `connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://*.r2.cloudflarestorage.com${dev ? " ws: http://localhost:*" : ""} ${extra}`.trim(),
+  "frame-src https://checkout.flutterwave.com https://challenges.cloudflare.com https://www.youtube-nocookie.com",
+  "worker-src 'self' blob:",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -21,7 +28,7 @@ const SECURITY_HEADERS = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Permissions-Policy", value: "camera=(self), geolocation=(self), microphone=(self), payment=(self)" }, // camera/GPS for uploads & field check-in
-  { key: "Content-Security-Policy-Report-Only", value: CSP },
+  { key: "Content-Security-Policy", value: CSP },
 ];
 
 const nextConfig: NextConfig = {
