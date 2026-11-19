@@ -32,6 +32,7 @@ import {
 } from "@/components/atoms/agent";
 import { useMyCases, useSummary } from "@/lib/agent/api";
 import { agentProfile, type ProfileCopy } from "@/content/pages/agent-profile";
+import { TeamProfileCard } from "@/components/organisms/agent/team-profile";
 import { fill } from "@/content/pages/agent-common";
 import {
   ProfileForm,
@@ -241,6 +242,7 @@ function ProfileSection({ p }: { p: ProfileCopy }) {
         <CertsForm ob={ob} saver={saver} />
         <ExpiryChips certs={ob.certificates} />
       </section>
+      <TeamProfileCard className={box} />
     </div>
   );
 }

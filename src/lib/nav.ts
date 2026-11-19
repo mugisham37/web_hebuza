@@ -97,6 +97,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/marketing/templates", label: "wsnav.templates" },
     { href: "/marketing/referrals", label: "wsnav.referrals" },
     { href: "/marketing/testimonials", label: "wsnav.testimonials" },
+    { href: "/marketing/team", label: "wsnav.teamPage" }, // F-WRK-16 approvals
     { href: "/marketing/feedback", label: "wsnav.feedback" },
     { href: "/marketing/reports", label: "wsnav.reports", grant: ["staff:executive"] },
     { href: "/marketing/seo", label: "wsnav.seo" },

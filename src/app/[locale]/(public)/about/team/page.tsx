@@ -3,7 +3,8 @@ import { pageMeta } from "@/lib/seo";
 import { getI18n } from "@/lib/i18n/server";
 import { localHref } from "@/shared/i18n/config";
 import { getLB } from "@/content/pages/lb";
-import { getTeam } from "@/lib/marketing/cms/read";
+import { getTeam, type TeamVM } from "@/lib/marketing/cms/read";
+import { publicGet } from "@/lib/public-api";
 import { getCopy } from "@/content/marketing";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
@@ -14,9 +15,22 @@ import { TeamGrid } from "@/components/molecules/site/site";
 
 type Props = { params: Promise<{ locale: string }> };
 
+/** F-WRK-16: workers who opted in and were approved by marketing, after the CMS-managed profiles. */
+async function workerTeam(): Promise<TeamVM[]> {
+  "use cache";
+  const d = await publicGet<{ items: { id: string; name: string; title: string; bio: string }[] }>("/public/team", { items: [] });
+  return (d?.items ?? []).map((w) => ({
+    slug: `w-${w.id}`, name: w.name, role: { rw: w.title, en: w.title, fr: w.title }, photo: "", consented: true, verified: false, credential: null,
+  }));
+}
+const fullTeam = async () => {
+  const [cms, workers] = await Promise.all([getTeam(), workerTeam()]);
+  return [...cms, ...workers.filter((w) => !cms.some((c) => c.name === w.name))];
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await getI18n(params);
-  const team = await getTeam();
+  const team = await fullTeam();
   const t = getLB(locale).about.teamPage;
   // No consented profiles yet: keep the empty page out of the index.
   return pageMeta(locale, `/about/team`, {
@@ -29,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // /about/team — full team grid (08 v2 framing). Only consented profiles (F-WRK-04); empty state until then.
 export default async function TeamPage({ params }: Props) {
   const { locale } = await getI18n(params);
-  const team = await getTeam();
+  const team = await fullTeam();
   const a = getLB(locale).about;
   const L = (x: string) => localHref(locale, x);
   const has = team.length;
