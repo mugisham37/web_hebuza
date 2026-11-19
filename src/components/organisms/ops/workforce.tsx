@@ -34,22 +34,22 @@ export function WorkforceView() {
   const router = useRouter();
   const p = useUrlParams();
   const status = useP().status;
-  const q = useWorkers();
+  const q = useWorkers(); // unfiltered: filter options + segment counts
   const SERVICES = usePublicServices().data?.items ?? [];
   const seg = (SEGS as readonly string[]).includes(p.get("seg") ?? "") ? p.get("seg")! : "all";
   const v = Object.fromEntries(F.map((k) => [k, p.get(k) ?? ""])) as Record<(typeof F)[number], string>;
   const search = (p.get("q") ?? "").toLowerCase();
+  const found = useWorkers({ service: v.service, language: v.language, district: v.district, minRating: v.rating ? Number(v.rating) : undefined, q: search || undefined });
   if (user && !user.roles.some((r) => r === "staff:service_manager" || r === "staff:executive")) return <WorkforceDenied />;
 
   const all = q.data?.items ?? [];
   const opt = (pick: (w: WorkerRow) => string[]) => [...new Set(all.flatMap(pick))].sort();
   const svcName = (s: string) => SERVICES.find((x) => x.slug === s)?.name ?? s;
-  const rows = all.filter((w) =>
+  // Service, language, district, rating and text search are filtered by the API; the rest are view-only refinements.
+  const rows = (found.data?.items ?? []).filter((w) =>
     (seg === "all" || (seg === "field" ? w.field : w.type === seg)) &&
-    (!search || [w.name, w.email, ...w.services.map(svcName)].some((x) => x.toLowerCase().includes(search))) &&
-    (!v.service || w.services.includes(v.service)) && (!v.expertise || w.expertise.includes(v.expertise)) &&
-    (!v.language || w.languages.includes(v.language)) && (!v.district || w.districts.includes(v.district)) &&
-    (!v.available || !w.availableFrom || w.availableFrom <= v.available) && (!v.rating || (w.rating ?? 0) >= Number(v.rating)) &&
+    (!v.expertise || w.expertise.includes(v.expertise)) &&
+    (!v.available || !w.availableFrom || w.availableFrom <= v.available) &&
     (!v.status || w.status === v.status));
   const chips: FilterChip[] = F.filter((k) => v[k]).map((k) => ({ key: k, label: `${c.filters[k]}: ${k === "service" ? svcName(v[k]) : v[k]}`, onRemove: () => setUrlParams({ [k]: null }) }));
   const filtered = !!search || F.some((k) => v[k]);
@@ -94,7 +94,7 @@ export function WorkforceView() {
         {filtered && <Button variant="ghost" size="sm" className="self-end" onClick={clearAll}>{c.filters.clear}</Button>}
       </div>
       <div className="border border-border bg-white m-rise">
-        <OpsTable rows={rows} columns={cols} rowKey={(w) => w.id} rowLabel={(w) => w.name} label={c.title} loading={q.isPending} error={q.isError ? q.error : undefined}
+        <OpsTable rows={rows} columns={cols} rowKey={(w) => w.id} rowLabel={(w) => w.name} label={c.title} loading={q.isPending || found.isPending} error={q.isError ? q.error : found.isError ? found.error : undefined}
           onRetry={() => q.refetch()} shortcuts rowTone={(w) => (w.status === "suspended" || w.status === "terminated" ? "muted" : null)}
           onOpen={(w) => router.push(localHref(locale, `/ops/workforce/${w.id}`))}
           empty={<div className="p-4"><EmptyPanel title={c.empty[0]} body={c.empty[1]} action={filtered ? <Button variant="outline" size="sm" onClick={clearAll}>{c.filters.clear}</Button> : undefined} /></div>} />

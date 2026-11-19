@@ -12,7 +12,16 @@ import type { AuditEvent } from "@/lib/audit-event";
 
 export type WorkerFull = WorkerDetail & { sessionsRevoked: boolean };
 const K = ["workforce"] as const;
-export const useWorkers = () => useQuery({ queryKey: [...K, "list"], queryFn: () => unwrap<{ items: WorkerRow[] }>(api.GET("/api/staff/workers")) });
+/** F-WRK-14: server-side directory filters (service, language, district, minRating, q); no filters = everyone. */
+export type WorkerFilters = { service?: string; language?: string; district?: string; minRating?: number; q?: string };
+export const useWorkers = (f: WorkerFilters = {}) => {
+  const query = Object.fromEntries(Object.entries(f).filter(([, v]) => v !== undefined && v !== "")) as WorkerFilters;
+  return useQuery({
+    queryKey: [...K, "list", query],
+    queryFn: () => unwrap<{ items: WorkerRow[] }>(api.GET("/api/staff/workers", { params: { query } })),
+    placeholderData: (prev) => prev,
+  });
+};
 export const useWorker = (id: string) => useQuery({ queryKey: [...K, "one", id], queryFn: () => unwrap<WorkerFull>(api.GET("/api/staff/workers/{id}", { params: { path: { id } } })) });
 export const useReviews = (id: string) => useQuery({ queryKey: [...K, "reviews", id], queryFn: () => unwrap<{ items: Review[] }>(api.GET("/api/staff/workers/{id}/reviews", { params: { path: { id } } })) });
 export const useHistory = (id: string) =>
