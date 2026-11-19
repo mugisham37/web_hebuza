@@ -1,4 +1,5 @@
 "use client";
+import { useSession } from "@/lib/auth/session";
 // U5 Intake (/ops/intake), board 05 v1: IQ1 list + quick look, IQ2 duplicate compare/merge, IQ3 bulk triage + Undo,
 // IQ4 empty + live "N new" banner, PI1 phone cards + full-screen quick-look sheet. Claim lock via useClaim (409).
 import { errorCopy } from "@/lib/api/error-copy";
@@ -53,7 +54,8 @@ import {
 } from "@/components/molecules/ops/ops";
 import { OpsTable, type OpsColumn } from "@/components/molecules/ops/ops-table";
 
-const ME = "Diane Mukamana"; // shortcut: session user name is not on the client session yet; read it from /api/auth/session when ops personas carry it.
+/** The signed-in staff member's name (claims are recorded by name). */
+const useMeName = () => useSession().user?.name ?? "";
 const TABS = ["all", "urgent", "vip", "duplicates", "partner"] as const;
 type Tab = (typeof TABS)[number];
 const inTab = (x: CaseVM, tab: Tab) =>
@@ -66,6 +68,7 @@ const inTab = (x: CaseVM, tab: Tab) =>
 const list = (v: string | null) => (v ? v.split(",") : []);
 
 export function IntakeView() {
+  const ME = useMeName();
   const { locale } = useI18n();
   const t = opsIntake(locale);
   const c = opsCommon(locale);
@@ -659,6 +662,7 @@ type QLProps = {
 };
 
 function QuickLookBody({ x, onTriage, onHold, claimPending }: QLProps) {
+  const ME = useMeName();
   const { locale } = useI18n();
   const t = opsIntake(locale);
   const c = opsCommon(locale);

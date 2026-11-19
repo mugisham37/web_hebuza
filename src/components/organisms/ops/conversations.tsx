@@ -1,4 +1,5 @@
 "use client";
+import { useSession } from "@/lib/auth/session";
 // U15 Conversations console (board 15): CV1 3-pane inbox, CV2 templates, CV3 staff DM + @mentions, CV4 transcript export, PV1 phone.
 // URL: ?f=<filter>&c=<conversation id>&lane=client|internal&q=. Phones show the list, then the thread full-width.
 import { useState, type ReactNode } from "react";
@@ -63,7 +64,8 @@ const FILTERS: ConvFilter[] = [
   "handoff",
   "dms",
 ];
-const ME = "sm-diane"; // shortcut: the signed-in manager id from ops-world; read it from the session once staff ids are real.
+/** The signed-in staff member's id (claims and message authorship are by id). */
+const useMeId = () => useSession().user?.id ?? "";
 const useC = () => {
   const { locale } = useI18n();
   return { c: opsConversations(locale), locale };
@@ -113,6 +115,7 @@ export function SlaBadge({
 }
 
 export function ConversationsConsole() {
+  const ME = useMeId();
   const { c, locale } = useC();
   const p = useUrlParams();
   const f = (
@@ -431,6 +434,7 @@ function Thread({
   now: number;
   standalone?: boolean;
 }) {
+  const ME = useMeId();
   const { c, locale } = useC();
   const toast = useToast();
   const p = useUrlParams();
@@ -723,6 +727,7 @@ function Bubble({
   c: ConversationsCopy;
   locale: Parameters<typeof formatDate>[1];
 }) {
+  const ME = useMeId();
   const time = formatDate(m.created_at, locale, { timeStyle: "short" });
   if (m.is_system)
     return (
