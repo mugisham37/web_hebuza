@@ -131,6 +131,7 @@ const en = {
     title: "Request",
     titleHi: "submitted!",
     copy: "Copy reference",
+    group: "Group reference {code}: one reference for all these requests.",
     copied: "Copied",
     next: "What happens next",
     nextSteps: [
@@ -390,6 +391,7 @@ const rw: FlowCopy = {
     title: "Ubusabe",
     titleHi: "bwoherejwe!",
     copy: "Koporora nimero",
+    group: "Nimero y'itsinda {code}: imwe ku busabe bwose.",
     copied: "Byakoporowe",
     next: "Ibikurikira",
     nextSteps: [
@@ -649,6 +651,7 @@ const fr: FlowCopy = {
     title: "Demande",
     titleHi: "envoyée !",
     copy: "Copier la référence",
+    group: "Référence de groupe {code} : une seule pour toutes ces demandes.",
     copied: "Copié",
     next: "Et ensuite",
     nextSteps: [

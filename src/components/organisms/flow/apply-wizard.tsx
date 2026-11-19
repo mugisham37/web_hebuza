@@ -210,6 +210,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [done, setDone] = useState<{
     results: Submitted[];
+    group?: string;
     later: string[];
     uploadFailed: boolean;
   } | null>(null);
@@ -254,6 +255,14 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     else void submit();
   }
 
+  const person = () => ({
+    ...draft.person,
+    phone: toE164(draft.person.phone) ?? draft.person.phone,
+    nationalId: draft.person.nationalId.replace(/\s/g, ""),
+    consent: true,
+    language: locale,
+  });
+
   async function submitOne(d: Draft, slug: string) {
     return unwrap<Submitted>(
       api.POST("/api/applications/submit", {
@@ -263,13 +272,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
           tier: d.tier || "standard",
           is_urgent: d.tier === "urgent",
           idempotency_key: d.idem, // same key across retries → the server replays instead of double-creating (F-REQ-02)
-          personal_info: {
-            ...draft.person,
-            phone: toE164(draft.person.phone) ?? draft.person.phone,
-            nationalId: draft.person.nationalId.replace(/\s/g, ""),
-            consent: true,
-            language: locale,
-          },
+          personal_info: person(),
           service_data: d.data,
         },
       }),
@@ -281,15 +284,34 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
     setPending(true);
     setServerError(null);
     try {
-      const main = await submitOne(draft, svc.slug);
-      const rest: Submitted[] = [];
-      for (const b of basket) {
-        rest.push(await submitOne(b.draft, b.slug));
-        setBasket((all) => {
-          const left = all.filter((x) => x.slug !== b.slug);
-          write(BASKET, left.length ? left : null);
-          return left;
-        });
+      let main: Submitted;
+      let rest: Submitted[] = [];
+      let group: string | undefined;
+      if (basket.length && user) {
+        // REQ-02: signed-in basket = one request group, one transaction.
+        const g = await unwrap(api.POST("/api/applications/submit-basket", {
+          headers: { "Idempotency-Key": draft.idem },
+          body: {
+            idempotency_key: draft.idem,
+            personal_info: person(),
+            items: [{ d: draft, slug: svc.slug }, ...basket.map((b) => ({ d: b.draft, slug: b.slug }))].map(({ d, slug }) => ({
+              service_slug: slug, tier: d.tier || "standard", is_urgent: d.tier === "urgent", service_data: d.data,
+            })),
+          },
+        }));
+        [main, ...rest] = g.items;
+        group = g.group_code;
+        setBasket([]);
+      } else {
+        main = await submitOne(draft, svc.slug);
+        for (const b of basket) {
+          rest.push(await submitOne(b.draft, b.slug));
+          setBasket((all) => {
+            const left = all.filter((x) => x.slug !== b.slug);
+            write(BASKET, left.length ? left : null);
+            return left;
+          });
+        }
       }
       let uploadFailed = false as boolean;
       for (const [k, d] of Object.entries(picked)) {
@@ -304,6 +326,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
       write(BASKET, null);
       setDone({
         results: [main, ...rest],
+        group,
         later: svc.requirements.filter((r) => draft.docs[reqKey(r)] === LATER),
         uploadFailed,
       });
@@ -368,6 +391,7 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
         className="mx-auto grid max-w-xl gap-8 outline-none"
       >
         <ResultPanel icon="check" title={`${c.done.title} ${c.done.titleHi}`}>
+          {done.group && <p className="text-small text-fg-muted">{fill(c.done.group, { code: done.group })}</p>}
           <ul className="grid w-full gap-2">
             {done.results.map((r) => (
               <li
