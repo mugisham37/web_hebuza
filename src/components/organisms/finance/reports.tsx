@@ -479,7 +479,7 @@ export function ReportTargets() {
         <label className="grid gap-1 text-small font-medium">{k.metric}
           <Select value={m} onChange={(e) => setMetric(e.target.value)} disabled={!metrics.length}>{metrics.map((x) => <option key={x} value={x}>{c.cols[x] ?? x}</option>)}</Select>
         </label>
-        <label className="grid gap-1 text-small font-medium">{k.monthly}
+        <label className="grid gap-1 text-small font-medium">{k.monthlyTarget}
           <Input inputMode="numeric" value={monthly} onChange={(e) => setMonthly(e.target.value.replace(/\D/g, ""))} />
         </label>
         <label className="grid gap-1 text-small font-medium">{k.direction}
@@ -493,7 +493,7 @@ export function ReportTargets() {
         : (
           <div role="region" aria-label={k.targetsTitle} tabIndex={0} className="overflow-x-auto border border-border">
             <table className="w-full min-w-[32rem] text-small">
-              <thead className="bg-ink-100 text-eyebrow text-fg-subtle"><tr><th className="p-3 text-left">{k.report}</th><th className="p-3 text-left">{k.metric}</th><th className="p-3 text-right">{k.monthly}</th><th className="p-3 text-left">{k.direction}</th><th className="p-3"><span className="sr-only">{k.remove}</span></th></tr></thead>
+              <thead className="bg-ink-100 text-eyebrow text-fg-subtle"><tr><th className="p-3 text-left">{k.report}</th><th className="p-3 text-left">{k.metric}</th><th className="p-3 text-right">{k.monthlyTarget}</th><th className="p-3 text-left">{k.direction}</th><th className="p-3"><span className="sr-only">{k.remove}</span></th></tr></thead>
               <tbody>
                 {list.data.items.map((t) => (
                   <tr key={t.id} className="border-t border-border">

@@ -19,7 +19,7 @@ const en = {
   },
   backups: {
     tiers: "Schedule", last: "Last success", size: "Size", encryption: "Encryption", offsite: "Off-site copy", history: "History", when: "When", tier: "Tier",
-    result: "Result", ok: "OK", failed: "Failed", tierNames: { hourly: "Hourly", daily: "Daily", monthly: "Monthly", yearly: "Yearly" }, keep: "kept {k}",
+    result: "Result", ok: "OK", failed: "Failed", tierNames: { hourly: "Hourly", daily: "Daily", weekly: "Weekly", monthly: "Monthly", yearly: "Yearly" }, keep: "kept {k}",
     drills: "Restore drills", drillType: { staging: "Staging", full_dr: "Full DR" }, rto: "RTO {m} min (target {t})", report: "Signed report by {who}",
     gateOpen: "Launch gate: passed drill on record", gateClosed: "Launch gate: no passed restore drill yet", noDrills: "No restore drills yet",
     noDrillsBody: "Launch stays blocked until one restore to staging passes (Art. 10.3).",
@@ -67,7 +67,7 @@ const fr: typeof en = {
   },
   backups: {
     tiers: "Calendrier", last: "Dernier succès", size: "Taille", encryption: "Chiffrement", offsite: "Copie hors site", history: "Historique", when: "Quand", tier: "Niveau",
-    result: "Résultat", ok: "OK", failed: "Échec", tierNames: { hourly: "Horaire", daily: "Quotidienne", monthly: "Mensuelle", yearly: "Annuelle" }, keep: "gardée {k}",
+    result: "Résultat", ok: "OK", failed: "Échec", tierNames: { hourly: "Horaire", daily: "Quotidienne", weekly: "Hebdomadaire", monthly: "Mensuelle", yearly: "Annuelle" }, keep: "gardée {k}",
     drills: "Exercices de restauration", drillType: { staging: "Préproduction", full_dr: "PRA complet" }, rto: "RTO {m} min (cible {t})", report: "Rapport signé par {who}",
     gateOpen: "Porte de lancement : exercice réussi enregistré", gateClosed: "Porte de lancement : aucun exercice réussi", noDrills: "Aucun exercice",
     noDrillsBody: "Le lancement reste bloqué tant qu'une restauration en préproduction n'a pas réussi (Art. 10.3).",
@@ -115,7 +115,7 @@ const rw: typeof en = {
   },
   backups: {
     tiers: "Gahunda", last: "Ubuheruka bwagenze neza", size: "Ingano", encryption: "Ibanga", offsite: "Kopi iri ahandi", history: "Amateka", when: "Igihe", tier: "Urwego",
-    result: "Igisubizo", ok: "Byagenze neza", failed: "Byanze", tierNames: { hourly: "Buri saha", daily: "Buri munsi", monthly: "Buri kwezi", yearly: "Buri mwaka" }, keep: "bibikwa {k}",
+    result: "Igisubizo", ok: "Byagenze neza", failed: "Byanze", tierNames: { hourly: "Buri saha", daily: "Buri munsi", weekly: "Buri cyumweru", monthly: "Buri kwezi", yearly: "Buri mwaka" }, keep: "bibikwa {k}",
     drills: "Imyitozo yo kugarura", drillType: { staging: "Igerageza", full_dr: "DR yuzuye" }, rto: "RTO iminota {m} (intego {t})", report: "Raporo yasinywe na {who}",
     gateOpen: "Irembo ryo gutangira: hari imyitozo yatsinze", gateClosed: "Irembo ryo gutangira: nta myitozo yatsinze", noDrills: "Nta myitozo irakorwa",
     noDrillsBody: "Gutangira bizakomeza guhagarara kugeza kugarura muri igerageza bitsinze (Ing. 10.3).",

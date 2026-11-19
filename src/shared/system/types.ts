@@ -105,7 +105,7 @@ export type EventRuleVM = {
 };
 export type DeliveryVM = {
   id: string; at: Iso; event: string; channel: Channel; to: string; status: "queued" | "sent" | "delivered" | "read" | "failed" | "deferred" | "capped" | "skipped" | "suppressed" | "duplicate";
-  fallbackTo?: Channel; costRwf: number; templateKey: string; lang: Locale;
+  fallbackTo?: Channel; fallbackFrom?: Channel; attempts?: number; error?: string; costRwf: number; templateKey: string; lang: Locale;
 };
 export type BudgetVM = { channel: "whatsapp" | "sms" | "ai" | "email"; budget: number; spent: number; marketingSpent: number };
 
@@ -152,7 +152,7 @@ export type IncidentVM = {
   version: number;
 };
 export type ComponentHealthVM = { key: string; name: string; health: Health; detail: string; checkedAt: Iso };
-export type BackupVM = { id: string; tier: "hourly" | "daily" | "monthly" | "yearly"; at: Iso; sizeMb: number; ok: boolean; encrypted: boolean; location: string };
+export type BackupVM = { id: string; tier: "hourly" | "daily" | "weekly" | "monthly" | "yearly"; at: Iso; sizeMb: number; ok: boolean; encrypted: boolean; location: string };
 export type DrillVM = { id: string; at: Iso; type: "staging" | "full_dr"; rtoMinutes: number; ok: boolean; reportBy: string };
 export type PostureVM = { id: string; label: string; status: "pass" | "warn" | "fail"; detail: string; source: string };
 export type DependencyVM = { id: string; pkg: string; from: string; to: string; type: "security" | "minor" | "major"; mergedAt: Iso; cves: string[] };

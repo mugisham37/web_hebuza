@@ -48,6 +48,7 @@ export const validWindow = (v: unknown) => {
   return Date.parse(w.end) > Date.parse(w.start) ? null : "end_before_start";
 };
 const none = () => null;
+const validHour = (v: unknown) => (Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 23 ? null : "range");
 const bool = (v: unknown) => (typeof v === "boolean" ? null : "type");
 const oneOf = (opts: readonly string[]) => (v: unknown) => (opts.includes(String(v)) ? null : "type");
 
@@ -79,6 +80,13 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "security.step_up_method", group: "security", type: "enum", options: ["webauthn_preferred", "totp"], default: "webauthn_preferred", enforcedBy: "Step-up dialog (useStepUp)", editableBy: SYS, requiresApproval: true, validate: oneOf(["webauthn_preferred", "totp"]) },
   { key: "security.password_policy", group: "security", type: "readonly", default: "staff ≥ 12 · breached-list check · no rotation", enforcedBy: "API password service (F-IAM-16)", editableBy: [], requiresApproval: false, validate: none },
   { key: "security.unusual_login_alerts", group: "security", type: "bool", default: true, enforcedBy: "API login risk check → auth.unusual_login", editableBy: SYS, requiresApproval: true, validate: bool },
+  // F-SET-05 working calendar: business hours (Mon–Fri, Africa/Kigali) for SLA clocks (support first response, offer TTL).
+  { key: "sla.business_start_hour", group: "general", type: "int", unit: "h", default: POLICY.businessHours[0], enforcedBy: "Support SLA + escalation (chat), offer TTL", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
+  { key: "sla.business_end_hour", group: "general", type: "int", unit: "h", default: POLICY.businessHours[1], enforcedBy: "Support SLA + escalation (chat), offer TTL", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
+  // F-SET-09 channel configuration: platform-wide quiet hours for users who set none (security/critical still send).
+  { key: "notifications.global_quiet", group: "general", type: "bool", default: false, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: bool },
+  { key: "notifications.quiet_start_hour", group: "general", type: "int", unit: "h", default: 21, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
+  { key: "notifications.quiet_end_hour", group: "general", type: "int", unit: "h", default: 7, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
   // Maintenance (F-SET-11)
   { key: "maintenance.on", group: "maintenance", type: "bool", default: false, enforcedBy: "API write guard (clients read-only) + site banner", editableBy: SYS_EXE, requiresApproval: false, validate: bool },
   { key: "maintenance.message", group: "maintenance", type: "i18n", default: { rw: "", en: "", fr: "" }, enforcedBy: "Public + client layout banner", editableBy: SYS_EXE, requiresApproval: false, validate: validI18n() },
@@ -105,3 +113,17 @@ export const dropDead = <T extends Record<string, unknown>>(o: T) =>
 /** F-SET-13 export: values only, never secrets. */
 export const exportSettings = (values: Record<string, unknown>) =>
   JSON.stringify(Object.fromEntries(Object.entries(values).filter(([k]) => settingDef(k) && !/secret|token|password/i.test(k))), null, 2);
+
+/** F-SET-13: parse an exported settings file; unknown, secret-looking and read-only keys are dropped (reported). */
+export function parseSettingsImport(json: string): { values: Record<string, unknown>; skipped: string[] } {
+  const raw = JSON.parse(json) as Record<string, unknown>;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("not an object");
+  const values: Record<string, unknown> = {}, skipped: string[] = [];
+  for (const [k, v] of Object.entries(raw)) {
+    const d = settingDef(k);
+    const value = v && typeof v === "object" && "value" in (v as object) ? (v as { value: unknown }).value : v; // export holds SettingValueVM rows
+    if (!d || d.type === "readonly" || /secret|token|password/i.test(k)) skipped.push(k);
+    else values[k] = value;
+  }
+  return { values, skipped };
+}
