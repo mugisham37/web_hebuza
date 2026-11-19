@@ -5,7 +5,7 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useI18n, localHref } from "@/lib/i18n/provider";
-import { api, ApiError } from "@/lib/api/client";
+import { api, ApiError, unwrap } from "@/lib/api/client";
 import { errorCopy } from "@/lib/api/error-copy";
 import { bk, idem, useHandoffs } from "@/lib/booking/api";
 import { formatDay, formatTime } from "@/shared/booking/rules";
@@ -53,6 +53,7 @@ import { Icon } from "@/components/atoms/icon";
 import { Avatar } from "@/components/atoms/misc";
 import { Skeleton } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
+import { complaintCopy } from "@/content/pages/chat-complaint";
 
 const FILTERS: ConvFilter[] = [
   "unassigned",
@@ -542,6 +543,7 @@ function Thread({
             <span className="max-sm:sr-only">{c.exportTranscript}</span>
           </Button>
         )}
+        {!dm && <ComplaintButton id={id} />}
       </header>
 
       <div
@@ -1014,6 +1016,41 @@ function TranscriptExport({
         </div>
       </Dialog>
       {dialog}
+    </>
+  );
+}
+
+/** F-MSG-14: turn this case conversation into a complaint ticket (FBK) for the client. */
+function ComplaintButton({ id }: { id: string }) {
+  const { locale } = useI18n();
+  const k = complaintCopy(locale);
+  const toast = useToast();
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async () => {
+    setBusy(true);
+    try {
+      const { ticket: ref } = await unwrap<{ ticket: string }>(api.POST("/api/chat/conversations/{id}/complaint", { params: { path: { id } }, body: { summary: text.trim() } }));
+      toast({ title: k.done.replace("{ref}", ref), tone: "success" });
+      setOpen(false);
+      setText("");
+    } catch (e) {
+      toast({ title: errorCopy(e, locale), tone: "danger" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
+        <Icon name="megaphone" size={14} aria-hidden />
+        <span className="max-sm:sr-only">{k.flag}</span>
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title={k.title}
+        footer={<div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setOpen(false)}>{k.cancel}</Button><Button loading={busy} disabled={text.trim().length < 10} onClick={() => void submit()}>{k.create}</Button></div>}>
+        <Field label={k.summary} hint={k.hint}>{(f) => <Textarea id={f.id} aria-describedby={f.describedBy} rows={4} value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} />}</Field>
+      </Dialog>
     </>
   );
 }
