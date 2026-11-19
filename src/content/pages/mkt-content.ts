@@ -2,6 +2,8 @@
 import type { Locale } from "@/shared/i18n/config";
 
 const en = {
+  regLink: { calendar: "Linked compliance-calendar rules", campaign: "Draft campaign created", none: "No calendar rule for this institution yet." },
+  cred: { title: "Credential", issuer: "Issued by", doc: "Private document id (not published)", verify: "Mark verified", unverify: "Withdraw verification", saved: "Credential saved", by: "Verified by {by} on {at}", sm: "Only a service manager can verify." },
   titles: { content: "Pages & blocks", landing: "Landing pages", knowledge: "Knowledge centre", updates: "Regulatory updates", faqs: "FAQs", media: "Media library", seo: "SEO & tracking", editor: "Editor" },
   subs: {
     content: "Pages, homepage blocks and team profiles. Facts like prices come from the catalogue.",
@@ -103,6 +105,8 @@ type Copy = typeof en;
 
 const fr: Copy = {
   ...en,
+  regLink: { calendar: "Règles du calendrier de conformité liées", campaign: "Brouillon de campagne créé", none: "Aucune règle de calendrier pour cette institution." },
+  cred: { title: "Qualification", issuer: "Délivrée par", doc: "Id du document privé (non publié)", verify: "Marquer vérifiée", unverify: "Retirer la vérification", saved: "Qualification enregistrée", by: "Vérifiée par {by} le {at}", sm: "Seul un responsable de service peut vérifier." },
   titles: { content: "Pages et blocs", landing: "Pages d'atterrissage", knowledge: "Centre de connaissances", updates: "Actualités réglementaires", faqs: "FAQ", media: "Médiathèque", seo: "SEO et suivi", editor: "Éditeur" },
   subs: {
     content: "Pages, blocs d'accueil et profils d'équipe. Les prix viennent du catalogue.",
@@ -123,6 +127,8 @@ const fr: Copy = {
 };
 const rw: Copy = {
   ...en,
+  regLink: { calendar: "Amategeko y'ingengabihe ahujwe", campaign: "Umushinga wa kampanye wakozwe", none: "Nta tegeko ry'ingengabihe kuri uru rwego." },
+  cred: { title: "Impamyabushobozi", issuer: "Yatanzwe na", doc: "Id y'inyandiko yihariye (ntitangazwa)", verify: "Emeza ko yagenzuwe", unverify: "Kuraho kwemeza", saved: "Impamyabushobozi yabitswe", by: "Yemejwe na {by} ku wa {at}", sm: "Umuyobozi wa serivisi wenyine ni we wemeza." },
   titles: { content: "Amapaji n'ibice", landing: "Amapaji y'ubukangurambaga", knowledge: "Ikigo cy'ubumenyi", updates: "Amavugurura y'amategeko", faqs: "Ibibazo bikunze kubazwa", media: "Amafoto n'inyandiko", seo: "SEO n'ikurikirana", editor: "Muhinduzi" },
   subs: {
     content: "Amapaji, ibice by'ahabanza n'abakozi. Ibiciro biva mu rutonde rwa serivisi.",

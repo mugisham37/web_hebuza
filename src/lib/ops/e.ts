@@ -324,13 +324,25 @@ export const useService = (slug: string) =>
       unwrap<ServiceDetail>(api.GET("/api/admin/services/{slug}", { params: { path: { slug } } })),
   });
 /** F-CAT-05/07/08/09 public facts on the service record (PATCH merges; the API revalidates the public page). */
-export type ServiceFactsIn = Pick<ServiceDetail, "engagement_type" | "eligibility" | "deliverables" | "turnaround_days_min" | "turnaround_days_max" | "delivery_mode" | "seo" | "related_slugs" | "fee_explainer" | "markets">;
+export type ServiceFactsIn = Pick<ServiceDetail, "engagement_type" | "eligibility" | "deliverables" | "turnaround_days_min" | "turnaround_days_max" | "delivery_mode" | "seo" | "related_slugs" | "fee_explainer" | "markets" | "locale_slugs" | "revenue_agent_bps">;
 export function useSaveServiceFacts(slug: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (b: Partial<ServiceFactsIn>) =>
       unwrap<ServiceDetail>(api.PATCH("/api/admin/services/{slug}", { params: { path: { slug } }, body: b as never })), // cast: body enums are narrower than the response strings
     onSuccess: (d) => qc.setQueryData(eKeys.service(slug), d),
+  });
+}
+/** F-CAT-10 pending/approved price changes for one service, and the finance decision. */
+export type PriceChange = S["PriceChangeResponse"];
+export const usePriceChanges = (slug: string) =>
+  useQuery({ queryKey: [...eKeys.service(slug), "price-changes"], queryFn: () => unwrap<{ items: PriceChange[] }>(api.GET("/api/admin/services/{slug}/price-changes", { params: { path: { slug } } })) });
+export function useDecidePrice(slug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (v: { id: string; approve: boolean; reason?: string }) =>
+      unwrap<PriceChange>(api.POST("/api/admin/services/{slug}/price-changes/{id}/decision", { params: { path: { slug, id: v.id } }, body: { approve: v.approve, reason: v.reason } })),
+    onSettled: () => qc.invalidateQueries({ queryKey: eKeys.service(slug) }),
   });
 }
 export const useDraft = (slug: string) =>

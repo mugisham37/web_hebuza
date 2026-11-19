@@ -16,7 +16,7 @@ const setLines = (xs: L3[], l: Lang, text: string) =>
   text.split("\n").map((t, i) => ({ ...(xs[i] ?? { rw: "", en: "", fr: "" }), [l]: t })).filter((x) => x.rw.trim() || x.en.trim() || x.fr.trim());
 const num = (v: string) => (v.trim() === "" ? null : Math.max(0, Math.min(365, Math.round(Number(v)) || 0)));
 
-export function ServiceFacts({ slug, service, lang, c }: { slug: string; service: ServiceDetail; lang: Lang; c: CatalogueCopy["facts"] }) {
+export function ServiceFacts({ slug, service, lang, c, p }: { slug: string; service: ServiceDetail; lang: Lang; c: CatalogueCopy["facts"]; p: CatalogueCopy["prices"] }) {
   const toast = useToast();
   const save = useSaveServiceFacts(slug);
   const [f, setF] = useState(() => ({
@@ -30,7 +30,10 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
     related: (service.related_slugs ?? []).join(", "),
     fee: (service.fee_explainer ?? { rw: "", en: "", fr: "" }) as L3,
     markets: (service.markets ?? ["RW"]).join(", "),
+    slugs: (service.locale_slugs ?? {}) as Partial<Record<Lang, string>>,
+    revenue: service.revenue_agent_bps == null ? "" : String(service.revenue_agent_bps / 100),
   }));
+  const revenueBps = f.revenue.trim() === "" ? null : Math.round(Math.min(100, Math.max(0, Number(f.revenue) || 0)) * 100);
   const seo = f.seo[lang] ?? {};
   const setSeo = (k: "title" | "description" | "og_image", v: string) => setF((x) => ({ ...x, seo: { ...x.seo, [lang]: { ...x.seo[lang], [k]: v } } }));
   const rangeBad = f.turnaround_days_min != null && f.turnaround_days_max != null && f.turnaround_days_min > f.turnaround_days_max;
@@ -42,6 +45,8 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
         eligibility: f.eligibility, deliverables: f.deliverables, seo: f.seo,
         related_slugs: f.related.split(",").map((x) => x.trim()).filter(Boolean),
         fee_explainer: f.fee.rw.trim() || f.fee.en.trim() || f.fee.fr.trim() ? f.fee : null,
+        locale_slugs: Object.fromEntries(Object.entries(f.slugs).filter(([, v]) => v?.trim()).map(([k, v]) => [k, v!.trim()])),
+        ...(revenueBps !== (service.revenue_agent_bps ?? null) && { revenue_agent_bps: revenueBps }), // finance/SM only; unchanged → not sent
         markets: f.markets.split(",").map((x) => x.trim().toUpperCase()).filter((x) => /^[A-Z]{2}$/.test(x)),
       },
       { onSuccess: () => toast({ title: c.saved, tone: "success" }), onError: () => toast({ title: c.failed, tone: "danger" }) },
@@ -75,6 +80,8 @@ export function ServiceFacts({ slug, service, lang, c }: { slug: string; service
       <Field label={`${c.seoDesc} (${lang})`} hint={`${(seo.description ?? "").length}/170`}>{(a) => <Textarea id={a.id} aria-describedby={a.describedBy} rows={2} maxLength={170} value={seo.description ?? ""} onChange={(e) => setSeo("description", e.target.value)} />}</Field>
       <Field label={`${c.feeExplainer} (${lang})`}>{(a) => <Textarea id={a.id} rows={2} maxLength={2000} value={f.fee[lang]} onChange={(e) => setF((x) => ({ ...x, fee: { ...x.fee, [lang]: e.target.value } }))} />}</Field>
       <Field label={c.markets}>{(a) => <Input id={a.id} value={f.markets} onChange={(e) => setF((x) => ({ ...x, markets: e.target.value }))} />}</Field>
+      <Field label={`${p.slugs} (${lang})`} hint={`/services/${f.slugs[lang] || slug}`}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} pattern="[a-z0-9]+(-[a-z0-9]+)*" value={f.slugs[lang] ?? ""} onChange={(e) => setF((x) => ({ ...x, slugs: { ...x.slugs, [lang]: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-") } }))} />}</Field>
+      <Field label={p.revenue} hint={p.revenueHint}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="number" min={0} max={100} step={0.5} inputMode="decimal" value={f.revenue} onChange={(e) => setF((x) => ({ ...x, revenue: e.target.value }))} />}</Field>
       <Field label={c.related}>{(a) => <Input id={a.id} value={f.related} onChange={(e) => setF((x) => ({ ...x, related: e.target.value }))} />}</Field>
       <div><Button type="button" onClick={submit} disabled={save.isPending || rangeBad}>{c.save}</Button></div>
     </section>

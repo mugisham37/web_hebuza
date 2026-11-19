@@ -13,7 +13,6 @@ import { Parallax, Reveal } from "@/components/atoms/motion";
 import { type BlockShape, type BlockText, type CmsVariant, type RichDoc, type RichInline } from "@/shared/marketing/types";
 import { safeHref, youtubeId } from "@/shared/marketing/cms/rules";
 import { type LcCopy } from "@/content/pages/lc";
-import { TEAM } from "@/content/pages/lb";
 
 /** Eyebrow + h2 (+ optional highlighted word) + lead + aside action. */
 export function SectionHead({ tag, title, lead, aside, tone = "light", center, className, tagVariant = "neutral" }: {
@@ -417,8 +416,8 @@ export function MapArt({
 }
 
 /** Tilted, framed team portraits (08 v2). Renders only consented profiles (F-WRK-04); returns null when there are none. */
-export function TeamGrid({ locale }: { locale: Locale }) {
-  const team = TEAM.filter((m) => m.consented);
+/** Team profiles from the CMS (getTeam). F-CMS-12: a service-manager-verified credential shows as a badge. */
+export function TeamGrid({ locale, team, verifiedLabel }: { locale: Locale; team: { slug: string; name: string; role: Record<Locale, string>; photo: string; credential: { title: string; issuer: string } | null }[]; verifiedLabel: string }) {
   if (!team.length) return null;
   const tilt = ["-rotate-2", "rotate-1", "-rotate-1", "rotate-2"];
   return (
@@ -448,6 +447,7 @@ export function TeamGrid({ locale }: { locale: Locale }) {
           <div className="px-3 py-3 text-white">
             <p className="text-label">{m.name}</p>
             <p className="text-small text-white/65">{m.role[locale]}</p>
+            {m.credential && <p className="mt-2 inline-flex items-center gap-1.5 bg-success-bg px-2 py-0.5 text-eyebrow text-success" title={`${m.credential.title} · ${m.credential.issuer}`}>✓ {verifiedLabel} · {m.credential.title}</p>}
           </div>
         </li>
       ))}

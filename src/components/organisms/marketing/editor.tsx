@@ -14,6 +14,7 @@ import { useMktShell, useStaff } from "@/lib/marketing/api";
 import {
   lockEntry, patchEntry, previewToken, putVariant, unlockEntry, useComments, useEntry, useLandingPerf, useMedia, useVersions, useWorkflow,
   type EntryDetail,
+  useVerifyCredential,
 } from "@/lib/marketing/content";
 import type { BlockShape, BlockText, BlockType, CmsVariant, Locale, PublishBlocker, RichDoc, SeoFields } from "@/shared/marketing/types";
 import { LOCALES } from "@/shared/marketing/types";
@@ -491,6 +492,7 @@ function BlockSettings({ b, t = {}, canEdit, media, onText, onProps, onSlash, on
 
 function PageSettings({ e, v, canEdit, onV, onE }: { e: EntryDetail; v: CmsVariant; canEdit: boolean; onV: (p: Partial<CmsVariant>) => void; onE: (p: Partial<EntryDetail>) => void }) {
   const c = useCC();
+  const { locale } = useI18n();
   const dis = !canEdit;
   const reg = e.meta.regulatory;
   const land = e.meta.landing;
@@ -517,6 +519,11 @@ function PageSettings({ e, v, canEdit, onV, onE }: { e: EntryDetail; v: CmsVaria
           <Lbl label={c.reg.urgency}><Select disabled={dis} value={reg?.urgency ?? ""} onChange={(x) => setReg({ urgency: (x.target.value || undefined) as "high" })}><option value="">—</option><option value="high">{c.reg.high}</option><option value="medium">{c.reg.medium}</option><option value="low">{c.reg.low}</option></Select></Lbl>
           <Lbl label={c.reg.services}><Input disabled={dis} value={e.serviceSlugs.join(", ")} onChange={(x) => onE({ serviceSlugs: x.target.value.split(",").map((y) => y.trim()).filter(Boolean) })} /></Lbl>
           <NotifyCard entryId={e.id} published={v.status === "published"} />
+          {v.status === "published" && <div className="grid gap-1 text-small" role="status">
+            <p className="text-label">{c.regLink.calendar}</p>
+            <p className="text-fg-muted">{reg?.calendarRules?.length ? reg.calendarRules.join(", ") : c.regLink.none}</p>
+            {reg?.campaignId && <Link href={localHref(locale, `/marketing/campaigns/${reg.campaignId}`)} className="text-link underline">{c.regLink.campaign} · {reg.campaignId}</Link>}
+          </div>}
         </>}
         {e.type === "landing_page" && <>
           <Lbl label={c.landing.campaignTag}><Input disabled={dis} value={land?.campaignTag ?? ""} onChange={(x) => setLand({ campaignTag: x.target.value })} /></Lbl>
@@ -530,9 +537,34 @@ function PageSettings({ e, v, canEdit, onV, onE }: { e: EntryDetail; v: CmsVaria
           </fieldset>
           <UtmBuilder path={publicPath(e.type, v.language, v.slug) ?? ""} slug={v.slug} />
         </>}
+        {e.type === "team_member" && <CredentialCard entryId={e.id} cred={e.meta.team?.credential} verified={!!e.meta.team?.verified} />}
         {(e.type === "guide" || e.type === "article") && <Lbl label={c.cols.category}><Input disabled={dis} value={e.meta.guide?.category ?? ""} onChange={(x) => onE({ meta: { ...e.meta, guide: { readMinutes: e.meta.guide?.readMinutes ?? 5, ...e.meta.guide, category: x.target.value } } })} /></Lbl>}
       </div>
     </Panel>
+  );
+}
+
+function CredentialCard({ entryId, cred, verified }: { entryId: string; cred?: { title: string; issuer: string; documentId?: string; verifiedBy?: string; verifiedAt?: string }; verified: boolean }) {
+  const c = useCC();
+  const toast = useToast();
+  const save = useVerifyCredential(entryId);
+  const [f, setF] = useState({ title: cred?.title ?? "", issuer: cred?.issuer ?? "", documentId: cred?.documentId ?? "" });
+  const send = (ok: boolean) => save.mutate({ verified: ok, title: f.title, issuer: f.issuer, documentId: f.documentId || undefined }, {
+    onSuccess: () => toast({ tone: "success", title: c.cred.saved }),
+    onError: () => toast({ tone: "danger", title: c.cred.sm }),
+  });
+  return (
+    <fieldset className="grid gap-2 border border-border p-3"><legend className="px-1 text-label">{c.cred.title}</legend>
+      <Lbl label={c.cred.title}><Input value={f.title} maxLength={160} onChange={(x) => setF({ ...f, title: x.target.value })} /></Lbl>
+      <Lbl label={c.cred.issuer}><Input value={f.issuer} maxLength={160} onChange={(x) => setF({ ...f, issuer: x.target.value })} /></Lbl>
+      <Lbl label={c.cred.doc}><Input value={f.documentId} maxLength={64} onChange={(x) => setF({ ...f, documentId: x.target.value })} /></Lbl>
+      {verified && cred?.verifiedAt && <p className="text-small text-success">{c.cred.by.replace("{by}", cred.verifiedBy ?? "").replace("{at}", cred.verifiedAt.slice(0, 10))}</p>}
+      <p className="text-small text-fg-muted">{c.cred.sm}</p>
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" size="sm" disabled={save.isPending || !f.title.trim() || !f.issuer.trim()} onClick={() => send(true)}>{c.cred.verify}</Button>
+        {verified && <Button type="button" size="sm" variant="secondary" disabled={save.isPending} onClick={() => send(false)}>{c.cred.unverify}</Button>}
+      </div>
+    </fieldset>
   );
 }
 

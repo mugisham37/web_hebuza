@@ -34,11 +34,13 @@ export type SeoFields = {
 };
 export type LeadFormConfig = { email: boolean; servicePreselect?: string; consent: ("email" | "whatsapp" | "sms")[]; thankYou: Partial<Record<Locale, string>> };
 export type TypeMeta = {
-  regulatory?: { authority: string; effectiveAt: string; sourceUrl: string; deadline?: string; affects: string[]; urgency?: "high" | "medium" | "low" };
+  regulatory?: { authority: string; effectiveAt: string; sourceUrl: string; deadline?: string; affects: string[]; urgency?: "high" | "medium" | "low"; /** F-CMS-10 compliance-calendar rule codes for this authority (set on publish). */ calendarRules?: string[]; campaignId?: string };
   landing?: { campaignId?: string; campaignTag?: string; form: LeadFormConfig; price?: number };
   guide?: { readMinutes: number; category: string; image?: string };
   faq?: { category: string };
-  team?: { role: string; photo?: string; verified: boolean; links?: string[] };
+  team?: { role: string; photo?: string; verified: boolean; links?: string[];
+    /** F-CMS-12: credential checked by a service manager against a private document (never published). */
+    credential?: { title: string; issuer: string; documentId?: string; verifiedBy?: string; verifiedAt?: string } };
 };
 export type CmsVariant = {
   language: Locale; slug: string; title: string; excerpt?: string; body: Record<string, BlockText>; seo: SeoFields;

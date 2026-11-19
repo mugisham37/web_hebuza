@@ -24,6 +24,8 @@ export default async function PublicLayout({ children, params }: LayoutProps<"/[
       <a href="#main" className="sr-only-focusable bg-secondary px-4 py-2 text-on-secondary">{t("common.skipToContent")}</a>
       <SiteHeader
         total={total}
+        links={site.nav.header.map((n) => ({ href: n.href, label: n.label[locale] ?? n.label.en ?? n.id }))}
+        mobileLinks={site.nav.mobile.map((n) => ({ href: n.href, label: n.label[locale] ?? n.label.en ?? n.id }))}
         families={families.map((f) => ({ slug: f.slug, name: f.name, icon: f.icon, count: f.count, subAreas: f.subAreas }))}
         copy={{ utility: m.utility, ribbon: m.marquee2, how: m.common.howItWorks, unsure: m.catalogue.unsure, unsureBody: m.catalogue.unsureBody, consult: m.hero.secondary, whatsapp: m.cta.whatsapp, all: m.services.all, count: `{n} ${m.services.countLabel}`, viewAll: m.catalogue.viewArea }}
       />

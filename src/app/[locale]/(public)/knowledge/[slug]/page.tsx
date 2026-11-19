@@ -270,7 +270,7 @@ export default async function GuidePage({ params }: Props) {
                 </div>
               </section>
             )}
-            <Helpful copy={k} />
+            <Helpful copy={k} entry={{ type: "guide", key: slug, locale }} />
           </div>
         </div>
 

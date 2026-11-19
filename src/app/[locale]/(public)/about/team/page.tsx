@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getI18n } from "@/lib/i18n/server";
 import { localHref } from "@/shared/i18n/config";
-import { getLB, TEAM } from "@/content/pages/lb";
+import { getLB } from "@/content/pages/lb";
+import { getTeam } from "@/lib/marketing/cms/read";
 import { getCopy } from "@/content/marketing";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
@@ -15,21 +16,23 @@ type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await getI18n(params);
+  const team = await getTeam();
   const t = getLB(locale).about.teamPage;
   // No consented profiles yet: keep the empty page out of the index.
   return pageMeta(locale, `/about/team`, {
     title: t.title,
     description: t.sub,
     
-    robots: TEAM.some((m) => m.consented) ? undefined : { index: false } });
+    robots: team.length ? undefined : { index: false } });
 }
 
 // /about/team — full team grid (08 v2 framing). Only consented profiles (F-WRK-04); empty state until then.
 export default async function TeamPage({ params }: Props) {
   const { locale } = await getI18n(params);
+  const team = await getTeam();
   const a = getLB(locale).about;
   const L = (x: string) => localHref(locale, x);
-  const has = TEAM.some((m) => m.consented);
+  const has = team.length;
   return (
     <>
       <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-10">
@@ -56,7 +59,7 @@ export default async function TeamPage({ params }: Props) {
       <section className="px-gutter pb-[var(--spacing-section-sm)]">
         <div className="container-page">
           {has ? (
-            <TeamGrid locale={locale} />
+            <TeamGrid locale={locale} team={team} verifiedLabel={getLB(locale).about.verified} />
           ) : (
             <div
               role="status"

@@ -5,7 +5,8 @@ import { localHref } from "@/shared/i18n/config";
 import { images } from "@/lib/assets";
 import { cx } from "@/shared/format";
 import { FACES } from "@/content/families";
-import { getLB, LB_FLAGS, TEAM } from "@/content/pages/lb";
+import { getLB, LB_FLAGS } from "@/content/pages/lb";
+import { getTeam } from "@/lib/marketing/cms/read";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
 import { Icon, type IconName } from "@/components/atoms/icon";
@@ -35,9 +36,10 @@ const CRED_TONE = [
 // /about — 08-about v1 (hero, credentials, office) + v3 (principles) + v2 (team) + v4 ("Work with us").
 export default async function AboutPage({ params }: Props) {
   const { locale } = await getI18n(params);
+  const team = await getTeam();
   const a = getLB(locale).about;
   const L = (x: string) => localHref(locale, x);
-  const hasTeam = TEAM.some((m) => m.consented);
+  const hasTeam = team.length;
   return (
     <>
       <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-[var(--spacing-section-sm)]">
@@ -145,7 +147,7 @@ export default async function AboutPage({ params }: Props) {
                 {a.teamAll}
               </ButtonLink>
             </div>
-            <TeamGrid locale={locale} />
+            <TeamGrid locale={locale} team={team} verifiedLabel={getLB(locale).about.verified} />
           </div>
         </section>
       )}

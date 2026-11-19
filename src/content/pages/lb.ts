@@ -164,6 +164,7 @@ const en = {
     teamTitle: "A dedicated team, here for you.",
     teamSub: "Skilled professionals, ready to guide you at every step.",
     teamAll: "Meet the team",
+    verified: "Verified",
     teamEmpty: "Team profiles are coming soon.",
     teamEmptyBody: "We only publish profiles our people have agreed to share.",
     credTag: "Our credentials",
@@ -647,6 +648,7 @@ const fr: LBCopy = {
     teamTitle: "Une équipe dédiée, à votre service.",
     teamSub: "Des professionnels qualifiés pour vous guider à chaque étape.",
     teamAll: "Voir l'équipe",
+    verified: "Vérifié",
     teamEmpty: "Les profils de l'équipe arrivent bientôt.",
     teamEmptyBody:
       "Nous ne publions que les profils que nos collaborateurs ont accepté de partager.",
@@ -1132,6 +1134,7 @@ const rw: LBCopy = {
     teamTitle: "Itsinda ryiyemeje kugufasha.",
     teamSub: "Abanyamwuga b'inzobere biteguye kukuyobora muri buri ntambwe.",
     teamAll: "Menya itsinda",
+    verified: "Byemejwe",
     teamEmpty: "Imyirondoro y'itsinda iraza vuba.",
     teamEmptyBody:
       "Dushyira ahagaragara gusa imyirondoro abakozi bacu bemeye gusangiza.",

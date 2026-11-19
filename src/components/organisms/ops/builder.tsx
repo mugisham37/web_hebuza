@@ -58,6 +58,7 @@ import {
 } from "@/components/atoms/field";
 import { Icon } from "@/components/atoms/icon";
 import { ServiceFacts } from "@/components/organisms/ops/service-facts";
+import { PriceChanges } from "@/components/organisms/ops/price-changes";
 import { Skeleton, ErrorState, EmptyState } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { Kbd } from "@/components/atoms/ops";
@@ -253,7 +254,7 @@ function Editor({
     details: (
       <>
         <DetailsStep draft={draft} update={update} lang={lang} />
-        <ServiceFacts slug={slug} service={service} lang={lang} c={c.facts} />
+        <ServiceFacts slug={slug} service={service} lang={lang} c={c.facts} p={c.prices} />
       </>
     ),
     form: <FormStep draft={draft} update={update} lang={lang} />,
@@ -262,7 +263,12 @@ function Editor({
     deliverables: (
       <DeliverablesStep draft={draft} update={update} lang={lang} />
     ),
-    pricing: <PricingStep slug={slug} service={service} />,
+    pricing: (
+      <>
+        <PricingStep slug={slug} service={service} />
+        <PriceChanges slug={slug} c={c.prices} />
+      </>
+    ),
     sla: <SlaStep draft={draft} update={update} service={service} />,
     versions: (
       <VersionsStep

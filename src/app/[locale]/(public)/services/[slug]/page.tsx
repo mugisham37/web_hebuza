@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getI18n } from "@/lib/i18n/server";
 import { locales, localHref } from "@/shared/i18n/config";
 import { getFamily, getService, getServices } from "@/lib/catalogue";
@@ -26,7 +26,7 @@ const WHO_ICONS = ["user", "sparkle", "building", "users"] as const;
 export async function generateStaticParams() {
   const services = await getServices("en");
   // Cache Components needs ≥1 param; with the API down at build, one sentinel renders notFound() and real slugs render on request.
-  return locales.flatMap((locale) => (services.length ? services.map((s) => s.slug) : ["_"]).map((slug) => ({ locale, slug })));
+  return locales.flatMap((locale) => (services.length ? services.map((s) => s.slugs[locale]) : ["_"]).map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/services/[slug]">): Promise<Metadata> {
@@ -35,7 +35,9 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/services
   const s = await getService(slug, locale);
   if (!s) return {};
   const price = s.priceMode === "quote" || s.fromFee == null ? "" : ` — ${formatMoney(s.fromFee, "RWF", locale)}`;
-  const meta = pageMeta(locale, `/services/${s.slug}`, { title: s.seo.title || s.name, description: s.seo.description || `${s.summary || s.name}${price}` });
+  const meta = pageMeta(locale, `/services/${s.slugs[locale]}`, { title: s.seo.title || s.name, description: s.seo.description || `${s.summary || s.name}${price}` });
+  // F-CAT-07 hreflang: each locale points at its own slug.
+  meta.alternates = { ...meta.alternates, languages: { ...Object.fromEntries(locales.map((l) => [l, `/${l}/services/${s.slugs[l]}`])), "x-default": `/rw/services/${s.slugs.rw}` } };
   return s.seo.og_image ? { ...meta, openGraph: { ...meta.openGraph, images: [s.seo.og_image] } } : meta;
 }
 
@@ -45,6 +47,8 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const { locale } = await getI18n(params);
   const s = await getService(slug, locale);
   if (!s) notFound();
+  // shortcut: internal links use the canonical slug and hop once to the locale slug; link localized slugs directly if SEO asks.
+  if (slug !== s.slugs[locale]) permanentRedirect(localHref(locale, `/services/${s.slugs[locale]}`));
   const m = getCopy(locale);
   const d = m.detail;
   const L = (p: string) => localHref(locale, p);

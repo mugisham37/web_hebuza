@@ -56,6 +56,9 @@ export const useWorkflow = (id: string) => ({
   resolve: useCmsMutation((v: { cid: string; resolved: boolean }) => unwrap(api.PATCH("/api/admin/cms/comments/{id}", { params: { path: { id: v.cid } }, body: { resolved: v.resolved } }))),
 });
 
+/** F-CMS-12 service-manager credential check on a team profile. */
+export const useVerifyCredential = (id: string) => useCmsMutation((v: { verified: boolean; title: string; issuer: string; documentId?: string }) => unwrap(api.POST("/api/admin/cms/entries/{id}/credential", { params: { path: { id } }, body: v })));
+
 // ---- nav, settings, redirects, 404 (CMS store, lane CMS)
 export const useNav = (loc: NavLocation) => useQuery({ queryKey: mktKeys.cms("nav", loc), queryFn: () => unwrap<{ items: NavNode[] }>(api.GET("/api/admin/cms/nav/{loc}", { params: { path: { loc } } })) });
 export const useSaveNav = (loc: NavLocation) => useCmsMutation((items: NavNode[]) => unwrap(api.PUT("/api/admin/cms/nav/{loc}", { params: { path: { loc } }, body: { items } })));

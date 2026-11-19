@@ -161,7 +161,7 @@ export async function getTestimonials(placement: "home" | "service" | "landing")
   });
 }
 
-export type TeamVM = { slug: string; name: string; role: Record<Locale, string>; photo: string; consented: boolean; verified: boolean };
+export type TeamVM = { slug: string; name: string; role: Record<Locale, string>; photo: string; consented: boolean; verified: boolean; credential: { title: string; issuer: string } | null };
 /** Team profiles: public fields only (serializer allow-list, spec AC "no address/CV in HTML"). */
 export async function getTeam(): Promise<TeamVM[]> {
   return (await ofType("team_member")).flatMap((e) => {
@@ -169,7 +169,8 @@ export async function getTeam(): Promise<TeamVM[]> {
     if (!ls.length) return [];
     const v = e.variants[ls[0]]!;
     const role = Object.fromEntries(LOCALES.map((l) => [l, String((e.variants[l] ?? v).excerpt ?? e.meta.team?.role ?? "")])) as Record<Locale, string>;
-    return [{ slug: e.key, name: v.title, role, photo: e.meta.team?.photo ?? "", consented: true, verified: !!e.meta.team?.verified }];
+    return [{ slug: e.key, name: v.title, role, photo: e.meta.team?.photo ?? "", consented: true, verified: !!e.meta.team?.verified,
+      credential: e.meta.team?.verified && e.meta.team.credential ? { title: e.meta.team.credential.title, issuer: e.meta.team.credential.issuer } : null }];
   });
 }
 

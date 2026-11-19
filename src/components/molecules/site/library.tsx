@@ -226,11 +226,17 @@ export function ShareBar({
 
 export function Helpful({
   copy,
+  entry,
 }: {
   copy: { helpful: string; yes: string; no: string; thanks: string };
+  /** F-CMS-08: the CMS entry voted on (POST /api/content/feedback). */
+  entry: { type: "guide" | "regulatory_update" | "article" | "faq"; key: string; locale: "rw" | "en" | "fr" };
 }) {
-  const [vote, setVote] = useState<null | boolean>(null);
-  // shortcut: vote is not sent anywhere, wire to analytics/CMS feedback (F-CMS-04) when it exists.
+  const [vote, setVoteState] = useState<null | boolean>(null);
+  const setVote = (helpful: boolean) => {
+    setVoteState(helpful); // thanks shows at once; a failed send is not worth bothering the reader about
+    void fetch("/api/content/feedback", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...entry, helpful }) }).catch(() => null);
+  };
   return (
     <div className="flex flex-wrap items-center gap-3">
       <p className="text-label text-fg">{copy.helpful}</p>

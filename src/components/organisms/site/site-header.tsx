@@ -25,8 +25,10 @@ export function Wordmark({ href, className }: { href: string; className?: string
   );
 }
 
-export function SiteHeader({ families, total, copy }: {
-  families: NavFamily[]; total: number;
+/** F-CMS-07: CMS header/mobile nav (already resolved to the locale); empty → the built-in links. */
+export type HeaderLink = { href: string; label: string };
+export function SiteHeader({ families, total, copy, links = [], mobileLinks = [] }: {
+  families: NavFamily[]; total: number; links?: HeaderLink[]; mobileLinks?: HeaderLink[];
   copy: { utility: { tagline: string; service: string; copy: string; copied: string }; ribbon: string[]; how: string; unsure: string; unsureBody: string; consult: string; whatsapp: string; all: string; count: string; viewAll: string };
 }) {
   const { t, locale } = useI18n();
@@ -37,7 +39,11 @@ export function SiteHeader({ families, total, copy }: {
   const [sheet, setSheet] = useState(false);
   const [famOpen, setFamOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const L = (p: string) => localHref(locale, p);
+  const L = (p: string) => (p.startsWith("/") ? localHref(locale, p) : p);
+  const NAV: [Parameters<typeof t>[0], string][] = [["nav.pricing", "/pricing"], ["nav.knowledge", "/knowledge"], ["nav.about", "/about"], ["nav.contact", "/contact"]];
+  const builtIn: [string, string][] = [["/how-it-works", copy.how], ...NAV.map(([k, p]) => [p, t(k)] as [string, string])];
+  const desk: [string, string][] = links.length ? links.map((x) => [x.href, x.label]) : builtIn;
+  const mob: [string, string][] = mobileLinks.length ? mobileLinks.map((x) => [x.href, x.label]) : desk;
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 24);
@@ -52,7 +58,6 @@ export function SiteHeader({ families, total, copy }: {
   }, []);
   useEffect(() => { document.documentElement.style.overflow = sheet ? "hidden" : ""; }, [sheet]);
 
-  const NAV: [Parameters<typeof t>[0], string][] = [["nav.pricing", "/pricing"], ["nav.knowledge", "/knowledge"], ["nav.about", "/about"], ["nav.contact", "/contact"]];
   const active = (p: string) => path === p || path.startsWith(`${p}/`);
   const openMega = () => { clearTimeout(closeTimer.current); setMega(true); };
   const closeMega = () => { closeTimer.current = setTimeout(() => setMega(false), 160); };
@@ -86,9 +91,8 @@ export function SiteHeader({ families, total, copy }: {
                 {t("nav.services")}<Icon name="chevronDown" size={16} className={cx("transition-transform", mega && "rotate-180")} />
               </button>
             </li>
-            <li><Link href={L("/how-it-works")} className={cx("inline-flex h-10 items-center px-3.5 text-button hover:bg-navy-50", active("/how-it-works") && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>{copy.how}</Link></li>
-            {NAV.map(([k, p]) => (
-              <li key={p}><Link href={L(p)} className={cx("inline-flex h-10 items-center px-3.5 text-button hover:bg-navy-50", active(p) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>{t(k)}</Link></li>
+            {desk.map(([p, label]) => (
+              <li key={p}><Link href={L(p)} className={cx("inline-flex h-10 items-center px-3.5 text-button hover:bg-navy-50", active(p) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>{label}</Link></li>
             ))}
             <div id="mega" hidden={!mega} onMouseEnter={openMega}
               className="absolute top-full left-1/2 mt-3 w-[min(100%-2rem,82rem)] -translate-x-1/2 animate-reveal border border-border bg-white p-6 shadow-lg">
@@ -151,7 +155,7 @@ export function SiteHeader({ families, total, copy }: {
               </ul>
             )}
           </li>
-          {([["/how-it-works", copy.how], ...NAV.map(([k, p]) => [p, t(k)])] as [string, string][]).map(([p, label]) => (
+          {mob.map(([p, label]) => (
             <li key={p}><Link href={L(p)} className="block py-4 text-h3">{label}</Link></li>
           ))}
         </ul>
