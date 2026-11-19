@@ -119,7 +119,8 @@ export const SETTINGS: readonly SettingDef[] = [
   // language switcher (public settings) and steers notification language; URLs keep working for bookmarks.
   { key: "i18n.enabled_locales", group: "languages", type: "text", default: "rw,en,fr", enforcedBy: "Language switcher + notification language (platform public settings)", editableBy: SYS_EXE, requiresApproval: false, validate: validLocales },
   // Flags (F-SET-12): one bool per module + audience
-  ...FLAG_KEYS.map((k): SettingDef => ({ key: `flags.${k}`, group: "flags", type: "bool", default: k === "whatsapp_channel" || k === "consultation_booking", enforcedBy: `Feature gate useFlag("${k}") + API module guard`, editableBy: SYS_EXE, requiresApproval: false, validate: bool })),
+  // Flags default on for live modules (assistant, field cash, booking, WhatsApp); custom roles and card payments opt in.
+  ...FLAG_KEYS.map((k): SettingDef => ({ key: `flags.${k}`, group: "flags", type: "bool", default: k !== "custom_roles" && k !== "card_payments", enforcedBy: `Feature gate useFlag("${k}") + API module guard`, editableBy: SYS_EXE, requiresApproval: false, validate: bool })),
 ];
 
 export const settingDef = (key: string) => SETTINGS.find((d) => d.key === key);
