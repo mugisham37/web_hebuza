@@ -104,7 +104,7 @@ export type EventRuleVM = {
   channels: Record<Channel, boolean>; chain: Channel[]; quietHours: "defer" | "send";
 };
 export type DeliveryVM = {
-  id: string; at: Iso; event: string; channel: Channel; to: string; status: "sent" | "delivered" | "read" | "failed" | "deferred" | "capped";
+  id: string; at: Iso; event: string; channel: Channel; to: string; status: "queued" | "sent" | "delivered" | "read" | "failed" | "deferred" | "capped" | "skipped" | "suppressed" | "duplicate";
   fallbackTo?: Channel; costRwf: number; templateKey: string; lang: Locale;
 };
 export type BudgetVM = { channel: "whatsapp" | "sms" | "ai" | "email"; budget: number; spent: number; marketingSpent: number };

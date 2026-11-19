@@ -235,7 +235,7 @@ function Templates() {
 }
 
 // ---------------------------------------------------------------- deliveries
-const DL_TONE = { sent: "neutral", delivered: "success", read: "success", failed: "danger", deferred: "warning", capped: "warning" } as const;
+const DL_TONE = { queued: "neutral", skipped: "neutral", duplicate: "neutral", suppressed: "warning", sent: "neutral", delivered: "success", read: "success", failed: "danger", deferred: "warning", capped: "warning" } as const;
 function Deliveries() {
   const c = useC().dl;
   const s = useS();

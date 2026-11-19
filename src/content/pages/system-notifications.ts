@@ -41,7 +41,7 @@ const en = {
   },
   dl: {
     status: "Status", channel: "Channel", any: "Any", event: "Event", to: "To", cost: "Cost", lang: "Language", what: "deliveries",
-    s: { sent: "Sent", delivered: "Delivered", read: "Read", failed: "Failed", deferred: "Deferred (quiet hours)", capped: "Capped (budget)" },
+    s: { sent: "Sent", delivered: "Delivered", read: "Read", failed: "Failed", deferred: "Deferred (quiet hours)", capped: "Capped (budget)", queued: "Queued", skipped: "Skipped (preference/consent)", suppressed: "Suppressed (opt-out/bounce)", duplicate: "Duplicate" },
     fellBack: "Fell back to {c}", detail: "Delivery {id}", payload: "Provider payload (redacted)", emptyTitle: "No deliveries match", emptyBody: "Try another status or channel.",
   },
   cost: {
@@ -91,7 +91,7 @@ const fr: typeof en = {
   },
   dl: {
     status: "Statut", channel: "Canal", any: "Tous", event: "Événement", to: "Destinataire", cost: "Coût", lang: "Langue", what: "les envois",
-    s: { sent: "Envoyé", delivered: "Remis", read: "Lu", failed: "Échec", deferred: "Reporté (heures calmes)", capped: "Plafonné (budget)" },
+    s: { sent: "Envoyé", delivered: "Remis", read: "Lu", failed: "Échec", deferred: "Reporté (heures calmes)", capped: "Plafonné (budget)", queued: "En file", skipped: "Ignoré (préférence/consentement)", suppressed: "Bloqué (désinscription/rebond)", duplicate: "Doublon" },
     fellBack: "Repli sur {c}", detail: "Envoi {id}", payload: "Contenu fournisseur (masqué)", emptyTitle: "Aucun envoi ne correspond", emptyBody: "Essayez un autre statut ou canal.",
   },
   cost: {
@@ -141,7 +141,7 @@ const rw: typeof en = {
   },
   dl: {
     status: "Uko bihagaze", channel: "Umurongo", any: "Byose", event: "Igikorwa", to: "Uwohererejwe", cost: "Igiciro", lang: "Ururimi", what: "ibyoherejwe",
-    s: { sent: "Byoherejwe", delivered: "Byageze", read: "Byasomwe", failed: "Byanze", deferred: "Byatinzwe (amasaha y'ituze)", capped: "Byahagaritswe (ingengo)" },
+    s: { sent: "Byoherejwe", delivered: "Byageze", read: "Byasomwe", failed: "Byanze", deferred: "Byatinzwe (amasaha y'ituze)", capped: "Byahagaritswe (ingengo)", queued: "Biri ku murongo", skipped: "Byasimbutswe (ibyo wahisemo)", suppressed: "Byahagaritswe (HAGARIKA)", duplicate: "Byisubiyemo" },
     fellBack: "Byanyujijwe kuri {c}", detail: "Icyoherejwe {id}", payload: "Ibyatanzwe n'umutanga serivisi (byahishwe)", emptyTitle: "Nta byoherejwe bihuye", emptyBody: "Gerageza indi miterere cyangwa undi murongo.",
   },
   cost: {
