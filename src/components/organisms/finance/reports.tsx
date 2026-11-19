@@ -23,6 +23,10 @@ import { EmptyPanel, PanelError } from "@/components/molecules/ops/ops";
 import { Amount, FinStatus, FxNote, PeriodLabel } from "@/components/atoms/finance";
 import { AgeingBar, ExportMenu, FiveStatesBar, ReportFrame } from "@/components/molecules/finance/finance";
 import { ArtNoImports } from "@/components/atoms/finance-art";
+import { Button } from "@/components/atoms/button";
+import { api, unwrap } from "@/lib/api/client";
+import { reportSubscribeCopy } from "@/content/pages/report-subscribe";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useRp = () => financeReports(useI18n().locale);
 
@@ -212,7 +216,7 @@ export function ReportView({ reportKey }: { reportKey: ReportKey }) {
         period={<PeriodLabel from={d.meta.period.from} to={d.meta.period.to} />}
         generatedAt={d.meta.generatedAt} freshness={d.meta.freshness}
         definitions={[...d.columns.map((col) => ({ key: c.cols[col.key] ?? col.key, text: c.defs[col.key] ?? "" }))]}
-        actions={<ExportMenu formats={["csv", "xlsx", "pdf"]} job={job.data ?? null} onPick={exportAs} disabled={!online || !d.rows.length} />}
+        actions={<div className="flex flex-wrap items-center gap-2"><ExportMenu formats={["csv", "xlsx", "pdf"]} job={job.data ?? null} onPick={exportAs} disabled={!online || !d.rows.length} /><SubscribeControl reportKey={reportKey} /></div>}
         filters={
           <>
             <label className="grid gap-1 text-eyebrow text-fg-muted">{c.from}<DateInput value={d.meta.period.from} onChange={(e) => setUrlParams({ from: e.target.value || null })} className="w-40" /></label>
@@ -302,5 +306,54 @@ export function ReportView({ reportKey }: { reportKey: ReportKey }) {
           onClose={() => setUrlParams({ drill: null, row: null })} />
       )}
     </div>
+  );
+}
+
+type Sub = { id: string; report: string; format: "csv" | "xlsx"; freq: "weekly" | "monthly" };
+/** F-RPT-05: subscribe to this report by email (weekly/monthly, CSV or XLSX); shows and stops an existing subscription. */
+function SubscribeControl({ reportKey }: { reportKey: ReportKey }) {
+  const { locale } = useI18n();
+  const k = reportSubscribeCopy(locale);
+  const toast = useToast();
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [freq, setFreq] = useState<Sub["freq"]>("weekly");
+  const [format, setFormat] = useState<Sub["format"]>("xlsx");
+  const subs = useQuery({ queryKey: ["reports", "subs"], queryFn: () => unwrap<{ items: Sub[] }>(api.GET("/api/reports/subscriptions")) });
+  const mine = subs.data?.items.find((x) => x.report === reportKey);
+  const done = () => qc.invalidateQueries({ queryKey: ["reports", "subs"] });
+  const add = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/reports/subscriptions", { body: { report: reportKey, freq, format } })),
+    onSuccess: () => (void done(), setOpen(false), toast({ title: k.saved, tone: "success" })),
+    onError: () => toast({ title: k.failed, tone: "danger" }),
+  });
+  const stop = useMutation({
+    mutationFn: (id: string) => unwrap(api.DELETE("/api/reports/subscriptions/{id}", { params: { path: { id } } })),
+    onSuccess: () => (void done(), toast({ title: k.stopped, tone: "success" })),
+    onError: () => toast({ title: k.failed, tone: "danger" }),
+  });
+  if (subs.isPending || subs.isError) return null;
+  if (mine)
+    return (
+      <span className="inline-flex items-center gap-2 text-small text-fg-muted">
+        {k.active} · {mine.freq === "weekly" ? k.weekly : k.monthly}
+        <Button size="sm" variant="outline" disabled={stop.isPending} onClick={() => stop.mutate(mine.id)}>{k.stop}</Button>
+      </span>
+    );
+  return (
+    <>
+      <Button size="sm" variant="outline" onClick={() => setOpen(true)}><Icon name="clock" size={14} aria-hidden />{k.subscribe}</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title={k.subscribe}
+        footer={<div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setOpen(false)}>{k.cancel}</Button><Button disabled={add.isPending} onClick={() => add.mutate()}>{k.save}</Button></div>}>
+        <div className="grid gap-3">
+          <label className="grid gap-1 text-small font-medium">{k.subscribe}
+            <Select value={freq} onChange={(e) => setFreq(e.target.value as Sub["freq"])}><option value="weekly">{k.weekly}</option><option value="monthly">{k.monthly}</option></Select>
+          </label>
+          <label className="grid gap-1 text-small font-medium">{k.format}
+            <Select value={format} onChange={(e) => setFormat(e.target.value as Sub["format"])}><option value="xlsx">XLSX</option><option value="csv">CSV</option></Select>
+          </label>
+        </div>
+      </Dialog>
+    </>
   );
 }
