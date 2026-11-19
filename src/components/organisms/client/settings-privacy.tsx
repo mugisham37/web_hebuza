@@ -18,7 +18,8 @@ import { authCopy } from "@/content/pages/client-auth";
 import { fill } from "@/content/pages/c4";
 import { Panel, useC4 } from "@/components/molecules/client/client";
 
-type ConsentKey = "processing" | "marketing" | "analytics" | "profileReuse";
+type ConsentKey = "processing" | "marketingEmail" | "marketingSms" | "marketingWhatsapp" | "analytics" | "profileReuse" | "aiHistory";
+type HistoryRow = { purpose: string; granted: boolean; source: string; at: string };
 type Consents = Record<ConsentKey, boolean> & { processingLocked: boolean };
 type Export = {
   status: "none" | "pending" | "ready";
@@ -37,6 +38,11 @@ export function PrivacySettings() {
     queryKey: ["c4", "consents"],
     queryFn: () => unwrap<Consents>(api.GET("/api/me/consents")),
   });
+  // F-CLP-14: timestamped consent ledger for this account.
+  const history = useQuery({
+    queryKey: ["c4", "consents", "history"],
+    queryFn: () => unwrap<{ items: HistoryRow[] }>(api.GET("/api/me/consents/history")),
+  });
   const exp = useQuery({
     queryKey: ["c4", "export"],
     queryFn: () => unwrap<Export>(api.GET("/api/me/data-export")),
@@ -50,6 +56,7 @@ export function PrivacySettings() {
       unwrap<Consents>(api.PUT("/api/me/consents", { body: v })),
     onSuccess: (d) => {
       qc.setQueryData(["c4", "consents"], d);
+      void qc.invalidateQueries({ queryKey: ["c4", "consents", "history"] });
       toast({ title: c.saved, tone: "success" });
     },
     onError: () => toast({ title: c.generic, tone: "danger" }),
@@ -73,7 +80,7 @@ export function PrivacySettings() {
           />
         ) : (
           <ul className="divide-y divide-border">
-            {(["processing", "marketing", "analytics", "profileReuse"] as const).map((k) => {
+            {(["processing", "marketingEmail", "marketingSms", "marketingWhatsapp", "analytics", "profileReuse", "aiHistory"] as const).map((k) => {
               const locked =
                 k === "processing" && consents.data.processingLocked;
               return (
@@ -103,6 +110,19 @@ export function PrivacySettings() {
             })}
           </ul>
         )}
+        <details className="mt-2 border-t border-border pt-3">
+          <summary className="cursor-pointer text-label">{p.consentHistory}</summary>
+          {history.data && !history.data.items.length ? <p className="mt-2 text-small text-fg-muted">{p.consentHistoryEmpty}</p> : (
+            <ul className="mt-2 grid gap-1 text-small">
+              {history.data?.items.map((h, i) => (
+                <li key={`${h.at}-${h.purpose}-${i}`} className="flex flex-wrap justify-between gap-2">
+                  <span>{h.purpose.replace(/_/g, " ")} · {h.granted ? p.granted : p.withdrawn}</span>
+                  <time dateTime={h.at} className="text-fg-subtle">{new Date(h.at).toLocaleString(locale)}</time>
+                </li>
+              ))}
+            </ul>
+          )}
+        </details>
       </Panel>
 
       <Panel

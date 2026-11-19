@@ -7,7 +7,7 @@ import { getManifest } from "@/lib/marketing/cms/read";
 const STATIC = ["", "/services", "/pricing", "/about", "/faq", "/contact", "/track", "/knowledge", "/updates", "/book", "/join-us", "/status", "/how-it-works", "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // shortcut: the catalogue has no updated_at yet, so services/static pages use generation time; use the API timestamp once exposed.
+  // Static pages use generation time; services use their catalogue updated_at.
   const now = new Date();
   const entries: [string, Date][] = [
     ...STATIC.map((p): [string, Date] => [p, now]),
@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   // F-CAT-07: each locale lists its own service slug; hreflang points at the sibling slugs.
   const svc = (await getServices("en")).flatMap((s) => locales.map((l) => ({
-    url: `${SITE_URL}/${l}/services/${s.slugs[l]}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7,
+    url: `${SITE_URL}/${l}/services/${s.slugs[l]}`, lastModified: s.updatedAt ? new Date(s.updatedAt) : now, changeFrequency: "weekly" as const, priority: 0.7,
     alternates: { languages: { ...Object.fromEntries(locales.map((x) => [x, `${SITE_URL}/${x}/services/${s.slugs[x]}`])), "x-default": `${SITE_URL}/rw/services/${s.slugs.rw}` } },
   })));
   // CMS-fed pages: only locales with a live variant are listed (plan 10 §2.6, spec §13).

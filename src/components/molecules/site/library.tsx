@@ -269,7 +269,7 @@ export function Helpful({
 }
 
 /** Newsletter band form with optional language select. Own ids (the footer's NewsletterForm hard-codes id="nl").
- * shortcut: posts to /api/contact like the footer form, move to a leads/newsletter endpoint with double opt-in when it exists. */
+ * Posts a consented lead (POST /api/leads), which also writes the consent ledger (F-CMS-08). */
 export function SubscribeForm({ label, placeholder, done, error, lang }: { label: string; placeholder: string; done: string; error: string; lang?: { label: string; value: string } }) {
   const id = useId();
   const [v, setV] = useState("");
@@ -282,7 +282,8 @@ export function SubscribeForm({ label, placeholder, done, error, lang }: { label
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact) && (contact.replace(/\D/g, "").length < 9 || /[^\d\s+()-]/.test(contact))) return setState("error");
     setState("busy");
     try {
-      await unwrap(api.POST("/api/contact", { body: { name: "Newsletter subscriber", contact, topic: "newsletter", message: `Newsletter opt-in (${window.location.pathname}), language: ${l}.` } }));
+      const email = contact.includes("@");
+      await unwrap(api.POST("/api/leads", { body: { ...(email ? { email: contact } : { phone: contact }), language: l as "rw" | "en" | "fr", source: "landing_form", landing: window.location.pathname, consent: { [email ? "email" : "sms"]: "in" } } }));
       setState("sent");
     } catch { setState("error"); }
   };

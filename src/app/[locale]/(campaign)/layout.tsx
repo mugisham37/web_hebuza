@@ -17,7 +17,7 @@ export default async function CampaignLayout({
   const m = getCopy(locale);
   return (
     <>
-      <PreviewBanner locale={locale} path={`/${locale}`} />
+      <PreviewBanner locale={locale} />
       <header className="sticky top-0 z-40 border-b border-border bg-white/92 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="container-page flex h-16 items-center justify-between gap-3 px-gutter">
           <Wordmark href={localHref(locale, "/")} />

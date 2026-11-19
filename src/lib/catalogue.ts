@@ -16,7 +16,7 @@ type ApiService = L10n & {
   pricing_tiers: ApiTier[]; pricing_mode: "fixed" | "range" | "quote" | string; from_fee: number | null;
   plan_covered: boolean; is_featured: boolean; volume30d: number | null; price_bands: { min_amount_rwf: number; max_amount_rwf?: number | null; fee_type: string; fee_rwf?: number | null; fee_percent?: number | null; min_fee_rwf?: number | null; max_fee_rwf?: number | null; sort_order: number }[]; range_basis_label: string | null; status: string;
   engagement_type: string; eligibility: L3[]; deliverables: L3[]; turnaround_days_min: number | null; turnaround_days_max: number | null; delivery_mode: string | null;
-  seo: Partial<Record<Locale, { title?: string; description?: string; og_image?: string }>>; related_slugs: string[]; locale_slugs?: Partial<L3>; fee_explainer: L3 | null; markets: string[];
+  seo: Partial<Record<Locale, { title?: string; description?: string; og_image?: string }>>; related_slugs: string[]; locale_slugs?: Partial<L3>; updated_at?: string; fee_explainer: L3 | null; markets: string[];
 };
 type L3 = Record<Locale, string>;
 type ApiCategory = L3 & { slug: string; name_rw: string; name_en: string; name_fr: string; description_rw: string | null; description_en: string | null; description_fr: string | null; sort_order: number; is_active: boolean };
@@ -29,6 +29,7 @@ export type ServiceVM = {
   priceMode: "fixed" | "range" | "quote"; fromFee: number | null; tiers: Tier[]; planCovered: boolean; popular: number; featured: boolean; paused: boolean;
   /** F-CAT-07 public slug per locale (canonical `slug` when unset). */
   slugs: Record<Locale, string>;
+  updatedAt: string | null;
   consultation: boolean; deliveryMode: string | null; turnaround: { min: number | null; max: number | null };
 };
 export type ServiceDetailVM = ServiceVM & { bands: { min: number; max: number | null; fee: number; rate: number; minFee: number | null; maxFee: number | null }[]; description: string | null; requirements: string[]; steps: string[];
@@ -67,6 +68,7 @@ function toVM(s: ApiService, l: Locale): ServiceVM {
     popular: s.volume30d ?? 0,
     featured: s.is_featured,
     paused: s.status === "paused",
+    updatedAt: s.updated_at ?? null,
     slugs: { rw: s.locale_slugs?.rw || s.slug, en: s.locale_slugs?.en || s.slug, fr: s.locale_slugs?.fr || s.slug },
     consultation: s.engagement_type === "consultation",
     deliveryMode: s.delivery_mode,

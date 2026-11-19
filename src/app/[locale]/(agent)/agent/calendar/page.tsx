@@ -4,7 +4,6 @@ import { getI18n } from "@/lib/i18n/server";
 import { agentCalendar } from "@/content/pages/agent-calendar";
 import { CalendarView } from "@/components/organisms/agent/calendar";
 import { AdviserSessions } from "@/components/organisms/booking/staff";
-import { CalendarLinks } from "@/components/organisms/booking/calendar-links";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await getI18n(params);
@@ -16,7 +15,6 @@ export default function Page() {
   return (
     <div className="grid gap-6">
       {/* Stage 11 bookings layer + availability (?panel=availability). shortcut: shown above the calendar, not merged into its grid; merge when lane F calendar takes external sources */}
-      <Suspense><CalendarLinks /></Suspense>
       <Suspense><AdviserSessions /></Suspense>
       <Suspense>
         <CalendarView />

@@ -19,8 +19,7 @@ export default async function PublicLayout({ children, params }: LayoutProps<"/[
   const total = families.reduce((n, f) => n + f.count, 0);
   return (
     <>
-      {/* shortcut: Exit preview returns to the locale home, not the exact page; pass the path once layouts receive it. */}
-      <PreviewBanner locale={locale} path={`/${locale}`} />
+      <PreviewBanner locale={locale} />
       <a href="#main" className="sr-only-focusable bg-secondary px-4 py-2 text-on-secondary">{t("common.skipToContent")}</a>
       <SiteHeader
         total={total}

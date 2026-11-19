@@ -2,6 +2,7 @@
 // Adviser + SM consultation surfaces (plan 11 §7.8–7.9, boards 03 BA1/BA3/BA4/PBA1).
 // AdviserSessions: bookings layer above the existing calendar + availability drawer (?panel=availability).
 // ConsultationRoom: one organism for adviser (/agent/bookings/[id]) and SM (/ops/bookings/[id]).
+import { CalendarLinks } from "@/components/organisms/booking/calendar-links";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
@@ -160,10 +161,7 @@ function AvailabilityEditor({ onClose }: { onClose: () => void }) {
               <ul className="grid gap-1 text-small text-fg-muted">{a.leave.map((l) => <li key={l.from}>{l.label} · {formatDay(`${l.from}T10:00:00Z`, locale)} – {formatDay(`${l.to}T10:00:00Z`, locale)}</li>)}</ul>
             </section>
           )}
-          <div className="flex items-center justify-between border border-dashed border-border p-3 text-small">
-            <span className="inline-flex items-center gap-2"><Icon name="calendar" size={16} aria-hidden />{c.time.calendarSync}</span>
-            <span className="text-fg-subtle">{c.time.calendarSyncSoon}</span>{/* shortcut: F-BKG-10 sync is P3, enable when Google OAuth exists */}
-          </div>
+          <CalendarLinks />
         </div>
       )}
       <Dialog open={!!ov} onClose={() => setOv(null)} title={c.adviser.addOverride}
