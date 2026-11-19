@@ -308,6 +308,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/services/{slug}/form": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CatalogueController_form"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/service-categories": {
         parameters: {
             query?: never;
@@ -3346,6 +3362,38 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["DocumentsController_update"];
+        trace?: never;
+    };
+    "/api/deliverables/{id}/require-signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DocumentsController_requireSignature"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/deliverables/{id}/sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DocumentsController_sign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/admin/documents/retention": {
@@ -10740,6 +10788,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/testimonial-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MarketingClientController_requests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/testimonial-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MarketingClientController_answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/procurement/summary": {
         parameters: {
             query?: never;
@@ -14446,6 +14526,10 @@ export interface components {
             website?: string | null;
             /** @enum {string|null} */
             sizeBand?: "micro" | "small" | "medium" | "large" | null;
+            vatRegistered?: boolean;
+            /** @enum {string} */
+            vatPeriod?: "monthly" | "quarterly";
+            employer?: boolean;
         };
         ActiveOrgDto: {
             orgId: string | null;
@@ -14468,6 +14552,10 @@ export interface components {
             website?: string | null;
             /** @enum {string|null} */
             sizeBand?: "micro" | "small" | "medium" | "large" | null;
+            vatRegistered?: boolean;
+            /** @enum {string} */
+            vatPeriod?: "monthly" | "quarterly";
+            employer?: boolean;
         };
         InviteDto: {
             contact: string;
@@ -14720,6 +14808,17 @@ export interface components {
             kind?: string | null;
             /** Format: date */
             expiresOn?: string | null;
+        };
+        RequireSignatureDto: {
+            required: boolean;
+        };
+        SignDto: {
+            /** @enum {string} */
+            method: "typed" | "drawn";
+            name: string;
+            image?: string | null;
+            /** @enum {boolean} */
+            agree: true;
         };
         RetentionDecisionDto: {
             /** @enum {string} */
@@ -15588,7 +15687,7 @@ export interface components {
             /** @enum {string} */
             type: "application/pdf" | "image/jpeg" | "image/png" | "image/webp" | "image/heic";
         };
-        SignDto: {
+        SignDto2: {
             typedName: string;
             readPct: number;
             agree: boolean;
@@ -15789,7 +15888,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1623_0"][];
+            items: components["schemas"]["__s1639_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -16013,6 +16112,7 @@ export interface components {
             size?: number;
             /** @enum {string} */
             type?: "application/pdf" | "image/jpeg" | "image/png" | "image/webp" | "image/heic";
+            signature?: boolean;
         };
         MsgDto: {
             client_msg_id: string;
@@ -16287,17 +16387,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s2059_0"];
+            definition: components["schemas"]["__s2076_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s2063_0"];
+            definition: components["schemas"]["__s2080_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s2067_0"];
+            definition?: components["schemas"]["__s2084_0"];
         };
         CampaignDto: {
             name?: string;
@@ -16359,7 +16459,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s2119_0"];
+            conditions?: components["schemas"]["__s2136_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -16429,6 +16529,9 @@ export interface components {
         };
         SpeedDto: {
             page: string;
+        };
+        ConsentDto2: {
+            consent: boolean;
         };
         ProposalDto: {
             limits?: {
@@ -17440,6 +17543,13 @@ export interface components {
                 [key: string]: unknown;
             } | null;
         };
+        PublicServiceForm: {
+            serviceSlug: string;
+            version: number | null;
+            fields: {
+                [key: string]: unknown;
+            }[];
+        };
         StructureCatalogueRowResponse: {
             slug: string;
             name: string;
@@ -18096,31 +18206,31 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1623_0: {
+        __s1639_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1623_0"][];
+            children?: components["schemas"]["__s1639_0"][];
         };
-        __s1624_0: {
+        __s1640_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1624_0"][];
+            children?: components["schemas"]["__s1640_0"][];
         };
-        __s1625_0: {
+        __s1641_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1625_0"][];
+            children?: components["schemas"]["__s1641_0"][];
         };
-        __s2059_0: {
+        __s2076_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18129,9 +18239,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2059_0"])[];
+            } | components["schemas"]["__s2076_0"])[];
         };
-        __s2060_0: {
+        __s2077_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18140,9 +18250,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2060_0"])[];
+            } | components["schemas"]["__s2077_0"])[];
         };
-        __s2061_0: {
+        __s2078_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18151,9 +18261,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2061_0"])[];
+            } | components["schemas"]["__s2078_0"])[];
         };
-        __s2062_0: {
+        __s2079_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18162,9 +18272,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2062_0"])[];
+            } | components["schemas"]["__s2079_0"])[];
         };
-        __s2063_0: {
+        __s2080_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18173,9 +18283,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2063_0"])[];
+            } | components["schemas"]["__s2080_0"])[];
         };
-        __s2064_0: {
+        __s2081_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18184,9 +18294,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2064_0"])[];
+            } | components["schemas"]["__s2081_0"])[];
         };
-        __s2065_0: {
+        __s2082_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18195,9 +18305,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2065_0"])[];
+            } | components["schemas"]["__s2082_0"])[];
         };
-        __s2066_0: {
+        __s2083_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18206,9 +18316,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2066_0"])[];
+            } | components["schemas"]["__s2083_0"])[];
         };
-        __s2067_0: {
+        __s2084_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18217,9 +18327,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2067_0"])[];
+            } | components["schemas"]["__s2084_0"])[];
         };
-        __s2068_0: {
+        __s2085_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18228,9 +18338,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2068_0"])[];
+            } | components["schemas"]["__s2085_0"])[];
         };
-        __s2069_0: {
+        __s2086_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18239,9 +18349,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2069_0"])[];
+            } | components["schemas"]["__s2086_0"])[];
         };
-        __s2070_0: {
+        __s2087_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18250,9 +18360,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2070_0"])[];
+            } | components["schemas"]["__s2087_0"])[];
         };
-        __s2119_0: {
+        __s2136_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18261,9 +18371,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2119_0"])[];
+            } | components["schemas"]["__s2136_0"])[];
         };
-        __s2120_0: {
+        __s2137_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18272,9 +18382,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2120_0"])[];
+            } | components["schemas"]["__s2137_0"])[];
         };
-        __s2121_0: {
+        __s2138_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18283,9 +18393,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2121_0"])[];
+            } | components["schemas"]["__s2138_0"])[];
         };
-        __s2122_0: {
+        __s2139_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18294,9 +18404,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2122_0"])[];
+            } | components["schemas"]["__s2139_0"])[];
         };
-        __s2123_0: {
+        __s2140_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18305,9 +18415,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2123_0"])[];
+            } | components["schemas"]["__s2140_0"])[];
         };
-        __s2124_0: {
+        __s2141_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18316,9 +18426,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2124_0"])[];
+            } | components["schemas"]["__s2141_0"])[];
         };
-        __s2125_0: {
+        __s2142_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18327,9 +18437,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2125_0"])[];
+            } | components["schemas"]["__s2142_0"])[];
         };
-        __s2126_0: {
+        __s2143_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18338,9 +18448,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2126_0"])[];
+            } | components["schemas"]["__s2143_0"])[];
         };
-        __s2127_0: {
+        __s2144_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18349,9 +18459,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2127_0"])[];
+            } | components["schemas"]["__s2144_0"])[];
         };
-        __s2128_0: {
+        __s2145_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18360,9 +18470,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2128_0"])[];
+            } | components["schemas"]["__s2145_0"])[];
         };
-        __s2129_0: {
+        __s2146_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18371,7 +18481,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2129_0"])[];
+            } | components["schemas"]["__s2146_0"])[];
         };
     };
     responses: never;
@@ -19113,6 +19223,32 @@ export interface operations {
                         message: string;
                         errorType: string | null;
                         data: components["schemas"]["ServiceDetailResponse"];
+                    };
+                };
+            };
+        };
+    };
+    CatalogueController_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: components["schemas"]["PublicServiceForm"];
                     };
                 };
             };
@@ -25382,6 +25518,66 @@ export interface operations {
             };
         };
     };
+    DocumentsController_requireSignature: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequireSignatureDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    DocumentsController_sign: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
     DocumentsController_retention: {
         parameters: {
             query: {
@@ -25679,6 +25875,8 @@ export interface operations {
                                     version: number;
                                     issuedAt: string;
                                     issuer: string | null;
+                                    signatureRequired: boolean;
+                                    signedAt: string | null;
                                 }[];
                             }[];
                         };
@@ -31904,7 +32102,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SignDto"];
+                "application/json": components["schemas"]["SignDto2"];
             };
         };
         responses: {
@@ -32465,7 +32663,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SignDto"];
+                "application/json": components["schemas"]["SignDto2"];
             };
         };
         responses: {
@@ -40049,6 +40247,60 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    MarketingClientController_requests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    MarketingClientController_answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentDto2"];
+            };
+        };
         responses: {
             "2XX": {
                 headers: {

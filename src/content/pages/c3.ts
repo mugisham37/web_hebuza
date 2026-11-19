@@ -86,6 +86,7 @@ const en = {
     } as Record<string, string>,
   },
   dlv: {
+    sign: { cta: "Sign", signed: "Signed {date}", title: "Sign {name}", lede: "Your signature is recorded with a fingerprint of this exact file, the time and your device.", typed: "Type my name", drawn: "Draw", name: "Full name", draw: "Draw your signature", clear: "Clear", agree: "I have read this document and sign it electronically.", submit: "Sign document", done: "Document signed." },
     link: { title: "Your file", opening: "Opening your download…", used: "This link was already used or has expired. Open the request to download again.", open: "Open my results" },
     keep: "Save to my documents", kept: "Saved to your documents.",
     zipAll: "Download all (.zip)",
@@ -328,6 +329,7 @@ const rw: Copy = {
     },
   },
   dlv: {
+    sign: { cta: "Sinya", signed: "Byasinywe {date}", title: "Sinya {name}", lede: "Umukono wawe ubikwa hamwe n'ikimenyetso cy'iyi dosiye nyayo, igihe n'igikoresho cyawe.", typed: "Andika izina ryanjye", drawn: "Shushanya", name: "Amazina yose", draw: "Shushanya umukono wawe", clear: "Siba", agree: "Nasomye iyi nyandiko kandi nyisinye mu buryo bw'ikoranabuhanga.", submit: "Sinya inyandiko", done: "Inyandiko yasinywe." },
     link: { title: "Dosiye yawe", opening: "Turafungura dosiye yawe…", used: "Uyu murongo wakoreshejwe cyangwa warengeje igihe. Fungura ubusabe ukuremo.", open: "Fungura ibisubizo byanjye" },
     keep: "Bika mu nyandiko zanjye", kept: "Byabitswe mu nyandiko zawe.",
     zipAll: "Kuramo byose (.zip)",
@@ -569,6 +571,7 @@ const fr: Copy = {
     },
   },
   dlv: {
+    sign: { cta: "Signer", signed: "Signé le {date}", title: "Signer {name}", lede: "Votre signature est enregistrée avec l'empreinte de ce fichier exact, l'heure et votre appareil.", typed: "Taper mon nom", drawn: "Dessiner", name: "Nom complet", draw: "Dessinez votre signature", clear: "Effacer", agree: "J'ai lu ce document et je le signe électroniquement.", submit: "Signer le document", done: "Document signé." },
     link: { title: "Votre fichier", opening: "Ouverture du téléchargement…", used: "Ce lien a déjà servi ou a expiré. Ouvrez la demande pour télécharger.", open: "Ouvrir mes résultats" },
     keep: "Enregistrer dans mes documents", kept: "Enregistré dans vos documents.",
     zipAll: "Tout télécharger (.zip)",

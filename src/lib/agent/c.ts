@@ -93,6 +93,8 @@ export type SlotVM = {
   key: string;
   label: string;
   required: boolean;
+  /** DLV-10: released file asks the client for a signature. */
+  signature?: boolean;
   versions: VersionVM[];
 };
 export type DelivEvent = {
@@ -150,6 +152,11 @@ export function useDeliverableActions(ref: string) {
         return d;
       },
       onSuccess: set,
+    }),
+    signature: useMutation({
+      mutationFn: ({ slot, on }: { slot: string; on: boolean }) =>
+        unwrap<DeliverablesVM>(api.POST("/api/agent/x/cases/{code}/deliverables", { params: { path: { code: ref } }, body: { slot, signature: on } })),
+      onSuccess: (d) => qc.setQueryData(delivKey(ref), d),
     }),
     note: useMutation({
       mutationFn: (clientNote: string) =>

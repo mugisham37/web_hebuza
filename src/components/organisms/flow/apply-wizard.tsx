@@ -3,6 +3,7 @@ import { useOnline } from "@/components/atoms/hooks";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { toFieldDefs, type PublishedField } from "@/lib/flow/form-fields";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { api, unwrap, ApiError, newIdempotencyKey } from "@/lib/api/client";
@@ -167,7 +168,15 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
   const c = flowCopy(locale);
   const la = laCopy(locale).elig;
   const questions = la.questions[svc.family] ?? la.fallback;
-  const fields = c.fields[svc.slug] ?? c.fields.default;
+  // The builder's published form drives the Details step; the in-code schema is only the fallback (no API / never published).
+  const form = useQuery({
+    queryKey: ["public", "form", svc.slug],
+    queryFn: () => unwrap<{ fields: PublishedField[] }>(api.GET("/api/services/{slug}/form", { params: { path: { slug: svc.slug } } })),
+    retry: false,
+    staleTime: 5 * 60_000,
+  });
+  const published = form.data ? toFieldDefs(form.data.fields, locale) : [];
+  const fields = published.length ? published : (c.fields[svc.slug] ?? c.fields.default);
   const L = (p: string) => localHref(locale, p);
   // ORG-08: the active company (switcher on /orgs) files the request when the client may submit for it.
   const orgs = useQuery({

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { formatDate, formatMoney } from "@/shared/format";
@@ -7,7 +7,8 @@ import { c3Copy, fill } from "@/content/pages/c3";
 import { Button, buttonClass } from "@/components/atoms/button";
 import { Badge } from "@/components/atoms/tag";
 import { EmptyState, ErrorState, Skeleton } from "@/components/atoms/feedback";
-import { Field, Radio, Textarea } from "@/components/atoms/field";
+import { Checkbox, Field, Input, Radio, Textarea } from "@/components/atoms/field";
+import { Dialog } from "@/components/atoms/dialog";
 import { Icon } from "@/components/atoms/icon";
 import { useToast } from "@/components/atoms/toast";
 import { PreviewDialog } from "@/components/organisms/client/document-preview";
@@ -25,6 +26,8 @@ export type DlvFile = {
   version: number;
   issuedAt: string;
   issuer?: string | null;
+  signatureRequired?: boolean;
+  signedAt?: string | null;
 };
 export type DlvGroup = {
   code: string;
@@ -211,6 +214,9 @@ function Group({ g, canDownload }: { g: DlvGroup; canDownload: boolean }) {
                     </a>
                   )}
                   {!locked && canDownload && <KeepButton id={f.id} />}
+                  {f.signatureRequired && (f.signedAt
+                    ? <Badge tone="success">{fill(c.dlv.sign.signed, { date: formatDate(f.signedAt, locale) })}</Badge>
+                    : !locked && canDownload && <SignButton id={f.id} name={f.title} />)}
                 </div>
               </li>
             ))}
@@ -451,4 +457,62 @@ function KeepButton({ id }: { id: string }) {
     onError: () => toast({ title: c.common.error, tone: "danger" }),
   });
   return <Button size="sm" variant="ghost" loading={keep.isPending} disabled={keep.isSuccess} onClick={() => keep.mutate()}>{c.dlv.keep}</Button>;
+}
+
+/** DLV-10: built-in e-signature (typed name or drawn), sealed server-side with the file's hash. */
+function SignButton({ id, name }: { id: string; name: string }) {
+  const { locale } = useI18n();
+  const c = c3Copy(locale);
+  const t = c.dlv.sign;
+  const toast = useToast();
+  const qc = useQueryClient();
+  const { user } = useSession();
+  const [open, setOpen] = useState(false);
+  const [method, setMethod] = useState<"typed" | "drawn">("typed");
+  const [typed, setTyped] = useState(user?.name ?? "");
+  const [agree, setAgree] = useState(false);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const drawn = useRef(false);
+  const sign = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/me/deliverables/{id}/sign", { params: { path: { id } }, body: {
+      method, name: typed.trim(), agree: true, image: method === "drawn" ? canvas.current!.toDataURL("image/png") : null,
+    } })),
+    onSuccess: () => { toast({ title: t.done, tone: "success" }); setOpen(false); void qc.invalidateQueries({ queryKey: ["c3"] }); },
+    onError: () => toast({ title: c.common.error, tone: "danger" }),
+  });
+  const pen = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const cv = canvas.current!, ctx = cv.getContext("2d")!, r = cv.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * cv.width, y = ((e.clientY - r.top) / r.height) * cv.height;
+    if (e.type === "pointerdown") { cv.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.moveTo(x, y); return; }
+    if (e.buttons !== 1) return;
+    ctx.lineWidth = 2.5; ctx.lineCap = "round"; ctx.strokeStyle = getComputedStyle(cv).color; ctx.lineTo(x, y); ctx.stroke(); drawn.current = true;
+  };
+  const clear = () => { const cv = canvas.current; cv?.getContext("2d")?.clearRect(0, 0, cv.width, cv.height); drawn.current = false; };
+  const ready = agree && typed.trim().length >= 2;
+  return (
+    <>
+      <Button size="sm" onClick={() => setOpen(true)}>{t.cta}</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title={fill(t.title, { name })} description={t.lede}
+        footer={<Button disabled={!ready} loading={sign.isPending} onClick={() => (method === "drawn" && !drawn.current ? toast({ title: t.draw, tone: "danger" }) : sign.mutate())}>{t.submit}</Button>}>
+        <div className="grid gap-4">
+          <div role="radiogroup" aria-label={t.cta} className="flex gap-2">
+            {(["typed", "drawn"] as const).map((m) => (
+              <Button key={m} size="sm" variant={method === m ? "secondary" : "outline"} aria-pressed={method === m} onClick={() => setMethod(m)}>{t[m]}</Button>
+            ))}
+          </div>
+          <Field label={t.name}>{(a) => <Input id={a.id} value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="name" />}</Field>
+          {method === "typed" ? (
+            <p aria-hidden className="border-b border-border pb-1 font-serif text-h3 italic">{typed || "\u00a0"}</p>
+          ) : (
+            <div className="grid gap-2">
+              <canvas ref={canvas} width={560} height={180} aria-label={t.draw} role="img" onPointerDown={pen} onPointerMove={pen}
+                className="h-36 w-full touch-none border border-border bg-white text-fg-heading" />
+              <Button size="sm" variant="ghost" className="justify-self-start" onClick={clear}>{t.clear}</Button>
+            </div>
+          )}
+          <Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} label={t.agree} />
+        </div>
+      </Dialog>
+    </>
+  );
 }

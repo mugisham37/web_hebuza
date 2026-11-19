@@ -127,12 +127,14 @@ function SlotRow({
   locked,
   onFile,
   onCancel,
+  onSignature,
 }: {
   slot: SlotVM;
   local?: Local;
   locked: boolean;
   onFile: (f: File) => void;
   onCancel: () => void;
+  onSignature?: (on: boolean) => void;
 }) {
   const d = useD();
   const { locale } = useI18n();
@@ -180,6 +182,12 @@ function SlotRow({
               · {slot.required ? d.required : d.optional}
             </span>
           </p>
+          {onSignature && (
+            <label className="mt-1 flex items-center gap-2 text-small text-fg-muted">
+              <input type="checkbox" checked={!!slot.signature} disabled={locked} onChange={(e) => onSignature(e.target.checked)} />
+              {d.signature}
+            </label>
+          )}
           {last && (
             <p className="mt-1 flex flex-wrap items-center gap-2 text-small text-fg-muted">
               <VersionChip
@@ -560,7 +568,7 @@ export function CaseDeliverables({ caseRef }: { caseRef: string }) {
   const { wsHref } = useWs();
   const toast = useToast();
   const q = useDeliverables(caseRef);
-  const { note } = useDeliverableActions(caseRef);
+  const { note, signature: sig } = useDeliverableActions(caseRef);
   const summary = useSummary().data;
   const cleared = !summary || summary.clearance === "cleared";
   const { local, start, cancel } = useUploads(caseRef);
@@ -707,6 +715,7 @@ export function CaseDeliverables({ caseRef }: { caseRef: string }) {
             locked={locked}
             onFile={(f) => start(s.key, f)}
             onCancel={() => cancel(s.key)}
+            onSignature={(on) => sig.mutate({ slot: s.key, on })}
           />
         ))}
       </ul>
