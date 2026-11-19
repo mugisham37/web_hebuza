@@ -1,0 +1,3 @@
+# ZAP baseline rule overrides: <id>\t<IGNORE|WARN|FAIL>\t<why>
+10055	WARN	CSP keeps unsafe-inline for scripts (see server/docs/SECURITY.md)
+10096	IGNORE	Timestamps in JSON-LD / build ids are not sensitive

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "smoke:prod": "node scripts/smoke-prod.mjs",
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint/",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",

@@ -1,0 +1,19 @@
+# Hourly synthetic check of production (health, home, a service page, login page). A failing run is the alert:
+# enable GitHub "failed workflow" notifications for the on-call, or wire the status to the pager.
+name: synthetic
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/smoke-prod.mjs
+        env:
+          SMOKE_URL: ${{ vars.PROD_URL || 'https://hebuza.rw' }}
+          SMOKE_API: ${{ vars.PROD_API_URL || vars.PROD_URL || 'https://hebuza.rw' }}
