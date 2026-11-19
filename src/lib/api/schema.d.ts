@@ -15846,6 +15846,19 @@ export interface components {
             scheduledPlanId?: string | null;
             pausedUntil?: string | null;
         };
+        SubscriptionChangeResponse: {
+            /** @enum {string} */
+            action: "checkout" | "scheduled";
+            planId: string;
+            amountRwf: number;
+            effectiveAt: string | null;
+        };
+        SubscriptionPauseResponse: {
+            subscriptionId: string;
+            status: string;
+            pausedUntil: string;
+            periodEnd: string;
+        };
         PlatformSettingsResponse: {
             acceptNewApps: boolean;
             guestApps: boolean;
@@ -18215,13 +18228,7 @@ export interface operations {
                         success: boolean;
                         message: string;
                         errorType: string | null;
-                        data: {
-                            /** @enum {string} */
-                            action: "checkout" | "scheduled";
-                            planId: string;
-                            amountRwf: number;
-                            effectiveAt: string | null;
-                        };
+                        data: components["schemas"]["SubscriptionChangeResponse"];
                     };
                 };
             };
@@ -18251,12 +18258,7 @@ export interface operations {
                         success: boolean;
                         message: string;
                         errorType: string | null;
-                        data: {
-                            subscriptionId: string;
-                            status: string;
-                            pausedUntil: string;
-                            periodEnd: string;
-                        };
+                        data: components["schemas"]["SubscriptionPauseResponse"];
                     };
                 };
             };
@@ -18834,6 +18836,7 @@ export interface operations {
                         errorType: string | null;
                         data: {
                             deleted: boolean;
+                            scheduledAt: string;
                         };
                     };
                 };

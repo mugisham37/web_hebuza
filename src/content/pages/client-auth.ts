@@ -26,6 +26,7 @@ const en = {
   mismatch: "Passwords don't match.",
   fixErrors: "Please fix the errors below.",
   generic: "Something went wrong. Try again.",
+  expiry: { title: "Your session is ending", body: "For your security you will be signed out in about 2 minutes. Save your work.", stay: "Keep working", signIn: "Sign in again" },
   orDivider: "or",
   signup: {
     title: "Create your",
@@ -179,6 +180,7 @@ const rw: Copy = {
   mismatch: "Amagambobanga ntahuye.",
   fixErrors: "Kosora amakosa ari hasi.",
   generic: "Habaye ikibazo. Ongera ugerageze.",
+  expiry: { title: "Igihe cyawe kirarangiye", body: "Kubw'umutekano wawe uzasohorwa mu minota 2. Bika ibyo urimo gukora.", stay: "Komeza", signIn: "Ongera winjire" },
   orDivider: "cyangwa",
   signup: {
     title: "Fungura",
@@ -337,6 +339,7 @@ const fr: Copy = {
   mismatch: "Les mots de passe ne correspondent pas.",
   fixErrors: "Veuillez corriger les erreurs ci-dessous.",
   generic: "Une erreur s'est produite. Réessayez.",
+  expiry: { title: "Votre session se termine", body: "Pour votre sécurité, vous serez déconnecté dans environ 2 minutes. Enregistrez votre travail.", stay: "Continuer", signIn: "Se reconnecter" },
   orDivider: "ou",
   signup: {
     title: "Créez votre",

@@ -171,7 +171,7 @@ const en = {
       retentionLink: "Read the privacy policy",
       deleteTitle: "Delete your account",
       deleteLede:
-        "This is permanent. You will lose access to all your data and documents.",
+        "Your account is deleted 14 days after you confirm. Sign in before then to cancel.",
       deleteCta: "Delete account",
       blocked:
         "Your account cannot be deleted while you have an active request or a legal hold.",
@@ -182,7 +182,7 @@ const en = {
       understand: "I understand the consequences and want to continue.",
       password: "Enter your password to confirm",
       mustTick: "Tick the box to confirm.",
-      deleted: "Your account has been deleted.",
+      deleted: "Deletion scheduled. Sign in within 14 days to cancel it.",
     },
   },
   help: {
@@ -541,7 +541,7 @@ const rw: C4Copy = {
         "Tubika amakuru yawe igihe cyose akenewe ngo tuguhe serivisi kandi twubahirize amategeko, hanyuma tukayasiba cyangwa tukayagira atazwi.",
       retentionLink: "Soma politiki y'ibanga",
       deleteTitle: "Siba konti yawe",
-      deleteLede: "Ntibisubirwaho. Uzatakaza amakuru yawe yose n'inyandiko.",
+      deleteLede: "Konti yawe isibwa nyuma y'iminsi 14 wemeje. Injira mbere y'icyo gihe kugira ngo ubihagarike.",
       deleteCta: "Siba konti",
       blocked:
         "Konti yawe ntishobora gusibwa ufite ubusabe bugikorwa cyangwa ihagarikwa ry'amategeko.",
@@ -552,7 +552,7 @@ const rw: C4Copy = {
       understand: "Ndumva ingaruka kandi ndashaka gukomeza.",
       password: "Andika ijambobanga ngo wemeze",
       mustTick: "Kanda akazu ngo wemeze.",
-      deleted: "Konti yawe yasibwe.",
+      deleted: "Gusiba byateganyijwe. Injira mu minsi 14 kugira ngo ubihagarike.",
     },
   },
   help: {
@@ -922,7 +922,7 @@ const fr: C4Copy = {
       retentionLink: "Lire la politique de confidentialité",
       deleteTitle: "Supprimer votre compte",
       deleteLede:
-        "C'est définitif. Vous perdrez l'accès à toutes vos données et documents.",
+        "Votre compte est supprimé 14 jours après confirmation. Reconnectez-vous avant pour annuler.",
       deleteCta: "Supprimer le compte",
       blocked:
         "Votre compte ne peut pas être supprimé tant qu'une demande est en cours ou qu'une obligation légale s'applique.",
@@ -933,7 +933,7 @@ const fr: C4Copy = {
       understand: "Je comprends les conséquences et je veux continuer.",
       password: "Saisissez votre mot de passe pour confirmer",
       mustTick: "Cochez la case pour confirmer.",
-      deleted: "Votre compte a été supprimé.",
+      deleted: "Suppression programmée. Reconnectez-vous sous 14 jours pour l'annuler.",
     },
   },
   help: {
