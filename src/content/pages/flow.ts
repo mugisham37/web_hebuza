@@ -11,6 +11,8 @@ export type FieldDef =
       label: string;
       hint?: string;
       optional?: boolean;
+      /** ORG-06: prefill from this profile path (see lib/ops/e PROFILE_PATHS). */
+      profile?: string;
     }
   | { key: string; type: "ranked"; label: string; hint?: string; count: number }
   | { key: string; type: "radio"; label: string; options: string[] }

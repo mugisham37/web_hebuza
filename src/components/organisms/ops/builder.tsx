@@ -39,6 +39,7 @@ import {
   type L3,
   type Structure,
   type ServiceDetail,
+  PROFILE_PATHS,
 } from "@/lib/ops/e";
 import { ApiError } from "@/lib/api/client";
 import {
@@ -1045,6 +1046,14 @@ function FieldSettings({
             }
             className={inp}
           />
+        )}
+      </Field>
+      <Field label={c.form.profile} hint={c.form.profileHint}>
+        {(a) => (
+          <Select id={a.id} aria-describedby={a.describedBy} value={field.profile ?? ""} onChange={(e) => set({ profile: e.target.value || null })} className={inp}>
+            <option value="">{c.form.profileNone}</option>
+            {PROFILE_PATHS.map((p) => <option key={p} value={p}>{p}</option>)}
+          </Select>
         )}
       </Field>
       {(field.type === "select" || field.type === "multi") && (

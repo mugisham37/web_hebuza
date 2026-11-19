@@ -8,6 +8,6 @@ export type PublicPartner = { id: string; name: string; logoUrl: string | null; 
 export async function getPublicPartners(): Promise<PublicPartner[]> {
   "use cache";
   cacheTag("partners");
-  // shortcut: no revalidate webhook from partner edits yet; the hours cacheLife in publicGet bounds staleness.
+  // Partner edits send cms.revalidate {tags:["partners"]} from the API.
   return (await publicGet<{ items: PublicPartner[] }>("/public/partners", { items: [] }))?.items ?? [];
 }

@@ -54,7 +54,12 @@ export type FormField = {
   children?: FormField[];
   /** Repeating group only: this child field must total 100 across rows. */
   totalField?: string | null;
+  /** ORG-06: profile path the wizard prefills from (with the client's profile_reuse consent), e.g. "org.tin". */
+  profile?: string | null;
 };
+/** ORG-06 bindable profile paths (server: GET /api/me/prefill). */
+export const PROFILE_PATHS = ["person.full_name", "person.national_id", "person.dob", "person.phone", "person.email",
+  "org.legal_name", "org.trade_name", "org.tin", "org.rdb_number", "org.province", "org.district", "org.sector", "org.cell", "org.phone", "org.email"] as const;
 export type Eligibility = { id: string; q: L3; blocking: boolean };
 export type DocReq = {
   id: string;

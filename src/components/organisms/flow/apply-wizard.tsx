@@ -259,6 +259,11 @@ export function ApplyWizard({ service: svc }: { service: Svc }) {
         email: d.person.email || pv["person.email"] || "",
         phone: d.person.phone || (pv["person.phone"] ?? "").replace(/^\+250/, ""),
       },
+      // Detail fields bound to a profile path (structure builder "Prefill from profile").
+      data: {
+        ...Object.fromEntries(fields.flatMap((f) => ("profile" in f && f.profile && pv[f.profile] ? [[f.key, pv[f.profile]]] : []))),
+        ...d.data,
+      },
     }));
   }, [pv]);
   const tier = svc.tiers.find((t) => t.key === draft.tier);
