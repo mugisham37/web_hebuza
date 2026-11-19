@@ -90,6 +90,7 @@ function Overview({ w, admin }: { w: WorkerFull; admin: boolean }) {
           <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.cols.load}</dt><dd className="flex items-center gap-2"><CapacityBar load={w.load.open} cap={w.load.cap} className="w-32" /><span className="tabular">{w.load.open}/{w.load.cap}</span></dd></div>
         </dl>
       </Panel>
+      <WorkContacts w={w} admin={admin} />
       <Panel title={c.profile.private} action={admin && !shown ? <Button size="sm" variant="secondary" onClick={() => setAsk(true)}><Icon name="lock" size={14} aria-hidden />{c.profile.reveal}</Button> : null}>
         <dl className="grid gap-3 text-small">
           {(["address", "phone", "nationalId"] as const).map((k) => <div key={k}><dt className="text-eyebrow text-fg-subtle">{c.profile[k]}</dt><dd className="tabular">{pf[k]}</dd></div>)}
@@ -247,6 +248,43 @@ function Documents({ w }: { w: WorkerFull }) {
         </ul>
       )}
     </div>
+  );
+}
+
+/** F-WRK-01: work contacts + professional links (separate from the private shield). */
+function WorkContacts({ w, admin }: { w: WorkerFull; admin: boolean }) {
+  const c = useW().work;
+  const qc = useQueryClient();
+  const toast = useToast();
+  const wc = w.workContacts ?? { email: "", phone: "", links: {} };
+  const [edit, setEdit] = useState(false);
+  const [f, setF] = useState({ email: wc.email, phone: wc.phone, linkedin: wc.links.linkedin ?? "", website: wc.links.website ?? "" });
+  const m = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/staff/workers/{id}/work-contacts", { params: { path: { id: w.id } }, body: {
+      email: f.email.trim() || undefined, phone: f.phone.trim() || undefined,
+      links: Object.fromEntries(Object.entries({ linkedin: f.linkedin.trim(), website: f.website.trim() }).filter(([, v]) => v)),
+    } })),
+    onSuccess: () => { toast({ tone: "success", title: c.saved }); setEdit(false); void qc.invalidateQueries({ queryKey: ["workforce"] }); },
+    onError: (e) => toast({ tone: "danger", title: e instanceof Error ? e.message : String(e) }),
+  });
+  return (
+    <Panel title={c.title} action={admin && !edit ? <Button size="sm" variant="secondary" onClick={() => setEdit(true)}>{c.edit}</Button> : null}>
+      {!edit ? (
+        <dl className="grid gap-3 text-small">
+          <div><dt className="text-eyebrow text-fg-subtle">{c.email}</dt><dd>{wc.email || "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.phone}</dt><dd className="tabular">{wc.phone || "—"}</dd></div>
+          {Object.entries(wc.links).map(([k, v]) => <div key={k}><dt className="text-eyebrow text-fg-subtle">{c.links[k] ?? k}</dt><dd><a className="underline" href={v} rel="noopener noreferrer" target="_blank">{v}</a></dd></div>)}
+        </dl>
+      ) : (
+        <div className="grid gap-3">
+          <Field label={c.email}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />}</Field>
+          <Field label={c.phone}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />}</Field>
+          <Field label={c.links.linkedin}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="url" value={f.linkedin} onChange={(e) => setF({ ...f, linkedin: e.target.value })} />}</Field>
+          <Field label={c.links.website}>{(a) => <Input id={a.id} aria-describedby={a.describedBy} type="url" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} />}</Field>
+          <div className="flex gap-2"><Button size="sm" loading={m.isPending} onClick={() => m.mutate()}>{c.save}</Button><Button size="sm" variant="ghost" onClick={() => setEdit(false)}>{c.cancel}</Button></div>
+        </div>
+      )}
+    </Panel>
   );
 }
 

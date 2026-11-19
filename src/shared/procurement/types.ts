@@ -133,6 +133,7 @@ export type WorkerDetail = WorkerRow & {
   privateFields: { address: string; phone: string; nationalId: string };
   kpis: { key: string; value: number; unit: "pct" | "count" | "hours" | "rating" }[];
   cv?: { education: unknown[]; experience: unknown[]; expertise: string[]; years: string; languages: string[]; bio: string };
+  workContacts?: { email: string; phone: string; links: Record<string, string> };
   contracts?: { id: string; kind: string; title: string; version: number; status: string; start: string; end: string | null; signedAt: string | null }[];
   outcomes?: { completed90d: number; firstPassPct: number | null; reassignmentPct: number | null; revenue90d: number };
   certifications: { name: string; expiresOn?: string }[];
