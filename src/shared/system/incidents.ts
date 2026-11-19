@@ -35,7 +35,8 @@ export const RTO_MINUTES = 240;
 /** Launch gate (Art. 10.3): red until at least one passed restore drill. */
 export const launchGateOpen = (drills: readonly { ok: boolean }[]) => drills.some((d) => d.ok);
 
-/** PRV-breach. PLACEHOLDER(breach-notify-hours): 72 h as instructed (GDPR-style); audit D cites a 48 h NCSA rule — confirm with counsel. */
-export const BREACH_NOTIFY_HOURS = 72;
+/** PRV-breach default: 48 h (stricter reading, audit D / NCSA). Overridable per deployment with the
+ *  `privacy.breach_notify_hours` setting. PLACEHOLDER(breach-notify-hours): confirm 48 h vs 72 h with counsel. */
+export const BREACH_NOTIFY_HOURS = 48;
 export type Breach = { personalData: true; notifyBy: string; notifiedAt?: string; reference?: string };
-export const breachDeadline = (startedAt: string) => new Date(Date.parse(startedAt) + BREACH_NOTIFY_HOURS * 3600_000).toISOString();
+export const breachDeadline = (startedAt: string, hours = BREACH_NOTIFY_HOURS) => new Date(Date.parse(startedAt) + hours * 3600_000).toISOString();

@@ -87,6 +87,8 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "notifications.global_quiet", group: "general", type: "bool", default: false, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: bool },
   { key: "notifications.quiet_start_hour", group: "general", type: "int", unit: "h", default: 21, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
   { key: "notifications.quiet_end_hour", group: "general", type: "int", unit: "h", default: 7, enforcedBy: "Notification delivery (quiet-hours defer)", editableBy: SYS_EXE, requiresApproval: false, validate: validHour },
+  // PRV-breach: regulator-notification window for personal-data incidents (counsel to confirm 48 h vs 72 h).
+  { key: "privacy.breach_notify_hours", group: "security", type: "int", unit: "h", default: 48, enforcedBy: "Incident breach timer (system_breach_timer)", editableBy: SYS_EXE, requiresApproval: true, validate: (v) => (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= 168 ? null : "range") },
   // Maintenance (F-SET-11)
   { key: "maintenance.on", group: "maintenance", type: "bool", default: false, enforcedBy: "API write guard (clients read-only) + site banner", editableBy: SYS_EXE, requiresApproval: false, validate: bool },
   { key: "maintenance.message", group: "maintenance", type: "i18n", default: { rw: "", en: "", fr: "" }, enforcedBy: "Public + client layout banner", editableBy: SYS_EXE, requiresApproval: false, validate: validI18n() },
