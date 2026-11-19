@@ -44,7 +44,7 @@ const en = {
     total: "Invoice total", requested: "Requested", payTo: "Pay to", payer: "Payer's number",
     changed: "Different from the payer's number. An executive must approve, and the note says why.",
   },
-  stages: { before_work: "Before work started", in_progress: "In progress", submitted: "Submitted to institution", completed: "Delivered", duplicate: "Duplicate payment" } as Record<string, string>,
+  stages: { before_work: "Before work started", assigned: "Assigned, not started", in_progress: "In progress", submitted: "Submitted to institution", completed: "Delivered", duplicate: "Duplicate payment" } as Record<string, string>,
   calc: {
     title: "Policy calculator", stage: "Case stage", max: "Max of eligible fee", eligible: "Eligible part", vat: "VAT (proportional)",
     passThrough: "Government & third-party fees", spent: "Already spent", unspent: "Not spent — refund them", suggested: "Suggested refund",
@@ -149,7 +149,7 @@ const rw: Copy = {
     total: "Igiteranyo cy'inyemezabuguzi", requested: "Ayasabwe", payTo: "Yishyurwe kuri", payer: "Nimero y'uwishyuye",
     changed: "Itandukanye na nimero y'uwishyuye. Umuyobozi agomba kwemeza, kandi icyitonderwa gisobanura impamvu.",
   },
-  stages: { before_work: "Mbere y'akazi", in_progress: "Akazi karakorwa", submitted: "Byoherejwe ku kigo", completed: "Byatanzwe", duplicate: "Kwishyura kabiri" },
+  stages: { before_work: "Mbere y'akazi", assigned: "Yahawe umukozi, ntiyatangira", in_progress: "Akazi karakorwa", submitted: "Byoherejwe ku kigo", completed: "Byatanzwe", duplicate: "Kwishyura kabiri" },
   calc: {
     title: "Ibarura rya politiki", stage: "Icyiciro", max: "Ntarengwa ku mafaranga agabanywa", eligible: "Igice kigabanywa", vat: "TVA (ijyanye)",
     passThrough: "Amafaranga ya Leta n'abandi", spent: "Yamaze gukoreshwa", unspent: "Ntiyakoreshejwe — asubizwe", suggested: "Igitekerezo cyo gusubiza",
@@ -253,7 +253,7 @@ const fr: Copy = {
     total: "Total facture", requested: "Demandé", payTo: "Payer à", payer: "Numéro du payeur",
     changed: "Différent du numéro du payeur. La direction doit approuver et la note explique pourquoi.",
   },
-  stages: { before_work: "Avant travaux", in_progress: "En cours", submitted: "Déposé auprès de l'institution", completed: "Livré", duplicate: "Paiement en double" },
+  stages: { before_work: "Avant travaux", assigned: "Attribué, non commencé", in_progress: "En cours", submitted: "Déposé auprès de l'institution", completed: "Livré", duplicate: "Paiement en double" },
   calc: {
     title: "Calcul selon la politique", stage: "Étape du dossier", max: "Max. des honoraires éligibles", eligible: "Part éligible", vat: "TVA (proportionnelle)",
     passThrough: "Frais publics et de tiers", spent: "Déjà dépensés", unspent: "Non dépensés — à rembourser", suggested: "Remboursement suggéré",
