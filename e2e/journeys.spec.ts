@@ -91,11 +91,10 @@ test("procurement officer: requests → orders → receipts → bills → paymen
   noIssues(issues, info);
 });
 
-// shortcut: helpers.ts has no partner-manager demo login; runs as the service manager (who also holds partner pages) until one is seeded.
-test("partner manager: partner records and agreements", async ({ page }, info) => {
+test("partner manager: partner records, agreements, actions, meetings, commissions", async ({ page }, info) => {
   const issues = watch(page);
-  await staffLogin(page, "sm");
-  await walk(page, "j-prt", ["/partners"]);
+  await staffLogin(page, "pm"); // seed persona mock-partners (pm@example.test, staff:partner_manager)
+  await walk(page, "j-prt", ["/partners", "/partners/agreements", "/partners/actions", "/partners/meetings", "/partners/commissions", "/partners/reports"]);
   noIssues(issues, info);
 });
 

@@ -30,7 +30,7 @@ export async function a11y(page: Page, name: string) {
 const STAFF: Record<string, string> = {
   sm: "diane.mukamana@hebuza.example", agent: "eric.habimana@hebuza.example", ext: "jean-paul.nkurunziza@ingabo.example",
   finance: "patrick.niyonzima@hebuza.example", marketing: "grace.mutesi@hebuza.example", procurement: "josiane.uwera@hebuza.example",
-  exec: "alice.mutoni@hebuza.example", sysadmin: "innocent.kayitare@hebuza.example", field: "emmanuel.mugabo@hebuza.example",
+  exec: "alice.mutoni@hebuza.example", pm: "pm@example.test", sysadmin: "innocent.kayitare@hebuza.example", field: "emmanuel.mugabo@hebuza.example",
 };
 export async function staffLogin(page: Page, who: keyof typeof STAFF | string) {
   const headers = { origin: process.env.E2E_BASE_URL ?? `http://localhost:${process.env.PORT ?? 3000}` }; // API CSRF origin check
