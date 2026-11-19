@@ -7,7 +7,7 @@ WORKDIR /app
 
 FROM base AS build
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 COPY . .
 # Mocks are compiled out of production images (MSW off); NEXT_PUBLIC_* are baked at build time.
 ARG NEXT_PUBLIC_SITE_URL=https://hebuza.example
@@ -16,8 +16,8 @@ ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY=
 # next.config rewrites (/api/* → API) are compiled into the build manifest, so the API URL is a build input too.
 ARG API_URL=
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL DEPLOYMENT_VERSION=$DEPLOYMENT_VERSION NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY API_URL=$API_URL
-# .next/cache persists Turbopack/fetch caches between image builds (not copied into the image).
-RUN --mount=type=cache,id=next-cache,target=/app/.next/cache pnpm build
+# shortcut: no BuildKit cache mounts (Railway needs s/<service-id> cache ids), add per-service ids if builds get slow
+RUN pnpm build
 
 FROM gcr.io/distroless/nodejs22-debian12:nonroot AS runtime
 ENV NODE_ENV=production HOSTNAME=:: PORT=3000
