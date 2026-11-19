@@ -15,11 +15,12 @@ import { errorState } from "@/lib/system/api";
 import { approversFor, CHANGE_TTL_MS } from "@/shared/system/approvals";
 import { SETTING_GROUPS, parseCidr, settingDef, settingsIn, type SettingDef } from "@/shared/system/settings-registry";
 import {
-  exportSettingsJson, ipInCidr, useAddLanguage, useLanguageReport, useMyIp, useSaveSettings, useSettings, withStepUp, type SettingsBundle,
+  exportSettingsJson, importSettingsJson, ipInCidr, useAddLanguage, useLanguageReport, useMyIp, useSaveSettings, useSettings, withStepUp, type SettingsBundle,
 } from "@/lib/system/d";
 import type { I18nText, MaintenanceWindow, SettingGroup } from "@/shared/system/types";
 import { locales, type Locale } from "@/shared/i18n/config";
 import { Icon, type IconName } from "@/components/atoms/icon";
+import { settingsImportCopy } from "@/content/pages/settings-import";
 import { Button, ButtonLink } from "@/components/atoms/button";
 import { Dialog } from "@/components/atoms/dialog";
 import { ErrorSummary, Field, Input, Switch, Textarea } from "@/components/atoms/field";
@@ -157,9 +158,12 @@ export function SettingsView({ group }: { group: string }) {
   return (
     <div className="grid gap-5 pb-28">
       <SysPageHead title={c.title} sub={c.sub} actions={
-        <Button variant="outline" size="sm" onClick={doExport} loading={exporting} disabled={!online} title={c.export.hint}>
-          <Icon name="file" size={14} aria-hidden />{c.export.button}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" onClick={doExport} loading={exporting} disabled={!online} title={c.export.hint}>
+            <Icon name="file" size={14} aria-hidden />{c.export.button}
+          </Button>
+          <ImportSettings onDone={() => void q.refetch()} />
+        </div>
       } />
       <div className="grid gap-5 lg:grid-cols-[13rem_minmax(0,1fr)]">
         {nav}
@@ -615,5 +619,32 @@ function SaveBar(p: {
         </div>
       </div>
     </div>
+  );
+}
+
+/** F-SET-13: pick an exported settings JSON and re-apply it. */
+function ImportSettings({ onDone }: { onDone: () => void }) {
+  const { locale } = useI18n();
+  const k = settingsImportCopy(locale);
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  const pick = async (f: File | undefined) => {
+    if (!f) return;
+    setBusy(true);
+    try {
+      const r = await importSettingsJson(await f.text());
+      toast({ title: r.skipped.length ? `${k.pending} · ${k.skipped.replace("{n}", String(r.skipped.length))}` : k.pending, tone: "success" });
+      onDone();
+    } catch (e) {
+      toast({ title: e instanceof ApiError && e.status === 422 ? k.failed : sysError(locale, e instanceof ApiError ? e.errorType : null), tone: "danger" });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <label className={cx("inline-flex h-8 cursor-pointer items-center gap-1.5 border border-border px-3 text-small hover:bg-bg-subtle focus-within:outline-2", busy && "opacity-60")}>
+      <Icon name="upload" size={14} aria-hidden />{k.button}
+      <input type="file" accept="application/json,.json" className="sr-only" aria-label={k.label} disabled={busy} onChange={(e) => void pick(e.target.files?.[0])} />
+    </label>
   );
 }

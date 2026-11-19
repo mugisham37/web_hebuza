@@ -38,6 +38,8 @@ export function useSaveSettings() {
     },
   });
 }
+/** F-SET-13: re-apply an exported settings file (server validates; approvals/audit as for edits). */
+export const importSettingsJson = (json: string) => unwrap<{ result: unknown; skipped: string[] }>(api.POST("/api/staff/settings/import", { body: { json }, headers: hdr({ idempotent: true }) }));
 export const exportSettingsJson = (token: string) => unwrap<{ json: string }>(api.POST("/api/staff/settings/export", { headers: hdr({ stepUp: token, idempotent: true }) }));
 export function useAddLanguage() {
   const qc = useQueryClient();
