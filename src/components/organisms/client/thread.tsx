@@ -15,6 +15,7 @@ import { ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { c2Copy, fill } from "@/content/pages/c2";
 import { chatCardCopy } from "@/content/pages/chat-cards";
 import { localHref } from "@/shared/i18n/config";
+import { pingDelivered, pingTyping, useConvSearch, useDeleteMsg, useDispute, useEditMsg, useMsgHistory, useMute, usePinned, useReact, type Reaction } from "@/lib/chat";
 
 type Msg = C.MessageResponse;
 type Conv = C.ConversationResponse;
@@ -107,13 +108,20 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
   const [fileErr, setFileErr] = useState<string | null>(null);
   const picker = useRef<HTMLInputElement>(null);
   const end = useRef<HTMLDivElement>(null);
+  const typedAt = useRef(0);
+  const [q, setQ] = useState("");
+  const found = useConvSearch(id, q);
+  const pinned = usePinned(id).data ?? [];
+  const dispute = useDispute(id, conv.has_dispute).data;
+  const mute = useMute(["c2", "conv"]);
   const list = msgs.data?.messages ?? [];
   const lastSeq = list.at(-1)?.seq ?? 0;
 
   // Mark read whenever new messages arrive while the thread is open.
   useEffect(() => {
-    if (lastSeq)
-      api
+    if (!lastSeq) return;
+    pingDelivered(id, lastSeq);
+    api
         .POST("/api/chat/conversations/{id}/read", {
           params: { path: { id } },
           body: { seq: lastSeq },
@@ -207,6 +215,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
   const mine = (m: Msg) =>
     (user && m.sender_id === user.id) || m.sender_role === "client";
   const tooLong = text.length > MAX;
+  const searching = q.trim().length >= 2;
 
   return (
     <section
@@ -223,13 +232,71 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
         </p>
       )}
 
+      <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
+        <label className="relative min-w-0 flex-1">
+          <span className="sr-only">{c.search}</span>
+          <Icon name="search" size={14} aria-hidden className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-fg-subtle" />
+          <input
+            type="search"
+            value={q}
+            placeholder={c.search}
+            onChange={(e) => setQ(e.target.value)}
+            className="h-9 w-full border border-border bg-surface pr-3 pl-8 text-small focus:border-secondary focus:outline-none"
+          />
+        </label>
+        <Button
+          size="sm"
+          variant="ghost"
+          aria-pressed={conv.muted}
+          loading={mute.isPending}
+          onClick={() => mute.mutate({ id, muted: !conv.muted })}
+        >
+          {conv.muted ? c.unmute : c.mute}
+        </Button>
+        {conv.muted && <span className="sr-only" role="status">{c.muted}</span>}
+      </div>
+      {dispute && (
+        <p role="status" className="bg-warning-bg px-4 py-2 text-small text-warning">
+          {dispute.status === "resolved" ? c.disputeDone : fill(c.dispute, { s: dispute.category })}
+        </p>
+      )}
+      {pinned.length > 0 && !searching && (
+        <ul aria-label={c.pinned} className="grid gap-1 border-b border-border bg-bg-tint px-4 py-2 text-small">
+          {pinned.map((m) => (
+            <li key={m.message_id} className="flex min-w-0 items-center gap-2">
+              <span className="shrink-0 text-eyebrow text-fg-subtle">{c.pinned}</span>
+              <span className="truncate">{m.content}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div
         className="flex-1 overflow-y-auto px-4 py-5 sm:px-6"
         role="log"
         aria-live="polite"
         aria-relevant="additions"
       >
-        {msgs.isPending ? (
+        {searching ? (
+          found.isPending ? (
+            <Skeleton className="h-16 w-2/3 " />
+          ) : found.isError ? (
+            <ErrorState error={found.error} onRetry={() => found.refetch()} />
+          ) : !found.data.results.length ? (
+            <p className="py-10 text-center text-body text-fg-muted">{c.noResults}</p>
+          ) : (
+            <ol className="grid gap-3" aria-label={c.search}>
+              {found.data.results.map((m) => (
+                <li key={m.message_id} className="border-b border-border pb-2 text-body">
+                  <p className="text-small text-fg-muted">
+                    {m.sender_name ?? c.you} · <time dateTime={m.created_at}>{formatDate(m.created_at, locale, { dateStyle: "medium", timeStyle: "short" })}</time>
+                  </p>
+                  <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                </li>
+              ))}
+            </ol>
+          )
+        ) : msgs.isPending ? (
           <Skeleton className="h-16 w-2/3 " />
         ) : msgs.isError ? (
           <ErrorState error={msgs.error} onRetry={() => msgs.refetch()} />
@@ -267,7 +334,9 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
                         {m.sender_name}
                       </p>
                     )}
-                    {m.kind === "card" ? (
+                    {m.deleted_at ? (
+                      <p className="italic opacity-80">{c.deleted}</p>
+                    ) : m.kind === "card" ? (
                       <ChatCard m={m} onAnswered={() => void msgs.refetch()} />
                     ) : (
                       m.content && (
@@ -299,6 +368,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
                       </time>
                       {mine(m) && <> · {receipt(m.seq)}</>}
                     </p>
+                    {!m.deleted_at && <MsgExtras m={m} own={!!user && m.sender_id === user.id} me={user?.id} msgKey={key} />}
                   </div>
                 </li>
               ),
@@ -438,7 +508,14 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
               placeholder={c.placeholder}
               aria-invalid={tooLong || undefined}
               aria-describedby="c2-msg-hint"
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                // F-MSG-06: at most one typing ping per 4 s
+                if (Date.now() - typedAt.current > 4000) {
+                  typedAt.current = Date.now();
+                  pingTyping(id);
+                }
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -516,6 +593,104 @@ function ChatCard({ m, onAnswered }: { m: Msg; onAnswered: () => void }) {
         <a href={localHref(locale, "/documents")} className="mt-1 text-small underline underline-offset-4">{k.open}</a>
       )}
       {err && <p role="alert" className="text-small text-danger">{k.failed}</p>}
+    </div>
+  );
+}
+
+const EMOJI = ["👍", "❤️", "🙏"];
+const EDIT_MS = 15 * 60_000; // F-MSG-04: edit window
+
+/** F-MSG-04 message-row actions: reactions, edit (15 min) with history, soft delete of your own message. */
+function MsgExtras({ m, own, me, msgKey }: { m: Msg; own: boolean; me?: string; msgKey: readonly unknown[] }) {
+  const { locale } = useI18n();
+  const c = c2Copy(locale).msg;
+  const edit = useEditMsg(msgKey);
+  const del = useDeleteMsg(msgKey);
+  const react = useReact(msgKey);
+  const [draft, setDraft] = useState<string | null>(null);
+  const [showHist, setShowHist] = useState(false);
+  const hist = useMsgHistory(m.message_id, showHist);
+  const reactions = m.reactions as Reaction[];
+  const failed = edit.isError || del.isError || react.isError;
+  const [openedAt] = useState(Date.now);
+  const canEdit = own && m.kind !== "card" && openedAt - Date.parse(m.created_at) < EDIT_MS;
+  return (
+    <div className="mt-2 grid gap-1 text-small">
+      {draft !== null && (
+        <form
+          className="grid gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (draft.trim()) edit.mutate({ id: m.message_id, content: draft.trim() }, { onSuccess: () => setDraft(null) });
+          }}
+        >
+          <label>
+            <span className="sr-only">{c.edit}</span>
+            <textarea
+              value={draft}
+              maxLength={4000}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => e.key === "Escape" && setDraft(null)}
+              className="block w-full border border-border bg-surface px-3 py-2 text-ink-900"
+            />
+          </label>
+          <div className="flex gap-2">
+            <Button size="sm" type="submit" loading={edit.isPending}>{c.save}</Button>
+            <Button size="sm" type="button" variant="outline" onClick={() => setDraft(null)}>{c.cancel}</Button>
+          </div>
+        </form>
+      )}
+      <div className="flex flex-wrap items-center gap-1">
+        {EMOJI.map((e) => {
+          const r = reactions.find((x) => x.emoji === e);
+          const on = !!me && !!r?.user_ids.includes(me);
+          return (
+            <button
+              key={e}
+              type="button"
+              aria-pressed={on}
+              aria-label={fill(c.react, { e })}
+              disabled={react.isPending}
+              onClick={() => react.mutate({ id: m.message_id, emoji: e })}
+              className={cx("h-8 min-w-8 px-1.5", on ? "bg-white/30" : "opacity-70 hover:opacity-100")}
+            >
+              {e}
+              {r?.user_ids.length ? <span className="ml-0.5 tabular">{r.user_ids.length}</span> : null}
+            </button>
+          );
+        })}
+        {m.edited_at && (
+          <button type="button" aria-expanded={showHist} onClick={() => setShowHist((x) => !x)} className="h-8 px-1.5 underline opacity-80">
+            {c.edited}
+          </button>
+        )}
+        {canEdit && draft === null && (
+          <button type="button" onClick={() => setDraft(m.content)} className="h-8 px-1.5 underline opacity-80">
+            {c.edit}
+          </button>
+        )}
+        {own && (
+          <button type="button" disabled={del.isPending} onClick={() => del.mutate(m.message_id)} className="h-8 px-1.5 underline opacity-80">
+            {c.del}
+          </button>
+        )}
+      </div>
+      {showHist && (
+        <div aria-label={c.history} className="grid gap-1 border-l-2 border-current/30 pl-2 opacity-80">
+          {hist.isPending ? (
+            <Skeleton className="h-4 w-1/2" />
+          ) : hist.isError ? (
+            <p role="alert">{c.actionFailed}</p>
+          ) : (
+            hist.data.map((h) => (
+              <p key={h.edited_at} className="whitespace-pre-wrap break-words">
+                <time dateTime={h.edited_at}>{formatDate(h.edited_at, locale, { timeStyle: "short" })}</time> · {h.content}
+              </p>
+            ))
+          )}
+        </div>
+      )}
+      {failed && <p role="alert" className="text-danger">{c.actionFailed}</p>}
     </div>
   );
 }

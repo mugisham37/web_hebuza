@@ -473,3 +473,28 @@ export const reorderSubStatuses = (canonical: CaseStatus, ids: string[]) =>
   unwrap(api.POST("/api/admin/ops/sub-statuses/order", { body: { canonical, ids } }));
 export const deleteSubStatus = (id: string) =>
   unwrap(api.DELETE("/api/admin/ops/sub-statuses/{id}", { params: { path: { id: id } } }));
+
+// ---------------------------------------------------------------- U16 taxonomy CRUD + service lifecycle (status, delete)
+export type CategoryIn = S["CategoryDto"];
+export type SubcategoryIn = S["SubcategoryDto"];
+/** Any taxonomy/lifecycle write; every catalogue list refetches after. */
+export function useCatalogueWrite<V>(fn: (v: V) => Promise<unknown>) {
+  const qc = useQueryClient();
+  return useMutation({ mutationFn: fn, onSettled: () => qc.invalidateQueries({ queryKey: ["ops", "catalogue"] }) });
+}
+export const createCategory = (b: CategoryIn) =>
+  unwrap<Category>(api.POST("/api/admin/service-categories", { body: b }));
+export const patchCategory = (id: string, b: S["CategoryPatchDto"]) =>
+  unwrap<Category>(api.PATCH("/api/admin/service-categories/{id}", { params: { path: { id } }, body: b }));
+export const deleteCategory = (id: string) =>
+  unwrap(api.DELETE("/api/admin/service-categories/{id}", { params: { path: { id } } }));
+export const createSubcategory = (b: SubcategoryIn) =>
+  unwrap<Subcategory>(api.POST("/api/admin/service-subcategories", { body: b }));
+export const patchSubcategory = (id: string, b: S["SubcategoryPatchDto"]) =>
+  unwrap<Subcategory>(api.PATCH("/api/admin/service-subcategories/{id}", { params: { path: { id } }, body: b }));
+export const deleteSubcategory = (id: string) =>
+  unwrap(api.DELETE("/api/admin/service-subcategories/{id}", { params: { path: { id } } }));
+export const setServiceStatus = (slug: string, status: string) =>
+  unwrap<ServiceDetail>(api.PATCH("/api/admin/services/{slug}/status", { params: { path: { slug } }, body: { status } }));
+export const deleteService = (slug: string) =>
+  unwrap(api.DELETE("/api/admin/services/{slug}", { params: { path: { slug } } }));

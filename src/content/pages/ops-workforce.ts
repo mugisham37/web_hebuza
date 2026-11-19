@@ -2,6 +2,7 @@
 import type { Locale } from "@/shared/i18n/config";
 
 const en = {
+  ext: { title: "External work", none: "Nothing waiting for a decision.", onboarding: "Onboarding submitted {d}", changesAsked: "Changes requested: {n}", approve: "Approve", changes: "Request changes", note: "Note to the agent", noteNeeded: "Add a note so the agent knows what to fix.", access: "Document access · {ref}", grant: "Grant", deny: "Deny", rate: "Rate change · {s}", reject: "Reject", invoice: "Invoice {n} · {p}", accept: "Accept", payout: "Payout account {l} ••{d}", verify: "Verify", fail: "Mark failed", done: "Decision saved." },
   title: "Workforce", sub: "Everyone who works on cases: internal staff, external agents and field agents.",
   approvals: "Approvals", add: "Add person", search: "Search name, email or service",
   seg: { all: "All", internal: "Internal", external: "External", field: "Field" },
@@ -58,6 +59,7 @@ const en = {
 type Copy = typeof en;
 
 const rw: Copy = {
+  ext: { title: "Akazi ko hanze", none: "Nta kintu gitegereje icyemezo.", onboarding: "Kwiyandikisha byoherejwe {d}", changesAsked: "Ibisabwa guhindurwa: {n}", approve: "Emeza", changes: "Saba impinduka", note: "Ubutumwa ku mukozi", noteNeeded: "Andika ubutumwa kugira ngo umukozi amenye icyo akosora.", access: "Uburenganzira ku nyandiko · {ref}", grant: "Emera", deny: "Yanga", rate: "Guhindura igiciro · {s}", reject: "Yanga", invoice: "Fagitire {n} · {p}", accept: "Emera", payout: "Konti yo kwishyurirwaho {l} ••{d}", verify: "Emeza", fail: "Byanze", done: "Icyemezo cyabitswe." },
   title: "Abakozi", sub: "Abakora ku madosiye bose: abakozi b'imbere, abakozi bo hanze n'abakora mu murima.",
   approvals: "Ibyemezo", add: "Ongeramo umuntu", search: "Shaka izina, imeyili cyangwa serivisi",
   seg: { all: "Bose", internal: "Imbere", external: "Hanze", field: "Mu murima" },
@@ -113,6 +115,7 @@ const rw: Copy = {
 };
 
 const fr: Copy = {
+  ext: { title: "Travail externe", none: "Rien en attente de décision.", onboarding: "Intégration soumise {d}", changesAsked: "Modifications demandées : {n}", approve: "Approuver", changes: "Demander des modifications", note: "Note à l’agent", noteNeeded: "Ajoutez une note pour que l’agent sache quoi corriger.", access: "Accès aux documents · {ref}", grant: "Accorder", deny: "Refuser", rate: "Changement de tarif · {s}", reject: "Rejeter", invoice: "Facture {n} · {p}", accept: "Accepter", payout: "Compte de paiement {l} ••{d}", verify: "Vérifier", fail: "Marquer en échec", done: "Décision enregistrée." },
   title: "Effectifs", sub: "Toutes les personnes qui traitent des dossiers : internes, agents externes et agents de terrain.",
   approvals: "Approbations", add: "Ajouter une personne", search: "Nom, e-mail ou service",
   seg: { all: "Tous", internal: "Internes", external: "Externes", field: "Terrain" },

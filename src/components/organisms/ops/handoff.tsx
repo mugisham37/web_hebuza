@@ -14,6 +14,7 @@ import {
   useBrief,
   useSaveBrief,
   useSendOffer,
+  useCounterDecision,
   useScope,
   useSaveScope,
   useOffers,
@@ -642,6 +643,7 @@ export function OfferStep({ c }: { c: CaseDetailVM }) {
   const q = useOffers(c.ref);
   const sugg = useSuggestions(c.ref, false);
   const send = useSendOffer();
+  const counter = useCounterDecision();
   const toast = useToast();
   const [reassigning, setReassigning] = useState(false);
   if (q.isPending) return <Skeleton className="h-72" />;
@@ -734,6 +736,35 @@ export function OfferStep({ c }: { c: CaseDetailVM }) {
           >
             {fill(t.accepted, { name: cur.agentName })}
           </p>
+        )}
+        {cur.counter?.status === "pending" && (
+          <div
+            role="status"
+            className="mt-3 flex flex-wrap items-center gap-3 bg-tint px-3 py-2.5 text-small"
+          >
+            <span className="flex-1 font-medium">
+              {fill(t.counter, { d: formatDate(cur.counter.due, locale), r: cur.counter.reason })}
+            </span>
+            {(["accept", "decline"] as const).map((decision) => (
+              <Button
+                key={decision}
+                size="sm"
+                variant={decision === "accept" ? "primary" : "outline"}
+                disabled={counter.isPending}
+                onClick={() =>
+                  counter.mutate(
+                    { ref: c.ref, id: cur.id, decision },
+                    {
+                      onSuccess: () => toast({ title: t.counterDone, tone: "success" }),
+                      onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }),
+                    },
+                  )
+                }
+              >
+                {decision === "accept" ? t.counterAccept : t.counterDecline}
+              </Button>
+            ))}
+          </div>
         )}
         {ended && (
           <div

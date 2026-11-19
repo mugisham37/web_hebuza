@@ -13,9 +13,20 @@ import {
   useStructures,
   useCategories,
   useCreateService,
+  useSubcategories,
+  useCatalogueWrite,
+  createCategory,
+  patchCategory,
+  deleteCategory,
+  createSubcategory,
+  patchSubcategory,
+  deleteSubcategory,
+  setServiceStatus,
+  deleteService,
   type StructureRow,
   type ServiceRow,
   type Category,
+  type Subcategory,
   getDraft,
   putDraft,
 } from "@/lib/ops/e";
@@ -25,9 +36,9 @@ import { OpsTable, type OpsColumn } from "@/components/molecules/ops/ops-table";
 import { Button } from "@/components/atoms/button";
 import { Badge } from "@/components/atoms/tag";
 import { Dialog } from "@/components/atoms/dialog";
-import { Field, Input, Select } from "@/components/atoms/field";
+import { Field, Input, Select, Switch } from "@/components/atoms/field";
 import { Icon } from "@/components/atoms/icon";
-import { EmptyState } from "@/components/atoms/feedback";
+import { EmptyState, ErrorState, Spinner } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { Kbd } from "@/components/atoms/ops";
 import { usePhone } from "@/components/atoms/step-up";
@@ -59,7 +70,13 @@ export function CatalogueView() {
   const cats = useCategories();
   const [focused, setFocused] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [taxonomy, setTaxonomy] = useState(false);
+  const [removing, setRemoving] = useState<Row | null>(null);
   const create = useCreateService();
+  const status = useCatalogueWrite((v: { slug: string; status: string }) => setServiceStatus(v.slug, v.status));
+  const remove = useCatalogueWrite(deleteService);
+  const fail = (x: unknown) =>
+    toast({ tone: "danger", title: x instanceof ApiError ? (x.isForbidden ? c.taxonomy.forbidden : x.message) : c.taxonomy.failed });
   useShortcut("n", c.list.newService, () => setCreating(true), "list");
 
   const svcBySlug = new Map(
@@ -224,8 +241,28 @@ export function CatalogueView() {
       key: "actions",
       label: c.list.cols.actions,
       card: false,
-      className: "min-w-28",
+      className: "min-w-80",
       cell: (r) => (
+        <span className="flex flex-wrap items-center gap-2">
+        <Select
+          aria-label={fill(c.taxonomy.status, { name: r.name })}
+          value={r.serviceStatus}
+          disabled={status.isPending}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) =>
+            status.mutate(
+              { slug: r.slug, status: e.target.value },
+              { onSuccess: () => toast({ tone: "success", title: fill(c.taxonomy.statusSaved, { s: c.serviceStatus[e.target.value] ?? e.target.value }) }), onError: fail },
+            )
+          }
+          className="h-8 !w-32"
+        >
+          {["draft", "published", "paused", "archived"].map((s) => (
+            <option key={s} value={s}>
+              {c.serviceStatus[s]}
+            </option>
+          ))}
+        </Select>
         <Button
           size="sm"
           variant="outline"
@@ -239,6 +276,19 @@ export function CatalogueView() {
         >
           {c.list.duplicate}
         </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8"
+          onClick={(e) => {
+            e.stopPropagation();
+            setRemoving(r);
+          }}
+          aria-label={`${c.taxonomy.del} ${r.name}`}
+        >
+          {c.taxonomy.del}
+        </Button>
+        </span>
       ),
     },
   ];
@@ -251,9 +301,14 @@ export function CatalogueView() {
           <h1 className="text-h2">{c.list.title}</h1>
           <p className="text-small text-fg-subtle">{c.list.lede}</p>
         </div>
-        <Button onClick={() => setCreating(true)} dots>
-          {c.list.newService} <Kbd>N</Kbd>
-        </Button>
+        <span className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={() => setTaxonomy(true)}>
+            {c.taxonomy.manage}
+          </Button>
+          <Button onClick={() => setCreating(true)} dots>
+            {c.list.newService} <Kbd>N</Kbd>
+          </Button>
+        </span>
       </header>
       <div className="grid gap-2 sm:flex sm:flex-wrap sm:items-center">
         <label className="relative min-w-0 flex-1 basis-56 sm:max-w-96">
@@ -356,6 +411,37 @@ export function CatalogueView() {
         cats={catList}
         onCreated={(slug) => router.push(`${href(slug)}?step=details`)}
       />
+      <TaxonomyDialog open={taxonomy} onClose={() => setTaxonomy(false)} />
+      <Dialog
+        open={!!removing}
+        onClose={() => setRemoving(null)}
+        title={fill(c.taxonomy.delSvc, { name: removing?.name ?? "" })}
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setRemoving(null)}>
+              {c.taxonomy.cancel}
+            </Button>
+            <Button
+              variant="danger"
+              loading={remove.isPending}
+              onClick={() =>
+                removing &&
+                remove.mutate(removing.slug, {
+                  onSuccess: () => {
+                    setRemoving(null);
+                    toast({ tone: "success", title: c.taxonomy.deleted });
+                  },
+                  onError: fail,
+                })
+              }
+            >
+              {c.taxonomy.confirm}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-body text-fg-muted">{c.taxonomy.delSvcBody}</p>
+      </Dialog>
     </div>
   );
 }
@@ -493,6 +579,129 @@ function NewServiceDialog({
         </Field>
         <button type="submit" hidden />
       </form>
+    </Dialog>
+  );
+}
+
+type Draft = { kind: "cat" | "sub"; id?: string; category_id: string; name_rw: string; name_en: string; name_fr: string };
+
+/** U16 category/subcategory CRUD (F-CAT-02): names in rw/en/fr, active toggle, delete (server refuses when in use). */
+function TaxonomyDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { locale } = useI18n();
+  const c = opsCatalogue(locale).taxonomy;
+  const toast = useToast();
+  const phone = usePhone();
+  const cats = useCategories();
+  const subs = useSubcategories();
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [err, setErr] = useState("");
+  const done = (title: string) => () => toast({ tone: "success", title });
+  const fail = (x: unknown) =>
+    toast({ tone: "danger", title: x instanceof ApiError ? (x.isForbidden ? c.forbidden : x.message) : c.failed });
+  const save = useCatalogueWrite(({ kind, id, ...b }: Draft) =>
+    kind === "cat"
+      ? id ? patchCategory(id, b) : createCategory({ ...b, is_active: true })
+      : id ? patchSubcategory(id, b) : createSubcategory({ ...b, is_active: true }),
+  );
+  const toggle = useCatalogueWrite((v: { kind: "cat" | "sub"; id: string; on: boolean }) =>
+    v.kind === "cat" ? patchCategory(v.id, { is_active: v.on }) : patchSubcategory(v.id, { is_active: v.on }),
+  );
+  const del = useCatalogueWrite((v: { kind: "cat" | "sub"; id: string }) =>
+    v.kind === "cat" ? deleteCategory(v.id) : deleteSubcategory(v.id),
+  );
+  const submit = () => {
+    if (!draft) return;
+    if (![draft.name_rw, draft.name_en, draft.name_fr].every((x) => x.trim())) return setErr(c.required);
+    setErr("");
+    save.mutate(draft, { onSuccess: () => { setDraft(null); done(c.saved)(); }, onError: fail });
+  };
+  const list = [...(cats.data?.categories ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+  const edit = (kind: "cat" | "sub", x?: Category | Subcategory, category_id = "") =>
+    setDraft({ kind, id: x?.id, category_id: x && "category_id" in x ? x.category_id : category_id, name_rw: x?.name_rw ?? "", name_en: x?.name_en ?? "", name_fr: x?.name_fr ?? "" });
+  const row = (kind: "cat" | "sub", x: Category | Subcategory) => (
+    <span className="flex flex-wrap items-center gap-2">
+      <span className="min-w-0 flex-1 basis-40">
+        {x[`name_${locale}`] || x.name_en}
+        {x.service_count != null && <span className="ml-2 text-small text-fg-subtle tabular">{fill(c.count, { n: x.service_count })}</span>}
+      </span>
+      <Switch
+        label={c.active}
+        checked={x.is_active}
+        disabled={toggle.isPending}
+        onChange={(e) => toggle.mutate({ kind, id: x.id, on: e.target.checked }, { onError: fail })}
+      />
+      <Button size="sm" variant="outline" className="h-8" onClick={() => edit(kind, x)} aria-label={`${c.edit} ${x.name_en}`}>
+        {c.edit}
+      </Button>
+      <Button size="sm" variant="outline" className="h-8" disabled={del.isPending} onClick={() => del.mutate({ kind, id: x.id }, { onSuccess: done(c.deleted), onError: fail })} aria-label={`${c.del} ${x.name_en}`}>
+        {c.del}
+      </Button>
+    </span>
+  );
+  return (
+    <Dialog
+      open={open}
+      onClose={() => { setDraft(null); onClose(); }}
+      title={c.title}
+      description={c.lede}
+      side={phone ? "bottom" : undefined}
+      footer={draft ? (
+        <>
+          <Button variant="outline" onClick={() => setDraft(null)}>{c.cancel}</Button>
+          <Button onClick={submit} loading={save.isPending}>{c.save}</Button>
+        </>
+      ) : (
+        <>
+          <Button variant="outline" onClick={onClose}>{c.close}</Button>
+          <Button onClick={() => edit("cat")}>{c.addCat}</Button>
+        </>
+      )}
+    >
+      {draft ? (
+        <form className="grid gap-4" onSubmit={(e) => { e.preventDefault(); submit(); }}>
+          {err && <p role="alert" className="text-small text-danger">{err}</p>}
+          {draft.kind === "sub" && (
+            <Field label={c.parent}>
+              {(a) => (
+                <Select id={a.id} value={draft.category_id} onChange={(e) => setDraft({ ...draft, category_id: e.target.value })} className="h-10">
+                  {list.map((x) => <option key={x.id} value={x.id}>{catName(x, locale)}</option>)}
+                </Select>
+              )}
+            </Field>
+          )}
+          {(["rw", "en", "fr"] as const).map((l) => (
+            <Field key={l} label={fill(c.nameIn, { lang: l.toUpperCase() })}>
+              {(a) => (
+                <Input id={a.id} aria-describedby={a.describedBy} value={draft[`name_${l}`]} maxLength={128} onChange={(e) => setDraft({ ...draft, [`name_${l}`]: e.target.value })} className="h-10" />
+              )}
+            </Field>
+          ))}
+          <button type="submit" hidden />
+        </form>
+      ) : cats.isPending || subs.isPending ? (
+        <Spinner label={c.title} />
+      ) : cats.error || subs.error ? (
+        <ErrorState error={cats.error ?? subs.error} onRetry={() => { cats.refetch(); subs.refetch(); }} />
+      ) : !list.length ? (
+        <EmptyState title={c.empty} />
+      ) : (
+        <ul className="grid gap-4">
+          {list.map((cat) => {
+            const children = (subs.data?.subcategories ?? []).filter((s) => s.category_id === cat.id);
+            return (
+              <li key={cat.id} className="grid gap-2 border-b border-border pb-3">
+                <span className="font-medium">{row("cat", cat)}</span>
+                <ul className="grid gap-2 pl-4" aria-label={catName(cat, locale)}>
+                  {children.length ? children.map((s) => <li key={s.id}>{row("sub", s)}</li>) : <li className="text-small text-fg-subtle">{c.noSubs}</li>}
+                </ul>
+                <Button size="sm" variant="ghost" className="h-8 justify-self-start" onClick={() => edit("sub", undefined, cat.id)}>
+                  {c.addSub}
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </Dialog>
   );
 }

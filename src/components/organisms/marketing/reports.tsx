@@ -5,8 +5,8 @@ import { useI18n } from "@/lib/i18n/provider";
 import { useUrlParams, setUrlParams } from "@/lib/url-state";
 import { formatDate, formatMoney, formatNumber } from "@/shared/format";
 import { errorCopy } from "@/lib/api/error-copy";
-import { newIdempotencyKey } from "@/lib/api/client";
-import { addSocial, confirmSocial, importSocial, useAnalytics, type CampaignRow, type FunnelRow, type Range, type SocialRow, type Tab } from "@/lib/marketing/insights";
+import { ApiError, newIdempotencyKey } from "@/lib/api/client";
+import { addSocial, confirmSocial, importSocial, useAnalytics, useContentFeedback, type CampaignRow, type FunnelRow, type Range, type SocialRow, type Tab } from "@/lib/marketing/insights";
 import { fill } from "@/content/pages/mkt-common";
 import { Tabs } from "@/components/atoms/tabs";
 import { Field, Input, Select, Textarea } from "@/components/atoms/field";
@@ -149,8 +149,22 @@ function TrafficTab({ r }: { r: Range }) {
           <Panel title={t.rep.traffic.sources}><Bars items={d.sources.map((x) => ({ label: m.source[x.source] ?? x.source, value: x.sessions }))} /></Panel>
           <Panel title={t.rep.traffic.pages}><Bars items={d.pages.map((x) => ({ label: x.path, value: x.views }))} /></Panel>
         </div>
+        <HelpfulPanel />
       </>
     )}</Frame>
+  );
+}
+
+function HelpfulPanel() {
+  const t = useI();
+  const q = useContentFeedback();
+  if (q.error instanceof ApiError && q.error.isForbidden) return null; // no CMS read role: hide, not an error
+  return (
+    <Panel title={t.rep.traffic.helpful}>
+      {q.isPending ? <Skel className="h-24" /> : q.isError ? <PanelError what={t.rep.traffic.helpful} onRetry={() => q.refetch()} />
+        : !q.data.items.length ? <p className="text-small text-fg-muted">{t.rep.traffic.noVotes}</p>
+        : <Bars max={100} format={(n) => `${n}%`} items={q.data.items.map((x) => ({ label: `${x.key} (${x.yes + x.no})`, value: Math.round((100 * x.yes) / Math.max(1, x.yes + x.no)) }))} />}
+    </Panel>
   );
 }
 

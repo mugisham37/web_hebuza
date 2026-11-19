@@ -18,6 +18,7 @@ import { EmptyState, ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { PageHead, Panel, useC4 } from "@/components/molecules/client/client";
 import { uploadLibraryDoc } from "@/components/molecules/client/api";
+import { AddOrg } from "@/components/organisms/client/orgs";
 
 type Role = "owner" | "admin" | "viewer";
 type Detail = {
@@ -93,6 +94,7 @@ export function OrgDetail({ id }: { id: string }) {
   const qc = useQueryClient();
   const toast = useToast();
   const file = useRef<HTMLInputElement>(null);
+  const [editing, setEditing] = useState(false);
   const key = ["c4", "org", id];
   const q = useQuery({
     queryKey: key,
@@ -137,6 +139,16 @@ export function OrgDetail({ id }: { id: string }) {
     );
   const d = q.data;
   const manage = d.myRole === "owner" || d.myRole === "admin";
+  const editDialog = editing && (
+    <AddOrg
+      edit={d}
+      onClose={() => setEditing(false)}
+      onDone={() => {
+        toast({ title: o.updated, tone: "success" });
+        void qc.invalidateQueries({ queryKey: key });
+      }}
+    />
+  );
   const row = (k: string, v: string | null) => (
     <div key={k}>
       <dt className="text-small text-fg-muted">{k}</dt>
@@ -176,6 +188,13 @@ export function OrgDetail({ id }: { id: string }) {
           label: o.tabs[t],
           content:
             t !== tab ? null : t === "profile" ? (
+              <>
+              {manage && (
+                <Button size="sm" variant="outline" className="mt-4" onClick={() => setEditing(true)}>
+                  {o.edit}
+                </Button>
+              )}
+              {editDialog}
               <dl className="mt-4 grid gap-3 sm:grid-cols-2">
                 {[
                   row(o.legalName, d.legalName),
@@ -190,6 +209,7 @@ export function OrgDetail({ id }: { id: string }) {
                   row(o.website, d.website),
                 ]}
               </dl>
+              </>
             ) : t === "reps" ? (
               <ul className="mt-4 divide-y divide-border">
                 {d.members.map((m) => (

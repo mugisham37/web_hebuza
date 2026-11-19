@@ -1,7 +1,8 @@
 "use client";
 // /work shell extras: mounts the Stage 4 AgentProvider with ws="work", adds the clearance/contract strip (board 02
 // SH1/SH3, XK5 expiry banner) and hides Team for firm members (§7.9).
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { SessionExpired } from "@/components/organisms/agent/work-states";
 import Link from "next/link";
 import { AgentProvider } from "@/components/organisms/layout/agent-shell";
 import { useI18n, localHref } from "@/lib/i18n/provider";
@@ -18,9 +19,16 @@ export function WorkShellExtras({ children }: { children: ReactNode }) {
 }
 function Inner({ children }: { children: ReactNode }) {
   const { ext } = useExternal();
+  const [expired, setExpired] = useState(false);
+  useEffect(() => {
+    const on = () => setExpired(true);
+    window.addEventListener("auth:expired", on);
+    return () => window.removeEventListener("auth:expired", on);
+  }, []);
   return (
     <AgentProvider ws="work" banner={<WorkStrip />} hidden={ext?.firmRole === "member" ? MEMBER_HIDDEN : undefined}>
       {children}
+      <SessionExpired open={expired} />
     </AgentProvider>
   );
 }

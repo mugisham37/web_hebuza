@@ -81,6 +81,8 @@ function Builder({ seg }: { seg?: Segment }) {
   const debounced = useDebounced(def);
   const p = useSegmentPreview(debounced, channel);
   const save = useCmpMutation(() => seg ? unwrap<Segment>(api.PATCH("/api/admin/crm/segments/{id}", { params: { path: { id: seg.id } }, body: { name, definition: def }, headers: hdr({ ifMatch: seg.version }) })) : unwrap<Segment>(api.POST("/api/admin/crm/segments", { body: { name, definition: def } })));
+  const [ask, setAsk] = useState(false);
+  const del = useCmpMutation(() => unwrap(api.DELETE("/api/admin/crm/segments/{id}", { params: { path: { id: seg!.id } } })));
   const d = p.data;
   const totalLang = d ? d.languages.rw + d.languages.en + d.languages.fr || 1 : 1;
   return (
@@ -95,6 +97,10 @@ function Builder({ seg }: { seg?: Segment }) {
               onSuccess: (s) => { toast({ title: c.seg.saved, tone: "success" }); if (!seg) router.replace(localHref(locale, `/marketing/segments/${(s as Segment).id}`)); },
               onError: (e) => toast({ title: err(e), tone: "danger" }),
             })}>{c.seg.save}</Button>
+            {seg && <Button variant={ask ? "danger" : "ghost"} loading={del.isPending} onBlur={() => setAsk(false)} onClick={() => ask ? del.mutate(undefined, {
+              onSuccess: () => { toast({ title: c.seg.deleted, tone: "success" }); router.replace(localHref(locale, "/marketing/segments")); },
+              onError: (e) => { setAsk(false); toast({ title: err(e), tone: "danger" }); },
+            }) : setAsk(true)}>{ask ? c.seg.delConfirm : c.seg.del}</Button>}
           </div>
         </div>
         <aside className="grid content-start gap-4">

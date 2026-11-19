@@ -183,6 +183,7 @@ const en = {
     allowFor: "{item} visible to {role}",
   },
   offer: {
+    counter: "Counter-proposal: due {d} · “{r}”", counterAccept: "Accept new date", counterDecline: "Decline", counterDone: "Counter-proposal answered.",
     title: "Offer status",
     none: "No offer sent yet",
     noneBody: "Write a brief and send the offer to start the clock.",
@@ -422,6 +423,7 @@ const fr: OpsAssignCopy = {
     allowFor: "{item} visible pour {role}",
   },
   offer: {
+    counter: "Contre-proposition : échéance {d} · « {r} »", counterAccept: "Accepter la nouvelle date", counterDecline: "Refuser", counterDone: "Contre-proposition traitée.",
     title: "Statut de l'offre",
     none: "Aucune offre envoyée",
     noneBody: "Rédigez les consignes et envoyez l'offre pour lancer le délai.",
@@ -659,6 +661,7 @@ const rw: OpsAssignCopy = {
     allowFor: "{item} bigaragarira {role}",
   },
   offer: {
+    counter: "Icyifuzo gishya: itariki {d} · “{r}”", counterAccept: "Emera itariki nshya", counterDecline: "Yanga", counterDone: "Icyifuzo cyasubijwe.",
     title: "Uko icyifuzo gihagaze",
     none: "Nta cyifuzo kiroherezwa",
     noneBody: "Andika amabwiriza wohereze icyifuzo kugira ngo igihe gitangire.",

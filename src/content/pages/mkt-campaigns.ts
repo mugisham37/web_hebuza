@@ -4,7 +4,7 @@ import type { Locale } from "@/shared/i18n/config";
 const en = {
   seg: {
     title: "Segments", sub: "Group contacts by service, sector or consent. Counts update as you build.", new: "New segment", empty: "Group your contacts by service, sector or consent.",
-    name: "Segment name", members: "Members", updated: "Updated", by: "By", editTitle: "Segment", save: "Save segment", saved: "Segment saved",
+    name: "Segment name", members: "Members", updated: "Updated", by: "By", editTitle: "Segment", save: "Save segment", saved: "Segment saved", del: "Delete segment", delConfirm: "Confirm delete", deleted: "Segment deleted",
     match: "Match", excluded: "Excluded", eligible: "Eligible", previewFor: "Preview for channel", sample: "Sample members", languages: "Language split",
     addRule: "Add rule", addGroup: "Add group", remove: "Remove", and: "All of these (AND)", or: "Any of these (OR)", value: "Value", conflict: "Changed by someone else. Reloaded.",
     fields: { service_used: "Service used", category_interest: "Interested in", sector: "Sector", district: "District", province: "Province", company_size: "Company size", subscription: "Plan", last_active_days: "Days since last active", ltv: "Lifetime value (RWF)", language: "Language", obligation: "Tax obligation", consent_email: "Email consent", consent_whatsapp: "WhatsApp consent", consent_sms: "SMS consent" } as Record<string, string>,
@@ -59,7 +59,7 @@ const en = {
     inactive: "Inactive clients", inactiveBody: "No login, request or payment for {d} days.", days: "Days without activity", inactiveCount: "{n} contacts match today", attached: "Attached sequence", saveRule: "Save rule",
   },
   tpl: {
-    title: "Templates", sub: "Marketing templates per channel and language. WhatsApp templates need Meta's approval before use.", empty: "No templates match.",
+    title: "Templates", sub: "Marketing templates per channel and language. WhatsApp templates need Meta's approval before use.", empty: "No templates match.", created: "Template created",
     name: "Name", lang: "Language", version: "Version", changed: "Last change", edit: "Edit template", vars: "Variables", sampleData: "Preview with sample data", subject: "Subject", body: "Message",
     badVar: "Unknown variable: {v}. Use {{first_name}}, {{org}} or {{link}}.", submitMeta: "Submit to Meta", submitted: "Sent to Meta for approval", rejected: "Rejected by Meta: {r}", editResubmit: "Edit & resubmit",
     simApprove: "Simulate Meta approves", simReject: "Simulate Meta rejects", new: "New template", key: "Key (lowercase, underscores)",
@@ -71,7 +71,7 @@ type Copy = typeof en;
 const fr: Copy = {
   seg: {
     title: "Segments", sub: "Regroupez vos contacts par service, secteur ou consentement. Les comptes se mettent à jour en direct.", new: "Nouveau segment", empty: "Regroupez vos contacts par service, secteur ou consentement.",
-    name: "Nom du segment", members: "Membres", updated: "Mis à jour", by: "Par", editTitle: "Segment", save: "Enregistrer", saved: "Segment enregistré",
+    name: "Nom du segment", members: "Membres", updated: "Mis à jour", by: "Par", editTitle: "Segment", save: "Enregistrer", saved: "Segment enregistré", del: "Supprimer le segment", delConfirm: "Confirmer la suppression", deleted: "Segment supprimé",
     match: "Correspondent", excluded: "Exclus", eligible: "Éligibles", previewFor: "Aperçu pour le canal", sample: "Exemples de membres", languages: "Répartition par langue",
     addRule: "Ajouter une règle", addGroup: "Ajouter un groupe", remove: "Retirer", and: "Toutes ces règles (ET)", or: "Une de ces règles (OU)", value: "Valeur", conflict: "Modifié par quelqu'un d'autre. Rechargé.",
     fields: { service_used: "Service utilisé", category_interest: "Intéressé par", sector: "Secteur", district: "District", province: "Province", company_size: "Taille", subscription: "Formule", last_active_days: "Jours depuis la dernière activité", ltv: "Valeur client (RWF)", language: "Langue", obligation: "Obligation fiscale", consent_email: "Consentement e-mail", consent_whatsapp: "Consentement WhatsApp", consent_sms: "Consentement SMS" },
@@ -122,7 +122,7 @@ const fr: Copy = {
     inactive: "Clients inactifs", inactiveBody: "Aucune connexion, demande ou paiement depuis {d} jours.", days: "Jours sans activité", inactiveCount: "{n} contacts correspondent aujourd'hui", attached: "Séquence liée", saveRule: "Enregistrer la règle",
   },
   tpl: {
-    title: "Modèles", sub: "Modèles marketing par canal et langue. Les modèles WhatsApp doivent être validés par Meta.", empty: "Aucun modèle.",
+    title: "Modèles", sub: "Modèles marketing par canal et langue. Les modèles WhatsApp doivent être validés par Meta.", empty: "Aucun modèle.", created: "Modèle créé",
     name: "Nom", lang: "Langue", version: "Version", changed: "Dernière modification", edit: "Modifier le modèle", vars: "Variables", sampleData: "Aperçu avec données d'exemple", subject: "Objet", body: "Message",
     badVar: "Variable inconnue : {v}. Utilisez {{first_name}}, {{org}} ou {{link}}.", submitMeta: "Soumettre à Meta", submitted: "Envoyé à Meta pour validation", rejected: "Refusé par Meta : {r}", editResubmit: "Modifier et resoumettre",
     simApprove: "Simuler la validation Meta", simReject: "Simuler le refus Meta", new: "Nouveau modèle", key: "Clé (minuscules, tirets bas)",
@@ -133,7 +133,7 @@ const fr: Copy = {
 const rw: Copy = {
   seg: {
     title: "Amatsinda", sub: "Huriza abantu hamwe hakurikijwe serivisi, urwego cyangwa uruhushya. Imibare ihinduka uko wubaka.", new: "Itsinda rishya", empty: "Huriza abantu hamwe hakurikijwe serivisi, urwego cyangwa uruhushya.",
-    name: "Izina ry'itsinda", members: "Abarigize", updated: "Ryavuguruwe", by: "Na", editTitle: "Itsinda", save: "Bika itsinda", saved: "Itsinda ryabitswe",
+    name: "Izina ry'itsinda", members: "Abarigize", updated: "Ryavuguruwe", by: "Na", editTitle: "Itsinda", save: "Bika itsinda", saved: "Itsinda ryabitswe", del: "Siba itsinda", delConfirm: "Emeza gusiba", deleted: "Itsinda ryasibwe",
     match: "Bahuye", excluded: "Bakuwemo", eligible: "Bemerewe", previewFor: "Reba ku muyoboro", sample: "Ingero z'abarigize", languages: "Indimi",
     addRule: "Ongeraho itegeko", addGroup: "Ongeraho itsinda", remove: "Kuraho", and: "Ibi byose (NA)", or: "Kimwe muri ibi (CYANGWA)", value: "Agaciro", conflict: "Byahinduwe n'undi. Byongeye gufungurwa.",
     fields: { service_used: "Serivisi yakoresheje", category_interest: "Ashishikajwe na", sector: "Urwego", district: "Akarere", province: "Intara", company_size: "Ingano y'ikigo", subscription: "Gahunda", last_active_days: "Iminsi kuva aheruka", ltv: "Agaciro k'umukiriya (RWF)", language: "Ururimi", obligation: "Inshingano y'umusoro", consent_email: "Uruhushya rwa imeyili", consent_whatsapp: "Uruhushya rwa WhatsApp", consent_sms: "Uruhushya rwa SMS" },
@@ -184,7 +184,7 @@ const rw: Copy = {
     inactive: "Abakiriya badakora", inactiveBody: "Nta kwinjira, ubusabe cyangwa ubwishyu mu minsi {d}.", days: "Iminsi nta gikorwa", inactiveCount: "Abantu {n} bahuye uyu munsi", attached: "Ikurikiranya rifatanye", saveRule: "Bika itegeko",
   },
   tpl: {
-    title: "Inyandikorugero", sub: "Inyandikorugero z'ubucuruzi ku muyoboro n'ururimi. Iza WhatsApp zibanza kwemezwa na Meta.", empty: "Nta nyandikorugero ihuye.",
+    title: "Inyandikorugero", sub: "Inyandikorugero z'ubucuruzi ku muyoboro n'ururimi. Iza WhatsApp zibanza kwemezwa na Meta.", empty: "Nta nyandikorugero ihuye.", created: "Inyandikorugero yakozwe",
     name: "Izina", lang: "Ururimi", version: "Verisiyo", changed: "Byahinduwe", edit: "Hindura inyandikorugero", vars: "Ibihinduka", sampleData: "Igaragaza n'amakuru y'icyitegererezo", subject: "Umutwe", body: "Ubutumwa",
     badVar: "Igihinduka kitazwi: {v}. Koresha {{first_name}}, {{org}} cyangwa {{link}}.", submitMeta: "Ohereza kuri Meta", submitted: "Byoherejwe kuri Meta ngo byemezwe", rejected: "Byanzwe na Meta: {r}", editResubmit: "Hindura wongere wohereze",
     simApprove: "Igereranya: Meta iremeje", simReject: "Igereranya: Meta yanze", new: "Inyandikorugero nshya", key: "Urufunguzo (inyuguti nto, _)",

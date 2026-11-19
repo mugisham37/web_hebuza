@@ -36,6 +36,9 @@ export const qs = (o: Record<string, string | number | boolean | undefined | nul
 /** Badges update live from the `mkt.note` SSE frame (lib/realtime); slow polling stays as a fallback when the stream drops. */
 export const useMktShell = () =>
   useQuery({ queryKey: mktKeys.shell(), queryFn: () => unwrap<{ badges: MktBadges; me: Staff | null; nextScheduled?: { label: string; at: string; href: string } }>(api.GET("/api/admin/mkt/shell")), refetchInterval: 5 * 60_000 });
+/** CMS review-queue size for the Content nav badge (the shell reports content: 0 by design). 403 for non-CMS roles → badge stays 0. */
+export const useCmsReviewCount = () =>
+  useQuery({ queryKey: [...mktKeys.shell(), "cms-review"], queryFn: () => unwrap<{ n: number }>(api.GET("/api/admin/cms/review-count")), refetchInterval: 5 * 60_000, retry: false });
 export const useMktNotes = () =>
   useQuery({ queryKey: mktKeys.notes(), queryFn: () => unwrap<{ items: MktNote[] }>(api.GET("/api/admin/mkt/notifications")), refetchInterval: 5 * 60_000 });
 export const useStaff = () =>

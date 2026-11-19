@@ -131,7 +131,10 @@ export function VendorProfile({ id }: { id: string }) {
           <List empty={c.docs.none} items={v.documents.map((d) => (
             <div key={d.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
               <span className="flex items-center gap-2"><Icon name="file" size={16} aria-hidden className="text-navy-700" />{d.name}</span>
-              {d.expiresOn && <ExpiryChip date={d.expiresOn} today={todayIso()} />}
+              <span className="flex items-center gap-3">
+                {d.expiresOn && <ExpiryChip date={d.expiresOn} today={todayIso()} />}
+                {d.key && <a className="text-small text-link underline underline-offset-2" target="_blank" rel="noopener" href={`/api/procurement/vendors/${encodeURIComponent(v.id)}/documents/${encodeURIComponent(d.id)}/file`}>{c.docs.open}</a>}
+              </span>
             </div>
           ))} />
         </div>

@@ -33,7 +33,7 @@ export function CreditNoteView({ no }: { no: string }) {
       <PageHead back={back}
         title={<span className="flex flex-wrap items-center gap-3"><DocNumber no={n.no} className="text-h3" /><EbmBadge no={n.ebmRef} /></span>}
         sub={fill(c.cn.issued, { who: n.issuedBy.name, when: formatDateTime(n.issuedAt, locale) })}
-        actions={<Button variant="outline" onClick={() => window.print()} className="m-press print:hidden"><Icon name="file" size={16} aria-hidden />{c.cn.print}</Button>} />
+        actions={<span className="flex flex-wrap gap-2 print:hidden"><a href={`/api/finance/credit-notes/${encodeURIComponent(n.no)}/pdf`} className="inline-flex h-11 items-center gap-2 border border-border-strong px-5 text-button m-press hover:bg-navy-50"><Icon name="file" size={16} aria-hidden />{c.cn.pdf}</a><Button variant="outline" onClick={() => window.print()} className="m-press"><Icon name="file" size={16} aria-hidden />{c.cn.print}</Button></span>} />
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] m-stagger">
         <div className="grid min-w-0 gap-6">

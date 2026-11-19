@@ -2,6 +2,7 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/provider";
+import { api } from "@/lib/api/client";
 import { localHref } from "@/shared/i18n/config";
 import { Button } from "@/components/atoms/button";
 import { Icon } from "@/components/atoms/icon";
@@ -42,16 +43,14 @@ function anonId() {
 }
 /** Server-side consent ledger; best-effort (the cookie stays the source of truth for gating). */
 function record(c: Consent) {
-  void fetch("/api/consent", {
-    method: "POST",
-    credentials: "include",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({
+  void api.POST("/api/consent", {
+    params: { header: { "user-agent": navigator.userAgent } }, // typed as required; browsers send it anyway
+    body: {
       anon_id: anonId(),
       source: "cookie_banner",
       policy_version: `cookies-v${VERSION}`,
       purposes: { cookies_analytics: c.analytics, cookies_marketing: c.marketing },
-    }),
+    },
   }).catch(() => undefined);
 }
 /** Raw cookie string, "" before choice, "ssr" on the server (render nothing until hydrated). */

@@ -69,6 +69,12 @@ export function OrgsView() {
       done(fill(o.switched, { name: org?.name ?? o.personal }))(),
     onError: fail,
   });
+  const setRole = useMutation({
+    mutationFn: ({ org, m, role }: { org: Org; m: Member; role: "admin" | "viewer" }) =>
+      unwrap(api.PATCH("/api/organizations/{id}/members/{mid}", { params: { path: { id: org.id, mid: m.id } }, body: { role } })),
+    onSuccess: done(o.saved),
+    onError: fail,
+  });
   const remove = useMutation({
     mutationFn: ({ org, m }: { org: Org; m: Member }) =>
       unwrap(api.DELETE("/api/me/orgs/{id}/members/{mid}", { params: { path: { id: org.id, mid: m.id } } })),
@@ -182,6 +188,17 @@ export function OrgsView() {
                       </div>
                       {m.pending ? (
                         <Badge tone="warning">{o.pending}</Badge>
+                      ) : manage && m.role !== "owner" ? (
+                        <Select
+                          aria-label={`${o.role}: ${m.name}`}
+                          value={m.role}
+                          disabled={setRole.isPending}
+                          onChange={(e) => setRole.mutate({ org, m, role: e.target.value as "admin" | "viewer" })}
+                          className="h-9 !w-36"
+                        >
+                          <option value="viewer">{o.roles.viewer}</option>
+                          <option value="admin">{o.roles.admin}</option>
+                        </Select>
                       ) : (
                         <Badge>{o.roles[m.role]}</Badge>
                       )}
@@ -320,8 +337,8 @@ function Invite({
   );
 }
 
-/** ORG-01: register a company (identity + address); the creator becomes its owner. */
-function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
+/** ORG-01: register a company (identity + address); the creator becomes its owner. With `edit`, owners/admins update its profile. */
+export function AddOrg({ onClose, onDone, edit }: { onClose: () => void; onDone: () => void; edit?: { id: string } & Record<string, unknown> }) {
   const { c } = useC4();
   const { t } = useI18n();
   const o = c.orgs;
@@ -329,7 +346,9 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
   const [errors, setErrors] = useState<Record<string, string>>({});
   const save = useMutation({
     mutationFn: (body: Record<string, string | boolean | null>) =>
-      unwrap(api.POST("/api/me/orgs", { body: body as never })), // cast: FormData strings mapped to the DTO shape below
+      edit
+        ? unwrap(api.PATCH("/api/organizations/{id}", { params: { path: { id: edit.id } }, body: body as never })) // cast: same mapping as create
+        : unwrap(api.POST("/api/me/orgs", { body: body as never })), // cast: FormData strings mapped to the DTO shape below
     onSuccess: () => { onDone(); onClose(); },
   });
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -342,20 +361,24 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
     if (tin && !/^\d{9}$/.test(tin)) errs["org-tin"] = o.badTin;
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    save.mutate({
+    const base = {
       legalName: v("legalName"), tradeName: v("tradeName"), orgType: v("orgType"), tin, rdbNumber: v("rdbNumber"),
-      registeredOn: v("registeredOn"), province: v("province"), district: v("district"), phone: v("phone") ? toE164(v("phone")!) ?? v("phone") : null,
-      email: v("email"), website: v("website"), sizeBand: v("sizeBand"),
+      province: v("province"), district: v("district"), phone: v("phone") ? toE164(v("phone")!) ?? v("phone") : null,
+      email: v("email"), website: v("website"),
+    };
+    // Edit sends only the profile fields it shows, so hidden compliance settings are never reset.
+    save.mutate(edit ? base : {
+      ...base, registeredOn: v("registeredOn"), sizeBand: v("sizeBand"),
       vatRegistered: f.get("vatRegistered") === "on", vatPeriod: (v("vatPeriod") as "monthly" | "quarterly" | null) ?? "monthly", employer: f.get("employer") === "on",
     });
   }
   const text = (name: string, label: string, extra: React.ComponentProps<"input"> = {}) => (
     <Field id={`org-${name}`} label={label} error={errors[`org-${name}`]} optional={name !== "legalName" ? t("common.optional") : undefined}>
-      {({ id, describedBy, invalid }) => <Input id={id} name={name} aria-describedby={describedBy} aria-invalid={invalid || undefined} {...extra} />}
+      {({ id, describedBy, invalid }) => <Input id={id} name={name} defaultValue={(edit?.[name] as string | null) ?? undefined} aria-describedby={describedBy} aria-invalid={invalid || undefined} {...extra} />}
     </Field>
   );
   return (
-    <Dialog open onClose={onClose} title={o.addTitle} description={o.addLede}>
+    <Dialog open onClose={onClose} title={edit ? o.editTitle : o.addTitle} description={edit ? undefined : o.addLede}>
       <form noValidate onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <ErrorSummary title={c.fixErrors} errors={Object.entries(errors).map(([field, message]) => ({ field, message }))} />
@@ -364,30 +387,30 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
         {text("tradeName", o.tradeName)}
         <Field label={o.orgType}>
           {({ id }) => (
-            <Select id={id} name="orgType" defaultValue="ltd">
+            <Select id={id} name="orgType" defaultValue={(edit?.orgType as string) ?? "ltd"}>
               {TYPES.map((k) => <option key={k} value={k}>{o.types[k]}</option>)}
             </Select>
           )}
         </Field>
-        <Field label={o.sizeBand} optional={t("common.optional")}>
+        {!edit && <Field label={o.sizeBand} optional={t("common.optional")}>
           {({ id }) => (
             <Select id={id} name="sizeBand" defaultValue="">
               <option value="">—</option>
               {SIZES.map((k) => <option key={k} value={k}>{o.sizes[k]}</option>)}
             </Select>
           )}
-        </Field>
+        </Field>}
         {text("tin", o.tin, { inputMode: "numeric", maxLength: 9 })}
-        <fieldset className="grid gap-2 sm:col-span-2">
+        {!edit && <fieldset className="grid gap-2 sm:col-span-2">
           <legend className="text-small font-medium">{oc.legend}</legend>
           <label className="flex items-center gap-2 text-small"><input type="checkbox" name="vatRegistered" className="size-4" />{oc.vat}</label>
           <label className="grid gap-1 text-small">{oc.vatPeriod}
             <Select name="vatPeriod" defaultValue="monthly"><option value="monthly">{oc.monthly}</option><option value="quarterly">{oc.quarterly}</option></Select>
           </label>
           <label className="flex items-center gap-2 text-small"><input type="checkbox" name="employer" className="size-4" />{oc.employer}</label>
-        </fieldset>
+        </fieldset>}
         {text("rdbNumber", o.rdb)}
-        {text("registeredOn", o.registeredOn, { type: "date" })}
+        {!edit && text("registeredOn", o.registeredOn, { type: "date" })}
         {text("province", o.province)}
         {text("district", o.district)}
         {text("phone", o.phone, { type: "tel" })}
@@ -396,7 +419,7 @@ function AddOrg({ onClose, onDone }: { onClose: () => void; onDone: () => void }
         {save.isError && <p role="alert" className="text-small font-medium text-danger sm:col-span-2">{c.generic}</p>}
         <div className="flex flex-wrap justify-end gap-2 sm:col-span-2">
           <Button type="button" variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
-          <Button type="submit" dots loading={save.isPending}>{o.create}</Button>
+          <Button type="submit" dots loading={save.isPending}>{edit ? o.saveEdit : o.create}</Button>
         </div>
       </form>
     </Dialog>

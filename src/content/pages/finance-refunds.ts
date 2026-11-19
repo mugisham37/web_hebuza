@@ -93,7 +93,7 @@ const en = {
   cn: {
     title: "Credit note", created: "Credit note {no} created", invoice: "Linked invoice", refund: "Refund", client: "Client", amount: "Amount",
     vat: "VAT", outcome: { balance: "Reduces the invoice balance", credit: "Creates client credit", refund: "Refunded to the client" },
-    print: "Print / save PDF", lines: "Lines", issued: "Issued by {who} · {when}", notFound: ["Credit note not found", "Check the number and try again."],
+    print: "Print / save PDF", pdf: "Download PDF", lines: "Lines", issued: "Issued by {who} · {when}", notFound: ["Credit note not found", "Check the number and try again."],
     loadWhat: "this credit note", back: "All credit notes", ebm: "EBM reference",
   },
   overview: "Overview",
@@ -198,7 +198,7 @@ const rw: Copy = {
   cn: {
     title: "Inyandiko y'inguzanyo", created: "Inyandiko y'inguzanyo {no} yakozwe", invoice: "Inyemezabuguzi bijyanye", refund: "Gusubiza", client: "Umukiriya", amount: "Amafaranga",
     vat: "TVA", outcome: { balance: "Bigabanya ideni ry'inyemezabuguzi", credit: "Bitanga inguzanyo ku mukiriya", refund: "Byasubijwe umukiriya" },
-    print: "Capa / bika PDF", lines: "Imirongo", issued: "Yatanzwe na {who} · {when}", notFound: ["Ntiyabonetse", "Reba nimero wongere ugerageze."],
+    print: "Capa / bika PDF", pdf: "Kuramo PDF", lines: "Imirongo", issued: "Yatanzwe na {who} · {when}", notFound: ["Ntiyabonetse", "Reba nimero wongere ugerageze."],
     loadWhat: "iyi nyandiko y'inguzanyo", back: "Inyandiko zose z'inguzanyo", ebm: "Nimero ya EBM",
   },
   overview: "Incamake",
@@ -302,7 +302,7 @@ const fr: Copy = {
   cn: {
     title: "Avoir", created: "Avoir {no} créé", invoice: "Facture liée", refund: "Remboursement", client: "Client", amount: "Montant",
     vat: "TVA", outcome: { balance: "Réduit le solde de la facture", credit: "Crée un crédit client", refund: "Remboursé au client" },
-    print: "Imprimer / PDF", lines: "Lignes", issued: "Émis par {who} · {when}", notFound: ["Avoir introuvable", "Vérifiez le numéro et réessayez."],
+    print: "Imprimer / PDF", pdf: "Télécharger le PDF", lines: "Lignes", issued: "Émis par {who} · {when}", notFound: ["Avoir introuvable", "Vérifiez le numéro et réessayez."],
     loadWhat: "cet avoir", back: "Tous les avoirs", ebm: "Référence EBM",
   },
   overview: "Aperçu",

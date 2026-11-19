@@ -104,6 +104,7 @@ export type Offer = {
   viewedAt?: string;
   endedAt?: string;
   declineReason?: string;
+  counter?: { due: string; reason: string; status: "pending" | "accepted" | "declined" };
 };
 export type RuleMode = "roundRobin" | "leastLoaded" | "skill";
 export type Rules = {
@@ -365,6 +366,13 @@ export const useSendOffer = () =>
   useB(
     (v: { ref: string; agentId: string }) =>
       unwrap<Offer>(api.POST("/api/admin/applications/{code}/offers", { params: { path: { code: v.ref } }, body: { agent_id: v.agentId } })),
+    (v) => assignKeys(v.ref),
+  );
+/** Answer an agent's counter-proposed due date on the current offer. */
+export const useCounterDecision = () =>
+  useB(
+    (v: { ref: string; id: string; decision: "accept" | "decline" }) =>
+      unwrap(api.POST("/api/staff/work/offers/{id}/counter/{decision}", { params: { path: { id: v.id, decision: v.decision } } })),
     (v) => assignKeys(v.ref),
   );
 export const useReassign = () =>

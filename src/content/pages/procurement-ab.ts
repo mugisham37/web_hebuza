@@ -63,7 +63,7 @@ const en = {
       reason: "Reason for change", doc: "Supporting letter (bank letter)", submit: "Request change", done: "Change requested — finance notified",
     },
     overview: { contact: "Primary contact", address: "Address", terms: "Payment terms", termsVal: "{n} days", rating: "Rating", balance: "Balance owed", openBills: "Open bills", lastPayment: "Last payment", rdb: "RDB", vat: "VAT", yes: "Registered", no: "Not registered", blocked: "Blocked: {reason}" },
-    docs: { add: "Add document", name: "Document name", expires: "Expires on", added: "Document added", none: "No documents yet." },
+    docs: { add: "Add document", name: "Document name", expires: "Expires on", added: "Document added", none: "No documents yet.", open: "Open file" },
     noBills: "No bills for this supplier.", noPayments: "No payments yet.", noContracts: "No contracts with this supplier.",
     notFound: "Supplier not found.",
   },
@@ -175,7 +175,7 @@ const rw: AbCopy = {
       reason: "Impamvu y'impinduka", doc: "Ibaruwa ya banki", submit: "Saba impinduka", done: "Impinduka yasabwe — imari yamenyeshejwe",
     },
     overview: { contact: "Uwo kuvugisha", address: "Aderesi", terms: "Igihe cyo kwishyura", termsVal: "Iminsi {n}", rating: "Amanota", balance: "Umwenda", openBills: "Fagitire zifunguye", lastPayment: "Ubwishyu buheruka", rdb: "RDB", vat: "TVA", yes: "Yanditswe", no: "Ntiyanditswe", blocked: "Yahagaritswe: {reason}" },
-    docs: { add: "Ongeramo inyandiko", name: "Izina ry'inyandiko", expires: "Irarangira", added: "Inyandiko yongeweho", none: "Nta nyandiko." },
+    docs: { add: "Ongeramo inyandiko", name: "Izina ry'inyandiko", expires: "Irarangira", added: "Inyandiko yongeweho", none: "Nta nyandiko.", open: "Fungura dosiye" },
     noBills: "Nta fagitire.", noPayments: "Nta bwishyu.", noContracts: "Nta masezerano.", notFound: "Ntabonetse.",
   },
   contracts: {
@@ -285,7 +285,7 @@ const fr: AbCopy = {
       reason: "Motif du changement", doc: "Lettre de la banque", submit: "Demander le changement", done: "Changement demandé — finance informée",
     },
     overview: { contact: "Contact principal", address: "Adresse", terms: "Délai de paiement", termsVal: "{n} jours", rating: "Note", balance: "Solde dû", openBills: "Factures ouvertes", lastPayment: "Dernier paiement", rdb: "RDB", vat: "TVA", yes: "Assujetti", no: "Non assujetti", blocked: "Bloqué : {reason}" },
-    docs: { add: "Ajouter un document", name: "Nom du document", expires: "Expire le", added: "Document ajouté", none: "Aucun document." },
+    docs: { add: "Ajouter un document", name: "Nom du document", expires: "Expire le", added: "Document ajouté", none: "Aucun document.", open: "Ouvrir le fichier" },
     noBills: "Aucune facture.", noPayments: "Aucun paiement.", noContracts: "Aucun contrat.", notFound: "Fournisseur introuvable.",
   },
   contracts: {

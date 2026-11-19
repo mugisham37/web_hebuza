@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { components } from "@/lib/api/schema";
 import { api, unwrap, ApiError } from "@/lib/api/client";
 import { localHref } from "@/lib/i18n/provider";
-import { Field, Input, Checkbox } from "@/components/atoms/field";
+import { Field, Input, Checkbox, Select } from "@/components/atoms/field";
 import { Button } from "@/components/atoms/button";
 import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
 import {
@@ -88,6 +88,7 @@ export function LoginForm() {
         >
           {c.login.support}
         </Link>
+        <TeamAccessRequest kind="unlock" />
       </ResultPanel>
     );
 
@@ -252,6 +253,65 @@ export function TwoFactorForm() {
           {backup ? c.twofa.useApp : c.twofa.useBackup}
         </button>
       </form>
+      <TeamAccessRequest kind="two_factor" />
     </>
+  );
+}
+
+type AccessKind = "unlock" | "two_factor" | "password" | "other";
+/** F-IAM-09/10: staff who lost MFA or are locked out ask the team; a SM/sysadmin verifies and resets (no self-service). */
+function TeamAccessRequest({ kind }: { kind: AccessKind }) {
+  const { c, locale } = useAuthCopy();
+  const a = c.access;
+  const { pending, error, run } = useSubmit();
+  const [sent, setSent] = useState<{ reference: string; maskedEmail: string } | null>(null);
+  const [err, setErr] = useState<string>();
+  if (sent)
+    return (
+      <Notice tone="info">
+        {a.sent.replace("{ref}", sent.reference).replace("{to}", sent.maskedEmail)}
+      </Notice>
+    );
+  return (
+    <details className="grid gap-3">
+      <summary className="cursor-pointer text-small underline underline-offset-4">{a.open}</summary>
+      <form
+        noValidate
+        className="mt-3 grid gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const f = new FormData(e.currentTarget);
+          const email = String(f.get("email") ?? "").trim();
+          setErr(/^\S+@\S+\.\S+$/.test(email) ? undefined : c.badEmail);
+          if (!/^\S+@\S+\.\S+$/.test(email)) return;
+          run(async () => {
+            setSent(
+              await unwrap<{ reference: string; maskedEmail: string }>(
+                api.POST("/api/auth/team/access-request", {
+                  body: { email, kind: String(f.get("kind")) as AccessKind, note: String(f.get("note") ?? "").trim() || null },
+                }),
+              ),
+            );
+          });
+        }}
+      >
+        <p className="text-small text-fg-muted">{a.lede}</p>
+        {error && <Notice>{apiMessage(error, c.generic, locale)}</Notice>}
+        <Field label={a.email} error={err}>
+          {(f) => <Input id={f.id} aria-describedby={f.describedBy} aria-invalid={f.invalid} name="email" type="email" autoComplete="email" className="h-10" />}
+        </Field>
+        <Field label={a.kind}>
+          {(f) => (
+            <Select id={f.id} name="kind" defaultValue={kind} className="h-10">
+              {(Object.keys(a.kinds) as AccessKind[]).map((k) => <option key={k} value={k}>{a.kinds[k]}</option>)}
+            </Select>
+          )}
+        </Field>
+        <Field label={a.note}>
+          {(f) => <Input id={f.id} name="note" maxLength={500} className="h-10" />}
+        </Field>
+        <Button type="submit" variant="outline" loading={pending} className="justify-self-start">{a.submit}</Button>
+      </form>
+    </details>
   );
 }

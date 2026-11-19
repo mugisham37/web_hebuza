@@ -11,7 +11,7 @@ import { cx, formatRelative } from "@/shared/format";
 import { navFor } from "@/lib/nav";
 import { mayEnter } from "@/shared/auth/roles";
 import { useShortcut } from "@/lib/ops/shortcuts";
-import { useMktNotes, useMktShell } from "@/lib/marketing/api";
+import { useCmsReviewCount, useMktNotes, useMktShell } from "@/lib/marketing/api";
 import { Icon, type IconName } from "@/components/atoms/icon";
 import { Dialog } from "@/components/atoms/dialog";
 import { OpsShellCtx, ShortcutSheet, type NavBadge, type PaletteItem } from "@/components/organisms/layout/ops-shell";
@@ -31,15 +31,16 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
   const { user } = useSession();
   const shell = useMktShell();
   const L = useMemo(() => (p: string) => localHref(locale, p), [locale]);
+  const review = useCmsReviewCount().data?.n ?? 0;
   const b = shell.data?.badges;
   const member = !!user?.roles.includes("staff:marketing");
   const badges = useMemo<Record<string, NavBadge>>(() => b ? {
     "/marketing/leads": { n: b.leads, tone: b.leads ? "attention" : undefined },
     "/marketing/inbox": { n: b.inbox },
     "/marketing/testimonials": { n: b.testimonials },
-    "/marketing/content": { n: b.content, tone: b.content ? "attention" : undefined },
+    "/marketing/content": { n: b.content + review, tone: b.content + review ? "attention" : undefined },
     "/marketing/campaigns": { n: b.campaigns, tone: b.campaigns ? "attention" : undefined },
-  } : ({} as Record<string, NavBadge>), [b]);
+  } : ({} as Record<string, NavBadge>), [b, review]);
 
   const palette = useMemo(() => (q: string): PaletteItem[] => {
     const n = q.trim();

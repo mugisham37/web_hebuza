@@ -174,6 +174,7 @@ export type ChatMsg = {
   kind: string;
   is_system: boolean;
   mentions: string[];
+  pinned_at?: string | null;
   created_at: string;
 };
 export type Template = {

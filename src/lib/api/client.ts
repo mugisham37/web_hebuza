@@ -53,6 +53,8 @@ const middleware: Middleware = {
         retry.headers.set(RETRIED, "1");
         return fetch(retry);
       }
+      // Refresh failed: the session is gone (idle timeout). Shells listen and offer sign-in (ST3).
+      if (typeof window !== "undefined") window.dispatchEvent(new Event("auth:expired"));
     }
     return response;
   },

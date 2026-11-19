@@ -27,10 +27,11 @@ export function TemplatesView() {
   const status = p.get("status") ?? "";
   const q = useTemplates({ category: "marketing", channel: channel || undefined, status: status || undefined });
   const [edit, setEdit] = useState<MsgTemplate | null>(null);
+  const [creating, setCreating] = useState(false);
   const items = q.data?.items ?? [];
   return (
     <>
-      <PageHead title={c.tpl.title} sub={c.tpl.sub} />
+      <PageHead title={c.tpl.title} sub={c.tpl.sub} actions={<Button onClick={() => setCreating(true)}>{c.tpl.new}</Button>} />
       <div className="mb-4 flex flex-wrap gap-2">
         <Select aria-label={c.list.channel} className="w-auto" value={channel} onChange={(e) => setUrlParams({ channel: e.target.value || null })}>
           <option value="">{mc.common.all}</option>{(["whatsapp", "email", "sms"] as const).map((x) => <option key={x} value={x}>{c.common.channel[x]}</option>)}
@@ -54,6 +55,7 @@ export function TemplatesView() {
         </ul>
       </QueryState>
       {edit && <Editor key={edit.id} t={edit} onClose={() => setEdit(null)} />}
+      {creating && <Create onClose={() => setCreating(false)} onDone={(t) => { setCreating(false); setEdit(t); }} />}
     </>
   );
 }
@@ -87,6 +89,34 @@ function Editor({ t, onClose }: { t: MsgTemplate; onClose: () => void }) {
         <Field label={c.tpl.body} error={bad ? fill(c.tpl.badVar, { v: bad }) : undefined}>{(a) => <Textarea {...fa(a)} rows={5} lang={t.language} value={body} onChange={(e) => setBody(e.target.value)} />}</Field>
         <p className="text-eyebrow text-fg-subtle">{c.tpl.vars}: {vars.length ? vars.map((v) => `{{${v}}}`).join(", ") : mc.common.none}</p>
         <div><p className="mb-1 text-label">{c.tpl.sampleData}</p><p lang={t.language} className="bg-success-bg/60 p-4 text-small">{preview}</p></div>
+      </div>
+    </Dialog>
+  );
+}
+
+function Create({ onClose, onDone }: { onClose: () => void; onDone: (t: MsgTemplate) => void }) {
+  const c = useC();
+  const mc = useM();
+  const err = useErr();
+  const toast = useToast();
+  const [f, setF] = useState({ name: "", channel: "whatsapp" as MsgTemplate["channel"], language: "rw" as MsgTemplate["language"], body: "", subject: "" });
+  const key = f.name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 60);
+  const bad = [...f.body.matchAll(/{{(\w+)}}/g)].map((m) => m[1]).find((v) => !KNOWN_VARS.includes(v));
+  const create = useCmpMutation(() => unwrap<MsgTemplate>(api.POST("/api/admin/notification-templates", { body: { key: `${key}_${f.channel}_${f.language}`, name: f.name.trim(), channel: f.channel, language: f.language, body: f.body, subject: f.channel === "email" && f.subject ? f.subject : undefined } })));
+  return (
+    <Dialog open onClose={onClose} side="right" title={c.tpl.new}
+      footer={<>
+        <Button variant="ghost" onClick={onClose}>{mc.common.close}</Button>
+        <Button disabled={!key || !f.body.trim() || !!bad} loading={create.isPending} onClick={() => create.mutate(undefined, { onSuccess: (t) => { toast({ title: c.tpl.created, tone: "success" }); onDone(t as MsgTemplate); }, onError: (e) => toast({ title: err(e), tone: "danger" }) })}>{mc.common.save}</Button>
+      </>}>
+      <div className="grid gap-4">
+        <Field label={c.tpl.name}>{(a) => <Input {...fa(a)} value={f.name} maxLength={120} onChange={(e) => setF({ ...f, name: e.target.value })} />}</Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={c.list.channel}>{(a) => <Select {...fa(a)} value={f.channel} onChange={(e) => setF({ ...f, channel: e.target.value as MsgTemplate["channel"] })}>{(["whatsapp", "email", "sms"] as const).map((x) => <option key={x} value={x}>{c.common.channel[x]}</option>)}</Select>}</Field>
+          <Field label={c.tpl.lang}>{(a) => <Select {...fa(a)} value={f.language} onChange={(e) => setF({ ...f, language: e.target.value as MsgTemplate["language"] })}>{(["rw", "en", "fr"] as const).map((x) => <option key={x} value={x}>{c.common.lang[x]}</option>)}</Select>}</Field>
+        </div>
+        {f.channel === "email" && <Field label={c.tpl.subject}>{(a) => <Input {...fa(a)} value={f.subject} maxLength={200} onChange={(e) => setF({ ...f, subject: e.target.value })} />}</Field>}
+        <Field label={c.tpl.body} error={bad ? fill(c.tpl.badVar, { v: bad }) : undefined}>{(a) => <Textarea {...fa(a)} rows={5} lang={f.language} maxLength={4000} value={f.body} onChange={(e) => setF({ ...f, body: e.target.value })} />}</Field>
       </div>
     </Dialog>
   );

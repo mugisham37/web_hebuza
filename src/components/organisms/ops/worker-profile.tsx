@@ -10,7 +10,7 @@ import { setUrlParams, useUrlParams } from "@/lib/url-state";
 import { api, newIdempotencyKey, unwrap } from "@/lib/api/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { errorCopy } from "@/lib/api/error-copy";
-import { revealWorker, useHistory, useReviews, useIssueContract, useSubmitReview, useWorker, useWorkerStatus, type WorkerFull } from "@/lib/workforce";
+import { revealWorker, useHistory, useReviews, useIssueContract, useSubmitReview, useWorker, useWorkerStatus, useStaffWork, useWorkDecision, type WorkDecision, type WorkerFull } from "@/lib/workforce";
 import { fill } from "@/content/pages/ops-workforce";
 import { KpiTile, MenuButton, Panel, PanelError, ReasonDialog, EmptyPanel } from "@/components/molecules/ops/ops";
 import { CapacityBar } from "@/components/atoms/ops";
@@ -101,6 +101,7 @@ function Overview({ w, admin }: { w: WorkerFull; admin: boolean }) {
         {w.openCases.length ? <ul className="grid gap-1 text-small">{w.openCases.map((x) => <li key={x.ref} className="flex justify-between gap-3"><span className="tabular font-medium">{x.ref}</span><span className="truncate text-fg-muted">{x.title} · {x.client}</span></li>)}</ul>
           : <p className="text-small text-fg-muted">{c.off.noCases}</p>}
       </Panel>
+      {w.type === "external" && <ExtWork id={w.id} admin={admin} />}
       {admin && <Blocks agentId={w.id} />}
       <ReasonDialog open={ask} onClose={() => setAsk(false)} title={c.profile.revealTitle} description={c.profile.revealReason} audited confirmLabel={c.profile.reveal}
         options={Object.entries({ payroll: "Payroll / contract query", safety: "Safety or emergency contact", investigation: c.status.reasons.investigation, other: c.status.reasons.other }).map(([value, label]) => ({ value, label }))}
@@ -399,6 +400,76 @@ function Blocks({ agentId }: { agentId: string }) {
         <Field label={c.reason}>{({ id }) => <Input id={id} value={reason} onChange={(e) => setReason(e.target.value)} maxLength={500} />}</Field>
         <Button type="submit" loading={add.isPending} disabled={!client.trim() || reason.trim().length < 3}>{c.add}</Button>
       </form>
+    </Panel>
+  );
+}
+
+/** External worker's pending items: onboarding review, document access, rate changes, invoices, payout account. */
+function ExtWork({ id, admin }: { id: string; admin: boolean }) {
+  const c = useW().ext;
+  const { locale } = useI18n();
+  const { user } = useSession();
+  const toast = useToast();
+  const q = useStaffWork(id);
+  const m = useWorkDecision(id);
+  const [note, setNote] = useState("");
+  const [noteErr, setNoteErr] = useState(false);
+  const fin = !!user?.roles.includes("staff:finance");
+  const act = (a: WorkDecision) => m.mutate(a, {
+    onSuccess: () => { toast({ tone: "success", title: c.done }); setNote(""); },
+    onError: (e) => toast({ tone: "danger", title: errorCopy(e, locale) }),
+  });
+  const busy = m.isPending;
+  const row = "flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 first:border-0 first:pt-0";
+  const btns = (yes: string, no: string, onYes: () => void, onNo: () => void, show = admin) => show && (
+    <span className="flex gap-2"><Button size="sm" disabled={busy} onClick={onYes}>{yes}</Button><Button size="sm" variant="outline" disabled={busy} onClick={onNo}>{no}</Button></span>
+  );
+  if (q.isPending) return <div className="lg:col-span-2"><SkeletonRows n={3} /></div>;
+  if (q.isError) return <div className="lg:col-span-2"><PanelError what={c.title} onRetry={() => q.refetch()} /></div>;
+  const d = q.data;
+  const ob = d.onboarding.submittedAt && d.status !== "cleared" && !d.onboarding.changes;
+  const pay = d.payoutDest?.status === "pending_verification" ? d.payoutDest : null;
+  const empty = !ob && !d.access.length && !d.rates.length && !d.invoices.length && !pay;
+  return (
+    <Panel title={c.title} className="lg:col-span-2">
+      {empty ? <p className="text-small text-fg-muted">{d.onboarding.changes ? fill(c.changesAsked, { n: d.onboarding.changes.note }) : c.none}</p> : (
+        <ul className="grid gap-3 text-small">
+          {ob && (
+            <li className="grid gap-2">
+              <p className="font-medium">{fill(c.onboarding, { d: formatDateTime(d.onboarding.submittedAt!, locale) })}</p>
+              {admin && <>
+                <Field label={c.note} error={noteErr ? c.noteNeeded : undefined}>{(a) => <Textarea id={a.id} aria-invalid={a.invalid} aria-describedby={a.describedBy} rows={2} maxLength={1000} value={note} onChange={(e) => { setNote(e.target.value); setNoteErr(false); }} />}</Field>
+                {btns(c.approve, c.changes, () => act({ k: "onboarding", decision: "approve", note: note.trim() || undefined }),
+                  () => (note.trim() ? act({ k: "onboarding", decision: "changes", note: note.trim() }) : setNoteErr(true)))}
+              </>}
+            </li>
+          )}
+          {d.access.map((a) => (
+            <li key={a.id} className={row}>
+              <span><span className="font-medium">{fill(c.access, { ref: a.ref })}</span><span className="block text-fg-muted">{a.reason}{a.note ? ` · ${a.note}` : ""}</span></span>
+              {btns(c.grant, c.deny, () => act({ k: "access", opId: a.id, grant: true }), () => act({ k: "access", opId: a.id, grant: false }))}
+            </li>
+          ))}
+          {d.rates.map((r) => (
+            <li key={r.serviceId} className={row}>
+              <span><span className="font-medium">{fill(c.rate, { s: r.serviceName })}</span><span className="block text-fg-muted tabular">{r.bps != null ? `${r.bps / 100}%` : `${r.flat?.toLocaleString()} RWF`} · {formatDate(r.from, locale)}{r.reason ? ` · ${r.reason}` : ""}</span></span>
+              {btns(c.approve, c.reject, () => act({ k: "rate", owner: d.rateOwner, serviceId: r.serviceId, action: "approve" }), () => act({ k: "rate", owner: d.rateOwner, serviceId: r.serviceId, action: "reject" }), admin || fin)}
+            </li>
+          ))}
+          {d.invoices.map((i) => (
+            <li key={i.id} className={row}>
+              <span><span className="font-medium">{fill(c.invoice, { n: i.number, p: i.period })}</span><span className="block text-fg-muted tabular">{i.amount.toLocaleString()} RWF · {i.fileName}</span></span>
+              {btns(c.accept, c.reject, () => act({ k: "invoice", invId: i.id, decision: "accepted" }), () => act({ k: "invoice", invId: i.id, decision: "rejected" }), admin || fin)}
+            </li>
+          ))}
+          {pay && (
+            <li className={row}>
+              <span className="font-medium">{fill(c.payout, { l: pay.label, d: pay.last4 })}</span>
+              {btns(c.verify, c.fail, () => act({ k: "payout", result: "verify" }), () => act({ k: "payout", result: "fail" }), fin)}
+            </li>
+          )}
+        </ul>
+      )}
     </Panel>
   );
 }

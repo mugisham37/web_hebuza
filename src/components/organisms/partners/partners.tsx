@@ -607,6 +607,13 @@ export function PartnerDetail({ id }: { id: string }) {
     onSuccess: ok,
     onError: no,
   });
+  const [delId, setDelId] = useState<string | null>(null);
+  const del = useMutation({
+    mutationFn: ({ kind, cid }: { kind: Kind; cid: string }) =>
+      unwrap(api.DELETE("/api/staff/partners/{id}/{kind}/{cid}", { params: { path: { id, kind, cid } } })),
+    onSuccess: () => { setDelId(null); ok(); },
+    onError: no,
+  });
   const toAction = useMutation({
     mutationFn: ({ mid, index }: { mid: string; index: number }) =>
       unwrap(
@@ -776,6 +783,17 @@ export function PartnerDetail({ id }: { id: string }) {
                   onClick={() => setEdit({ kind: k, row: r })}
                 >
                   {c.save}
+                </Button>
+              )}
+              {write && (
+                <Button
+                  size="sm"
+                  variant={delId === r.id ? "danger" : "ghost"}
+                  disabled={del.isPending}
+                  onBlur={() => setDelId((x) => (x === r.id ? null : x))}
+                  onClick={() => delId === r.id ? del.mutate({ kind: k, cid: r.id }) : setDelId(r.id)}
+                >
+                  {delId === r.id ? c.removeConfirm : c.remove}
                 </Button>
               )}
             </li>

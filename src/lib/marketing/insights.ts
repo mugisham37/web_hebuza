@@ -74,6 +74,8 @@ export const useFeedback = (r: Range, service?: string) =>
   useQuery({ queryKey: mktKeys.rpt("feedback", r, service), queryFn: () => unwrap<Feedback>(api.GET("/api/admin/fbk/analytics", { params: { query: toQuery(rq(r, { service })) } })), staleTime: 5 * 60_000 });
 
 export type Programme = { active: boolean; reward: number; eligibility: "first_paid_request"; channels: string[]; updatedAt: string };
+/** F-CMS-08: "Was this helpful?" votes per CMS entry (all-time; the route takes no range). */
+export const useContentFeedback = () => useQuery({ queryKey: mktKeys.rpt("cms-feedback"), queryFn: () => unwrap<{ items: { type: string; key: string; yes: number; no: number }[] }>(api.GET("/api/admin/cms/feedback")), retry: false });
 export const useProgramme = () => useQuery({ queryKey: mktKeys.rpt("programme"), queryFn: () => unwrap<Programme>(api.GET("/api/admin/crm/referrals/programme")) });
 export function useSaveProgramme() {
   const qc = useQueryClient();

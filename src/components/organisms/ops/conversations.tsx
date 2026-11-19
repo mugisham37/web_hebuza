@@ -32,6 +32,7 @@ import {
   type ConvFilter,
   type ChatMsg,
   type Template,
+  dKeys,
 } from "@/lib/ops/d";
 import {
   opsConversations,
@@ -55,6 +56,8 @@ import { Avatar } from "@/components/atoms/misc";
 import { Skeleton } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { complaintCopy } from "@/content/pages/chat-complaint";
+import { useConvOp, useDeleteTemplate, useLinkConv, usePinMsg, useRefCandidates, useSaveTemplate, useStartDm, type ConvOp } from "@/lib/chat";
+import { useWorkers } from "@/lib/workforce";
 
 const FILTERS: ConvFilter[] = [
   "unassigned",
@@ -190,6 +193,7 @@ export function ConversationsConsole() {
               </button>
             ))}
           </nav>
+          {f === "dms" && <NewDm onStarted={pick} />}
           <label className="relative block border-b border-border p-2">
             <span className="sr-only">{c.search}</span>
             <Icon
@@ -459,6 +463,8 @@ function Thread({
   const code = conv?.code ?? null;
   const since = conv?.waiting_since ?? null;
   const at = /@(\w*)$/.exec(draft);
+  const hash = /#([\w-]*)$/.exec(draft);
+  const refs = (useRefCandidates(id, hash ? hash[1] : null).data ?? []).slice(0, 5);
   const suggest =
     lane === "internal" && at
       ? mentions
@@ -548,6 +554,7 @@ function Thread({
           </Button>
         )}
         {!dm && <ComplaintButton id={id} />}
+        {!dm && <ConvMenu id={id} linked={!!code} />}
       </header>
 
       <div
@@ -567,7 +574,7 @@ function Thread({
         ) : (
           <ol role="log" className="grid gap-3">
             {(t.data?.messages ?? []).map((m) => (
-              <Bubble key={m.message_id} m={m} c={c} locale={locale} />
+              <Bubble key={m.message_id} m={m} c={c} locale={locale} tKey={dKeys.thread(id)} />
             ))}
           </ol>
         )}
@@ -646,6 +653,21 @@ function Thread({
                 "border-dashed border-warning/60 bg-warning-bg/40",
             )}
           />
+          {!suggest.length && hash && refs.length > 0 && (
+            <ul aria-label={c.refList} className="absolute bottom-full left-0 z-10 mb-1 grid min-w-48 border border-border bg-white p-1 shadow-lg">
+              {refs.map((x) => (
+                <li key={x.ref}>
+                  <button
+                    type="button"
+                    className="flex h-9 w-full items-center px-2 text-left text-small hover:bg-navy-50"
+                    onClick={() => setDraft(draft.replace(/#[\w-]*$/, `#${x.ref} `))}
+                  >
+                    <span className="truncate">{x.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
           {suggest.length > 0 && (
             <ul
               aria-label={c.mentionList}
@@ -722,12 +744,16 @@ function Bubble({
   m,
   c,
   locale,
+  tKey,
 }: {
   m: ChatMsg;
   c: ConversationsCopy;
   locale: Parameters<typeof formatDate>[1];
+  tKey: readonly unknown[];
 }) {
   const ME = useMeId();
+  const pin = usePinMsg(tKey);
+  const pinned = !!m.pinned_at;
   const time = formatDate(m.created_at, locale, { timeStyle: "short" });
   if (m.is_system)
     return (
@@ -753,6 +779,16 @@ function Bubble({
         <p className="flex flex-wrap items-center gap-2 text-eyebrow text-fg-muted">
           {mine ? c.you : m.sender_name} · {time}
           {note && <LockLabel />}
+          {pinned && <span className="font-medium text-fg">{c.pinned}</span>}
+          <button
+            type="button"
+            aria-pressed={pinned}
+            disabled={pin.isPending}
+            onClick={() => pin.mutate({ id: m.message_id, on: !pinned })}
+            className="ml-auto underline-offset-2 hover:underline"
+          >
+            {pinned ? c.unpin : c.pin}
+          </button>
         </p>
         <p className="break-words whitespace-pre-line">
           {withMentions(m.content)}
@@ -783,6 +819,9 @@ function TemplatePicker({
   const [lang, setLang] = useState<(typeof LANGS)[number]>(locale);
   const [preview, setPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const save = useSaveTemplate();
+  const del = useDeleteTemplate();
+  const [ed, setEd] = useState<(Omit<Template, "template_id"> & { id: string | null }) | null>(null);
   const tpl: Template | undefined =
     list.find((x) => x.template_id === sel) ?? list[0];
   const body = tpl ? tpl[`body_${lang}`] : "";
@@ -799,6 +838,39 @@ function TemplatePicker({
       setBusy(false);
     }
   };
+  const fail = (e: unknown) => toast({ title: errorCopy(e, locale), tone: "danger" });
+  // F-MSG-08 template editor (create / edit), same dialog
+  if (ed)
+    return (
+      <Dialog
+        open={open}
+        onClose={() => setEd(null)}
+        title={ed.id ? c.tplEdit : c.tplNew}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setEd(null)}>{c.cancel}</Button>
+            <Button
+              loading={save.isPending}
+              disabled={!ed.title.trim()}
+              onClick={() => save.mutate(ed, { onSuccess: () => (setEd(null), toast({ title: c.tplSaved, tone: "success" })), onError: fail })}
+            >
+              {c.tplSave}
+            </Button>
+          </div>
+        }
+      >
+        <div className="grid gap-3">
+          <Field label={c.tplName}>
+            {(a) => <Input id={a.id} value={ed.title} maxLength={120} onChange={(e) => setEd({ ...ed, title: e.target.value })} />}
+          </Field>
+          {LANGS.map((l) => (
+            <Field key={l} label={c.tplBody.replace("{l}", l)}>
+              {(a) => <Textarea id={a.id} value={ed[`body_${l}`]} maxLength={4000} onChange={(e) => setEd({ ...ed, [`body_${l}`]: e.target.value })} />}
+            </Field>
+          ))}
+        </div>
+      </Dialog>
+    );
   return (
     <Dialog
       open={open}
@@ -827,10 +899,26 @@ function TemplatePicker({
       ) : q.isError ? (
         <PanelError what={c.templates} onRetry={() => q.refetch()} />
       ) : !list.length ? (
-        <EmptyPanel compact title={c.tplEmpty} />
+        <div className="grid gap-3">
+          <EmptyPanel compact title={c.tplEmpty} />
+          <Button size="sm" variant="outline" className="w-fit" onClick={() => setEd({ id: null, title: "", body_rw: "", body_en: "", body_fr: "" })}>
+            <Icon name="plus" size={14} aria-hidden />
+            {c.tplNew}
+          </Button>
+        </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)]">
           <ul className="grid content-start gap-1" aria-label={c.templates}>
+            <li>
+              <button
+                type="button"
+                onClick={() => setEd({ id: null, title: "", body_rw: "", body_en: "", body_fr: "" })}
+                className="flex w-full items-center gap-1 px-3 py-2 text-left text-small text-link hover:bg-navy-50"
+              >
+                <Icon name="plus" size={14} aria-hidden />
+                {c.tplNew}
+              </button>
+            </li>
             {list.map((x) => (
               <li key={x.template_id}>
                 <button
@@ -907,6 +995,25 @@ function TemplatePicker({
               <Icon name="search" size={14} aria-hidden />
               {c.tplPreview}
             </Button>
+            {tpl && (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEd({ id: tpl.template_id, title: tpl.title, body_rw: tpl.body_rw, body_en: tpl.body_en, body_fr: tpl.body_fr })}
+                >
+                  {c.tplEdit}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  loading={del.isPending}
+                  onClick={() => del.mutate(tpl.template_id, { onSuccess: () => (setSel(null), toast({ title: c.tplDeleted, tone: "success" })), onError: fail })}
+                >
+                  {c.tplDelete}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1057,5 +1164,124 @@ function ComplaintButton({ id }: { id: string }) {
         <Field label={k.summary} hint={k.hint}>{(f) => <Textarea id={f.id} aria-describedby={f.describedBy} rows={4} value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} />}</Field>
       </Dialog>
     </>
+  );
+}
+
+/** F-MSG-10/15 conversation controls: manager join/leave, partner lane, legal hold, link to a case. */
+function ConvMenu({ id, linked }: { id: string; linked: boolean }) {
+  const { c, locale } = useC();
+  const toast = useToast();
+  const op = useConvOp(["ops", "convs"]);
+  const link = useLinkConv(["ops", "convs"]);
+  const [code, setCode] = useState("");
+  const done = {
+    onSuccess: () => toast({ title: c.done, tone: "success" }),
+    onError: (e: unknown) => toast({ title: errorCopy(e, locale), tone: "danger" }),
+  } as const;
+  const OPS: ConvOp[] = ["join", "leave", "laneOpen", "laneClose", "holdOn", "holdOff"];
+  return (
+    <details className="relative">
+      <summary className="inline-flex h-8 cursor-pointer list-none items-center gap-1 border border-border px-3 text-small hover:bg-navy-50">
+        <Icon name="menu" size={14} aria-hidden />
+        <span className="max-sm:sr-only">{c.more}</span>
+      </summary>
+      <div className="absolute right-0 z-20 mt-1 grid w-64 max-w-[calc(100vw-2rem)] gap-1 border border-border bg-white p-2 shadow-lg">
+        {OPS.map((o) => (
+          <button key={o} type="button" disabled={op.isPending} onClick={() => op.mutate({ id, op: o }, done)} className="h-9 px-2 text-left text-small hover:bg-navy-50">
+            {c[o]}
+          </button>
+        ))}
+        {!linked && (
+          <form
+            className="grid gap-2 border-t border-border pt-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (code.trim()) link.mutate({ id, code: code.trim() }, done);
+            }}
+          >
+            <Field label={c.linkCase}>
+              {(a) => <Input id={a.id} value={code} maxLength={32} placeholder={c.linkCode} className="h-9" onChange={(e) => setCode(e.target.value)} />}
+            </Field>
+            <Button type="submit" size="sm" loading={link.isPending} disabled={!code.trim()}>
+              {c.linkGo}
+            </Button>
+          </form>
+        )}
+      </div>
+    </details>
+  );
+}
+
+/** F-MSG-02: start a staff ↔ staff / ext:agent direct conversation. */
+function NewDm({ onStarted }: { onStarted: (id: string) => void }) {
+  const { c, locale } = useC();
+  const toast = useToast();
+  const start = useStartDm();
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-border p-2">
+      <Button size="sm" variant="outline" className="w-full" onClick={() => setOpen(true)}>
+        <Icon name="plus" size={14} aria-hidden />
+        {c.newDm}
+      </Button>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={c.newDm}
+        footer={
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => setOpen(false)}>{c.cancel}</Button>
+          </div>
+        }
+      >
+        {open && (
+          <DmPicker
+            busy={start.isPending}
+            onPick={(uid) =>
+              start.mutate(uid, {
+                onSuccess: (r) => (setOpen(false), onStarted(r.conversation_id)),
+                onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }),
+              })
+            }
+          />
+        )}
+      </Dialog>
+    </div>
+  );
+}
+function DmPicker({ busy, onPick }: { busy: boolean; onPick: (userId: string) => void }) {
+  const { c, locale } = useC();
+  const ME = useMeId();
+  const [q, setQ] = useState("");
+  const w = useWorkers({ q });
+  const rows = (w.data?.items ?? []).filter((x) => x.id !== ME).slice(0, 20);
+  return (
+    <div className="grid gap-3">
+      <label>
+        <span className="sr-only">{c.dmPick}</span>
+        <Input type="search" value={q} placeholder={c.dmPick} className="h-10" onChange={(e) => setQ(e.target.value)} />
+      </label>
+      {w.isPending ? (
+        <Skeleton className="h-24" />
+      ) : w.error instanceof ApiError && w.error.isForbidden ? (
+        <EmptyPanel compact title={errorCopy(w.error, locale)} />
+      ) : w.isError ? (
+        <PanelError what={c.dmPick} onRetry={() => w.refetch()} />
+      ) : !rows.length ? (
+        <EmptyPanel compact title={c.dmNone} />
+      ) : (
+        <ul className="grid gap-1">
+          {rows.map((x) => (
+            <li key={x.id}>
+              <button type="button" disabled={busy} onClick={() => onPick(x.id)} className="flex h-11 w-full items-center gap-2 px-2 text-left text-small hover:bg-navy-50">
+                <Face name={x.name} />
+                <span className="truncate">{x.name}</span>
+                <span className="ml-auto shrink-0 text-eyebrow text-fg-muted">{x.role}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

@@ -50,3 +50,33 @@ export const useIssueContract = (id: string) =>
 export const useSubmitReview = (id: string) =>
   useInvalidating((v: { period: string; rating: number; goals: string; comments: string; ackRequired: boolean; idempotencyKey: string }) =>
     unwrap<Review>(api.POST("/api/staff/workers/{id}/reviews", { params: { path: { id } }, body: v, headers: hdr({ idempotencyKey: v.idempotencyKey }) })));
+
+/** External worker's items awaiting a staff decision (GET /staff/workers/{id}/work). */
+export type StaffWork = {
+  status: string;
+  onboarding: { submittedAt: string | null; changes: { items: string[]; note: string } | null };
+  payoutDest: { method: string; label: string; last4: string; status: "verified" | "pending_verification" | "failed"; coolingUntil: string | null } | null;
+  invoices: { id: string; number: string; period: string; amount: number; fileName: string; at: string }[];
+  rateOwner: string;
+  rates: { serviceId: string; serviceName: string; bps?: number; flat?: number; from: string; reason?: string }[];
+  access: { id: string; ref: string; reason: string; note?: string; at: string }[];
+};
+export const useStaffWork = (id: string) =>
+  useQuery({ queryKey: [...K, "work", id], queryFn: () => unwrap<StaffWork>(api.GET("/api/staff/workers/{id}/work", { params: { path: { id } } })) });
+export type WorkDecision =
+  | { k: "onboarding"; decision: "approve" | "changes"; note?: string }
+  | { k: "access"; opId: string; grant: boolean }
+  | { k: "rate"; owner: string; serviceId: string; action: "approve" | "reject" }
+  | { k: "invoice"; invId: string; decision: "accepted" | "rejected" }
+  | { k: "payout"; result: "verify" | "fail" };
+export const useWorkDecision = (id: string) =>
+  useInvalidating((a: WorkDecision) => {
+    const path = { id };
+    switch (a.k) {
+      case "onboarding": return unwrap(api.POST("/api/staff/workers/{id}/onboarding/decision", { params: { path }, body: { decision: a.decision, note: a.note } }));
+      case "access": return unwrap(api.POST("/api/staff/workers/{id}/access-requests/{opId}/decision", { params: { path: { id, opId: a.opId } }, body: { grant: a.grant } }));
+      case "rate": return unwrap(api.POST("/api/staff/work/rates/{owner}/{serviceId}/{action}", { params: { path: { owner: a.owner, serviceId: a.serviceId, action: a.action } } }));
+      case "invoice": return unwrap(api.POST("/api/staff/workers/{id}/invoices/{invId}/decision", { params: { path: { id, invId: a.invId } }, body: { decision: a.decision } }));
+      case "payout": return unwrap(api.POST("/api/staff/workers/{id}/payout-destination/{result}", { params: { path: { id, result: a.result } } }));
+    }
+  });
