@@ -64,6 +64,7 @@ const en = {
     },
     profile: {
       customerNo: "Customer ID",
+      address: { title: "Address", lede: "Used to prefill forms when you allow profile reuse.", province: "Province", district: "District", sector: "Sector", cell: "Cell", street: "Street / house", save: "Save address", saved: "Address saved" },
       photo: "Profile photo",
       photoHint: "JPG, PNG or WebP, up to 5 MB. We crop it to a square.",
       photoPick: "Choose photo",
@@ -449,6 +450,7 @@ const rw: C4Copy = {
     },
     profile: {
       customerNo: "Nimero y'umukiriya",
+      address: { title: "Aderesi", lede: "Ikoreshwa kuzuza amafishi iyo wemeye gukoresha umwirondoro.", province: "Intara", district: "Akarere", sector: "Umurenge", cell: "Akagari", street: "Umuhanda / inzu", save: "Bika aderesi", saved: "Aderesi yabitswe" },
       photo: "Ifoto y'umwirondoro",
       photoHint: "JPG, PNG cyangwa WebP, itarenze MB 5. Tuyikata ikaba kare.",
       photoPick: "Hitamo ifoto",
@@ -844,6 +846,7 @@ const fr: C4Copy = {
     },
     profile: {
       customerNo: "N° client",
+      address: { title: "Adresse", lede: "Sert à préremplir les formulaires si vous autorisez la réutilisation du profil.", province: "Province", district: "District", sector: "Secteur", cell: "Cellule", street: "Rue / maison", save: "Enregistrer l'adresse", saved: "Adresse enregistrée" },
       photo: "Photo de profil",
       photoHint: "JPG, PNG ou WebP, 5 Mo max. Nous la recadrons en carré.",
       photoPick: "Choisir une photo",

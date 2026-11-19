@@ -56,6 +56,7 @@ const en = {
       used: "Where used",
       share: "Share",
       latest: "Latest version",
+      restore: "Make current", restored: "Older version restored.",
       notUsed: "Not attached to any request yet.",
       shareTitle: "Attach to a request",
       shareHint: "Enter the request reference, e.g. HBZ-WMVX19.",
@@ -85,6 +86,8 @@ const en = {
     } as Record<string, string>,
   },
   dlv: {
+    link: { title: "Your file", opening: "Opening your download…", used: "This link was already used or has expired. Open the request to download again.", open: "Open my results" },
+    keep: "Save to my documents", kept: "Saved to your documents.",
     zipAll: "Download all (.zip)",
     rate: {
       title: "How did we do?",
@@ -295,6 +298,7 @@ const rw: Copy = {
       used: "Aho yakoreshejwe",
       share: "Sangiza",
       latest: "Iheruka",
+      restore: "Yigire iya none", restored: "Verisiyo ya kera yagaruwe.",
       notUsed: "Ntirakoreshwa mu isabwa na rimwe.",
       shareTitle: "Yomeke ku isabwa",
       shareHint: "Andika nimero y'isabwa, urugero HBZ-WMVX19.",
@@ -324,6 +328,8 @@ const rw: Copy = {
     },
   },
   dlv: {
+    link: { title: "Dosiye yawe", opening: "Turafungura dosiye yawe…", used: "Uyu murongo wakoreshejwe cyangwa warengeje igihe. Fungura ubusabe ukuremo.", open: "Fungura ibisubizo byanjye" },
+    keep: "Bika mu nyandiko zanjye", kept: "Byabitswe mu nyandiko zawe.",
     zipAll: "Kuramo byose (.zip)",
     rate: {
       title: "Twakoze dute?",
@@ -532,6 +538,7 @@ const fr: Copy = {
       used: "Utilisé dans",
       share: "Partager",
       latest: "Dernière version",
+      restore: "Rendre actuelle", restored: "Ancienne version restaurée.",
       notUsed: "Pas encore joint à une demande.",
       shareTitle: "Joindre à une demande",
       shareHint: "Saisissez la référence, par ex. HBZ-WMVX19.",
@@ -562,6 +569,8 @@ const fr: Copy = {
     },
   },
   dlv: {
+    link: { title: "Votre fichier", opening: "Ouverture du téléchargement…", used: "Ce lien a déjà servi ou a expiré. Ouvrez la demande pour télécharger.", open: "Ouvrir mes résultats" },
+    keep: "Enregistrer dans mes documents", kept: "Enregistré dans vos documents.",
     zipAll: "Tout télécharger (.zip)",
     rate: {
       title: "Comment s'est passé le service ?",

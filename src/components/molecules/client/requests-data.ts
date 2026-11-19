@@ -63,6 +63,9 @@ export type Dashboard = {
   requests: RequestSummary[];
   paymentsDue: Payment[];
   unread: number;
+  openQuotes?: { code: string; service: string }[];
+  releasedDeliverables?: { id: string; code: string; title: string; at: string }[];
+  deadlines?: { code: string; service: string; dueAt: string }[];
 };
 
 /** Server may still send legacy status strings (REQ migration). */

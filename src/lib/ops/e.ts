@@ -58,7 +58,7 @@ export type FormField = {
   profile?: string | null;
 };
 /** ORG-06 bindable profile paths (server: GET /api/me/prefill). */
-export const PROFILE_PATHS = ["person.full_name", "person.national_id", "person.dob", "person.phone", "person.email",
+export const PROFILE_PATHS = ["person.full_name", "person.national_id", "person.dob", "person.phone", "person.email", "person.province", "person.district", "person.sector", "person.cell", "person.street",
   "org.legal_name", "org.trade_name", "org.tin", "org.rdb_number", "org.province", "org.district", "org.sector", "org.cell", "org.phone", "org.email"] as const;
 export type Eligibility = { id: string; q: L3; blocking: boolean };
 export type DocReq = {

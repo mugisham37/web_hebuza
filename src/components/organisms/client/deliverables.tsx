@@ -210,6 +210,7 @@ function Group({ g, canDownload }: { g: DlvGroup; canDownload: boolean }) {
                       {c.common.download}
                     </a>
                   )}
+                  {!locked && canDownload && <KeepButton id={f.id} />}
                 </div>
               </li>
             ))}
@@ -436,4 +437,18 @@ function Rate({ g }: { g: DlvGroup }) {
       <Button type="submit" className="justify-self-start" loading={send.isPending}>{c.submit}</Button>
     </form>
   );
+}
+
+/** DLV-09: copy a released file into the client's document library. */
+function KeepButton({ id }: { id: string }) {
+  const { locale } = useI18n();
+  const c = c3Copy(locale);
+  const toast = useToast();
+  const qc = useQueryClient();
+  const keep = useMutation({
+    mutationFn: () => unwrap(api.POST("/api/me/deliverables/{id}/save-to-library", { params: { path: { id } } })),
+    onSuccess: () => { toast({ title: c.dlv.kept, tone: "success" }); void qc.invalidateQueries({ queryKey: ["c3"] }); },
+    onError: () => toast({ title: c.common.error, tone: "danger" }),
+  });
+  return <Button size="sm" variant="ghost" loading={keep.isPending} disabled={keep.isSuccess} onClick={() => keep.mutate()}>{c.dlv.keep}</Button>;
 }

@@ -6,7 +6,7 @@ import { formatDate, formatMoney } from "@/shared/format";
 import { DataTable, type Column } from "@/components/atoms/data-table";
 import { EmptyState } from "@/components/atoms/feedback";
 import { Field, Input, Select } from "@/components/atoms/field";
-import { Button, ButtonLink } from "@/components/atoms/button";
+import { Button } from "@/components/atoms/button";
 import { localHref } from "@/shared/i18n/config";
 import { Badge } from "@/components/atoms/tag";
 import { fill } from "@/content/pages/c4";
@@ -29,6 +29,25 @@ const TONE = {
   document: "accent",
   account: "neutral",
 } as const;
+
+/** REQ-13: start a draft prefilled from a past request (answers + personal details), then open the wizard on it. */
+async function requestAgain(a: Activity, locale: Parameters<typeof localHref>[0]) {
+  const go = (slug: string) => window.location.assign(localHref(locale, `/apply/${slug}`));
+  if (!a.ref) return go(a.slug!);
+  try {
+    const d = await unwrap<{ service_slug: string; tier: string; service_data: Record<string, unknown>; personal_info: Record<string, unknown> }>(
+      api.POST("/api/applications/{code}/clone", { params: { path: { code: a.ref } } }));
+    const p = d.personal_info as Record<string, string | boolean | undefined>;
+    const draft = {
+      step: 1, elig: [], tier: d.tier, data: d.service_data, docs: {}, terms: [false, false], idem: crypto.randomUUID(), savedAt: Date.now(),
+      person: { fullName: String(p.fullName ?? ""), nationalId: String(p.nationalId ?? ""), dob: String(p.dob ?? ""), phone: String(p.phone ?? "").replace(/^\+250/, ""), email: String(p.email ?? ""), whatsapp: !!p.whatsapp },
+    };
+    try { localStorage.setItem(`hebuza.apply.${d.service_slug}`, JSON.stringify(draft)); } catch {} // private mode: the wizard just starts empty
+    go(d.service_slug);
+  } catch {
+    go(a.slug!);
+  }
+}
 
 /** C12 Service history: activity log with type/year/search filters and CSV export (DataTable). */
 export function HistoryView() {
@@ -70,14 +89,14 @@ export function HistoryView() {
           <Badge tone={TONE[a.kind]}>{h.types[a.kind]}</Badge>
           {a.title}
           {a.kind === "request" && a.slug && (
-            <ButtonLink
-              href={localHref(locale, `/apply/${a.slug}`)}
+            <Button
               variant="outline"
               size="sm"
               aria-label={`${h.again}: ${a.title}`}
+              onClick={() => void requestAgain(a, locale)}
             >
               {h.again}
-            </ButtonLink>
+            </Button>
           )}
         </span>
       ),

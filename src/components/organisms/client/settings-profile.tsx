@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/atoms/button";
 import { Field, Input, Select, ErrorSummary } from "@/components/atoms/field";
 import { Badge } from "@/components/atoms/tag";
-import { Skeleton } from "@/components/atoms/feedback";
+import { ErrorState, Skeleton } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { PhoneInput, toE164 } from "@/components/atoms/inputs";
 import { Panel, useC4 } from "@/components/molecules/client/client";
@@ -69,6 +69,7 @@ export function ProfileSettings() {
   return (
     <div className="grid gap-5">
       <PhotoPanel />
+      <AddressPanel />
       <Panel icon="user" title={p.title} body={p.lede}>
         {user?.customerNo && (
           <p className="mb-4 text-small text-fg-muted">
@@ -261,6 +262,37 @@ function PhotoPanel() {
         </div>
       </div>
       {err && <p role="alert" className="mt-3 text-small font-medium text-danger">{err}</p>}
+    </Panel>
+  );
+}
+
+/** CLP-03: postal address (prefill source person.province … person.street). */
+function AddressPanel() {
+  const { c } = useC4();
+  const p = c.settings.profile.address;
+  const toast = useToast();
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ["c4", "address"], queryFn: () => unwrap<Record<"province" | "district" | "sector" | "cell" | "street", string>>(api.GET("/api/me/address")) });
+  const save = useMutation({
+    mutationFn: (b: Record<"province" | "district" | "sector" | "cell" | "street", string>) => unwrap(api.PUT("/api/me/address", { body: b })),
+    onSuccess: () => { toast({ title: p.saved, tone: "success" }); void qc.invalidateQueries({ queryKey: ["c4", "address"] }); },
+    onError: () => toast({ title: c.generic, tone: "danger" }),
+  });
+  const keys = ["province", "district", "sector", "cell", "street"] as const;
+  return (
+    <Panel icon="mapPin" title={p.title} body={p.lede}>
+      {q.isPending ? <Skeleton className="h-24" /> : q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> : (
+        <form noValidate className="grid gap-4 md:grid-cols-2" onSubmit={(e) => {
+          e.preventDefault();
+          const f = new FormData(e.currentTarget);
+          save.mutate(Object.fromEntries(keys.map((k) => [k, String(f.get(k) ?? "").trim()])) as Record<(typeof keys)[number], string>);
+        }}>
+          {keys.map((k) => (
+            <Field key={k} label={p[k]}>{(a) => <Input id={a.id} name={k} defaultValue={q.data[k]} maxLength={k === "street" ? 255 : 64} />}</Field>
+          ))}
+          <div className="md:col-span-2"><Button type="submit" loading={save.isPending}>{p.save}</Button></div>
+        </form>
+      )}
     </Panel>
   );
 }

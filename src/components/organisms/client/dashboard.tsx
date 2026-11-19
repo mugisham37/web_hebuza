@@ -195,6 +195,25 @@ export function DashboardView({ recs }: { recs: Rec[] }) {
               <p className="mt-2 text-body text-fg-muted">{c.paymentsNone}</p>
             )}
           </section>
+          {/* CLP-05 cards: open quotes, new results, upcoming due dates; the full list lives in Reminders. */}
+          {([
+            ["quotes", (q.data.openQuotes ?? []).map((x) => ({ k: x.code, t: x.service, sub: x.code, href: `/requests/${x.code}` }))],
+            ["results", (q.data.releasedDeliverables ?? []).map((x) => ({ k: x.id, t: x.title, sub: `${x.code} · ${formatDate(x.at, locale)}`, href: "/documents?tab=deliverables" }))],
+            ["deadlines", (q.data.deadlines ?? []).map((x) => ({ k: x.code, t: x.service, sub: `${x.code} · ${formatDate(x.dueAt, locale)}`, href: `/requests/${x.code}` }))],
+          ] as const).map(([key, rows]) => rows.length ? (
+            <section key={key} aria-labelledby={`${key}-h`} className={panel}>
+              <h2 id={`${key}-h`} className="text-fg-heading text-card-title">{c[key]}</h2>
+              <ul className="mt-2">
+                {rows.map((r) => (
+                  <li key={r.k} className="border-b border-border py-3 last:border-0">
+                    <Link href={localHref(locale, r.href)} className="text-body underline-offset-4 hover:underline">{r.t}</Link>
+                    <span className="block text-small text-fg-subtle tabular">{r.sub}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null)}
+          <Link href={localHref(locale, "/dashboard/reminders")} className="text-small text-link underline underline-offset-4">{c.reminders}</Link>
           <Recommended recs={recs} />
         </div>
       </div>

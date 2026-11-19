@@ -508,6 +508,11 @@ function DocDrawer({
     onError: () => toast({ title: c.common.error, tone: "danger" }),
   });
 
+  const restore = useMutation({
+    mutationFn: (v: number) => unwrap(api.POST("/api/me/documents/{id}/versions/{v}/restore", { params: { path: { id: doc!.documentId, v: String(v) } } })),
+    onSuccess: () => { toast({ title: d.restored, tone: "success" }); done(); },
+    onError: () => toast({ title: c.common.error, tone: "danger" }),
+  });
   if (!doc) return <Sheet open={false} onClose={onClose} title="" />;
   const name = doc.label || doc.originalFilename;
   const versions = [...(doc.versions ?? [])].sort(
@@ -566,6 +571,11 @@ function DocDrawer({
                         >
                           {c.common.preview}
                         </Button>
+                        {i > 0 && (
+                          <Button size="sm" variant="ghost" loading={restore.isPending && restore.variables === v.version} onClick={() => restore.mutate(v.version)}>
+                            {d.restore}
+                          </Button>
+                        )}
                         {i === 0 && (
                           <a
                             href={dl(doc.documentId)}
