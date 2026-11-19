@@ -63,7 +63,7 @@ export function TrackerAndRibbon({ locale }: { locale: Locale }) {
   );
 }
 
-export function Institutions({ locale }: { locale: Locale }) {
+export function Institutions({ locale, partners = [] }: { locale: Locale; partners?: { id: string; name: string; logoUrl: string | null; website: string | null }[] }) {
   const m = getCopy(locale);
   const c = m.institutions;
   return (
@@ -82,6 +82,17 @@ export function Institutions({ locale }: { locale: Locale }) {
                   className="h-auto max-h-11 w-auto max-w-full object-contain transition-[filter,opacity] duration-200 group-hover:opacity-90 group-hover:brightness-0 group-hover:invert motion-reduce:transition-none" />
               ) : (
                 <span className="text-small font-semibold tracking-wide text-navy-700 transition-colors group-hover:text-white motion-reduce:transition-none">{i.short}<span className="sr-only"> — {i.name}</span></span>
+              )}
+            </li>
+          ))}
+          {/* PRT-13: partners the team flagged "shown on website". */}
+          {partners.map((p) => (
+            <li key={p.id} data-reveal title={p.name} className="flex h-17 items-center justify-center border-r border-b border-sky-400 px-4 py-2.5">
+              {p.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- partner logos are external URLs set by staff
+                <img src={p.logoUrl} alt={p.name} loading="lazy" className="h-auto max-h-11 w-auto max-w-full object-contain" />
+              ) : (
+                <span className="text-small font-semibold tracking-wide text-navy-700">{p.name}</span>
               )}
             </li>
           ))}

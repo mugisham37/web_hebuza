@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, unwrap } from "@/lib/api/client";
+import { putPresigned } from "@/lib/api/upload";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { useUrlParams, setUrlParams } from "@/lib/url-state";
@@ -40,7 +41,7 @@ type Partner = Rec & {
   status: string;
   lastContactAt: string | null;
 } & Score;
-type Detail = Partner & {
+type Detail = Partner & { objectives: Rec[]; opportunities: Rec[]; obligations: Rec[];
   scorecard: Score;
   contacts: Rec[];
   agreements: Rec[];
@@ -329,6 +330,11 @@ function specs(c: PartnersCopy): Record<string, FieldSpec[]> {
         options: opts(c.refStatus),
       },
     ],
+    objectives: [{ k: "title", label: f.title, required: true }, { k: "period", label: f.period }, { k: "description", label: f.summary, type: "area" }],
+    opportunities: [{ k: "title", label: f.title, required: true }, { k: "stage", label: f.stage, type: "select", options: opts(c.oppStage) },
+      { k: "value", label: f.value, type: "number" }, { k: "ownerUserId", label: f.owner }, { k: "closedOn", label: f.closedOn, type: "date" }],
+    obligations: [{ k: "agreementId", label: f.agreement, required: true }, { k: "description", label: f.summary, required: true }, { k: "ownerUserId", label: f.owner },
+      { k: "dueOn", label: f.dueOn, type: "date" }, { k: "status", label: f.status, type: "select", options: opts(c.oblStatus) }],
   };
 }
 
@@ -512,6 +518,9 @@ const TABS = [
   "meetings",
   "correspondence",
   "referrals",
+  "objectives",
+  "opportunities",
+  "obligations",
   "history",
 ] as const;
 type Tab = (typeof TABS)[number];
@@ -637,6 +646,7 @@ export function PartnerDetail({ id }: { id: string }) {
       ),
     },
     agreements: {
+      extra: (r) => <AgreementFiles partnerId={id} agreement={r} write={write} onDone={() => void qc.invalidateQueries({ queryKey: key })} />,
       rows: d.agreements,
       line: (r) => (
         <>
@@ -729,6 +739,9 @@ export function PartnerDetail({ id }: { id: string }) {
         </>
       ),
     },
+    objectives: { rows: d.objectives, line: (r) => <>{S(r.title)}{r.period ? ` · ${S(r.period)}` : ""} · {d.actions.filter((a) => a.objectiveId === r.id).length} {c.tabs.actions.toLowerCase()}</> },
+    opportunities: { rows: d.opportunities, line: (r) => <>{S(r.title)} · {L(c.oppStage, r.stage)}{r.value != null ? ` · ${formatMoney(Number(r.value), "RWF", locale)}` : ""}</> },
+    obligations: { rows: d.obligations, line: (r) => <>{S(r.description)} · {d.agreements.find((a) => a.id === r.agreementId)?.title as string ?? S(r.agreementId)} · {r.dueOn ? formatDate(String(r.dueOn), locale) : "—"} · {L(c.oblStatus, r.status)}</> },
   };
   const panel = (k: Kind) => (
     <div className="mt-4 grid gap-3">
@@ -854,7 +867,10 @@ export function PartnerDetail({ id }: { id: string }) {
                 ))}
               </dl>
             ) : t === "history" ? (
-              <History id={id} />
+              <>
+                <a className="mt-4 inline-block text-small text-link underline underline-offset-2" href={`/api/staff/partners/${id}/history.pdf`}>{c.pdf}</a>
+                <History id={id} />
+              </>
             ) : (
               panel(t)
             ),
@@ -1050,5 +1066,38 @@ export function PartnerCommissions() {
         </div>
       )}
     </div>
+  );
+}
+
+/** PRT-03: agreement file versions (upload a new version, open any). */
+function AgreementFiles({ partnerId, agreement, write, onDone }: { partnerId: string; agreement: Rec; write: boolean; onDone: () => void }) {
+  const c = usePc();
+  const toast = useToast();
+  const files = (agreement.files ?? []) as { id: string; version: number; filename: string }[];
+  const up = useMutation({
+    mutationFn: async (f: File) => {
+      const r = await unwrap<{ upload: { url: string } }>(api.POST("/api/staff/partners/{id}/agreements/{aid}/files", {
+        params: { path: { id: partnerId, aid: agreement.id } }, body: { filename: f.name, contentType: f.type as never, size: f.size },
+      }));
+      await putPresigned(r.upload.url, f, f.type);
+    },
+    onSuccess: () => { toast({ title: c.saved, tone: "success" }); onDone(); },
+    onError: () => toast({ title: c.failed, tone: "danger" }),
+  });
+  const open = useMutation({
+    mutationFn: (fid: string) => unwrap<{ url: string }>(api.GET("/api/staff/partners/{id}/agreements/{aid}/files/{fid}", { params: { path: { id: partnerId, aid: agreement.id, fid } } })),
+    onSuccess: (r) => window.open(r.url, "_blank", "noopener"),
+    onError: () => toast({ title: c.failed, tone: "danger" }),
+  });
+  return (
+    <span className="flex flex-wrap items-center gap-2">
+      {files.map((f) => <Button key={f.id} size="sm" variant="ghost" title={f.filename} onClick={() => open.mutate(f.id)}>v{f.version}</Button>)}
+      {write && (
+        <label className="cursor-pointer text-small text-link underline underline-offset-2">
+          {up.isPending ? "…" : c.upload}
+          <input type="file" accept="application/pdf,image/jpeg,image/png,.docx" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) up.mutate(f); e.target.value = ""; }} />
+        </label>
+      )}
+    </span>
   );
 }

@@ -8,6 +8,7 @@ import { CONTACT } from "@/content/marketing";
 import { SITE_URL } from "@/lib/site";
 import { CTACard } from "@/components/organisms/site/sections";
 import { getHomeSections } from "@/lib/marketing/cms/read";
+import { getPublicPartners } from "@/lib/partners-public";
 import { Guides, HomeHero, HowItWorksBand, Institutions, PricingTeaser, ServicesShowcase, TrackerAndRibbon } from "@/components/organisms/site/home";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
@@ -26,7 +27,7 @@ const TONES: Record<string, { top: Tone; bottom: Tone; divider?: boolean }> = {
 // Home (F-CMS-01): sections in the order of photos/To_build/01-home__v1 (+ v2 for statement/CTA).
 export default async function Home({ params }: PageProps<"/[locale]">) {
   const { locale } = await getI18n(params);
-  const [families, services, plans, order] = await Promise.all([getFamilies(locale), getServices(locale), getPlans(), getHomeSections()]);
+  const [families, services, plans, order, partners] = await Promise.all([getFamilies(locale), getServices(locale), getPlans(), getHomeSections(), getPublicPartners()]);
   const total = families.reduce((n, f) => n + f.count, 0);
   const search = services.map((s) => ({ slug: s.slug, path: s.slugs[locale], name: s.name, family: families.find((f) => f.slug === s.family)?.name ?? "" }));
   const org = {
@@ -39,7 +40,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
   const SECTIONS: Record<string, ReactNode> = {
     hero: <HomeHero locale={locale} search={search} />,
     tracker: <TrackerAndRibbon locale={locale} />,
-    institutions: <Institutions locale={locale} />,
+    institutions: <Institutions locale={locale} partners={partners} />,
     services: <ServicesShowcase locale={locale} families={families} total={total} />,
     how: <HowItWorksBand locale={locale} />,
     pricing: <PricingTeaser locale={locale} services={services} families={families} plans={plans} />,
