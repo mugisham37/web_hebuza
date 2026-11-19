@@ -57,6 +57,7 @@ import {
   Checkbox,
 } from "@/components/atoms/field";
 import { Icon } from "@/components/atoms/icon";
+import { ServiceFacts } from "@/components/organisms/ops/service-facts";
 import { Skeleton, ErrorState, EmptyState } from "@/components/atoms/feedback";
 import { useToast } from "@/components/atoms/toast";
 import { Kbd } from "@/components/atoms/ops";
@@ -249,7 +250,12 @@ function Editor({
   );
 
   const body: Record<Step, ReactNode> = {
-    details: <DetailsStep draft={draft} update={update} lang={lang} />,
+    details: (
+      <>
+        <DetailsStep draft={draft} update={update} lang={lang} />
+        <ServiceFacts slug={slug} service={service} lang={lang} c={c.facts} />
+      </>
+    ),
     form: <FormStep draft={draft} update={update} lang={lang} />,
     documents: <DocumentsStep draft={draft} update={update} lang={lang} />,
     checklist: <ChecklistStep draft={draft} update={update} lang={lang} />,

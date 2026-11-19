@@ -6,8 +6,8 @@ import { locales } from "@/shared/i18n/config";
 import { formatDate, formatMoney } from "@/shared/format";
 import { FACES } from "@/content/families";
 import { CONTACT, waLink } from "@/content/marketing";
-import { CAMPAIGNS, getLd, PROVISIONAL } from "@/content/pages/ld";
-import { getCampaign } from "@/lib/marketing/cms/read";
+import { getLd, PROVISIONAL } from "@/content/pages/ld";
+import { getCampaign, slugParams } from "@/lib/marketing/cms/read";
 import { Tag } from "@/components/atoms/tag";
 import { Icon, type IconName } from "@/components/atoms/icon";
 import { ButtonLink } from "@/components/atoms/button";
@@ -18,9 +18,7 @@ import { LeadForm } from "@/components/organisms/site/lead-form";
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    CAMPAIGNS.map((c) => ({ locale, slug: c.slug })),
-  );
+  return slugParams("landing_page", locales);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

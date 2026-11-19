@@ -7,8 +7,8 @@ import { getI18n } from "@/lib/i18n/server";
 import { localHref, locales } from "@/shared/i18n/config";
 import { getServices } from "@/lib/catalogue";
 import { formatDate } from "@/shared/format";
-import { UPDATES, getLd } from "@/content/pages/ld";
-import { getUpdate, getUpdates } from "@/lib/marketing/cms/read";
+import { getLd } from "@/content/pages/ld";
+import { getUpdate, getUpdates, slugParams } from "@/lib/marketing/cms/read";
 import { FallbackNotice, StaleNotice } from "@/components/molecules/site/fallback-notice";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
@@ -20,7 +20,7 @@ import { ShareBar } from "@/components/molecules/site/library";
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) => UPDATES.map((u) => ({ locale, slug: u.slug })));
+  return slugParams("regulatory_update", locales);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

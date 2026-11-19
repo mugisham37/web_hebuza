@@ -3,10 +3,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { hasLocale, matchLocale, LOCALE_COOKIE } from "@/shared/i18n/config";
 import { PUBLIC_PLANNED, PUBLIC_PREFIXES } from "@/lib/routes";
-import { GUIDES, UPDATES, CAMPAIGNS } from "@/content/pages/ld";
 import type { Redirect } from "@/shared/marketing/types";
-import { LEGAL_DOCS } from "@/content/pages/lc";
-import { FAMILIES } from "@/content/families";
 import { importSPKI, jwtVerify, decodeJwt, type JWTPayload } from "jose";
 import { normalizeRoles, workspaceForPath, mayEnter, homeFor } from "@/shared/auth/roles";
 
@@ -17,28 +14,28 @@ const REFRESH_COOKIE = "hebuza_refresh";
  * shortcut: first segment only (e.g. /services/bogus is still a soft 404), upgrade to a full route manifest if SEO needs it. */
 const KNOWN = new Set(["", "agent", "billing", "bookings", "claim", "dashboard", "design", "documents", "exec", "finance", "marketing", "assistant", "forgot", "history", "how-it-works", "join", "login", "notifications", "ops", "orgs", "partners", "procurement", "requests", "reset", "services", "settings", "signup", "system", "verify", "work", "join-us", "campaign", "lp", "team", "help", "messages", "deliverables", "unsubscribe", ...PUBLIC_PREFIXES, ...PUBLIC_PLANNED.map((p) => p.split("/")[1])]);
 /** Static-content slugs: unknown ones 404 here (PPR serves a 200 shell for unknown params before notFound() can run).
- * The seed is the fallback when the CMS read below fails; live slugs come from cms() (60 s memo).
- * Service slugs are not checked: the live catalogue can add services without a redeploy. */
-const SEED: Record<string, Set<string>> = {
-  knowledge: new Set(GUIDES.map((g) => g.slug)),
-  updates: new Set(UPDATES.map((u) => u.slug)),
-  campaign: new Set(CAMPAIGNS.map((c) => c.slug)),
-  legal: new Set<string>(LEGAL_DOCS),
-};
-/** Slug manifest (seed content; the future backend can serve live CMS slugs + redirects here). */
-const CMS_ROUTE: Record<string, string> = { knowledge: "guide", updates: "regulatory_update", campaign: "landing_page" };
-let live: { at: number; slugs: Record<string, Set<string>>; redirects: Redirect[] } | null = null;
+ * Live slugs + CMS redirects come from GET /api/content/manifest (60 s memo). Until one load succeeds the slug guard is
+ * off (pages still notFound() themselves). Service and category slugs are not checked: the live catalogue changes them. */
+const CMS_ROUTE: Record<string, string> = { knowledge: "guide", updates: "regulatory_update", campaign: "landing_page", legal: "legal_doc" };
+let live: { at: number; slugs: Record<string, Set<string>>; redirects: Pick<Redirect, "from" | "to" | "code">[] } = { at: 0, slugs: {}, redirects: [] };
 async function cms() {
-  if (live && Date.now() - live.at < 60_000) return live;
-  live = { at: Date.now(), slugs: SEED, redirects: [] }; // dummy: seed slugs, no CMS redirects until the backend exists
+  if (Date.now() - live.at < 60_000 || !process.env.API_URL) return live;
+  live.at = Date.now(); // one refresh per window even when the API is down
+  const r = await fetch(`${process.env.API_URL}/api/content/manifest`, { signal: AbortSignal.timeout(2000) }).catch(() => null);
+  if (!r?.ok) return live;
+  const { data } = (await r.json()) as { data: { pages: { path: string; type: string }[]; redirects: Pick<Redirect, "from" | "to" | "code">[] } };
+  const slugs: Record<string, Set<string>> = Object.fromEntries(Object.keys(CMS_ROUTE).map((k) => [k, new Set<string>()]));
+  for (const p of data.pages) {
+    const [, , route, slug] = p.path.split("/");
+    if (CMS_ROUTE[route] === p.type && slug) slugs[route].add(slug);
+  }
+  live = { at: live.at, slugs, redirects: data.redirects };
   return live;
 }
 /** Non-locale handlers (preview, tracked links, hooks, dev CMS) bypass locale routing. */
 const RAW = new Set(["preview", "hooks", "c", "r", "health"]);
-const FAMILY_SLUGS = new Set(FAMILIES.map((f) => f.slug));
 const unknownSlug = (seg: string[], SLUGS: Record<string, Set<string>>) =>
   (seg.length === 2 && SLUGS[seg[0]] && !SLUGS[seg[0]].has(seg[1])) ||
-  (seg[0] === "services" && seg[1] === "c" && seg.length === 3 && !FAMILY_SLUGS.has(seg[2])) ||
   seg.length > (seg[0] === "services" && seg[1] === "c" ? 3 : 2) && (seg[0] in SLUGS || seg[0] === "services");
 const LEGACY_REDIRECTS: Record<string, string> = { "/admin": "/ops", "/dashboard/work": "/work",
   // Stage 8 §7.2 journey naming

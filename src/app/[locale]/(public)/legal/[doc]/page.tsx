@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { getI18n } from "@/lib/i18n/server";
 import { localHref } from "@/shared/i18n/config";
 import { cx } from "@/shared/format";
-import { COOKIES, LC, LEGAL_DOCS, legalSections, type LegalDoc } from "@/content/pages/lc";
+import { COOKIES, LC, LEGAL_DOCS, type LegalDoc } from "@/content/pages/lc";
+import { getLegal } from "@/lib/marketing/cms/read";
 import { HighlightWord } from "@/components/atoms/brand";
 import { Tag } from "@/components/atoms/tag";
 import { ButtonLink } from "@/components/atoms/button";
@@ -29,15 +30,16 @@ export default async function LegalPage({ params }: { params: Promise<{ locale: 
   const { doc } = await params;
   if (!isDoc(doc)) notFound();
   const c = LC[locale].legal;
-  const sections = legalSections(doc, locale);
+  const legal = await getLegal(doc, locale);
+  if (!legal) notFound(); // unpublished in the CMS: no placeholder text on a legal page
+  const { sections } = legal;
   const [first, ...rest] = c.titles[doc].split(" ");
   return (
     <section className="px-gutter pt-[var(--spacing-hero-top)] pb-[var(--spacing-section)]">
       <div className="container-page">
         <Tag variant="navy">{c.eyebrow}</Tag>
         <h1 className="mt-5 text-display">{rest.length ? <>{first} <HighlightWord>{rest.join(" ")}</HighlightWord></> : <HighlightWord>{first}</HighlightWord>}</h1>
-        <p className="mt-4 text-small text-fg-muted">{c.version}</p>
-        <p role="note" className="mt-4 border border-warning bg-warning-bg px-4 py-3 text-small font-medium">{c.review}</p>
+        <p className="mt-4 text-small text-fg-muted">v{legal.version}{legal.effective && <> · <time dateTime={legal.effective}>{legal.effective}</time></>}</p>
 
         <nav aria-label={c.eyebrow} className="-mx-gutter mt-8 overflow-x-auto px-gutter">
           <ul className="flex w-max gap-2 border-b border-border pb-3">

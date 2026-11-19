@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { setUrlParams, useUrlParams } from "@/lib/url-state";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/provider";
@@ -16,7 +16,8 @@ export type BrowserService = { slug: string; family: string; name: string; hayst
 type Copy = { search: string; quick: string[]; all: string; showing: string; clear: string; sortPopular: string; sortPrice: string; sortFast: string; covered: string; noResultsTitle: string; noResultsBody: string; popularInstead: string; viewArea: string; more: string; whatsapp: string; consult: string; filters: string; area: string; price: string; any: string; upTo: string; turnaround: string; within: string; show: string };
 
 /**
- * Client filtering over the full catalogue (48 items — no server round-trip needed).
+ * Text search runs on the API (F-CAT-06: pg_trgm over every locale, GET /api/services?q=, debounced); facet filters
+ * stay client-side over the full list. If the search call fails, local fuzzy matching keeps the box usable.
  * Cards are server-rendered once and passed as `cards[i]`; we only reorder/hide them, keeping JS tiny.
  * State syncs to the URL (?q=&family=&sort=&plan=1) without useSearchParams (no Suspense needed).
  */
@@ -39,12 +40,26 @@ export function CatalogueBrowser({ families, services, cards, copy }: { families
   const setMax = (v: number) => set({ max: v ? String(v) : null });
   const setDays = (v: number) => set({ days: v ? String(v) : null });
   const rwf = (n: number) => formatNumber(n, locale);
+  const [hits, setHits] = useState<{ q: string; slugs: string[] | null } | null>(null);
+  useEffect(() => {
+    const term = q.trim();
+    if (!term) return;
+    const ctl = new AbortController();
+    const t = setTimeout(() => {
+      fetch(`/api/services?q=${encodeURIComponent(term)}`, { signal: ctl.signal })
+        .then((r) => (r.ok ? (r.json() as Promise<{ data: { services: { slug: string }[] } }>) : Promise.reject(r)))
+        .then((r) => setHits({ q: term, slugs: r.data.services.map((x) => x.slug) }))
+        .catch((e: unknown) => { if (!ctl.signal.aborted) setHits({ q: term, slugs: null }); void e; });
+    }, 250);
+    return () => { clearTimeout(t); ctl.abort(); };
+  }, [q]);
+  const server = q.trim() && hits?.q === q.trim() ? hits.slugs : null;
 
   const visible = useMemo(() => {
-    let list = services.filter((s) => (fam === "all" || s.family === fam) && (!plan || s.planCovered) && (!max || (s.price !== null && s.price <= max)) && (!days || s.days <= days) && matches(s.haystack, q));
+    let list = services.filter((s) => (fam === "all" || s.family === fam) && (!plan || s.planCovered) && (!max || (s.price !== null && s.price <= max)) && (!days || s.days <= days) && (!q.trim() || (server ? server.includes(s.slug) : matches(s.haystack, q))));
     list = [...list].sort((a, b) => sort === "price" ? (a.price ?? 1e12) - (b.price ?? 1e12) : sort === "fast" ? a.days - b.days : b.popular - a.popular);
     return list;
-  }, [q, fam, sort, plan, max, days, services]);
+  }, [q, fam, sort, plan, max, days, services, server]);
 
   const groups = families.map((f) => ({ f, items: visible.filter((s) => s.family === f.slug) })).filter((g) => g.items.length);
   const filtered = !!(q || fam !== "all" || plan || max || days || sort !== "popular");

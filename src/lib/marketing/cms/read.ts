@@ -1,17 +1,30 @@
 import "server-only";
-// CMS reader for the public site (plan 10 §2.6). Sources: CMS tables, else the seed (database outage).
-// Returns today's view-model shapes (Guide/Update/Campaign) so Stage 1 pages only change their data line.
-import { cacheLife, cacheTag } from "next/cache";
-import { draftMode } from "next/headers";
+// CMS reader for the public site (F-CMS-01/17): published entries from GET /api/content/entries, cached under every
+// `cms:list:<type>` tag the API's cms.revalidate webhook sends on publish. Draft Mode overlays the previewed entry.
+// Returns today's view-model shapes (Guide/Update/Campaign) so pages only change their data line.
+import { cacheTag } from "next/cache";
+import { cookies, draftMode } from "next/headers";
 import type { Campaign, Guide, GuideCat, Institution, Affects, Update } from "@/content/pages/ld";
-import { seedEntries } from "@/content/cms-seed";
 import type { BlockShape, CmsEntry, CmsType, CmsVariant, Locale, RichDoc } from "@/shared/marketing/types";
 import { LOCALES } from "@/shared/marketing/types";
 import { docText, kbEligible, liveLocales, resolveVariant } from "@/shared/marketing/cms/rules";
+import { publicGet } from "@/lib/public-api";
+import { PREVIEW_COOKIE } from "./preview";
 
-/** Dummy CMS content (the seed) until the backend exists; drafts are the same set. */
-async function entries(_draft = false): Promise<CmsEntry[]> {
-  return seedEntries();
+const TYPES: CmsType[] = ["page", "landing_page", "article", "guide", "regulatory_update", "faq", "team_member", "testimonial", "partner_logo", "legal_doc"];
+async function liveEntries(): Promise<CmsEntry[]> {
+  "use cache";
+  cacheTag("cms", "cms:manifest", ...TYPES.map((t) => `cms:list:${t}`));
+  return (await publicGet<CmsEntry[]>("/content/entries", [])) ?? [];
+}
+/** Published entries; in Draft Mode the previewed entry (with its drafts) replaces its published copy. Not cached itself. */
+async function entries(draft = false): Promise<CmsEntry[]> {
+  const live = await liveEntries();
+  if (!draft || !process.env.API_URL) return live;
+  const token = (await cookies()).get(PREVIEW_COOKIE)?.value;
+  const r = token ? await fetch(`${process.env.API_URL}/api/content/preview?token=${encodeURIComponent(token)}`, { cache: "no-store" }).catch(() => null) : null;
+  const p = r?.ok ? ((await r.json()) as { data: { entry: CmsEntry } }).data.entry : null;
+  return p ? [...live.filter((e) => e.id !== p.id), p] : live;
 }
 const isDraft = async () => (await draftMode()).isEnabled;
 const ofType = async (t: CmsType, draft = false) => (await entries(draft)).filter((e) => e.type === t && !e.archivedTo);
@@ -40,9 +53,6 @@ const strings = (x: unknown[] | undefined) => (x ?? []).map((i) => (typeof i ===
 
 export type GuideVM = Guide & Served;
 export async function getGuides(): Promise<GuideVM[]> {
-  "use cache";
-  cacheTag("cms", "cms:list:guide");
-  cacheLife("hours");
   const draft = await isDraft();
   return (await ofType("guide", draft)).flatMap((e) => {
     const r = resolveAll(e, draft);
@@ -69,9 +79,6 @@ export const getGuide = async (slug: string) => (await getGuides()).find((g) => 
 
 export type UpdateVM = Update & Served;
 export async function getUpdates(): Promise<UpdateVM[]> {
-  "use cache";
-  cacheTag("cms", "cms:list:regulatory_update");
-  cacheLife("hours");
   const draft = await isDraft();
   return (await ofType("regulatory_update", draft)).flatMap((e) => {
     const r = resolveAll(e, draft);
@@ -97,9 +104,6 @@ export const getUpdate = async (slug: string) => (await getUpdates()).find((u) =
 
 export type CampaignVM = Campaign & Served & { noindex: boolean; form?: NonNullable<CmsEntry["meta"]["landing"]>["form"] };
 export async function getCampaign(slug: string): Promise<CampaignVM | null> {
-  "use cache";
-  cacheTag("cms", "cms:list:landing_page", `cms:landing_page:${slug}`);
-  cacheLife("hours");
   const draft = await isDraft();
   const e = (await ofType("landing_page", draft)).find((x) => x.key === slug);
   const r = e && resolveAll(e, draft);
@@ -122,16 +126,11 @@ export async function getCampaign(slug: string): Promise<CampaignVM | null> {
   };
 }
 export async function getCampaignSlugs(): Promise<string[]> {
-  "use cache";
-  cacheTag("cms", "cms:list:landing_page");
   return (await ofType("landing_page")).filter((e) => liveLocales(e).length).map((e) => e.key);
 }
 
 /** FAQs grouped by category, published and resolved for one locale (FAQPage JSON-LD is built from this). */
 export async function getFaqs(locale: Locale): Promise<Record<string, { q: string; a: string; fallback?: Locale }[]>> {
-  "use cache";
-  cacheTag("cms", "cms:list:faq");
-  cacheLife("hours");
   const draft = await isDraft();
   const out: Record<string, { q: string; a: string; fallback?: Locale }[]> = {};
   for (const e of await ofType("faq", draft)) {
@@ -145,9 +144,6 @@ export async function getFaqs(locale: Locale): Promise<Record<string, { q: strin
 
 /** Home section order + visibility (copy and facts stay with the section components / catalogue). */
 export async function getHomeSections(): Promise<string[]> {
-  "use cache";
-  cacheTag("cms", "cms:page:home");
-  cacheLife("hours");
   const home = (await ofType("page")).find((e) => e.key === "home");
   const all = ["hero", "tracker", "institutions", "services", "how", "pricing", "guides", "cta"];
   if (!home) return all;
@@ -158,9 +154,6 @@ export async function getHomeSections(): Promise<string[]> {
 export type PublicTestimonial = { id: string; quote: string; cite: string; stars: number; lang: Locale };
 /** Published testimonials for a placement, in their original language (D-16). */
 export async function getTestimonials(placement: "home" | "service" | "landing"): Promise<PublicTestimonial[]> {
-  "use cache";
-  cacheTag("cms", "cms:list:testimonial");
-  cacheLife("hours");
   return (await ofType("testimonial")).filter((e) => e.tags.includes(placement)).flatMap((e) => {
     const l = liveLocales(e)[0];
     const q = l && (e.variants[l]!.body[e.blocks[0]?.id ?? "q"] as { text?: string; cite?: string; stars?: number } | undefined);
@@ -171,9 +164,6 @@ export async function getTestimonials(placement: "home" | "service" | "landing")
 export type TeamVM = { slug: string; name: string; role: Record<Locale, string>; photo: string; consented: boolean; verified: boolean };
 /** Team profiles: public fields only (serializer allow-list, spec AC "no address/CV in HTML"). */
 export async function getTeam(): Promise<TeamVM[]> {
-  "use cache";
-  cacheTag("cms", "cms:list:team_member");
-  cacheLife("hours");
   return (await ofType("team_member")).flatMap((e) => {
     const ls = liveLocales(e);
     if (!ls.length) return [];
@@ -183,25 +173,50 @@ export async function getTeam(): Promise<TeamVM[]> {
   });
 }
 
-/** Slugs per public route + redirects, for the proxy guard and the sitemap. */
+/** Slugs per public route, for the sitemap (redirects are served to the proxy by GET /api/content/manifest). */
 export async function getManifest() {
-  "use cache";
-  cacheTag("cms", "cms:manifest");
-  cacheLife("minutes");
   const all = await entries();
   const live = (t: CmsType) => all.filter((e) => e.type === t && !e.archivedTo && liveLocales(e).length).map((e) => ({ slug: e.key, locales: liveLocales(e), at: e.variants[liveLocales(e)[0]]!.updatedAt }));
-  const redirects: { from: string; to: string }[] = []; // CMS redirects come from the backend later
-  return { knowledge: live("guide"), updates: live("regulatory_update"), campaign: live("landing_page"), redirects };
+  return { knowledge: live("guide"), updates: live("regulatory_update"), campaign: live("landing_page"), legal: live("legal_doc") };
+}
+
+export type LegalVM = { version: number; effective: string | null; sections: { id: string; title: string; body: string }[]; fallback?: Locale };
+/** Legal document `key` (terms, privacy, cookies, disclaimers): one section per visible block, `{title, doc|text}`. */
+export async function getLegal(key: string, locale: Locale): Promise<LegalVM | null> {
+  const draft = await isDraft();
+  const e = (await ofType("legal_doc", draft)).find((x) => x.key === key);
+  const r = e && resolveVariant(e, locale, draft);
+  if (!e || !r) return null;
+  return {
+    version: r.variant.version, effective: r.variant.publishedAt?.slice(0, 10) ?? null, fallback: r.isFallback ? r.served : undefined,
+    sections: e.blocks.filter((b) => !b.hidden).map((b) => {
+      const t = txt(r.variant, b);
+      return { id: b.id, title: String(t.title ?? ""), body: t.doc ? docText(t.doc) : String(t.text ?? "") };
+    }).filter((x) => x.title || x.body),
+  };
+}
+
+/** FAQs linked to a service (entry.serviceSlugs), for the service page block and its FAQPage JSON-LD (F-CMS-09/13). */
+export async function getServiceFaqs(slug: string, locale: Locale): Promise<{ q: string; a: string }[]> {
+  const draft = await isDraft();
+  return (await ofType("faq", draft)).filter((e) => e.serviceSlugs.includes(slug)).flatMap((e) => {
+    const r = resolveVariant(e, locale, draft);
+    return r ? [{ q: r.variant.title, a: String((r.variant.body[e.blocks[0]?.id ?? "a"] as { text?: string })?.text ?? "") }] : [];
+  });
 }
 
 /** Stage 11 hook: the AI assistant indexes only ai_approved, published, non-stale content (F-AIA-02). */
 export async function kbSources(): Promise<{ id: string; type: CmsType; locale: Locale; title: string; text: string; updatedAt: string }[]> {
-  "use cache";
-  cacheTag("cms", "cms:kb");
-  cacheLife("hours");
   const t = Date.now();
   return (await entries()).filter((e) => kbEligible(e, t)).flatMap((e) => liveLocales(e).map((l) => {
     const v = e.variants[l]!;
     return { id: e.id, type: e.type, locale: l, title: v.title, text: Object.values(v.body).map((b) => JSON.stringify(b)).join(" "), updatedAt: v.updatedAt };
   }));
+}
+
+/** generateStaticParams for a CMS route. Cache Components needs ≥1 param, so an empty build (API down) yields one
+ * sentinel that renders notFound(); real slugs are rendered on first request. */
+export async function slugParams(type: "guide" | "regulatory_update" | "landing_page", locales: readonly Locale[]) {
+  const slugs = (await entries()).filter((e) => e.type === type && liveLocales(e).length).map((e) => e.key);
+  return locales.flatMap((locale) => (slugs.length ? slugs : ["_"]).map((slug) => ({ locale, slug })));
 }

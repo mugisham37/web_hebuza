@@ -100,7 +100,8 @@ const en = {
   detail: {
     priceTitle: "Your price", fixed: "Fixed price", quoteTitle: "Free to start", quoteBody: "We quote you after reading your request.",
     covered: "Covered by monthly plans", notCovered: "Not included in monthly plans", ask: "Ask on WhatsApp", consult: "Book a free 30-min consultation",
-    facts: { fee: "Standard fee", time: "Turnaround", where: "Where", nationwide: "Nationwide" },
+    facts: { fee: "Standard fee", time: "Turnaround", where: "Where", nationwide: "Nationwide", days: "{min}–{max} business days", modes: { online: "Online", in_person: "In person", hybrid: "Online + in person" } },
+    eligibility: "Who can apply", deliverables: "What you receive", book: "Book a consultation", serviceFaq: "Questions about this service",
     about: "About this service", who: "Who can apply", whoBody: "Individuals, start-ups, SMEs, cooperatives and NGOs registered or operating in Rwanda.",
     docs: "Documents you'll need", required: "Required", optional: "Optional", docsFallback: "We'll confirm the exact documents for your case after you apply.",
     receive: "What you'll receive", receiveItems: ["The official result from the institution (PDF)", "A HEBUZA summary of what was done", "Your reference number for any follow-up"],
@@ -235,7 +236,8 @@ const fr: MarketingCopy = {
   detail: {
     priceTitle: "Votre prix", fixed: "Prix fixe", quoteTitle: "Gratuit pour commencer", quoteBody: "Nous vous faisons un devis après lecture de votre demande.",
     covered: "Inclus dans les forfaits mensuels", notCovered: "Non inclus dans les forfaits", ask: "Demander sur WhatsApp", consult: "Consultation gratuite de 30 min",
-    facts: { fee: "Frais standard", time: "Délai", where: "Où", nationwide: "Tout le pays" },
+    facts: { fee: "Frais standard", time: "Délai", where: "Où", nationwide: "Tout le pays", days: "{min}–{max} jours ouvrés", modes: { online: "En ligne", in_person: "En personne", hybrid: "En ligne + en personne" } },
+    eligibility: "Qui peut en bénéficier", deliverables: "Ce que vous recevez", book: "Réserver une consultation", serviceFaq: "Questions sur ce service",
     about: "À propos de ce service", who: "Qui peut demander", whoBody: "Particuliers, start-ups, PME, coopératives et ONG enregistrées ou actives au Rwanda.",
     docs: "Documents nécessaires", required: "Obligatoire", optional: "Facultatif", docsFallback: "Nous confirmons les documents exacts après votre demande.",
     receive: "Ce que vous recevez", receiveItems: ["Le résultat officiel de l'institution (PDF)", "Un récapitulatif HEBUZA du travail effectué", "Votre référence pour tout suivi"],
@@ -368,7 +370,8 @@ const rw: MarketingCopy = {
   detail: {
     priceTitle: "Igiciro cyawe", fixed: "Igiciro kidahinduka", quoteTitle: "Gutangira ni ubuntu", quoteBody: "Tuguha igiciro tumaze gusoma ubusabe bwawe.",
     covered: "Biri mu ifatabuguzi rya buri kwezi", notCovered: "Ntibiri mu ifatabuguzi", ask: "Baza kuri WhatsApp", consult: "Inama y'ubuntu y'iminota 30",
-    facts: { fee: "Igiciro gisanzwe", time: "Igihe bifata", where: "Aho bikorerwa", nationwide: "Igihugu cyose" },
+    facts: { fee: "Igiciro gisanzwe", time: "Igihe bifata", where: "Aho bikorerwa", nationwide: "Igihugu cyose", days: "Iminsi y'akazi {min}–{max}", modes: { online: "Kuri murandasi", in_person: "Imbonankubone", hybrid: "Kuri murandasi + imbonankubone" } },
+    eligibility: "Abemerewe gusaba", deliverables: "Ibyo uzahabwa", book: "Fata gahunda y'inama", serviceFaq: "Ibibazo kuri iyi serivisi",
     about: "Ibyerekeye iyi serivisi", who: "Abemerewe gusaba", whoBody: "Abantu ku giti cyabo, imishinga mishya, ibigo bito, koperative n'imiryango ikorera mu Rwanda.",
     docs: "Inyandiko uzakenera", required: "Ni ngombwa", optional: "Si ngombwa", docsFallback: "Tuzakwemeza inyandiko nyazo nyuma yo gusaba.",
     receive: "Ibyo uzahabwa", receiveItems: ["Igisubizo cyemewe cy'urwego (PDF)", "Incamake ya HEBUZA y'ibyakozwe", "Nimero yawe yo gukurikirana"],

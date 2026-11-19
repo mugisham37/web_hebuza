@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getI18n } from "@/lib/i18n/server";
 import { locales, localHref } from "@/shared/i18n/config";
 import { getFamily, getService, getServices } from "@/lib/catalogue";
+import { getServiceFaqs } from "@/lib/marketing/cms/read";
 import { getCopy, waLink } from "@/content/marketing";
 import { FAMILIES } from "@/content/families";
 import { formatMoney } from "@/shared/format";
@@ -24,7 +25,8 @@ const WHO_ICONS = ["user", "sparkle", "building", "users"] as const;
 
 export async function generateStaticParams() {
   const services = await getServices("en");
-  return locales.flatMap((locale) => services.map((s) => ({ locale, slug: s.slug })));
+  // Cache Components needs ≥1 param; with the API down at build, one sentinel renders notFound() and real slugs render on request.
+  return locales.flatMap((locale) => (services.length ? services.map((s) => s.slug) : ["_"]).map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/services/[slug]">): Promise<Metadata> {
@@ -33,7 +35,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/services
   const s = await getService(slug, locale);
   if (!s) return {};
   const price = s.priceMode === "quote" || s.fromFee == null ? "" : ` — ${formatMoney(s.fromFee, "RWF", locale)}`;
-  return pageMeta(locale, `/services/${s.slug}`, { title: s.name, description: `${s.summary || s.name}${price}` });
+  const meta = pageMeta(locale, `/services/${s.slug}`, { title: s.seo.title || s.name, description: s.seo.description || `${s.summary || s.name}${price}` });
+  return s.seo.og_image ? { ...meta, openGraph: { ...meta.openGraph, images: [s.seo.og_image] } } : meta;
 }
 
 // /services/[slug] (F-CAT-03..08, 12, 13) — photos/To_build/05-service-detail-company-registration__v1.
@@ -47,8 +50,16 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
   const L = (p: string) => localHref(locale, p);
   const fam = await getFamily(s.family, locale);
   const meta = FAMILIES.find((f) => f.slug === s.family);
-  const related = (fam?.services ?? []).filter((x) => x.slug !== s.slug).slice(0, 3);
+  // F-CAT-09: manual links first, then the rest of the family.
+  const all = await getServices(locale);
+  const related = [...s.related.flatMap((r) => all.filter((x) => x.slug === r)), ...(fam?.services ?? [])]
+    .filter((x, i, xs) => x.slug !== s.slug && xs.findIndex((y) => y.slug === x.slug) === i).slice(0, 3);
+  const faqs = await getServiceFaqs(s.slug, locale);
+  // F-CAT-08: consultation services book a call instead of opening an application.
+  const cta = s.consultation ? { href: L(`/book?service=${s.slug}`), label: d.book } : { href: L(`/apply/${s.slug}`), label: m.card.apply };
   const tier = s.tiers[0];
+  const time = s.turnaround.min != null && s.turnaround.max != null ? d.facts.days.replace("{min}", String(s.turnaround.min)).replace("{max}", String(s.turnaround.max)) : tier?.eta ?? "—";
+  const where = s.deliveryMode ? d.facts.modes[s.deliveryMode as keyof typeof d.facts.modes] ?? d.facts.nationwide : d.facts.nationwide;
   const la = laCopy(locale);
   const paused = s.paused;
   const bands: PriceBand[] | null = s.bands.length ? s.bands : null;
@@ -63,6 +74,11 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
     ...(quote ? {} : { offers: { "@type": "Offer", price: s.fromFee, priceCurrency: "RWF" } }),
   };
 
+  const crumbs = [{ name: m.common.services, url: `${SITE_URL}/${locale}/services` }, ...(fam ? [{ name: fam.name, url: `${SITE_URL}/${locale}/services/c/${fam.slug}` }] : []), { name: s.name, url: ld.url }];
+  const lds = [ld,
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: c.url })) },
+  ];
+
   const priceCard = (
     <div className="border-2 border-navy-700 bg-surface p-6 shadow-md">
       <div className="flex items-center justify-between"><p className="text-card-title">{d.priceTitle}</p><Tag variant={paused ? "neutral" : "navy"} className="h-7 text-eyebrow">{paused ? la.price.pausedTag : bands ? la.price.bandsTag : quote ? d.quoteTitle : d.fixed}</Tag></div>
@@ -75,13 +91,15 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
         ) : bands ? (
           <div className="grid gap-4">
             <BandCalculator bands={bands} />
-            <ButtonLink href={L(`/apply/${s.slug}`)} size="lg" variant="primary" dots className="justify-center">{m.card.apply}</ButtonLink>
+            <ButtonLink href={cta.href} size="lg" variant="primary" dots className="justify-center">{cta.label}</ButtonLink>
           </div>
         ) : quote ? (
           <div className="grid gap-4">
             <p className="bg-info-bg p-4 text-body text-navy-800">{d.quoteBody}</p>
-            <ButtonLink href={L(`/apply/${s.slug}`)} size="lg" variant="primary" dots className="justify-center">{m.card.apply}</ButtonLink>
+            <ButtonLink href={cta.href} size="lg" variant="primary" dots className="justify-center">{cta.label}</ButtonLink>
           </div>
+        ) : s.consultation ? (
+          <ButtonLink href={cta.href} size="lg" variant="primary" dots className="justify-center">{cta.label}</ButtonLink>
         ) : (
           <FeeBreakdown tiers={s.tiers} slug={s.slug} copy={m.pricing} />
         )}
@@ -96,7 +114,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(lds).replace(/</g, "\\u003c") }} />
       <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-12">
         <GridLines />
         <HeroIntro className="container-page relative grid gap-12 lg:grid-cols-[1fr_24rem]">
@@ -116,7 +134,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
               <PrintButton />
             </div>
             <dl data-hero="copy" className="mt-8 grid max-w-2xl grid-cols-3 divide-x divide-border border-y border-border">
-              {[[d.facts.fee, bands ? la.price.bandsTag : quote ? m.card.quote : formatMoney(s.fromFee!, "RWF", locale)], [d.facts.time, tier?.eta ?? "—"], [d.facts.where, d.facts.nationwide]].map(([k, v]) => (
+              {[[d.facts.fee, bands ? la.price.bandsTag : quote ? m.card.quote : formatMoney(s.fromFee!, "RWF", locale)], [d.facts.time, time], [d.facts.where, where]].map(([k, v]) => (
                 <div key={k} className="px-4 py-4 first:pl-0"><dt className="text-eyebrow text-fg-subtle uppercase">{k}</dt><dd className="mt-1 tabular text-label">{v}</dd></div>
               ))}
             </dl>
@@ -165,14 +183,24 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
                 </ul>
               ) : <p data-reveal className="mt-3 text-body text-fg-muted">{d.docsFallback}</p>}
             </Reveal>
-            <Reveal className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {(s.eligibility.length > 0 || s.deliverables.length > 0) && (
+              <Reveal className="grid gap-6 border border-border bg-white p-6 md:grid-cols-2 md:p-8">
+                {([[d.eligibility, s.eligibility], [d.deliverables, s.deliverables]] as const).filter(([, xs]) => xs.length).map(([h, xs]) => (
+                  <div key={h} data-reveal>
+                    <h2 className="text-h3">{h}</h2>
+                    <ul className="mt-4 grid gap-2">{xs.map((x) => <li key={x} className="flex items-start gap-2.5 text-body"><Icon name="check" size={16} className="mt-1 shrink-0 text-success" />{x}</li>)}</ul>
+                  </div>
+                ))}
+              </Reveal>
+            )}
+            {s.deliverables.length === 0 && <Reveal className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {d.receiveItems.map((r, i) => (
                 <div key={r} data-reveal className={["bg-navy-700 p-5 text-white", "bg-gold-200 p-5 text-ink-900", "bg-sky-50 p-5 text-navy-800"][i]}>
                   <span className="font-display text-3xl">{String(i + 1).padStart(2, "0")}</span>
                   <p className="mt-6 text-label">{r}</p>
                 </div>
               ))}
-            </Reveal>
+            </Reveal>}
           </div>
           <div className="lg:hidden">{priceCard}</div>
         </div>
@@ -190,7 +218,7 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
         </div>
       </section>
 
-      <FAQBlock locale={locale} title={`${m.faq.title}`} items={m.faq.items} />
+      <FAQBlock locale={locale} title={faqs.length ? d.serviceFaq : m.faq.title} items={faqs.length ? faqs : m.faq.items} />
 
       {related.length > 0 && (
         <section className="px-gutter pb-[var(--spacing-section-sm)]">
@@ -209,10 +237,10 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
         <div className="flex items-center justify-between gap-3 pr-16">
           <div className="min-w-0">
             <p className="truncate tabular text-label">{quote ? m.card.quote : formatMoney(s.fromFee!, "RWF", locale)}</p>
-            <p className="truncate text-small text-fg-subtle">{tier?.eta}</p>
+            <p className="truncate text-small text-fg-subtle">{time}</p>
           </div>
           {paused ? <span className="inline-flex h-11 items-center bg-ink-200 px-4 text-button text-fg-disabled" aria-disabled="true">{la.price.pausedApply}</span>
-            : <ButtonLink href={L(`/apply/${s.slug}`)} variant="primary" dots>{m.card.apply}</ButtonLink>}
+            : <ButtonLink href={cta.href} variant="primary" dots>{cta.label}</ButtonLink>}
         </div>
       </div>
 

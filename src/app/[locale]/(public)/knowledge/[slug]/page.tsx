@@ -8,8 +8,8 @@ import { localHref, locales } from "@/shared/i18n/config";
 import { getService } from "@/lib/catalogue";
 import { formatDate, formatMoney } from "@/shared/format";
 import { SITE_URL } from "@/lib/site";
-import { GUIDES, getLd } from "@/content/pages/ld";
-import { getGuide, getGuides } from "@/lib/marketing/cms/read";
+import { getLd } from "@/content/pages/ld";
+import { getGuide, getGuides, slugParams } from "@/lib/marketing/cms/read";
 import { FallbackNotice } from "@/components/molecules/site/fallback-notice";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
@@ -21,9 +21,7 @@ import { Helpful, ShareBar } from "@/components/molecules/site/library";
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    GUIDES.map((g) => ({ locale, slug: g.slug })),
-  );
+  return slugParams("guide", locales);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
