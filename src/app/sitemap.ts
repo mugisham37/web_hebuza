@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 import { getFamilies, getServices } from "@/lib/catalogue";
 import { getManifest } from "@/lib/marketing/cms/read";
 
-const STATIC = ["", "/services", "/pricing", "/about", "/faq", "/contact", "/track", "/knowledge", "/updates", "/book", "/join-us", "/status", "/how-it-works", "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility"];
+const STATIC = ["", "/services", "/pricing", "/about", "/faq", "/contact", "/track", "/knowledge", "/updates", "/book", "/join-us", "/how-it-works", "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages use generation time; services use their catalogue updated_at.

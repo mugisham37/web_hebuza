@@ -79,7 +79,7 @@ const en = {
   footer: {
     about: "Business, tax, investment and finance services. Kigali, Rwanda. Mon–Fri 08:00–17:00.",
     services: "Services", help: "Help", connect: "Connect", company: "HEBUZA",
-    helpLinks: ["Track a request", "FAQ", "Contact", "Book a consultation", "System status"],
+    helpLinks: ["Track a request", "FAQ", "Contact", "Book a consultation"],
     newsletter: "Get regulatory updates and deadline reminders", newsletterPlaceholder: "Your email or phone", newsletterError: "We couldn't subscribe you. Check the email or phone and try again.", subscribed: "Thanks — check your inbox or SMS to confirm.",
     pills: ["Tax filing", "Registration", "Investment"],
   },
@@ -215,7 +215,7 @@ const fr: MarketingCopy = {
   footer: {
     about: "Services aux entreprises, fiscalité, investissement et finance. Kigali, Rwanda. Lun–ven 08:00–17:00.",
     services: "Services", help: "Aide", connect: "Contact", company: "HEBUZA",
-    helpLinks: ["Suivre une demande", "FAQ", "Contact", "Réserver une consultation", "État du système"],
+    helpLinks: ["Suivre une demande", "FAQ", "Contact", "Réserver une consultation"],
     newsletter: "Recevez les actualités réglementaires et les rappels d'échéances", newsletterPlaceholder: "Votre e-mail ou téléphone", newsletterError: "Inscription impossible. Vérifiez l'e-mail ou le numéro et réessayez.", subscribed: "Merci — confirmez via votre boîte mail ou SMS.",
     pills: ["Fiscalité", "Immatriculation", "Investissement"],
   },
@@ -349,7 +349,7 @@ const rw: MarketingCopy = {
   footer: {
     about: "Serivisi z'ubucuruzi, imisoro, ishoramari n'imari. Kigali, u Rwanda. Kuwa 1–5 08:00–17:00.",
     services: "Serivisi", help: "Ubufasha", connect: "Twandikire", company: "HEBUZA",
-    helpLinks: ["Kurikirana ubusabe", "Ibibazo", "Twandikire", "Saba inama", "Imiterere ya sisitemu"],
+    helpLinks: ["Kurikirana ubusabe", "Ibibazo", "Twandikire", "Saba inama"],
     newsletter: "Akira amakuru y'amategeko n'urwibutso rw'amatariki", newsletterPlaceholder: "Imeri cyangwa telefoni yawe", newsletterError: "Ntibyakunze. Reba imeri cyangwa nimero hanyuma wongere ugerageze.", subscribed: "Murakoze — emeza ukoresheje imeri cyangwa SMS.",
     pills: ["Imisoro", "Kwandikisha", "Ishoramari"],
   },

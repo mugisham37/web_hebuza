@@ -3236,22 +3236,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/status/updates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["SystemOpsController_publicStatus"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/admin/compliance-calendar": {
         parameters: {
             query?: never;
@@ -25221,30 +25205,6 @@ export interface operations {
                 "application/json": components["schemas"]["IncidentEventDto"];
             };
         };
-        responses: {
-            "2XX": {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                        message: string;
-                        errorType: string | null;
-                        data: unknown;
-                    };
-                };
-            };
-        };
-    };
-    SystemOpsController_publicStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             "2XX": {
                 headers: {

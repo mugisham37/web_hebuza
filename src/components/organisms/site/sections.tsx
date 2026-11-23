@@ -74,7 +74,7 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
   const f = getCopy(locale).footer;
   const m = getCopy(locale);
   const L = (p: string) => localHref(locale, p);
-  const helpHrefs = ["/track", "/faq", "/contact", "/book", "/status"];
+  const helpHrefs = ["/track", "/faq", "/contact", "/book"];
   // F-CMS-07: CMS footer nav and contact settings win when set; the built-in links are the defaults.
   const cmsLinks = (site?.nav.footer ?? []).map((n) => [n.label[locale] ?? n.label.en ?? n.id, n.href.startsWith("/") ? L(n.href) : n.href] as [string, string]);
   const email = site?.settings?.email || CONTACT.email;
