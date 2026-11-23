@@ -5,7 +5,6 @@ import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { stripLocale } from "@/shared/i18n/config";
 import { useSession } from "@/lib/auth/session";
-import { api } from "@/lib/api/client";
 import { ROLE_META, homeFor, mayEnter, type Role, type Workspace } from "@/shared/auth/roles";
 import { WORKSPACE_NAV, QUICK_ACTIONS, navFor, type NavItem } from "@/lib/nav";
 import { cx } from "@/shared/format";
@@ -16,6 +15,7 @@ import { Wordmark } from "@/components/organisms/site/site-header";
 import { Icon, WhatsAppGlyph, type IconName } from "@/components/atoms/icon";
 import { waLink } from "@/content/marketing";
 import { useOpsShell } from "@/components/organisms/layout/ops-shell";
+import { WorkspaceTabs } from "@/components/molecules/layout/workspace-tabs";
 import { LocaleSwitcher } from "@/components/organisms/layout/locale-switcher";
 import { SessionExpiryModal } from "@/components/organisms/layout/session-expiry";
 import { MfaSuggest } from "@/components/organisms/auth/mfa-suggest";
@@ -26,28 +26,9 @@ import { WipeSheet } from "@/components/organisms/field/field-settings";
 import { start as startField, engineState, wipeAll } from "@/lib/field/sync";
 import { pendingCount } from "@/lib/field/queue";
 
-function WorkspaceSwitcher({ current }: { current: Workspace }) {
-  const { t, locale } = useI18n();
-  const { workspaces, setActiveWorkspace } = useSession();
-  const router = useRouter();
-  if (workspaces.length < 2) return <span className="text-label">{t(`workspace.${current}`)}</span>;
-  return (
-    <label className="flex items-center gap-2">
-      <span className="sr-only">{t("workspace.switch")}</span>
-      <select
-        value={current}
-        onChange={(e) => {
-          const ws = e.target.value as Workspace;
-          setActiveWorkspace(ws);
-          const home = Object.values(ROLE_META).find((m) => m.workspace === ws)!.home;
-          router.push(localHref(locale, home));
-        }}
-        className="h-10 border border-border-strong bg-surface px-3 text-button text-fg hover:border-ink-400"
-      >
-        {workspaces.map((w) => <option key={w} value={w}>{t(`workspace.${w}`)}</option>)}
-      </select>
-    </label>
-  );
+function WorkspaceLabel({ current }: { current: Workspace }) {
+  const { t } = useI18n();
+  return <span className="text-label">{t(`workspace.${current}`)}</span>;
 }
 
 /** Ctrl/⌘+K command palette: shell extras (ops ids/actions), quick actions, then the workspace's nav (R-18, plan 11 §8.4). */
@@ -152,22 +133,6 @@ function UserMenu() {
             <p className="text-label">{user.name}</p>
             <p className="text-small text-fg-subtle">{user.roles.map((r) => t(`role.${r}`)).join(" · ")}</p>
           </div>
-          {user.roles.length > 1 && (
-            <div className="border-b border-border py-1" role="group" aria-label={t("nav.workAs")}>
-              <p className="px-3 pt-1 text-eyebrow text-fg-subtle">{t("nav.workAs")}</p>
-              {user.roles.filter((r): r is Exclude<Role, "visitor"> => r !== "visitor").map((r) => (
-                <button key={r} role="menuitemradio" aria-checked={(user.activeRole ?? user.roles[0]) === r} type="button"
-                  className={cx("w-full px-3 py-2 text-left hover:bg-navy-50", (user.activeRole ?? user.roles[0]) === r && "font-medium")}
-                  onClick={async () => {
-                    setOpen(false);
-                    await api.POST("/api/auth/active-role", { body: { role: r } });
-                    window.location.assign(localHref(locale, ROLE_META[r].home));
-                  }}>
-                  {t(`role.${r}`)}
-                </button>
-              ))}
-            </div>
-          )}
           <Link role="menuitem" href={localHref(locale, "/settings")} className="block px-3 py-2 hover:bg-navy-50" onClick={() => setOpen(false)}>{t("wsnav.settings")}</Link>
           <button role="menuitem" type="button" className="w-full px-3 py-2 text-left hover:bg-navy-50"
             onClick={onSignOut}>{t("nav.signOut")}</button>
@@ -271,7 +236,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
           <button type="button" className="flex size-10 items-center justify-center hover:bg-navy-50 lg:hidden" aria-label={t("common.menu")} onClick={() => setDrawer(true)}>
             <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
           </button>
-          <WorkspaceSwitcher current={workspace} />
+          <WorkspaceLabel current={workspace} />
           {ops?.headerExtra}
           <div className="ml-auto flex items-center gap-0.5 sm:gap-2">
             <CommandPalette workspace={workspace} />
@@ -284,6 +249,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
             <UserMenu />
           </div>
         </header>
+        <WorkspaceTabs current={workspace} />
         <main id="main" className="min-w-0 flex-1 px-gutter py-8 lg:px-8">
           <WorkerBanner />
           {ops?.banner}

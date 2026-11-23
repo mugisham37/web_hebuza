@@ -2068,6 +2068,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/staff/users/{id}/all-workspaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SystemUsersController_allWorkspaces"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/staff/users/{id}/status": {
         parameters: {
             query?: never;
@@ -14764,6 +14780,10 @@ export interface components {
             reason?: string;
             expiresAt?: string | null;
         };
+        AllWorkspacesDto: {
+            on: boolean;
+            reason?: string;
+        };
         StatusDto2: {
             /** @enum {string} */
             action: "suspend" | "reactivate" | "deactivate" | "unlock" | "resend" | "revoke_invite";
@@ -16055,7 +16075,7 @@ export interface components {
             resolved: boolean;
         };
         NavDto: {
-            items: components["schemas"]["__s1655_0"][];
+            items: components["schemas"]["__s1659_0"][];
         };
         SettingsDto: {
             address?: string;
@@ -16559,17 +16579,17 @@ export interface components {
             [key: string]: unknown;
         };
         SegPreviewDto: {
-            definition: components["schemas"]["__s2097_0"];
+            definition: components["schemas"]["__s2101_0"];
             /** @enum {string} */
             channel: "email" | "whatsapp" | "sms";
         };
         SegCreateDto: {
             name: string;
-            definition: components["schemas"]["__s2101_0"];
+            definition: components["schemas"]["__s2105_0"];
         };
         SegPatchDto: {
             name?: string;
-            definition?: components["schemas"]["__s2105_0"];
+            definition?: components["schemas"]["__s2109_0"];
         };
         CampaignDto: {
             name?: string;
@@ -16631,7 +16651,7 @@ export interface components {
                 };
             }[];
             exit?: ("replied" | "paid" | "unsubscribed" | "won" | "lost")[];
-            conditions?: components["schemas"]["__s2157_0"];
+            conditions?: components["schemas"]["__s2161_0"];
             frequencyCap?: number;
             active?: boolean;
         };
@@ -18401,73 +18421,29 @@ export interface components {
                 expiresAt: string;
             };
         };
-        __s1655_0: {
+        __s1659_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1655_0"][];
+            children?: components["schemas"]["__s1659_0"][];
         };
-        __s1656_0: {
+        __s1660_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1656_0"][];
+            children?: components["schemas"]["__s1660_0"][];
         };
-        __s1657_0: {
+        __s1661_0: {
             id: string;
             href: string;
             label: {
                 [key: string]: string;
             };
-            children?: components["schemas"]["__s1657_0"][];
-        };
-        __s2097_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s2097_0"])[];
-        };
-        __s2098_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s2098_0"])[];
-        };
-        __s2099_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s2099_0"])[];
-        };
-        __s2100_0: {
-            /** @enum {string} */
-            join: "and" | "or";
-            rules: ({
-                /** @enum {string} */
-                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
-                /** @enum {string} */
-                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
-                value: unknown;
-            } | components["schemas"]["__s2100_0"])[];
+            children?: components["schemas"]["__s1661_0"][];
         };
         __s2101_0: {
             /** @enum {string} */
@@ -18557,7 +18533,7 @@ export interface components {
                 value: unknown;
             } | components["schemas"]["__s2108_0"])[];
         };
-        __s2157_0: {
+        __s2109_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18566,9 +18542,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2157_0"])[];
+            } | components["schemas"]["__s2109_0"])[];
         };
-        __s2158_0: {
+        __s2110_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18577,9 +18553,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2158_0"])[];
+            } | components["schemas"]["__s2110_0"])[];
         };
-        __s2159_0: {
+        __s2111_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18588,9 +18564,9 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2159_0"])[];
+            } | components["schemas"]["__s2111_0"])[];
         };
-        __s2160_0: {
+        __s2112_0: {
             /** @enum {string} */
             join: "and" | "or";
             rules: ({
@@ -18599,7 +18575,7 @@ export interface components {
                 /** @enum {string} */
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
-            } | components["schemas"]["__s2160_0"])[];
+            } | components["schemas"]["__s2112_0"])[];
         };
         __s2161_0: {
             /** @enum {string} */
@@ -18677,6 +18653,50 @@ export interface components {
                 op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
                 value: unknown;
             } | components["schemas"]["__s2167_0"])[];
+        };
+        __s2168_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2168_0"])[];
+        };
+        __s2169_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2169_0"])[];
+        };
+        __s2170_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2170_0"])[];
+        };
+        __s2171_0: {
+            /** @enum {string} */
+            join: "and" | "or";
+            rules: ({
+                /** @enum {string} */
+                field: "service_used" | "category_interest" | "sector" | "district" | "province" | "company_size" | "subscription" | "last_active_days" | "ltv" | "language" | "obligation" | "consent_email" | "consent_whatsapp" | "consent_sms";
+                /** @enum {string} */
+                op: "is" | "is_not" | "in" | "lt" | "lte" | "gt" | "gte" | "before" | "after" | "within_days";
+                value: unknown;
+            } | components["schemas"]["__s2171_0"])[];
         };
     };
     responses: never;
@@ -23097,6 +23117,36 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["RoleOpDto"];
+            };
+        };
+        responses: {
+            "2XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        errorType: string | null;
+                        data: unknown;
+                    };
+                };
+            };
+        };
+    };
+    SystemUsersController_allWorkspaces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AllWorkspacesDto"];
             };
         };
         responses: {

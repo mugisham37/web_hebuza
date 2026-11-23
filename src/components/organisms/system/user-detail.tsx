@@ -157,9 +157,59 @@ function RolesTab({ u, you, onReload }: { u: UserDetail; you: boolean; onReload:
           } catch (e) { const ce = causeOf(e); if (ce instanceof ApiError && ce.errorType === "stale") setConflict(new Date().toISOString()); throw e; }
           toast({ title: fill(c.toast.roleRevoked, { role: role(rm!) }), tone: "success" });
         }} />
+      {u.roles.some((r) => r.role === "staff:sysadmin") && u.kind !== "service" && <AllWorkspaces u={u} />}
       <GrantDialog u={u} open={grant} onClose={() => setGrant(false)} onConflict={() => setConflict(new Date().toISOString())} />
       {dialog}
     </section>
+  );
+}
+
+/** "All workspaces": one sysadmin account works in every workspace (top-bar tabs) and can be assigned cases. */
+const EVERY = ROLES.filter((r) => r !== "visitor");
+function AllWorkspaces({ u }: { u: UserDetail }) {
+  const c = useC();
+  const s = useS();
+  const a = c.d.roles.all;
+  const phone = usePhone();
+  const { run, online, dialog, toast } = useRun();
+  const me = useSession().user?.id;
+  const has = EVERY.every((r) => u.roles.some((g) => g.role === r));
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const close = () => { setOpen(false); setReason(""); setErr(null); };
+  const submit = async () => {
+    if (reason.trim().length < 10) return setErr(a.reasonHint);
+    setBusy(true); setErr(null);
+    try {
+      await run({ req: (h) => api.POST("/api/staff/users/{id}/all-workspaces", { params: { path: { id: u.id } }, body: { on: !has, reason: reason.trim() }, headers: h }), version: u.version }, c.inv.stepUp);
+      if (u.id === me) { // own account: reissue the access token now so the top bar shows the new workspaces
+        await api.POST("/api/auth/active-role", { body: { role: "staff:sysadmin" } });
+        return window.location.reload();
+      }
+      toast({ title: a.done, tone: "success" });
+      close();
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  };
+  return (
+    <div className="flex flex-wrap items-start gap-4 border border-border bg-surface p-4 sm:p-6">
+      <Icon name="layers" size={20} aria-hidden className="mt-0.5 shrink-0 text-navy-700" />
+      <div className="grid min-w-0 flex-1 basis-64 gap-1">
+        <h2 className="flex flex-wrap items-center gap-2 text-label-lg">{a.title}{has && <span className="bg-success-bg px-2 py-0.5 text-eyebrow text-success">{a.active}</span>}</h2>
+        <p className="text-small text-fg-muted">{a.body}</p>
+      </div>
+      <Button size="sm" variant={has ? "outline" : "primary"} disabled={!online} onClick={() => setOpen(true)}>{has ? a.off : a.on}</Button>
+      <Dialog open={open} onClose={close} side={phone ? "bottom" : undefined} title={fill(has ? a.offTitle : a.onTitle, { name: u.name })}
+        footer={<><Button variant="outline" onClick={close}>{s.common.cancel}</Button><Button dots loading={busy} disabled={!online} variant={has ? "danger" : "primary"} onClick={submit}>{has ? a.off : a.on}</Button></>}>
+        <div className="grid gap-4">
+          {err && <p role="alert" className="bg-danger-bg p-3 text-small font-medium text-danger m-shake">{err}</p>}
+          <p className="text-small text-fg-muted">{has ? a.offBody : a.body}</p>
+          <Field label={a.reason} hint={a.reasonHint}>{(f) => <Textarea id={f.id} value={reason} onChange={(e) => setReason(e.target.value)} rows={3} />}</Field>
+        </div>
+      </Dialog>
+      {dialog}
+    </div>
   );
 }
 
