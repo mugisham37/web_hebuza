@@ -38,7 +38,7 @@ export function GoogleButton({
     <a
       href={googleStartHref(intent, next, locale)}
       className={cx(
-        "inline-flex h-11 items-center justify-center gap-3 rounded-sm border px-4 text-[15px] font-medium no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link",
+        "inline-flex h-11 items-center justify-center gap-3 border px-4 text-[15px] font-medium no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link",
         variant === "light"
           ? "border-[#747775] bg-white text-[#1f1f1f] hover:bg-[#f8f9fa]"
           : "border-[#8e918f] bg-[#131314] text-[#e3e3e3] hover:bg-[#1f1f20]",

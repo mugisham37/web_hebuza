@@ -42,7 +42,7 @@ const HEX_ALLOW = [
   /apple-icon/,
   /manifest\.ts$/,
 ];
-const BRAND_HEX = /#(?:ffcb05|25d366|0a66c2|1877f2|000000|fff|ffffff)\b/i; // third-party brand + svg masks
+const BRAND_HEX = /#(?:ffcb05|25d366|0a66c2|1877f2|000000|fff|ffffff|4285f4|34a853|fbbc05|ea4335|747775|1f1f1f|f8f9fa|8e918f|131314|e3e3e3|1f1f20)\b/i; // third-party brand + svg masks
 const GOLD_TEXT =
   /(?<![\w-:])text-(?:gold-(?:300|400|500)|sky-(?:400|500))(?![\w-])/g;
 const WHITE_ON_GOLD =
