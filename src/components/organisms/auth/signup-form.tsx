@@ -1,4 +1,5 @@
 "use client";
+import { GoogleAuthBlock } from "@/components/molecules/auth/oauth-divider";
 import { useUrlParams } from "@/lib/url-state";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ import {
   AuthTitle,
   Notice,
   useAuthCopy,
+  safeNext,
   useSubmit,
   useRefreshSession,
   apiMessage,
@@ -124,6 +126,7 @@ export function SignupForm({
         <ErrorSummary title={c.fixErrors} errors={list} />
       </div>
       {error && <Notice>{apiMessage(error, c.generic, locale)}</Notice>}
+      <GoogleAuthBlock intent="signup" next={safeNext(invite.get("next"))} />
       <form noValidate onSubmit={onSubmit} className="mt-2 grid gap-5">
         <IdentifierField
           type={type}

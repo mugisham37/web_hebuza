@@ -19,6 +19,7 @@ import { useOpsShell } from "@/components/organisms/layout/ops-shell";
 import { LocaleSwitcher } from "@/components/organisms/layout/locale-switcher";
 import { SessionExpiryModal } from "@/components/organisms/layout/session-expiry";
 import { MfaSuggest } from "@/components/organisms/auth/mfa-suggest";
+import { PhoneSuggest } from "@/components/organisms/auth/phone-suggest";
 import { WorkerBanner } from "@/components/organisms/layout/worker-banner";
 import { PurchaseRequestMount } from "@/components/organisms/procurement/pr-mount";
 import { WipeSheet } from "@/components/organisms/field/field-settings";
@@ -295,6 +296,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
       {workspace !== "client" && <PurchaseRequestMount />}
       <SessionExpiryModal />
       <MfaSuggest />
+      <PhoneSuggest />
     </div>
   );
 }

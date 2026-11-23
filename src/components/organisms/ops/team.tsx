@@ -30,6 +30,8 @@ import {
 import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
 import { MfaEnrol } from "@/components/organisms/auth/mfa-setup";
 import { TwoStepCard } from "@/components/organisms/auth/two-step";
+import { SignInMethods } from "@/components/organisms/auth/sign-in-methods";
+import { GoogleAuthBlock } from "@/components/molecules/auth/oauth-divider";
 import { Field, Input, Checkbox, Switch } from "@/components/atoms/field";
 import { Button } from "@/components/atoms/button";
 import { Icon, type IconName } from "@/components/atoms/icon";
@@ -325,6 +327,7 @@ export function TeamSignIn() {
       ) : error && !lockedUntil ? (
         <Notice>{apiMessage(error, c.setup.loadErr)}</Notice>
       ) : null}
+      <GoogleAuthBlock intent="login" next={next ?? "/team/workspace"} />
       <form noValidate onSubmit={onSubmit} className="grid gap-5">
         <Field id="email" label={c.signIn.email} error={errs.email}>
           {({ id, describedBy, invalid }) => (
@@ -623,6 +626,7 @@ export function StaffSecurityPanel() {
         <p className="text-body text-fg-muted">{c.security.lede}</p>
       </header>
       <TwoStepCard />
+      <SignInMethods next="/team/security" />
       <section className="grid gap-2 border border-dashed border-border-strong bg-bg-subtle p-5">
         <h2 className="flex items-center gap-2 text-label">
           <Icon name="mail" size={16} aria-hidden />

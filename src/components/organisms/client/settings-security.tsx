@@ -21,6 +21,7 @@ import {
 } from "@/components/molecules/client/client";
 import { fill } from "@/content/pages/c4";
 import { TwoStepCard } from "@/components/organisms/auth/two-step";
+import { SignInMethods, useIdentities } from "@/components/organisms/auth/sign-in-methods";
 
 type Session = {
   id: string;
@@ -37,6 +38,7 @@ export function SecuritySettings() {
   const a = authCopy(locale);
   const toast = useToast();
   const qc = useQueryClient();
+  const ids = useIdentities();
   const [pw, setPw] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pending, setPending] = useState(false);
@@ -123,7 +125,8 @@ export function SecuritySettings() {
   return (
     <div className="grid gap-5">
       <TwoStepCard />
-      <Panel icon="lock" title={s.password} body={s.passwordLede}>
+      <SignInMethods next="/settings/security" />
+      {ids.data?.hasPassword !== false && <Panel icon="lock" title={s.password} body={s.passwordLede}>
         <form noValidate onSubmit={onSubmit} className="grid max-w-md gap-5">
           <ErrorSummary
             title={c.fixErrors}
@@ -145,7 +148,7 @@ export function SecuritySettings() {
             </Button>
           </div>
         </form>
-      </Panel>
+      </Panel>}
 
       <Panel
         icon="laptop"

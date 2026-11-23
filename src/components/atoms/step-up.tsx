@@ -3,7 +3,9 @@
 // Resolves with a short-lived token (send it as X-Step-Up-Token, see lib/ops/c `send`); rejects with StepUpCancelled.
 // The token is cached until it expires, so a burst of sensitive actions asks once.
 import { useRef, useState, useSyncExternalStore } from "react";
-import { useI18n } from "@/lib/i18n/provider";
+import Link from "next/link";
+import { ApiError } from "@/lib/api/client";
+import { useI18n, localHref } from "@/lib/i18n/provider";
 import { opsTeam } from "@/content/pages/ops-team";
 import { authCopy } from "@/content/pages/client-auth";
 import { stepUp, useMfaStatus } from "@/lib/ops/c";
@@ -88,6 +90,7 @@ export function StepUpDialog({
   const [backup, setBackup] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [noPw, setNoPw] = useState(false);
   // No 2FA on this account → confirm with the password instead of a code.
   const usePw = useMfaStatus(!!action).data?.enrolled === false;
   const finish = (token?: string) => {
@@ -95,6 +98,7 @@ export function StepUpDialog({
     setErr(null);
     setBackup(false);
     setBusy(false);
+    setNoPw(false);
     onDone(token);
   };
   const submit = async (v = code) => {
@@ -113,7 +117,11 @@ export function StepUpDialog({
           );
       cached = { token: r.token, until: Date.parse(r.expiresAt) };
       finish(r.token);
-    } catch {
+    } catch (e) {
+      if (e instanceof ApiError && e.errorType === "set_password_first") {
+        setNoPw(true);
+        return setBusy(false);
+      }
       setErr(c.wrong);
       setCode("");
       setBusy(false);
@@ -197,6 +205,14 @@ export function StepUpDialog({
               label={c.code}
             />
           </div>
+        )}
+        {noPw && (
+          <p role="alert" className="text-small">
+            {authCopy(locale).google.setPasswordFirst}{" "}
+            <Link href={localHref(locale, "/settings/security")} className="underline underline-offset-4">
+              {authCopy(locale).google.goSecurity}
+            </Link>
+          </p>
         )}
         {err && (
           <p role="alert" className="text-small font-medium text-danger">

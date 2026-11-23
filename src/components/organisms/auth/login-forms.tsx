@@ -21,6 +21,7 @@ import {
   safeNext,
 } from "@/components/molecules/auth/auth";
 import { IdentifierField, readIdentifier, type IdType } from "@/components/molecules/auth/auth";
+import { GoogleAuthBlock } from "@/components/molecules/auth/oauth-divider";
 
 
 /** /login (F-IAM-01) with error, lockout, rate-limit and session-expired states (F-IAM-04 UI). */
@@ -30,7 +31,9 @@ export function LoginForm() {
   const sp = useSearchParams();
   const refresh = useRefreshSession();
   const { pending, error, run } = useSubmit();
-  const [type, setType] = useState<IdType>("phone");
+  const linkRequired = sp.get("oauth") === "link_required";
+  const oauthErr = sp.get("oauth_error") as keyof typeof c.google.errors | null;
+  const [type, setType] = useState<IdType>(linkRequired ? "email" : "phone");
   const [fieldErr, setFieldErr] = useState<Record<string, string>>({});
   const next = safeNext(sp.get("next"));
 
@@ -52,6 +55,7 @@ export function LoginForm() {
             identifier: id!,
             password,
             rememberMe: !!f.get("remember"),
+            ...(linkRequired && sp.get("link_token") ? { oauthLinkToken: sp.get("link_token")! } : {}),
           },
         }),
       );
@@ -101,6 +105,15 @@ export function LoginForm() {
       {sp.get("reason") === "expired" && !error && (
         <Notice tone="info">{c.login.expired}</Notice>
       )}
+      {oauthErr && !error && (
+        <Notice>{c.google.errors[oauthErr] ?? c.google.errors.failed}</Notice>
+      )}
+      {linkRequired && (
+        <Notice tone="info">
+          {c.google.linkRequired}
+          {sp.get("email") && <strong className="block">{sp.get("email")}</strong>}
+        </Notice>
+      )}
       {api_?.isRateLimited ? (
         <Notice tone="warning">{c.login.rateLimited}</Notice>
       ) : api_?.isAuth || api_?.status === 400 ? (
@@ -108,6 +121,7 @@ export function LoginForm() {
       ) : error ? (
         <Notice>{c.generic}</Notice>
       ) : null}
+      <GoogleAuthBlock intent="login" next={next} />
       <form noValidate onSubmit={onSubmit} className="grid gap-5">
         <IdentifierField
           type={type}
