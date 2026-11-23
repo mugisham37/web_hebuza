@@ -282,9 +282,7 @@ export function TeamSignIn() {
             ? status.trustedDevice
               ? `/team/workspace${q}`
               : `/team/mfa${q}`
-            : status.policy === "required"
-              ? `/team/mfa/setup${q}`
-              : `/team/workspace${q}`,
+            : `/team/workspace${q}`, // 2FA is opt-in: never send anyone to setup
         ),
       );
     });

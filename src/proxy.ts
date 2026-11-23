@@ -104,12 +104,6 @@ export async function proxy(request: NextRequest) {
   if (!mayEnter(roles, workspace, path)) {
     return NextResponse.redirect(new URL(`/${locale}${homeFor(roles)}`, request.url));
   }
-  // 2FA is suggested, not forced (F-IAM-05): only the "required" policy (API sets `mfa_required`) sends staff to setup.
-  if (claims?.mfa_required === true) {
-    const setup = new URL(`/${locale}/team/mfa/setup`, request.url);
-    setup.searchParams.set("next", `${pathname}${search}`);
-    return NextResponse.redirect(setup);
-  }
   return response;
 }
 
