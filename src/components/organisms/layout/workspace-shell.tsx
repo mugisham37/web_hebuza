@@ -6,7 +6,7 @@ import { useI18n, localHref } from "@/lib/i18n/provider";
 import { stripLocale } from "@/shared/i18n/config";
 import { useSession } from "@/lib/auth/session";
 import { api } from "@/lib/api/client";
-import { ROLE_META, type Role, type Workspace } from "@/shared/auth/roles";
+import { ROLE_META, homeFor, mayEnter, type Role, type Workspace } from "@/shared/auth/roles";
 import { WORKSPACE_NAV, QUICK_ACTIONS, navFor, type NavItem } from "@/lib/nav";
 import { cx } from "@/shared/format";
 import { Avatar } from "@/components/atoms/misc";
@@ -238,9 +238,14 @@ function AccountCard() {
 /** App shell for every signed-in workspace: sidebar (≥1200px) / drawer, top bar, switcher, palette, bell, user menu. */
 export function WorkspaceShell({ workspace, children }: { workspace: Workspace; children: ReactNode }) {
   const { t, locale } = useI18n();
-  const { status } = useSession();
+  const { status, user } = useSession();
   const [drawer, setDrawer] = useState(false);
   const ops = useOpsShell();
+  const router = useRouter();
+  const pathname = usePathname();
+  // Client-side twin of the proxy workspace guard: a role that can't use this workspace goes to its own home.
+  const blocked = !!user && !mayEnter(user.roles, workspace, stripLocale(pathname));
+  useEffect(() => { if (blocked && user) router.replace(localHref(locale, homeFor(user.roles))); }, [blocked, user, router, locale]);
 
   return (
     <div className="min-h-dvh bg-bg-subtle lg:grid lg:grid-cols-[16rem_1fr]">

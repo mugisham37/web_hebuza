@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { components } from "@/lib/api/schema";
 import { api, unwrap, ApiError } from "@/lib/api/client";
 import { localHref } from "@/lib/i18n/provider";
+import { homeFor, type Role } from "@/shared/auth/roles";
 import { Field, Input, Checkbox, Select } from "@/components/atoms/field";
 import { Button } from "@/components/atoms/button";
 import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
@@ -54,16 +55,18 @@ export function LoginForm() {
           },
         }),
       );
-      // Staff with MFA get only a pre_2fa cookie here; the session starts at /login/2fa.
+      // No explicit ?next → the signed-in role's own home (sysadmin → /system), not the client dashboard.
+      const dest = sp.get("next") ? next : homeFor([data.session.role as Role]);
+      // Users who turned 2FA on get only a pre_2fa cookie here; the session starts at /login/2fa.
       if ((data as { mfaRequired?: boolean }).mfaRequired)
-        return router.push(localHref(locale, `/login/2fa?next=${encodeURIComponent(next)}`));
+        return router.push(localHref(locale, `/login/2fa?next=${encodeURIComponent(dest)}`));
       await refresh();
       router.push(
         localHref(
           locale,
           data.session.isEmailVerified
-            ? next
-            : `/verify?to=${encodeURIComponent(type === "phone" ? id! : data.maskedEmail)}&next=${encodeURIComponent(next)}`,
+            ? dest
+            : `/verify?to=${encodeURIComponent(type === "phone" ? id! : data.maskedEmail)}&next=${encodeURIComponent(dest)}`,
         ),
       );
     });
