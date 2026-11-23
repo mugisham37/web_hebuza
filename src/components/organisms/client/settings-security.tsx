@@ -20,6 +20,7 @@ import {
   useC4,
 } from "@/components/molecules/client/client";
 import { fill } from "@/content/pages/c4";
+import { TwoStepCard } from "@/components/organisms/auth/two-step";
 
 type Session = {
   id: string;
@@ -121,6 +122,7 @@ export function SecuritySettings() {
 
   return (
     <div className="grid gap-5">
+      <TwoStepCard />
       <Panel icon="lock" title={s.password} body={s.passwordLede}>
         <form noValidate onSubmit={onSubmit} className="grid max-w-md gap-5">
           <ErrorSummary

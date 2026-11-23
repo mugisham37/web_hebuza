@@ -104,9 +104,8 @@ export async function proxy(request: NextRequest) {
   if (!mayEnter(roles, workspace, path)) {
     return NextResponse.redirect(new URL(`/${locale}${homeFor(roles)}`, request.url));
   }
-  // Staff MFA enforcement (F-IAM-05): un-enrolled staff go to setup. An absent `mfa_enrolled` claim (auth.service accessToken) fails closed in production.
-  const mfa = claims?.mfa_enrolled;
-  if (roles.some((r) => r.startsWith("staff:") || r === "ext:agent") && (mfa === false || (mfa === undefined && process.env.NODE_ENV === "production"))) {
+  // 2FA is suggested, not forced (F-IAM-05): only the "required" policy (API sets `mfa_required`) sends staff to setup.
+  if (claims?.mfa_required === true) {
     const setup = new URL(`/${locale}/team/mfa/setup`, request.url);
     setup.searchParams.set("next", `${pathname}${search}`);
     return NextResponse.redirect(setup);

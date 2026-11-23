@@ -5,12 +5,13 @@
 import { useRef, useState, useSyncExternalStore } from "react";
 import { useI18n } from "@/lib/i18n/provider";
 import { opsTeam } from "@/content/pages/ops-team";
-import { stepUp } from "@/lib/ops/c";
+import { authCopy } from "@/content/pages/client-auth";
+import { stepUp, useMfaStatus } from "@/lib/ops/c";
 import { Dialog } from "@/components/atoms/dialog";
 import { Button } from "@/components/atoms/button";
 import { Input } from "@/components/atoms/field";
 import { Icon } from "@/components/atoms/icon";
-import { OtpInput } from "@/components/atoms/inputs";
+import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
 
 export class StepUpCancelled extends Error {
   constructor() {
@@ -87,6 +88,8 @@ export function StepUpDialog({
   const [backup, setBackup] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // No 2FA on this account → confirm with the password instead of a code.
+  const usePw = useMfaStatus(!!action).data?.enrolled === false;
   const finish = (token?: string) => {
     setCode("");
     setErr(null);
@@ -96,16 +99,18 @@ export function StepUpDialog({
   };
   const submit = async (v = code) => {
     if (busy || !action) return;
-    if (backup ? !/^[A-Z0-9]{4}-?[A-Z0-9]{4}$/i.test(v) : v.length !== 6)
+    if (usePw ? !v : backup ? !/^[A-Z0-9]{4}-?[A-Z0-9]{4}$/i.test(v) : v.length !== 6)
       return setErr(c.wrong);
     setBusy(true);
     setErr(null);
     try {
-      const r = await stepUp(
-        backup ? v.toUpperCase().replace(/^(.{4})-?/, "$1-") : v,
-        backup,
-        action,
-      );
+      const r = usePw
+        ? await stepUp("", false, action, v)
+        : await stepUp(
+            backup ? v.toUpperCase().replace(/^(.{4})-?/, "$1-") : v,
+            backup,
+            action,
+          );
       cached = { token: r.token, until: Date.parse(r.expiresAt) };
       finish(r.token);
     } catch {
@@ -152,9 +157,22 @@ export function StepUpDialog({
             aria-hidden
             className="mt-0.5 shrink-0 text-navy-700"
           />
-          {c.why}
+          {usePw ? c.why2 : c.why}
         </p>
-        {backup ? (
+        {usePw ? (
+          <label className="grid gap-1.5">
+            <span className="text-label">{c.password}</span>
+            <PasswordInput
+              showLabel={authCopy(locale).show}
+              hideLabel={authCopy(locale).hide}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              autoComplete="current-password"
+              aria-invalid={!!err || undefined}
+              autoFocus
+            />
+          </label>
+        ) : backup ? (
           <label className="grid gap-1.5">
             <span className="text-label">{c.backupLabel}</span>
             <Input
@@ -185,7 +203,7 @@ export function StepUpDialog({
             {err}
           </p>
         )}
-        <button
+        {!usePw && <button
           type="button"
           onClick={() => {
             setBackup((b) => !b);
@@ -195,7 +213,7 @@ export function StepUpDialog({
           className="w-fit text-small underline underline-offset-4"
         >
           {backup ? c.useApp : c.backup}
-        </button>
+        </button>}
       </form>
     </Dialog>
   );

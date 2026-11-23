@@ -188,7 +188,7 @@ export function ProfileView({
             <ContractSection p={p} manager={me?.manager ?? ""} />
           )}
           {cur === "notifications" && <NotificationsSection p={p} />}
-          {cur === "security" && <SecuritySection p={p} />}
+          {cur === "security" && <SecuritySection />}
         </div>
       </div>
     </div>
@@ -982,25 +982,9 @@ function NotificationsSection({ p }: { p: ProfileCopy }) {
   );
 }
 
-function SecuritySection({ p }: { p: ProfileCopy }) {
+function SecuritySection() {
   return (
     <div className="grid gap-4">
-      <section className={cx(box, "flex items-start gap-3")}>
-        <Icon
-          name="shield"
-          size={20}
-          aria-hidden
-          className="mt-0.5 text-navy-700"
-        />
-        <div>
-          <p className="text-label">{p.security.mfa}</p>
-          <p className="inline-flex items-center gap-1.5 text-small text-success">
-            <Icon name="check" size={12} aria-hidden />
-            {p.security.mfaOn}
-          </p>
-          <p className="mt-1 text-small text-fg-muted">{p.security.mfaBody}</p>
-        </div>
-      </section>
       <SecuritySettings />
     </div>
   );

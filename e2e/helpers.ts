@@ -39,6 +39,8 @@ export async function staffLogin(page: Page, who: keyof typeof STAFF | string) {
     if (i) await page.waitForTimeout(31_000 - (Date.now() % 30_000));
     const r = await page.request.post("/api/auth/staff/login", { headers, data: { email: STAFF[who], password: "Demo-pass-staff-1!" } });
     if (!r.ok()) { last = `login ${r.status()} ${await r.text()}`; continue; }
+    // 2FA is optional: an un-enrolled account is signed in already; snooze the suggestion card so it can't cover the page.
+    if (!(await r.json().catch(() => ({})))?.data?.mfaRequired) { await page.request.post("/api/auth/mfa/snooze", { headers }); return; }
     const v = await page.request.post("/api/auth/mfa/verify", { headers, data: { code: totp("JBSWY3DPEHPK3PXP") } });
     if (v.ok()) return;
     last = `${v.status()} ${await v.text()}`;

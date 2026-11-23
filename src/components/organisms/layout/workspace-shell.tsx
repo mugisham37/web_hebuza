@@ -18,6 +18,7 @@ import { waLink } from "@/content/marketing";
 import { useOpsShell } from "@/components/organisms/layout/ops-shell";
 import { LocaleSwitcher } from "@/components/organisms/layout/locale-switcher";
 import { SessionExpiryModal } from "@/components/organisms/layout/session-expiry";
+import { MfaSuggest } from "@/components/organisms/auth/mfa-suggest";
 import { WorkerBanner } from "@/components/organisms/layout/worker-banner";
 import { PurchaseRequestMount } from "@/components/organisms/procurement/pr-mount";
 import { WipeSheet } from "@/components/organisms/field/field-settings";
@@ -288,6 +289,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
       </Dialog>
       {workspace !== "client" && <PurchaseRequestMount />}
       <SessionExpiryModal />
+      <MfaSuggest />
     </div>
   );
 }

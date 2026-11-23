@@ -89,10 +89,11 @@ export const acceptInvite = (
 ) =>
   unwrap<{ ok: true }>(api.POST("/api/auth/set-password/{token}", { params: { path: { token: token } }, body: body }));
 
-export type MfaStatus = { enrolled: boolean; trustedDevice: boolean };
-export const useMfaStatus = () =>
+export type MfaStatus = { enrolled: boolean; trustedDevice: boolean; policy: "suggested" | "required"; suggest: boolean };
+export const useMfaStatus = (enabled = true) =>
   useQuery({
     queryKey: cKeys.mfa,
+    enabled,
     queryFn: () => unwrap<MfaStatus>(api.GET("/api/auth/mfa/status")),
     staleTime: 0,
   });
@@ -108,12 +109,16 @@ export const mfaVerify = (code: string, backup: boolean, trust: boolean) =>
     backup,
     trust,
   } }));
-export const stepUp = (code: string, backup: boolean, action: string) =>
-  unwrap<{ token: string; expiresAt: string }>(api.POST("/api/auth/mfa/step-up", { body: {
+/** `password` replaces the code for users without 2FA. */
+export const stepUp = (code: string, backup: boolean, action: string, password?: string) =>
+  unwrap<{ token: string; expiresAt: string }>(api.POST("/api/auth/mfa/step-up", { body: password ? { password, action } : {
     code,
     backup,
     action,
   } }));
+export const mfaSnooze = () => unwrap<{ ok: true }>(api.POST("/api/auth/mfa/snooze"));
+export const mfaDisable = (body: { code?: string; password?: string }) =>
+  unwrap<{ ok: true }>(api.POST("/api/auth/mfa/disable", { body }));
 export const regenBackupCodes = (token: string) =>
   unwrap<{ backupCodes: string[] }>(api.POST("/api/auth/mfa/backup-codes", { headers: hdr({ stepUp: token, audit: "regenerate backup codes" }) }));
 

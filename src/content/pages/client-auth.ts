@@ -4,7 +4,7 @@ import type { Locale } from "@/shared/i18n/config";
 // shortcut: lives in code until the CMS (Stage 10) or the i18n dictionaries absorb it.
 
 const en = {
-  access: {"open":"Staff: lost your authenticator or locked out? Ask for help","title":"Ask the team for access","lede":"A service manager or sysadmin checks it's you by phone or video, then resets your access.","email":"Work email","kind":"What happened","kinds":{"unlock":"My account is locked","two_factor":"I lost my authenticator","password":"I can't reset my password","other":"Something else"},"note":"Note (optional)","submit":"Send request","sent":"Request {ref} sent. We'll contact you at {to}."},
+  access: {"open":"Lost your authenticator or locked out? Ask for help","title":"Ask the team for access","lede":"A service manager or sysadmin checks it's you by phone or video, then resets your access.","email":"Email","kind":"What happened","kinds":{"unlock":"My account is locked","two_factor":"I lost my authenticator","password":"I can't reset my password","other":"Something else"},"note":"Note (optional)","submit":"Send request","sent":"Request {ref} sent. We'll contact you at {to}."},
   phone: "Phone",
   email: "Email",
   name: "Full name",
@@ -159,7 +159,7 @@ const en = {
 type Copy = typeof en;
 
 const rw: Copy = {
-  access: {"open":"Abakozi: wataye porogaramu ya kode cyangwa konti yafunzwe? Saba ubufasha","title":"Saba itsinda uburenganzira","lede":"Umuyobozi wa serivisi cyangwa sysadmin yemeza ko ari wowe kuri telefoni cyangwa amashusho, hanyuma agasubizaho uburenganzira bwawe.","email":"Imeyili y'akazi","kind":"Byagenze gute","kinds":{"unlock":"Konti yanjye yafunzwe","two_factor":"Nataye porogaramu ya kode","password":"Sinshobora guhindura ijambobanga","other":"Ikindi"},"note":"Icyitonderwa (si ngombwa)","submit":"Ohereza ubusabe","sent":"Ubusabe {ref} bwoherejwe. Tuzakuvugisha kuri {to}."},
+  access: {"open":"Wataye porogaramu ya kode cyangwa konti yafunzwe? Saba ubufasha","title":"Saba itsinda uburenganzira","lede":"Umuyobozi wa serivisi cyangwa sysadmin yemeza ko ari wowe kuri telefoni cyangwa amashusho, hanyuma agasubizaho uburenganzira bwawe.","email":"Imeyili","kind":"Byagenze gute","kinds":{"unlock":"Konti yanjye yafunzwe","two_factor":"Nataye porogaramu ya kode","password":"Sinshobora guhindura ijambobanga","other":"Ikindi"},"note":"Icyitonderwa (si ngombwa)","submit":"Ohereza ubusabe","sent":"Ubusabe {ref} bwoherejwe. Tuzakuvugisha kuri {to}."},
   phone: "Telefoni",
   email: "Imeyili",
   name: "Amazina yose",
@@ -319,7 +319,7 @@ const rw: Copy = {
 };
 
 const fr: Copy = {
-  access: {"open":"Personnel : authentificateur perdu ou compte bloqué ? Demander de l'aide","title":"Demander l'accès à l'équipe","lede":"Un responsable de service ou un administrateur vérifie votre identité par téléphone ou vidéo, puis rétablit votre accès.","email":"E-mail professionnel","kind":"Que s'est-il passé","kinds":{"unlock":"Mon compte est bloqué","two_factor":"J'ai perdu mon authentificateur","password":"Je ne peux pas réinitialiser mon mot de passe","other":"Autre chose"},"note":"Note (facultatif)","submit":"Envoyer la demande","sent":"Demande {ref} envoyée. Nous vous contacterons à {to}."},
+  access: {"open":"Authentificateur perdu ou compte bloqué ? Demander de l'aide","title":"Demander l'accès à l'équipe","lede":"Un responsable de service ou un administrateur vérifie votre identité par téléphone ou vidéo, puis rétablit votre accès.","email":"E-mail","kind":"Que s'est-il passé","kinds":{"unlock":"Mon compte est bloqué","two_factor":"J'ai perdu mon authentificateur","password":"Je ne peux pas réinitialiser mon mot de passe","other":"Autre chose"},"note":"Note (facultatif)","submit":"Envoyer la demande","sent":"Demande {ref} envoyée. Nous vous contacterons à {to}."},
   phone: "Téléphone",
   email: "E-mail",
   name: "Nom complet",
