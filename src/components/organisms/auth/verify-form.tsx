@@ -13,6 +13,7 @@ import {
   Notice,
   ResultPanel,
   useAuthCopy,
+  useAuthRole,
   useSubmit,
   useRefreshSession,
   apiMessage,
@@ -24,6 +25,7 @@ const RESEND_AFTER = 60;
 /** /verify — OTP (F-IAM-02) with v3 micro-states: default, typing/pasted, error, resend, verified → welcome. */
 export function VerifyForm() {
   const { c, locale } = useAuthCopy();
+  const { withAs } = useAuthRole();
   const sp = useSearchParams();
   const router = useRouter();
   const refresh = useRefreshSession();
@@ -79,7 +81,7 @@ export function VerifyForm() {
           to && (
             <>
               {c.verify.sentTo.replace("{to}", to)} ·{" "}
-              <Link href={localHref(locale, "/signup")} className="underline">
+              <Link href={withAs("/signup")} className="underline">
                 {c.verify.change}
               </Link>
             </>
@@ -128,6 +130,7 @@ export function VerifyForm() {
         </div>
         <Button
           type="submit"
+          variant="accent"
           size="lg"
           dots
           loading={pending}
@@ -194,7 +197,7 @@ function Welcome() {
       </ul>
       <ButtonLink
         href={localHref(locale, "/dashboard")}
-        variant="primary"
+        variant="accent"
         size="lg"
         dots
         className="w-fit"

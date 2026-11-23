@@ -7,14 +7,14 @@ import { useI18n } from "@/lib/i18n/provider";
 import { authCopy } from "@/content/pages/client-auth";
 import { cx } from "@/shared/format";
 
-/** public-settings.googleSignIn (same query key as the locale switcher, so one request). */
-export function useGoogleSignIn() {
-  const q = useQuery({
+/** public-settings (same query key as the locale switcher, so one request). */
+export function usePublicSettings() {
+  return useQuery({
     queryKey: ["platform", "public-settings"],
-    queryFn: () => unwrap<{ googleSignIn?: boolean }>(api.GET("/api/platform/public-settings")),
-  });
-  return (q.data as { googleSignIn?: boolean } | undefined)?.googleSignIn === true;
+    queryFn: () => unwrap<{ googleSignIn?: boolean; demoLogins?: boolean }>(api.GET("/api/platform/public-settings")),
+  }).data as { googleSignIn?: boolean; demoLogins?: boolean } | undefined;
 }
+export const useGoogleSignIn = () => usePublicSettings()?.googleSignIn === true;
 
 export const googleStartHref = (intent: "login" | "signup" | "link", next: string, lang?: string) =>
   `/api/auth/oauth/google/start?intent=${intent}&next=${encodeURIComponent(next)}${lang ? `&lang=${lang}` : ""}`;

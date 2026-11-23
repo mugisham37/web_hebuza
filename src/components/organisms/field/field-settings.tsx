@@ -91,7 +91,7 @@ export function WipeSheet({ mode, onClose }: { mode: "wipe" | "signout" | null; 
     await wipeAll(mode === "signout" ? "signout" : "user");
     if (mode === "signout") {
       await signOut();
-      router.push(localHref(locale, "/team/sign-in"));
+      router.push(localHref(locale, "/login?as=agent"));
     } else {
       toast({ title: d.wiped, tone: "success" });
       if (user) void start(user.id); // fresh empty store so the agent can keep working online

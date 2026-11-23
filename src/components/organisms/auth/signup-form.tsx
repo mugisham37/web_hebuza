@@ -28,6 +28,7 @@ import {
   safeNext,
   useSubmit,
   useRefreshSession,
+  useAuthRole,
   apiMessage,
 } from "@/components/molecules/auth/auth";
 import { IdentifierField, readIdentifier, type IdType } from "@/components/molecules/auth/auth";
@@ -56,6 +57,7 @@ export function SignupForm({
   const [lang, setLang] = useState<Locale>(locale);
   const summary = useRef<HTMLDivElement>(null);
   const head = audience === "partner" ? c.join : c.signup;
+  const { role, withAs, copy } = useAuthRole();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,7 +96,7 @@ export function SignupForm({
         router.push(
           localHref(
             locale,
-            `/verify?to=${encodeURIComponent(to)}`,
+            `/verify?to=${encodeURIComponent(to)}&as=client`,
           ),
         );
       } catch (e) {
@@ -115,6 +117,16 @@ export function SignupForm({
     field,
     message,
   }));
+  // Only clients self-register; staff and partner agents are invited (the role is a UI hint, the server decides).
+  if (audience === "client" && role !== "client")
+    return (
+      <>
+        <AuthTitle title={copy.roles[role].title} />
+        <Notice tone="info">{copy.signupInvite.replace("{role}", copy.roles[role].name)}</Notice>
+        <Link href={withAs("/login")} className="text-button underline underline-offset-4">{copy.backToLogin}</Link>
+      </>
+    );
+
   return (
     <>
       <AuthTitle
@@ -192,6 +204,7 @@ export function SignupForm({
           type="submit"
           size="lg"
           dots
+          variant="accent"
           loading={pending}
           className="w-full justify-center"
         >
@@ -199,7 +212,7 @@ export function SignupForm({
         </Button>
         <p className="text-small text-fg-subtle">{c.signup.otpNote}</p>
         <Link
-          href={localHref(locale, "/login")}
+          href={withAs("/login")}
           className="text-button underline underline-offset-4"
         >
           {c.signup.haveAccount}

@@ -20,6 +20,7 @@ import {
   Notice,
   ResultPanel,
   useAuthCopy,
+  useAuthRole,
   useSubmit,
   apiMessage,
 } from "@/components/molecules/auth/auth";
@@ -27,9 +28,12 @@ import { IdentifierField, readIdentifier, type IdType } from "@/components/molec
 
 /** /forgot (F-IAM-03). Always shows the same "sent" state so it can't be used to probe accounts. */
 export function ForgotForm() {
-  const { c, locale } = useAuthCopy();
+  const { c } = useAuthCopy();
+  const { role, withAs } = useAuthRole();
   const { pending, error, run } = useSubmit();
-  const [type, setType] = useState<IdType>("phone");
+  const emailOnly = role !== "client" && role !== "work"; // staff accounts are email-only
+  const [picked, setType] = useState<IdType>("phone");
+  const type: IdType = emailOnly ? "email" : picked;
   const [err, setErr] = useState<string>();
   const [sentTo, setSentTo] = useState<string | null>(null);
 
@@ -40,7 +44,7 @@ export function ForgotForm() {
           {c.forgot.sentBody.replace("{to}", sentTo)}
         </p>
         <Link
-          href={localHref(locale, "/login")}
+          href={withAs("/login")}
           className="text-button underline"
         >
           {c.forgot.back}
@@ -83,9 +87,10 @@ export function ForgotForm() {
           });
         }}
       >
-        <IdentifierField type={type} onType={setType} error={err} />
+        <IdentifierField type={type} onType={setType} emailOnly={emailOnly} error={err} />
         <Button
           type="submit"
+          variant="accent"
           size="lg"
           dots
           loading={pending}
@@ -94,7 +99,7 @@ export function ForgotForm() {
           {c.forgot.submit}
         </Button>
         <Link
-          href={localHref(locale, "/login")}
+          href={withAs("/login")}
           className="text-button underline underline-offset-4"
         >
           {c.forgot.back}
@@ -107,6 +112,7 @@ export function ForgotForm() {
 /** /reset?token=… (F-IAM-03). */
 export function ResetForm() {
   const { c, locale } = useAuthCopy();
+  const { withAs } = useAuthRole();
   const token = useSearchParams().get("token");
   const { pending, error, run } = useSubmit();
   const [pw, setPw] = useState("");
@@ -122,7 +128,7 @@ export function ResetForm() {
   if (bad)
     return (
       <ResultPanel icon="x" tone="warning" title={c.reset.noToken}>
-        <ButtonLink href={localHref(locale, "/forgot")} variant="primary">
+        <ButtonLink href={withAs("/forgot")} variant="accent">
           {c.reset.again}
         </ButtonLink>
       </ResultPanel>
@@ -131,7 +137,7 @@ export function ResetForm() {
     return (
       <ResultPanel icon="check" title={c.reset.doneTitle}>
         <p className="text-body text-fg-muted">{c.reset.doneBody}</p>
-        <ButtonLink href={localHref(locale, "/login")} variant="primary" dots>
+        <ButtonLink href={withAs("/login")} variant="accent" dots>
           {c.reset.signIn}
         </ButtonLink>
       </ResultPanel>
@@ -200,6 +206,7 @@ export function ResetForm() {
         </Field>
         <Button
           type="submit"
+          variant="accent"
           size="lg"
           dots
           loading={pending}
@@ -229,7 +236,7 @@ export function ClaimForm() {
         <p className="text-body text-fg-muted">{c.claim.doneBody}</p>
         <ButtonLink
           href={localHref(locale, "/requests")}
-          variant="primary"
+          variant="accent"
           dots
         >
           {c.claim.open}
@@ -344,6 +351,7 @@ export function ClaimForm() {
         )}
         <Button
           type="submit"
+          variant="accent"
           size="lg"
           dots
           loading={pending}

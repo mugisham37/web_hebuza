@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { api, unwrap, ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/client";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { useSession } from "@/lib/auth/session";
 import { ROLE_META, type Workspace } from "@/shared/auth/roles";
@@ -15,7 +15,6 @@ import {
   mfaVerify,
   staffPasswordRules,
   useInvite,
-  type MfaStatus,
 } from "@/lib/ops/c";
 import { useToday } from "@/lib/ops/api";
 import {
@@ -23,7 +22,6 @@ import {
   Notice,
   ResultPanel,
   useSubmit,
-  useRefreshSession,
   apiMessage,
   useAuthCopy,
 } from "@/components/molecules/auth/auth";
@@ -31,7 +29,6 @@ import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
 import { MfaEnrol } from "@/components/organisms/auth/mfa-setup";
 import { TwoStepCard } from "@/components/organisms/auth/two-step";
 import { SignInMethods } from "@/components/organisms/auth/sign-in-methods";
-import { GoogleAuthBlock } from "@/components/molecules/auth/oauth-divider";
 import { Field, Input, Checkbox, Switch } from "@/components/atoms/field";
 import { Button } from "@/components/atoms/button";
 import { Icon, type IconName } from "@/components/atoms/icon";
@@ -84,7 +81,7 @@ export function InviteForm({ token }: { token: string }) {
           {qe.status === 404 ? c.invite.invalidBody : c.invite.expiredBody}
         </p>
         <Link
-          href={localHref(locale, "/team/sign-in")}
+          href={localHref(locale, "/login?as=ops")}
           className="text-button underline"
         >
           {c.invite.signIn}
@@ -114,7 +111,7 @@ export function InviteForm({ token }: { token: string }) {
       router.push(
         localHref(
           locale,
-          `/team/sign-in?invited=1&email=${encodeURIComponent(inv.email)}`,
+          `/login?as=ops&email=${encodeURIComponent(inv.email)}`,
         ),
       );
     });
@@ -231,166 +228,6 @@ export function InviteForm({ token }: { token: string }) {
 }
 
 // ---------------------------------------------------------------- AU2 team sign-in (+ PA1)
-export function TeamSignIn() {
-  const { c, locale } = useT();
-  const auth = useAuthCopy().c;
-  const router = useRouter();
-  const sp = useSearchParams();
-  const refresh = useRefreshSession();
-  const { pending, error, setError, run } = useSubmit();
-  const [errs, setErrs] = useState<Record<string, string>>({});
-  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
-  const now = useNow(1000);
-  const next = safeNext(sp.get("next"));
-  const left = lockedUntil ? Math.ceil((lockedUntil - now) / 1000) : 0;
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const email = String(f.get("email") ?? "").trim();
-    const password = String(f.get("password") ?? "");
-    const v: Record<string, string> = {};
-    if (!/^\S+@\S+\.\S+$/.test(email)) v.email = c.signIn.badEmail;
-    if (!password) v.password = c.signIn.required;
-    setErrs(v);
-    if (Object.keys(v).length) return;
-    run(async () => {
-      try {
-        await unwrap(
-          api.POST("/api/auth/login", {
-            body: {
-              identifierType: "email",
-              identifier: email,
-              password,
-              rememberMe: !!f.get("keep"),
-            },
-          }),
-        );
-      } catch (err) {
-        if (
-          err instanceof ApiError &&
-          (err.status === 423 || err.errorType === "locked")
-        )
-          setLockedUntil(Date.now() + 15 * 60_000);
-        throw err;
-      }
-      await refresh();
-      const q = next ? `?next=${encodeURIComponent(next)}` : "";
-      const status = await unwrap<MfaStatus>(api.GET("/api/auth/mfa/status"));
-      router.push(
-        localHref(
-          locale,
-          status.enrolled
-            ? status.trustedDevice
-              ? `/team/workspace${q}`
-              : `/team/mfa${q}`
-            : `/team/workspace${q}`, // 2FA is opt-in: never send anyone to setup
-        ),
-      );
-    });
-  };
-
-  const apiErr = error instanceof ApiError ? error : null;
-  if (lockedUntil && left > 0)
-    return (
-      <ResultPanel icon="lock" tone="warning" title={c.signIn.lockedTitle}>
-        <p className="text-body text-fg-muted">{c.signIn.lockedBody}</p>
-        <p
-          className="bg-ink-100 px-4 py-1.5 text-label tabular"
-          aria-live="off"
-        >
-          {c.signIn.unlocksIn.replace("{t}", mmss(left))}
-        </p>
-      </ResultPanel>
-    );
-  return (
-    <>
-      <AuthTitle title={c.signIn.title} lede={c.signIn.lede} icon="shield" />
-      {sp.get("reason") === "expired" && !error && (
-        <Notice tone="info">{c.signIn.expired}</Notice>
-      )}
-      {lockedUntil && left <= 0 && !pending && (
-        <Notice tone="info">
-          <button
-            type="button"
-            className="underline"
-            onClick={() => (setLockedUntil(null), setError(null))}
-          >
-            {c.signIn.tryAgain}
-          </button>
-        </Notice>
-      )}
-      {apiErr?.isRateLimited ? (
-        <Notice tone="warning">{c.signIn.rateLimited}</Notice>
-      ) : apiErr?.isAuth || apiErr?.status === 400 ? (
-        <Notice>{apiMessage(error, c.signIn.bad)}</Notice>
-      ) : error && !lockedUntil ? (
-        <Notice>{apiMessage(error, c.setup.loadErr)}</Notice>
-      ) : null}
-      <GoogleAuthBlock intent="login" next={next ?? "/team/workspace"} />
-      <form noValidate onSubmit={onSubmit} className="grid gap-5">
-        <Field id="email" label={c.signIn.email} error={errs.email}>
-          {({ id, describedBy, invalid }) => (
-            <Input
-              id={id}
-              name="email"
-              type="email"
-              autoComplete="username"
-              inputMode="email"
-              defaultValue={sp.get("email") ?? ""}
-              aria-describedby={describedBy}
-              aria-invalid={invalid || undefined}
-            />
-          )}
-        </Field>
-        <Field id="password" label={c.signIn.password} error={errs.password}>
-          {({ id, describedBy, invalid }) => (
-            <PasswordInput
-              id={id}
-              name="password"
-              autoComplete="current-password"
-              showLabel={auth.show}
-              hideLabel={auth.hide}
-              aria-describedby={describedBy}
-              aria-invalid={invalid || undefined}
-            />
-          )}
-        </Field>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Checkbox
-            name="keep"
-            defaultChecked
-            label={<span className="text-small">{c.signIn.keep}</span>}
-          />
-          <Link
-            href={localHref(locale, "/forgot")}
-            className="text-small underline underline-offset-4"
-          >
-            {c.signIn.forgot}
-          </Link>
-        </div>
-        <Button type="submit" size="lg" dots loading={pending}>
-          {c.signIn.submit}
-        </Button>
-      </form>
-      <p className="mt-6 flex items-center gap-2 bg-bg-tint px-4 py-3 text-small">
-        <Icon
-          name="shield"
-          size={16}
-          aria-hidden
-          className="shrink-0 text-link"
-        />
-        {c.signIn.mfaNote}
-      </p>
-      <Link
-        href={localHref(locale, "/login")}
-        className="mt-4 text-small underline underline-offset-4"
-      >
-        {c.signIn.client}
-      </Link>
-    </>
-  );
-}
 
 // ---------------------------------------------------------------- AU3 + AU4 MFA setup
 export function MfaSetup() {

@@ -2,7 +2,7 @@
 import { useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useI18n, localHref } from "@/lib/i18n/provider";
 import { stripLocale } from "@/shared/i18n/config";
 import { errorCopy } from "@/lib/api/error-copy";
@@ -10,6 +10,7 @@ import { ApiError } from "@/lib/api/client";
 import { qk } from "@/lib/query/client";
 import { cx } from "@/shared/format";
 import { authCopy } from "@/content/pages/client-auth";
+import { authRolesCopy, isAuthRole, type AuthRole } from "@/content/pages/auth-roles";
 import { HighlightWord } from "@/components/atoms/brand";
 import { Icon, type IconName } from "@/components/atoms/icon";
 import { Field, Input } from "@/components/atoms/field";
@@ -207,16 +208,20 @@ export function IdentifierField({
   onType,
   error,
   hint,
+  emailOnly,
+  defaultValue,
 }: {
   type: IdType;
   onType: (t: IdType) => void;
   error?: string;
   hint?: string;
+  emailOnly?: boolean;
+  defaultValue?: string;
 }) {
   const { c } = useAuthCopy();
   return (
     <div className="grid gap-4">
-      <Segmented
+      {!emailOnly && <Segmented
         label={`${c.phone} / ${c.email}`}
         value={type}
         onChange={onType}
@@ -224,7 +229,7 @@ export function IdentifierField({
           { value: "phone", label: c.phone },
           { value: "email", label: c.email },
         ]}
-      />
+      />}
       <Field id="identifier"
         key={type}
         label={type === "phone" ? c.phoneLabel : c.emailLabel}
@@ -246,6 +251,7 @@ export function IdentifierField({
               name="identifier"
               type="email"
               autoComplete="email"
+              defaultValue={defaultValue}
               aria-describedby={describedBy}
               aria-invalid={invalid || undefined}
             />
@@ -254,4 +260,25 @@ export function IdentifierField({
       </Field>
     </div>
   );
+}
+
+const ROLE_KEY = "hebuza.auth.as";
+/** Sign-in role hint: ?as= is the source of truth, then the last pick on this device, else client (/team/* → ops). Never sent as authority. */
+export function useAuthRole() {
+  const sp = useSearchParams();
+  const path = usePathname();
+  const router = useRouter();
+  const { locale } = useI18n();
+  const q = sp.get("as");
+  let stored: string | null = null;
+  try { stored = q ? null : localStorage.getItem(ROLE_KEY); } catch {}
+  const role: AuthRole = isAuthRole(q) ? q : isAuthRole(stored) ? stored : /\/team(\/|$)/.test(path) ? "ops" : "client";
+  const withAs = (p: string, r: AuthRole = role) => localHref(locale, `${p}${p.includes("?") ? "&" : "?"}as=${r}`);
+  const setRole = (r: AuthRole) => {
+    try { localStorage.setItem(ROLE_KEY, r); } catch {}
+    const n = new URLSearchParams(sp.toString());
+    n.set("as", r);
+    router.replace(`${path}?${n}`, { scroll: false });
+  };
+  return { role, setRole, withAs, copy: authRolesCopy(locale) };
 }

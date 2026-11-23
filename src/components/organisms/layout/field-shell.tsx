@@ -40,7 +40,7 @@ export function FieldShell({ children }: { children: ReactNode }) {
   if (eng.status === "revoked") {
     return (
       <FieldEmpty art={<ArtShieldPhone />} title={c.revoked.title} body={c.revoked.body}
-        action={<ButtonLink href={localHref(locale, "/team/sign-in")} variant="primary" size="lg">{c.revoked.cta}</ButtonLink>} />
+        action={<ButtonLink href={localHref(locale, "/login?as=agent")} variant="primary" size="lg">{c.revoked.cta}</ButtonLink>} />
     );
   }
   if (me.isPending && !me.offlineOk) {

@@ -148,7 +148,7 @@ function StatusCard({ view, setView, reset }: { view: StatusView; setView: (v: S
         </form>
       )}
       <div className="flex flex-wrap gap-3">
-        {view.status === "converted" && <ButtonLink href={localHref(locale, "/team/sign-in")}>{c.status.signIn}</ButtonLink>}
+        {view.status === "converted" && <ButtonLink href={localHref(locale, "/login?as=work")}>{c.status.signIn}</ButtonLink>}
         <Button variant="outline" onClick={reset}>
           <Icon name="search" size={15} aria-hidden /> {c.status.another}
         </Button>

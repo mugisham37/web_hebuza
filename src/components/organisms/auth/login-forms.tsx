@@ -5,7 +5,12 @@ import { useState } from "react";
 import type { components } from "@/lib/api/schema";
 import { api, unwrap, ApiError } from "@/lib/api/client";
 import { localHref } from "@/lib/i18n/provider";
-import { homeFor, type Role } from "@/shared/auth/roles";
+import { homeFor, normalizeRoles, workspacesFor } from "@/shared/auth/roles";
+import { useSession } from "@/lib/auth/session";
+import { isAuthRole, roleHome } from "@/content/pages/auth-roles";
+import { DEMO_LOGINS } from "@/content/pages/demo-logins";
+import { useToast } from "@/components/atoms/toast";
+import { usePublicSettings } from "@/components/atoms/google-button";
 import { Field, Input, Checkbox, Select } from "@/components/atoms/field";
 import { Button } from "@/components/atoms/button";
 import { OtpInput, PasswordInput } from "@/components/atoms/inputs";
@@ -17,6 +22,7 @@ import {
   useAuthCopy,
   useSubmit,
   useRefreshSession,
+  useAuthRole,
   apiMessage,
   safeNext,
 } from "@/components/molecules/auth/auth";
@@ -24,18 +30,27 @@ import { IdentifierField, readIdentifier, type IdType } from "@/components/molec
 import { GoogleAuthBlock } from "@/components/molecules/auth/oauth-divider";
 
 
-/** /login (F-IAM-01) with error, lockout, rate-limit and session-expired states (F-IAM-04 UI). */
+/** /login (F-IAM-01) with error, lockout, rate-limit and session-expired states (F-IAM-04 UI). Themed by the ?as role hint. */
 export function LoginForm() {
   const { c, locale } = useAuthCopy();
+  const { role, withAs, copy } = useAuthRole();
+  const rc = copy.roles[role];
+  const staff = role !== "client" && role !== "work"; // staff sign in with their work email only
   const router = useRouter();
   const sp = useSearchParams();
   const refresh = useRefreshSession();
+  const toast = useToast();
+  const { setActiveWorkspace } = useSession();
   const { pending, error, run } = useSubmit();
   const linkRequired = sp.get("oauth") === "link_required";
   const oauthErr = sp.get("oauth_error") as keyof typeof c.google.errors | null;
-  const [type, setType] = useState<IdType>(linkRequired ? "email" : "phone");
+  const [pickedType, setType] = useState<IdType>(linkRequired || sp.get("email") ? "email" : "phone");
+  const type: IdType = staff ? "email" : pickedType;
   const [fieldErr, setFieldErr] = useState<Record<string, string>>({});
-  const next = safeNext(sp.get("next"));
+  const [demo, setDemo] = useState<{ email: string; password: string } | null>(null);
+  const demoLogins = usePublicSettings()?.demoLogins === true;
+  const explicitNext = sp.get("next");
+  const next = explicitNext ? safeNext(explicitNext) : roleHome(role);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,19 +74,22 @@ export function LoginForm() {
           },
         }),
       );
-      // No explicit ?next → the signed-in role's own home (sysadmin → /system), not the client dashboard.
-      const dest = sp.get("next") ? next : homeFor([data.session.role as Role]);
+      // No explicit ?next → the picked role's home if the account has it, else the account's own home (sysadmin → /system).
+      const roles = normalizeRoles(data.session);
+      const has = workspacesFor(roles).includes(role);
+      if (has) setActiveWorkspace(role);
+      const dest = explicitNext ? next : has ? roleHome(role) : homeFor(roles);
+      const actual = workspacesFor(roles)[0];
+      if (!explicitNext && !has && actual && isAuthRole(actual))
+        toast({ title: copy.signedInAs.replace("{role}", copy.roles[actual].name) });
       // Users who turned 2FA on get only a pre_2fa cookie here; the session starts at /login/2fa.
       if ((data as { mfaRequired?: boolean }).mfaRequired)
-        return router.push(localHref(locale, `/login/2fa?next=${encodeURIComponent(dest)}`));
+        return router.push(withAs(`/login/2fa?next=${encodeURIComponent(dest)}`));
       await refresh();
       router.push(
-        localHref(
-          locale,
-          data.session.isEmailVerified
-            ? dest
-            : `/verify?to=${encodeURIComponent(type === "phone" ? id! : data.maskedEmail)}&next=${encodeURIComponent(dest)}`,
-        ),
+        data.session.isEmailVerified
+          ? localHref(locale, dest)
+          : withAs(`/verify?to=${encodeURIComponent(type === "phone" ? id! : data.maskedEmail)}&next=${encodeURIComponent(dest)}`),
       );
     });
   };
@@ -83,10 +101,7 @@ export function LoginForm() {
         <p className="text-body text-fg-muted">
           {apiMessage(error, c.login.lockedBody.replace("{t}", "…"), locale)}
         </p>
-        <Link
-          href={localHref(locale, "/forgot")}
-          className="text-button underline"
-        >
+        <Link href={withAs("/forgot")} className="text-button underline">
           {c.login.forgot}
         </Link>
         <Link
@@ -101,7 +116,7 @@ export function LoginForm() {
 
   return (
     <>
-      <AuthTitle title={c.login.title} lede={c.login.lede} />
+      <AuthTitle title={rc.title} lede={rc.lede} />
       {sp.get("reason") === "expired" && !error && (
         <Notice tone="info">{c.login.expired}</Notice>
       )}
@@ -122,10 +137,12 @@ export function LoginForm() {
         <Notice>{c.generic}</Notice>
       ) : null}
       <GoogleAuthBlock intent="login" next={next} />
-      <form noValidate onSubmit={onSubmit} className="grid gap-5">
+      <form noValidate onSubmit={onSubmit} className="grid gap-5" key={demo?.email}>
         <IdentifierField
           type={type}
           onType={setType}
+          emailOnly={staff}
+          defaultValue={demo?.email ?? sp.get("email") ?? undefined}
           error={fieldErr.identifier}
         />
         <Field id="password" label={c.password} error={fieldErr.password}>
@@ -133,6 +150,7 @@ export function LoginForm() {
             <PasswordInput id={id}
               name="password"
               autoComplete="current-password"
+              defaultValue={demo?.password}
               showLabel={c.show}
               hideLabel={c.hide}
               aria-describedby={describedBy}
@@ -147,7 +165,7 @@ export function LoginForm() {
             label={<span className="text-small">{c.login.remember}</span>}
           />
           <Link
-            href={localHref(locale, "/forgot")}
+            href={withAs("/forgot")}
             className="text-small underline underline-offset-4"
           >
             {c.login.forgot}
@@ -155,6 +173,7 @@ export function LoginForm() {
         </div>
         <Button
           type="submit"
+          variant="accent"
           size="lg"
           dots
           loading={pending}
@@ -163,13 +182,33 @@ export function LoginForm() {
           {c.login.submit}
         </Button>
       </form>
+      {demoLogins && (
+        <button
+          type="button"
+          className="mt-3 justify-self-start text-small text-role-accent underline underline-offset-4"
+          onClick={() => { setType("email"); setDemo(DEMO_LOGINS[role]); }}
+        >
+          {copy.demo}
+        </button>
+      )}
       <Divider label={c.orDivider} />
-      <Link
-        href={localHref(locale, "/signup")}
-        className="text-button underline underline-offset-4"
-      >
-        {c.login.noAccount}
-      </Link>
+      {role === "client" ? (
+        <Link
+          href={withAs("/signup")}
+          className="text-button underline underline-offset-4"
+        >
+          {c.login.noAccount}
+        </Link>
+      ) : (
+        <div className="grid gap-2 text-small text-fg-muted">
+          <p>{role === "work" ? copy.inviteWork : copy.invite}</p>
+          {role === "work" && (
+            <Link href={localHref(locale, "/join-us")} className="text-button text-role-accent underline underline-offset-4">
+              {copy.joinAgent} →
+            </Link>
+          )}
+        </div>
+      )}
     </>
   );
 }
@@ -253,6 +292,7 @@ export function TwoFactorForm() {
           type="submit"
           size="lg"
           dots
+          variant="accent"
           loading={pending}
           disabled={!backup && code.length < 6}
           className="w-full justify-center"

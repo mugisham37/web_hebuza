@@ -39,9 +39,12 @@ const unknownSlug = (seg: string[], SLUGS: Record<string, Set<string>>) =>
   seg.length > (seg[0] === "services" && seg[1] === "c" ? 3 : 2) && (seg[0] in SLUGS || seg[0] === "services");
 const LEGACY_REDIRECTS: Record<string, string> = { "/admin": "/ops", "/dashboard/work": "/work",
   // Stage 8 §7.2 journey naming
-  "/work-with-us": "/join-us", "/join/agent": "/join", "/sign-in/agent": "/team/sign-in",
+  "/work-with-us": "/join-us", "/join/agent": "/join", "/sign-in/agent": "/login?as=agent",
   // spec cms §routes: /news is served by /updates (the only published news feed; `article` type has no public reader yet).
   "/news": "/updates" };
+
+/** A redirect target may carry its own query (/login?as=agent): merge the incoming one instead of appending a second "?". */
+const withSearch = (to: string, search: string) => (search && to.includes("?") ? `&${search.slice(1)}` : search);
 
 // Origin protection (Phase L): with ORIGIN_AUTH_SECRET set, only requests through Cloudflare (Transform Rule adds
 // x-origin-auth) or Railway's health check (Host healthcheck.railway.app, unroutable from the public edge) get through.
@@ -66,13 +69,13 @@ export async function proxy(request: NextRequest) {
     const locale = hasLocale(cookieLocale) ? cookieLocale : matchLocale(request.headers.get("accept-language"));
     const legacy = Object.entries(LEGACY_REDIRECTS).find(([from]) => pathname === from || pathname.startsWith(`${from}/`));
     const path = legacy ? pathname.replace(legacy[0], legacy[1]) : pathname;
-    return NextResponse.redirect(new URL(`/${locale}${path === "/" ? "" : path}${search}`, request.url));
+    return NextResponse.redirect(new URL(`/${locale}${path === "/" ? "" : path}${withSearch(path, search)}`, request.url));
   }
 
   const locale = first;
   const path = `/${rest.join("/")}`;
   const legacyHit = Object.entries(LEGACY_REDIRECTS).find(([from]) => path === from || path.startsWith(`${from}/`));
-  if (legacyHit) return NextResponse.redirect(new URL(`/${locale}${path.replace(legacyHit[0], legacyHit[1])}${search}`, request.url));
+  if (legacyHit) { const to = path.replace(legacyHit[0], legacyHit[1]); return NextResponse.redirect(new URL(`/${locale}${to}${withSearch(to, search)}`, request.url)); }
   const workspace = workspaceForPath(path);
   // D-06: /lp/<slug> (journey/spec naming) is an alias of the canonical /campaign/<slug>.
   if (rest[0] === "lp" && rest[1]) return NextResponse.redirect(new URL(`/${locale}/campaign/${rest[1]}${search}`, request.url), 308);
@@ -96,8 +99,9 @@ export async function proxy(request: NextRequest) {
   if (roles.length === 0) {
     // Expired access token but a refresh cookie: let the page load; the client refreshes via /api/auth/session.
     if (hasRefresh) return response;
-    // Staff workspaces sign in at /team/sign-in (spec/02 §3); clients and freelancers at /login.
-    const login = new URL(`/${locale}${workspace === "client" || workspace === "work" ? "/login" : "/team/sign-in"}`, request.url);
+    // Everyone signs in at /login; ?as=<workspace> themes it for that role (UI hint only).
+    const login = new URL(`/${locale}/login`, request.url);
+    login.searchParams.set("as", workspace);
     login.searchParams.set("next", `${pathname}${search}`);
     return NextResponse.redirect(login);
   }

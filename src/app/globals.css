@@ -211,6 +211,10 @@
   --color-warning-bg: var(--warning-bg);
   --color-info: var(--info);
   --color-info-bg: var(--info-bg);
+  --color-role-accent: var(--role-accent);
+  --color-role-accent-hover: var(--role-accent-hover);
+  --color-on-role-accent: var(--role-on-accent);
+  --color-role-soft: var(--role-soft);
 }
 
 @layer base {
@@ -428,3 +432,21 @@ dialog[data-motion][open]::backdrop { opacity: 1; }
 /* Colour the footer zigzag band starts from: white by default; a page whose last section is coloured marks it with data-page-end. */
 :root { --color-page-end: var(--color-white); }
 :root:has([data-page-end="navy-300"]) { --color-page-end: var(--color-navy-300); }
+
+/* ---- Role accents (sign-in shell only: set data-role on the shell root). Accent ≥4.5:1 on white; white text ≥4.5:1 on both gradient stops. ---- */
+@property --role-grad-from { syntax: "<color>"; inherits: true; initial-value: #1d2b7e; }
+@property --role-grad-to { syntax: "<color>"; inherits: true; initial-value: #0e174a; }
+@property --role-accent { syntax: "<color>"; inherits: true; initial-value: #1d2b7e; }
+[data-role] { --role-on-accent: var(--color-white); transition: --role-grad-from 300ms var(--ease-standard), --role-grad-to 300ms var(--ease-standard), --role-accent 300ms var(--ease-standard); }
+@media (prefers-reduced-motion: reduce) { [data-role] { transition: none; } }
+[data-role="client"] { --role-accent: var(--color-navy-700); --role-accent-hover: var(--color-navy-800); --role-grad-from: var(--color-navy-700); --role-grad-to: var(--color-navy-950); --role-soft: var(--color-gold-100); }
+[data-role="agent"] { --role-accent: #0f766e; --role-accent-hover: #115e59; --role-grad-from: #0f766e; --role-grad-to: #134e4a; --role-soft: #ccfbf1; }
+[data-role="work"] { --role-accent: #15803d; --role-accent-hover: #166534; --role-grad-from: #15803d; --role-grad-to: #14532d; --role-soft: #dcfce7; }
+[data-role="ops"] { --role-accent: #4338ca; --role-accent-hover: #3730a3; --role-grad-from: #4f46e5; --role-grad-to: #312e81; --role-soft: #e0e7ff; }
+[data-role="finance"] { --role-accent: #047857; --role-accent-hover: #065f46; --role-grad-from: #047857; --role-grad-to: #064e3b; --role-soft: #d1fae5; }
+[data-role="marketing"] { --role-accent: #a21caf; --role-accent-hover: #86198f; --role-grad-from: #a21caf; --role-grad-to: #701a75; --role-soft: #fae8ff; }
+[data-role="procurement"] { --role-accent: #b45309; --role-accent-hover: #92400e; --role-grad-from: #b45309; --role-grad-to: #78350f; --role-soft: #fef3c7; }
+[data-role="partners"] { --role-accent: #0e7490; --role-accent-hover: #155e75; --role-grad-from: #0e7490; --role-grad-to: #164e63; --role-soft: #cffafe; }
+[data-role="exec"] { --role-accent: #6d28d9; --role-accent-hover: #5b21b6; --role-grad-from: #6d28d9; --role-grad-to: #2e1065; --role-soft: #ede9fe; }
+[data-role="system"] { --role-accent: #b91c1c; --role-accent-hover: #991b1b; --role-grad-from: #334155; --role-grad-to: #0f172a; --role-soft: #fee2e2; }
+@utility bg-grad-role { background-image: linear-gradient(150deg, var(--role-grad-from), var(--role-grad-to)); }

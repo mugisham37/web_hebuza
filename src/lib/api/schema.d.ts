@@ -17889,6 +17889,7 @@ export interface components {
             maintenanceMode: boolean;
             enabledLocales: ("rw" | "en" | "fr")[];
             googleSignIn: boolean;
+            demoLogins: boolean;
         };
         PlatformStatusResponse: {
             updatedAt: string;

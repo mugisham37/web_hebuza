@@ -17,6 +17,9 @@ const VARIANTS = {
     "bg-transparent text-link hover:bg-navy-50 active:bg-navy-100 disabled:text-ink-400 aria-disabled:text-ink-400",
   danger:
     "bg-danger text-white hover:bg-danger-hover active:bg-danger-active disabled:bg-danger-bg disabled:text-ink-400 aria-disabled:bg-danger-bg aria-disabled:text-ink-400",
+  /** Role accent: only inside the sign-in shell ([data-role] sets the vars). */
+  accent:
+    "bg-role-accent text-on-role-accent font-semibold hover:bg-role-accent-hover disabled:bg-ink-200 disabled:text-ink-400 aria-disabled:bg-ink-200 aria-disabled:text-ink-400",
   /** White fill for navy/Night bands that aren't wrapped in .theme-dark yet. */
   inverse:
     "bg-white text-navy-900 hover:bg-navy-100 active:bg-navy-200 disabled:bg-ink-800 disabled:text-ink-600 aria-disabled:bg-ink-800 aria-disabled:text-ink-600",
@@ -85,6 +88,7 @@ const DOT_ACCENT: Record<ButtonVariant, "gold" | "navy"> = {
   "outline-dark": "gold",
   ghost: "navy",
   danger: "navy",
+  accent: "gold",
   inverse: "navy",
 };
 
