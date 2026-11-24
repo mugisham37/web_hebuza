@@ -5,6 +5,8 @@ import type { NextConfig } from "next";
 const extra = [process.env.CSP_EXTRA_ORIGINS ?? "", process.env.NEXT_PUBLIC_TELEMETRY_URL ? new URL(process.env.NEXT_PUBLIC_TELEMETRY_URL).origin : ""]
   .join(" ").trim();
 const dev = process.env.NODE_ENV !== "production";
+// `npm run dev` talks to the local API (`server: npm run dev`, port 4000) unless .env.local / the shell sets API_URL.
+if (dev) process.env.API_URL ||= "http://localhost:4000";
 const CSP = [
   "default-src 'self'",
   // 'unsafe-eval' only in dev (React refresh); 'unsafe-inline' stays until Next nonces are wired for inline JSON-LD/pixels.
