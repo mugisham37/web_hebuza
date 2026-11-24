@@ -102,22 +102,8 @@ export function BigNumber({ value, className, count }: { value: string | number;
   return <span data-count={count ? String(value) : undefined} className={cx("block font-display text-num text-fg-heading tabular", className)}>{value}</span>;
 }
 
-// One 48x24 tile: a filled 45° chevron stripe (10 units thick), drawn twice (y and y-24) so the stack repeats seamlessly.
-const ZIGZAG_TILE = `url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 48 24" shape-rendering="geometricPrecision"><path d="M0 0L24 24L48 0V10L24 34L0 10Z M0 -24L24 0L48 -24V-14L24 10L0 -14Z"/></svg>')}")`;
-const ROWS = {
-  2: "h-4 md:h-5 lg:h-6",
-  3: "h-6 md:h-[30px] lg:h-9",
-};
-
-/** Zigzag band that blends section colour `from` (above) into `to` (below). Tokens map to var(--color-<token>).
- *  Slim by default: 2 rows (16 / 20 / 24px). Stripes lead toward the lower colour; `soft` = weaker lead. Vector mask, whole rows. Decorative. */
-export function ZigzagBand({ from, to, rows, soft, className }: { from: string; to: string; rows?: 2 | 3; soft?: boolean; className?: string }) {
-  const a = `var(--color-${from})`, b = `var(--color-${to})`;
-  return (
-    <div aria-hidden className={cx("pointer-events-none relative -my-px forced-colors:hidden print:hidden", ROWS[rows ?? 2], className)}
-      style={{ backgroundImage: `linear-gradient(in oklab to bottom, ${a}, ${b})` }}>
-      <div className="absolute inset-0 [mask-position:center_top] [mask-repeat:repeat] [mask-size:16px_8px] md:[mask-size:20px_10px] lg:[mask-size:24px_12px]"
-        style={{ backgroundImage: `linear-gradient(in oklab to bottom, color-mix(in oklab, ${b} ${soft ? 35 : 60}%, ${a}), ${b})`, maskImage: ZIGZAG_TILE, WebkitMaskImage: ZIGZAG_TILE }} />
-    </div>
-  );
+/** Soft vertical fade between two colour tokens (var(--color-<token>)); joins a page's last section to the footer. Decorative. */
+export function Fade({ from, to, className }: { from: string; to: string; className?: string }) {
+  return <div aria-hidden className={cx("pointer-events-none -my-px h-12 forced-colors:hidden print:hidden", className)}
+    style={{ backgroundImage: `linear-gradient(in oklab to bottom, var(--color-${from}), var(--color-${to}))` }} />;
 }

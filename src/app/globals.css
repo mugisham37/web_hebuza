@@ -429,9 +429,15 @@ dialog[data-motion][open]::backdrop { opacity: 1; }
 @keyframes m-grow { from { transform: scaleY(0); } }
 @utility m-grow { transform-origin: bottom; transform-box: fill-box; animation: m-grow var(--dur-4) var(--ease-out-expo) both; }
 
-/* Colour the footer zigzag band starts from: white by default; a page whose last section is coloured marks it with data-page-end. */
+/* Colour the footer fade starts from: white by default; a page whose last section is coloured marks it with data-page-end. */
 :root { --color-page-end: var(--color-white); }
 :root:has([data-page-end="navy-300"]) { --color-page-end: var(--color-navy-300); }
+:root:has([data-page-end="navy-900"]) { --color-page-end: var(--color-navy-900); }
+
+/* Home ramp (white → footer navy-900, 8 equal OKLab-lightness steps along the brand blues; see section-stack.tsx). */
+:root { --color-ramp-0: #ffffff; --color-ramp-1: #c9e3ff; --color-ramp-2: #96c4fb; --color-ramp-3: #69a5f1; --color-ramp-4: #4d84db; --color-ramp-5: #3d64be; --color-ramp-6: #2f43a2; --color-ramp-7: #1e2c74; --color-ramp-8: #0e174a; }
+/* Home ramp, light half: text sits on mid blues, so every text token is navy-900 (≥4.5:1 down to the 50% stop). */
+.ramp-light { --fg: var(--color-navy-900); --fg-heading: var(--color-navy-900); --fg-muted: var(--color-navy-900); --fg-subtle: var(--color-navy-900); }
 
 /* ---- Role accents (sign-in shell only: set data-role on the shell root). Accent ≥4.5:1 on white; white text ≥4.5:1 on both gradient stops. ---- */
 @property --role-grad-from { syntax: "<color>"; inherits: true; initial-value: #1d2b7e; }

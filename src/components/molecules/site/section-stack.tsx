@@ -1,42 +1,110 @@
 import { Fragment, type ReactNode } from "react";
-import { ZigzagBand } from "@/components/atoms/brand";
+import { Fade } from "@/components/atoms/brand";
+import { cx } from "@/shared/format";
 
-// WCAG relative luminance of each edge tone (from the globals.css hex); only drives the soft/strong band choice.
-const LUM = {
-  white: 1, "sky-50": 0.942, "sky-100": 0.8796, "sky-200": 0.7554, "sky-300": 0.6074, "sky-700": 0.1103,
-  "navy-300": 0.4703, "navy-700": 0.0323, "navy-800": 0.0187, "navy-900": 0.012, "ink-950": 0.0037,
-} as const;
-/** Literal classes per tone (Tailwind needs them spelled out). */
-export const TONE_BG: Record<Tone, string> = {
-  white: "bg-white", "sky-50": "bg-sky-50", "sky-100": "bg-sky-100", "sky-200": "bg-sky-200", "sky-300": "bg-sky-300", "sky-700": "bg-sky-700",
-  "navy-300": "bg-navy-300", "navy-700": "bg-navy-700", "navy-800": "bg-navy-800", "navy-900": "bg-navy-900", "ink-950": "bg-ink-950",
+/** Section edge tones used by the inner pages (services, how-it-works); token = var(--color-<tone>). */
+export type Tone =
+  | "white"
+  | "sky-50"
+  | "sky-100"
+  | "sky-200"
+  | "sky-300"
+  | "sky-700"
+  | "navy-300"
+  | "navy-700"
+  | "navy-800"
+  | "navy-900"
+  | "ink-950";
+/** `paint` = this section draws its own top→bottom gradient (home ramp); edges then always meet, so no fade is added. */
+export type Paint = {
+  from: string;
+  to: string;
+  mid?: { color: string; at: number };
+  light: boolean;
 };
-export const lum = (t: Tone) => LUM[t];
-export type Tone = keyof typeof LUM;
-export type StackEntry = { key: string; node: ReactNode; top: Tone; bottom: Tone; divider?: boolean; /** paint the section with its tone */ fill?: boolean };
+export type StackEntry = {
+  key: string;
+  node: ReactNode;
+  top?: Tone;
+  bottom?: Tone;
+  paint?: Paint;
+};
 
-export const contrast = (a: Tone, b: Tone) => (Math.max(LUM[a], LUM[b]) + 0.05) / (Math.min(LUM[a], LUM[b]) + 0.05);
-
-/** Renders sections in order, blending each join with a ZigzagBand (skipped for equal tones, or above an entry with divider:false). */
-export function SectionStack({ sections, footerTop }: { sections: StackEntry[]; footerTop?: Tone }) {
-  const join = (a: { bottom: Tone }, b: { top: Tone; divider?: boolean }) =>
-    a.bottom !== b.top && b.divider !== false ? <ZigzagBand from={a.bottom} to={b.top} soft={contrast(a.bottom, b.top) < 1.3} /> : null;
-  const last = sections.at(-1);
+/** Sections in order. Painted sections join seamlessly; plain sections with different edge tones get a soft Fade. */
+export function SectionStack({ sections }: { sections: StackEntry[] }) {
   return (
     <>
-      {sections.map((s, i) => <Fragment key={s.key}>{i > 0 && join(sections[i - 1], s)}{s.fill ? <div className={TONE_BG[s.top]}>{s.node}</div> : s.node}</Fragment>)}
-      {last && footerTop && join(last, { top: footerTop })}
+      {sections.map((s, i) => {
+        const prev = sections[i - 1];
+        const fade =
+          prev &&
+          !prev.paint &&
+          !s.paint &&
+          prev.bottom &&
+          s.top &&
+          prev.bottom !== s.top;
+        return (
+          <Fragment key={s.key}>
+            {fade && <Fade from={prev.bottom!} to={s.top!} />}
+            {s.paint ? (
+              <div
+                className={cx(s.paint.light && "ramp-light")}
+                style={{ backgroundImage: gradient(s.paint) }}
+              >
+                {s.node}
+              </div>
+            ) : (
+              s.node
+            )}
+          </Fragment>
+        );
+      })}
     </>
   );
 }
+const gradient = (p: Paint) =>
+  `linear-gradient(in oklab to bottom, ${p.from}${p.mid ? `, ${p.mid.color} ${Math.round(p.mid.at * 100)}%` : ""}, ${p.to})`;
 
-// One light→dark home ramp into the footer (navy-900 → ink-950), by position so a CMS reorder or hidden section keeps
-// the fade. Hero + tracker stay white; the rest spread over HOME_RAMP.
-// shortcut: pricing + guides are styled for dark tones, CTA is wrapped in theme-dark; make sections tone-aware if the CMS order changes.
-export const HOME_RAMP: Tone[] = ["sky-50", "sky-100", "sky-300", "sky-700", "navy-700", "navy-800"];
-export function homeTones(keys: string[]): Record<string, Tone> {
-  const lead = keys.filter((k) => k === "hero" || k === "tracker"), rest = keys.filter((k) => k !== "hero" && k !== "tracker");
-  const at = (j: number) => HOME_RAMP[rest.length < 2 ? 0 : Math.round((j * (HOME_RAMP.length - 1)) / (rest.length - 1))];
-  return Object.fromEntries([...lead.map((k) => [k, "white" as Tone]), ...rest.map((k, j) => [k, at(j)])]);
+// ---------------------------------------------------------------- home ramp
+/**
+ * White → footer navy (#0e174a = grad-night-fade start) in 8 equal OKLab-lightness steps along the brand blues
+ * (white → sky-100 → sky-300 → sky-500 → navy-600 → navy-900). Index i = position i/8. Text flips at 50%:
+ * above it navy-900 text ≥4.5:1, from 62.5% white text ≥4.5:1; nothing readable sits between (see homePaint).
+ */
+/** var(--color-ramp-0…8) in globals.css (hex values tested there). */
+export const HOME_STOPS = Array.from({ length: 9 }, (_, i) => `var(--color-ramp-${i})`);
+export const FLIP = 0.5;
+/** Ramp colour at position t ∈ [0,1] (exact stop, or an OKLab mix of its two neighbours). */
+export function stopAt(t: number): string {
+  const x = Math.min(1, Math.max(0, t)) * (HOME_STOPS.length - 1),
+    i = Math.floor(x),
+    f = x - i;
+  if (f < 1e-6 || i >= HOME_STOPS.length - 1)
+    return HOME_STOPS[Math.min(i, HOME_STOPS.length - 1)];
+  return `color-mix(in oklab, ${HOME_STOPS[i + 1]} ${Math.round(f * 100)}%, ${HOME_STOPS[i]})`;
 }
-
+/**
+ * Each visible section spans an equal slice of the ramp (so a CMS reorder or hidden section keeps it white → footer).
+ * Sections ending at or above FLIP are `light` (navy text). The one section crossing FLIP keeps navy text: it reaches
+ * the FLIP colour 40% down (heading + lead sit there) and finishes the step under its cards and button.
+ * shortcut: pricing/guides/CTA are styled for the dark half; make sections tone-aware if the CMS order moves them up.
+ */
+export function homePaint(keys: string[]): Record<string, Paint> {
+  const n = keys.length;
+  return Object.fromEntries(
+    keys.map((k, i) => {
+      const a = i / n,
+        b = (i + 1) / n;
+      const crosses = a <= FLIP && b > FLIP;
+      return [
+        k,
+        {
+          from: stopAt(a),
+          to: stopAt(b),
+          light: b <= FLIP || crosses,
+          ...(crosses && { mid: { color: stopAt(FLIP), at: 0.4 } }),
+        },
+      ];
+    }),
+  );
+}

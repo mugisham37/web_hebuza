@@ -76,7 +76,7 @@ export function Institutions({ locale, partners = [] }: { locale: Locale; partne
         <ul className="grid grid-cols-3 border-t border-l border-sky-400 sm:grid-cols-4 lg:grid-cols-6">
           {INSTITUTIONS.map((i) => (
             <li key={i.short} data-reveal title={i.name}
-              className="group flex h-17 items-center justify-center border-r border-b border-sky-400 px-4 py-2.5 transition-colors duration-200 hover:bg-navy-700 motion-reduce:transition-none">
+              className="group flex h-17 items-center justify-center border-r border-b border-sky-400 bg-white px-4 py-2.5 transition-colors duration-200 hover:bg-navy-700 motion-reduce:transition-none">
               {i.logo ? (
                 <Image src={`/hebuza/institutions/${i.logo}`} alt={i.name} width={152} height={44}
                   className="h-auto max-h-11 w-auto max-w-full object-contain transition-[filter,opacity] duration-200 group-hover:opacity-90 group-hover:brightness-0 group-hover:invert motion-reduce:transition-none" />
@@ -87,7 +87,7 @@ export function Institutions({ locale, partners = [] }: { locale: Locale; partne
           ))}
           {/* PRT-13: partners the team flagged "shown on website". */}
           {partners.map((p) => (
-            <li key={p.id} data-reveal title={p.name} className="flex h-17 items-center justify-center border-r border-b border-sky-400 px-4 py-2.5">
+            <li key={p.id} data-reveal title={p.name} className="flex h-17 items-center justify-center border-r border-b border-sky-400 bg-white px-4 py-2.5">
               {p.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element -- partner logos are external URLs set by staff
                 <img src={p.logoUrl} alt={p.name} loading="lazy" className="h-auto max-h-11 w-auto max-w-full object-contain" />

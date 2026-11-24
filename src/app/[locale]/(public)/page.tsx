@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { homeTones, SectionStack } from "@/components/molecules/site/section-stack";
+import { homePaint, SectionStack } from "@/components/molecules/site/section-stack";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getI18n } from "@/lib/i18n/server";
@@ -37,14 +37,14 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     how: <HowItWorksBand locale={locale} />,
     pricing: <PricingTeaser locale={locale} services={services} families={families} plans={plans} />,
     guides: <Guides locale={locale} />,
-    cta: <div className="theme-dark"><CTACard locale={locale} /></div>, // sits on navy-800 at the foot of the ramp
+    cta: <div data-page-end="navy-900" className="theme-dark"><CTACard locale={locale} /></div>, // foot of the ramp: ends on the footer navy
   };
   const keys = order.filter((k) => SECTIONS[k]);
-  const tones = homeTones(keys);
+  const paint = homePaint(keys);
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(org) }} />
-      <SectionStack footerTop="navy-900" sections={keys.map((k) => ({ key: k, node: SECTIONS[k], top: tones[k], bottom: tones[k], fill: true, divider: k !== "tracker" }))} />
+      <SectionStack sections={keys.map((k) => ({ key: k, node: SECTIONS[k], paint: paint[k] }))} />
     </>
   );
 }

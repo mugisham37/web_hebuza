@@ -4,7 +4,7 @@ import { getFamilies } from "@/lib/catalogue";
 import { getSite } from "@/lib/marketing/cms/read";
 import { getCopy } from "@/content/marketing";
 import { SiteHeader } from "@/components/organisms/site/site-header";
-import { ZigzagBand } from "@/components/atoms/brand";
+import { Fade } from "@/components/atoms/brand";
 import { SiteFooter } from "@/components/organisms/site/sections";
 import { BackToTop } from "@/components/organisms/site/interactive";
 import { LazyAssistantLauncher } from "@/components/organisms/booking/launcher-lazy";
@@ -29,9 +29,8 @@ export default async function PublicLayout({ children, params }: LayoutProps<"/[
         copy={{ utility: m.utility, ribbon: m.marquee2, how: m.common.howItWorks, unsure: m.catalogue.unsure, unsureBody: m.catalogue.unsureBody, consult: m.hero.secondary, whatsapp: m.cta.whatsapp, all: m.services.all, count: `{n} ${m.services.countLabel}`, viewAll: m.catalogue.viewArea }}
       />
       <main id="main" className="min-h-dvh"><ViewTransition>{children}</ViewTransition></main>
-      {/* Every public page ends on white; blend it into the footer (grad-night-fade starts navy-900). */}
-      {/* Starts from the page's last section colour (--color-page-end, white unless a page marks its last section with data-page-end). */}
-      <ZigzagBand from="page-end" to="navy-900" />
+      {/* Soft fade from the page's last colour (--color-page-end: white unless the last section sets data-page-end) into the footer's navy-900. */}
+      <Fade from="page-end" to="navy-900" />
       <SiteFooter locale={locale} families={families} site={site} />
       <BackToTop top={m.utility.top} />
       <LazyAssistantLauncher />
