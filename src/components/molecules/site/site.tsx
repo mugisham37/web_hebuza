@@ -79,7 +79,7 @@ export type FamilyRow = { name: string; href: string; popular?: boolean };
 const CARD = {
   large: "theme-dark bg-navy-700 text-white lg:row-span-2 md:col-span-2 lg:col-span-1",
   standard: "border border-ink-200 bg-white text-navy-900",
-  mini: "relative min-w-[17rem] snap-start bg-sky-100 text-navy-900 md:min-w-0",
+  mini: "relative min-w-[17rem] snap-start border border-navy-900/10 bg-sky-100 text-navy-900 md:min-w-0",
 };
 
 /** Home services bento card: photo strip, service rows (names only), "view all" footer. Mini = one-service area, no photo. */

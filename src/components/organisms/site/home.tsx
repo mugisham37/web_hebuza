@@ -68,7 +68,7 @@ export function Institutions({ locale, partners = [] }: { locale: Locale; partne
   const c = m.institutions;
   return (
     <>
-    <section className="bg-sky-200 px-gutter py-10 md:py-12">
+    <section className="px-gutter py-10 md:py-12">
       {/* Compact strip: heading left, logos right on desktop (~45% of the old height). */}
       <Reveal className="container-page grid items-center gap-6 lg:grid-cols-[20rem_1fr] lg:gap-12">
         <h2 className="max-w-[10ch] text-h2 text-fg-heading">{c.tag}</h2>
@@ -122,17 +122,17 @@ export function ServicesShowcase({ locale, families, total }: { locale: Locale; 
   };
   const minis = families.filter((f) => f.count === 1);
   return (
-    <section className="theme-dark bg-bg px-gutter py-12 text-fg md:py-14">
+    <section className="px-gutter py-12 md:py-14">
       <Reveal className="container-page">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="grid gap-2.5">
-            <span data-reveal><Tag variant="outline-dark" className="eyebrow normal-case">{c.tag}</Tag></span>
-            <h2 data-reveal className="text-[clamp(1.4rem,1.15rem+0.8vw,1.85rem)] leading-tight tracking-[-0.02em] text-white">{c.title}</h2>
+            <span data-reveal><Tag variant="outline" className="eyebrow normal-case">{c.tag}</Tag></span>
+            <h2 data-reveal className="text-[clamp(1.4rem,1.15rem+0.8vw,1.85rem)] leading-tight tracking-[-0.02em] text-fg-heading">{c.title}</h2>
           </div>
           <div data-reveal className="flex shrink-0 flex-wrap items-center gap-x-8 gap-y-4">
             <div className="h-24 w-40"><FaceCluster srcs={FACES} tag={c.faces} className="origin-top-left scale-[0.6]" /></div>
             <div>
-              <BigNumber value={total} count className="text-primary text-[clamp(2rem,1.7rem+1vw,2.5rem)]! leading-none" />
+              <BigNumber value={total} count className="text-secondary text-[clamp(2rem,1.7rem+1vw,2.5rem)]! leading-none" />
               <p className="mt-1 max-w-[14rem] text-small text-fg-muted">{c.countLabel}</p>
             </div>
           </div>
@@ -157,7 +157,7 @@ export function HowItWorksBand({ locale }: { locale: Locale }) {
   const photos = [undefined, "/hebuza/photos/step-upload.jpg", undefined, "/hebuza/photos/step-handle.jpg", undefined];
   const tags = ["navy", "glass", "new", "glass", "selected"] as const;
   return (
-    <section className="relative bg-grid px-gutter py-10 md:py-14">
+    <section className="relative px-gutter py-10 md:py-14">
         <Reveal className="container-page">
           <SectionHead tag={h.tag} title={h.title} lead={h.sub} center />
           <Reveal tabIndex={0} preset="rise-lg" each stagger={0.08} className="no-scrollbar -mx-gutter mt-8 flex snap-x gap-3 overflow-x-auto px-gutter md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-5">
@@ -178,7 +178,7 @@ export function PricingTeaser({ locale, services, families, plans }: { locale: L
     haystack: `${s.name} ${famName(s.family)} ${s.subArea?.name ?? ""} ${s.slug.replace(/-/g, " ")}`,
   }));
   return (
-    <section className="bg-navy-900 px-gutter py-[var(--spacing-section-sm)] text-white">
+    <section className="px-gutter py-[var(--spacing-section-sm)] text-white">
       <Reveal className="container-page">
         <SectionHead tone="dark" tag={p.tag} tagVariant="outline-dark" title={p.title} />
         <PricingExplorer services={items} families={families.map((f) => ({ slug: f.slug, name: f.name }))} plans={plans} copy={p} />
@@ -191,9 +191,9 @@ export function Guides({ locale }: { locale: Locale }) {
   const g = getCopy(locale).guides;
   const L = (p: string) => localHref(locale, p);
   return (
-    <section className="bg-sky-200 px-gutter py-12 md:py-14">
+    <section className="px-gutter py-12 md:py-14">
       <Reveal className="container-page">
-        <SectionHead tag={g.tag} title={g.title} aside={<ButtonLink href={L("/knowledge")} variant="secondary" dots>{g.cta}</ButtonLink>} />
+        <SectionHead tone="dark" tagVariant="outline-dark" tag={g.tag} title={g.title} aside={<ButtonLink href={L("/knowledge")} variant="outline-dark" dots>{g.cta}</ButtonLink>} />
         <Reveal tabIndex={0} preset="rise-lg" each className="no-scrollbar -mx-gutter mt-8 flex snap-x gap-3 overflow-x-auto px-gutter md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
           {g.items.map((it) => <GuideCard key={it.title} img={GUIDE_IMG[it.img]} tag={it.tag} date={it.date} read={it.read} title={it.title} excerpt={it.excerpt} href={L("/knowledge")} compact />)}
         </Reveal>

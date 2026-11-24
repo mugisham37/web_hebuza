@@ -261,7 +261,7 @@ export function PricingExplorer({
                   <Icon
                     name="search"
                     size={18}
-                    className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-white/60"
+                    className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-white/80"
                   />
                   <input
                     id="pricing-search"
@@ -270,7 +270,7 @@ export function PricingExplorer({
                     onChange={(e) => setQ(e.target.value)}
                     onKeyDown={walk}
                     placeholder={p.searchPh}
-                    className="h-12 w-full border border-white/15 bg-navy-900 pr-4 pl-11 text-body text-white placeholder:text-white/50 focus:border-white focus:outline-none"
+                    className="h-12 w-full border border-white/15 bg-navy-900 pr-4 pl-11 text-body text-white placeholder:text-white/80 focus:border-white focus:outline-none"
                   />
                 </div>
                 <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
@@ -315,7 +315,7 @@ export function PricingExplorer({
                         <Icon
                           name="chevronDown"
                           size={16}
-                          className="shrink-0 -rotate-90 text-white/50"
+                          className="shrink-0 -rotate-90 text-white/80"
                         />
                       </button>
                     </li>
@@ -342,7 +342,7 @@ export function PricingExplorer({
               )}
               <p
                 role="status"
-                className="mt-auto border-t border-white/15 px-5 py-3 text-small text-white/60"
+                className="mt-auto border-t border-white/15 px-5 py-3 text-small text-white/80"
               >
                 {p.count.replace("{n}", String(visible.length))}
               </p>
@@ -451,7 +451,7 @@ export function PricingExplorer({
                           </Tag>
                         )}
                       </span>
-                      <span className="mt-1 block text-small text-white/70">
+                      <span className="mt-1 block text-small text-white/85">
                         {pl.description}
                       </span>
                     </span>

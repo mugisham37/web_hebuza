@@ -28,8 +28,8 @@ export function CTACard({ locale, title, body, className }: { locale: Locale; ti
           <p className="max-w-md text-lead text-fg-muted">{body ?? c.body}</p>
           <div className="grid w-full max-w-md grid-cols-1 gap-2.5 sm:w-fit sm:grid-cols-2">
             <ButtonLink href={localHref(locale, "/services")} variant="primary" dots className="justify-center">{c.start}</ButtonLink>
-            <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="group/btn inline-flex h-11 items-center justify-center gap-2.5 border-[1.5px] border-secondary bg-white px-5 text-button text-secondary hover:bg-navy-50"><WhatsAppGlyph size={18} />{c.whatsapp}</a>
-            <a href={CONTACT.phoneHref} className="inline-flex h-11 items-center justify-center gap-2.5 sm:col-span-2 border-[1.5px] border-secondary bg-white px-5 text-button text-secondary hover:bg-navy-50"><Icon name="phone" size={16} />{c.call} {CONTACT.phone}</a>
+            <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="group/btn inline-flex h-11 items-center justify-center gap-2.5 border-[1.5px] border-secondary bg-white px-5 text-button text-navy-700 hover:bg-navy-50"><WhatsAppGlyph size={18} />{c.whatsapp}</a>
+            <a href={CONTACT.phoneHref} className="inline-flex h-11 items-center justify-center gap-2.5 sm:col-span-2 border-[1.5px] border-secondary bg-white px-5 text-button text-navy-700 hover:bg-navy-50"><Icon name="phone" size={16} />{c.call} {CONTACT.phone}</a>
           </div>
         </div>
       </Reveal>
