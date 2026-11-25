@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -9,27 +10,29 @@ import { homeFor } from "@/shared/auth/roles";
 import { cx } from "@/shared/format";
 import { ButtonLink } from "@/components/atoms/button";
 import { Icon, WhatsAppGlyph, type IconName } from "@/components/atoms/icon";
-import { Faces, Star } from "@/components/atoms/brand";
+import { Faces } from "@/components/atoms/brand";
 import { LocaleSwitcher } from "@/components/organisms/layout/locale-switcher";
 import { CONTACT, waLink } from "@/content/marketing";
 import { FACES } from "@/content/families";
 import { Marquee } from "@/components/molecules/site/marquee";
+import { ServiceSearch, type SearchCopy, type Suggest } from "@/components/organisms/site/interactive";
 
-export type NavFamily = { slug: string; name: string; icon: IconName; count: number; subAreas: { slug: string; name: string }[] };
+export type NavFamily = { slug: string; name: string; short: string; icon: IconName; count: number; subAreas: { slug: string; name: string }[] };
 
-export function Wordmark({ href, className }: { href: string; className?: string }) {
+/** The HEBUZA logo (vector, public/brand). `onDark` = white letters for navy backgrounds; the gold swoosh stays. */
+export function Wordmark({ href, className, onDark }: { href: string; className?: string; onDark?: boolean }) {
   return (
-    <Link href={href} aria-label="HEBUZA — home" className={cx("inline-flex items-start gap-0.5 text-[1.45rem] leading-none font-bold tracking-[-0.04em]", className)}>
-      HEBUZA<Star className="size-3 text-gold-600" />
+    <Link href={href} aria-label="HEBUZA — home" className={cx("inline-flex shrink-0 items-center", className)}>
+      <Image src={onDark ? "/brand/hebuza-white.svg" : "/brand/hebuza.svg"} alt="HEBUZA" width={1579} height={654} priority unoptimized className="h-11 w-auto lg:h-13" />
     </Link>
   );
 }
 
 /** F-CMS-07: CMS header/mobile nav (already resolved to the locale); empty → the built-in links. */
 export type HeaderLink = { href: string; label: string };
-export function SiteHeader({ families, total, copy, links = [], mobileLinks = [] }: {
-  families: NavFamily[]; total: number; links?: HeaderLink[]; mobileLinks?: HeaderLink[];
-  copy: { utility: { tagline: string; service: string; copy: string; copied: string }; ribbon: string[]; how: string; unsure: string; unsureBody: string; consult: string; whatsapp: string; all: string; count: string; viewAll: string };
+export function SiteHeader({ families, total, search, copy, links = [], mobileLinks = [] }: {
+  families: NavFamily[]; total: number; links?: HeaderLink[]; mobileLinks?: HeaderLink[]; search: Suggest[];
+  copy: { search: string; searchUi: SearchCopy; ticker: string[]; utility: { tagline: string; service: string; copy: string; copied: string }; how: string; unsure: string; unsureBody: string; consult: string; whatsapp: string; all: string; count: string; viewAll: string };
 }) {
   const { t, locale } = useI18n();
   const { user, status } = useSession();
@@ -42,7 +45,8 @@ export function SiteHeader({ families, total, copy, links = [], mobileLinks = []
   const L = (p: string) => (p.startsWith("/") ? localHref(locale, p) : p);
   const NAV: [Parameters<typeof t>[0], string][] = [["nav.pricing", "/pricing"], ["nav.knowledge", "/knowledge"], ["nav.about", "/about"], ["nav.contact", "/contact"]];
   const builtIn: [string, string][] = [["/how-it-works", copy.how], ...NAV.map(([k, p]) => [p, t(k)] as [string, string])];
-  const desk: [string, string][] = links.length ? links.map((x) => [x.href, x.label]) : builtIn;
+  // The "Services ▾" menu already covers /services, so a plain Services link would be a duplicate.
+  const desk: [string, string][] = (links.length ? links.map((x) => [x.href, x.label] as [string, string]) : builtIn).filter(([h]) => h !== "/services");
   const mob: [string, string][] = mobileLinks.length ? mobileLinks.map((x) => [x.href, x.label]) : desk;
 
   useEffect(() => {
@@ -64,35 +68,57 @@ export function SiteHeader({ families, total, copy, links = [], mobileLinks = []
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
-      {/* G4 utility bar: desktop only, folds away once the page scrolls. */}
-      <div aria-hidden={scrolled || undefined} inert={scrolled} className={cx("relative hidden overflow-hidden bg-[linear-gradient(in_oklab_to_right,var(--color-navy-700)_0,var(--color-navy-700)_28rem,var(--color-navy-500)_32rem,var(--color-navy-400)_35rem,var(--color-navy-300)_40rem,var(--color-navy-200)_48rem,var(--color-navy-100)_60rem)] text-navy-800 transition-[height] duration-(--duration-slow) ease-(--ease-out-expo) lg:block", scrolled ? "h-0" : "h-14")}>
-        {/* One monochrome navy ramp (OKLab), anchored to the left edge: navy-700 behind the phone, lightening to navy-100 by 60rem.
-            Words stay dark navy everywhere; they only appear where the ramp is light enough (≥ navy-400) to read. */}
-        <Marquee items={[...copy.ribbon, ...copy.ribbon]} size="sm" seconds={120} fade="" className="absolute inset-0 flex items-center text-navy-800 [&_svg]:text-gold-600" />
-        <div className="relative flex h-14 w-full items-center justify-start text-small">
-          {/* Phone number sits on the dark (left) end of the ramp; words travel right→left and dissolve into it; a navy-700 shield (same colour as the ramp's end, so invisible as a shape)
-              keeps one empty ribbon slot (~11rem, star to star) clear right of the phone number before words appear. Under the bottom white fade (z-10 < z-20). */}
-          <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[36rem] bg-[linear-gradient(in_oklab_to_right,var(--color-navy-700)_30rem,transparent_35rem)]" />
-          <a href={CONTACT.phoneHref} className="relative z-30 mr-auto flex h-full items-center gap-3 pr-6 pl-8 text-label-lg font-bold text-white hover:underline hover:underline-offset-4">
-            <Icon name="phone" size={22} />{CONTACT.phone}
-          </a>
+      {/* The page ramp mirrored: the first three sections below the hero go white → ramp-1 → ramp-2 → ramp-3, so the
+          header runs ramp-3 → ramp-2 → ramp-1 → white into the hero. Each band fades into the next (no edges).
+          Ribbon + search bar fold away on scroll; the nav stays pinned. */}
+      <div inert={scrolled} aria-hidden={scrolled || undefined}
+        className={cx("transition-[height] duration-(--duration-slow) ease-(--ease-out-expo)", scrolled ? "h-0 overflow-hidden" : "relative z-10 h-28 lg:h-30")}>{/* clip only while folded, so the search dropdown can hang over the page */}
+        <div className="h-10 border-b border-navy-900/10 [background-image:linear-gradient(in_oklab_to_bottom,var(--color-ramp-3),var(--color-ramp-2))]">
+          <Marquee items={copy.ticker} size="xs" seconds={90} fade="mask-fade-x" className="flex h-full items-center text-navy-900 [&_svg]:text-gold-600" />
         </div>
-        {/* Bottom fade into the white page below, so the bar melts into the hero. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 z-20 bg-linear-to-b from-transparent from-50% to-white" />
+        {/* Brand bar: logo · search · phone · WhatsApp (roomy: 72 / 80px, lines above and below). */}
+        <div className="h-18 border-b border-navy-900/10 [background-image:linear-gradient(in_oklab_to_bottom,var(--color-ramp-2),var(--color-ramp-1))] lg:h-20">
+          <div className="mx-auto flex h-full w-[min(100%-2rem,82rem)] items-center gap-3 text-navy-900 lg:grid lg:grid-cols-[1fr_minmax(0,42rem)_1fr] lg:gap-8">
+            <Wordmark href={L("/")} className="shrink-0 justify-self-start" />
+            <div className="min-w-0 flex-1"><ServiceSearch items={search} placeholder={copy.search} copy={copy.searchUi} /></div>
+            <div className="flex shrink-0 items-center gap-3 justify-self-end lg:gap-5">
+            <a href={CONTACT.phoneHref} aria-label={CONTACT.phone} className="flex shrink-0 items-center gap-2 text-label font-semibold tabular hover:underline hover:underline-offset-4">
+              <Icon name="phone" size={18} aria-hidden /><span className="hidden lg:inline">{CONTACT.phone}</span>
+            </a>
+            <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" aria-label={`${copy.whatsapp} — ${CONTACT.phone}`} title={copy.whatsapp}
+              className="flex size-9 shrink-0 items-center justify-center bg-whatsapp text-ink-950 transition-[filter] hover:brightness-95 lg:size-10"><WhatsAppGlyph size={20} /></a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className={cx("transition-[padding] duration-(--duration-slow) ease-(--ease-out-expo)", scrolled ? "pt-2" : "pt-3 lg:pt-4")}>
-        <nav aria-label="Main" className={cx("mx-auto flex items-center justify-between gap-4 pr-2 pl-5 transition-all duration-(--duration-slow) ease-(--ease-out-expo)",
-          scrolled ? "h-14 w-[min(100%-1.5rem,82rem)] border-b border-border bg-white/92 shadow-md backdrop-blur-md" : "h-16 w-[min(100%-2rem,82rem)] bg-transparent")}>
-          <Wordmark href={L("/")} />
-          <ul className="hidden items-center gap-0.5 lg:flex" onMouseLeave={closeMega}>
+      <div className={cx("transition-shadow duration-(--duration-slow)", scrolled ? "border-b border-border bg-white/95 shadow-md backdrop-blur-md" : "[background-image:linear-gradient(in_oklab_to_bottom,var(--color-ramp-1),var(--color-white))]")}>
+        <nav aria-label="Main" className="relative mx-auto flex h-14 w-[min(100%-2rem,82rem)] items-center justify-between gap-4 lg:h-16">
+          {scrolled ? <Wordmark href={L("/")} /> : <span className="lg:hidden" />}
+          {scrolled ? (
+            // Pinned bar: the links switch to the service categories (each opens its catalogue page).
+            <ul aria-label={copy.all} className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex">
+              {families.map((f) => {
+                const href = `/services/c/${f.slug}`;
+                return (
+                  <li key={f.slug}>
+                    <Link href={L(href)} title={f.name} aria-current={active(href) ? "page" : undefined}
+                      className={cx("inline-flex h-10 items-center px-2.5 text-[0.8125rem] font-semibold tracking-[0.02em] whitespace-nowrap uppercase transition-colors hover:bg-navy-50", active(href) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>
+                      {f.short}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+          <ul className="hidden items-center gap-0.5 lg:-ml-3.5 lg:flex" onMouseLeave={closeMega}>
             <li onMouseEnter={openMega}>
               <button type="button" aria-expanded={mega} aria-controls="mega" onClick={() => setMega((m) => !m)}
-                className={cx("inline-flex h-10 items-center gap-1 px-3.5 text-button transition-colors hover:bg-navy-50", (active("/services") || mega) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>
+                className={cx("inline-flex h-10 items-center gap-1 px-3.5 text-[0.9375rem] font-semibold tracking-[0.04em] uppercase transition-colors hover:bg-navy-50", (active("/services") || mega) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>
                 {t("nav.services")}<Icon name="chevronDown" size={16} className={cx("transition-transform", mega && "rotate-180")} />
               </button>
             </li>
             {desk.map(([p, label]) => (
-              <li key={p}><Link href={L(p)} className={cx("inline-flex h-10 items-center px-3.5 text-button hover:bg-navy-50", active(p) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>{label}</Link></li>
+              <li key={p}><Link href={L(p)} className={cx("inline-flex h-10 items-center px-3.5 text-[0.9375rem] font-semibold tracking-[0.04em] uppercase hover:bg-navy-50", active(p) && "bg-navy-50 text-navy-700 shadow-[inset_0_-2px_0_var(--color-gold-400)]")}>{label}</Link></li>
             ))}
             <div id="mega" hidden={!mega} onMouseEnter={openMega}
               className="absolute top-full left-1/2 mt-3 w-[min(100%-2rem,82rem)] -translate-x-1/2 animate-reveal border border-border bg-white p-6 shadow-lg">
@@ -122,11 +148,9 @@ export function SiteHeader({ families, total, copy, links = [], mobileLinks = []
                 <ButtonLink href={L("/services")} size="sm" dots>{copy.all}</ButtonLink>
               </div>
             </div>
-          </ul>
+          </ul>)}
           <div className="flex items-center gap-2">
-            <span className="hidden lg:block"><LocaleSwitcher /></span>
-            <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" aria-label={`${copy.whatsapp} — ${CONTACT.phone}`} title={copy.whatsapp}
-              className="hidden size-10 items-center justify-center bg-whatsapp text-ink-950 transition-[filter] hover:brightness-95 sm:inline-flex"><WhatsAppGlyph size={20} /></a>
+            <span className={cx("hidden", scrolled ? "xl:block" : "lg:block")}><LocaleSwitcher /></span>{/* pinned on small laptops: the categories need the room; languages are back at the top */}
             <Link href={L("/track")} className="hidden h-10 items-center border-[1.5px] border-secondary px-4 text-button text-secondary hover:bg-navy-50 md:inline-flex">{t("nav.track").split(" ")[0]}</Link>
             {status === "authenticated" && user
               ? <ButtonLink href={L(homeFor(user.roles))} dots>{t("nav.dashboard")}</ButtonLink>

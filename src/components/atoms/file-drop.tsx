@@ -45,7 +45,7 @@ export function FileDrop({ onFiles, accept, maxSizeMb = 25, multiple, camera, di
         onDragOver={(e) => { e.preventDefault(); setOver(true); }}
         onDragLeave={() => setOver(false)}
         onDrop={drop}
-        className={cx("flex flex-col items-center gap-3 rounded-none border-2 border-dashed p-6 text-center transition-colors", over ? "border-gold-400 bg-gold-50" : "border-sky-300 bg-sky-50", disabled && "opacity-50")}
+        className={cx("flex flex-col items-center gap-3 rounded-xl border-2 border-dashed p-6 text-center transition-colors", over ? "border-gold-400 bg-gold-50" : "border-sky-300 bg-sky-50", disabled && "opacity-50")}
       >
         <svg aria-hidden viewBox="0 0 24 24" className="size-8 text-sky-600" fill="none" stroke="currentColor" strokeWidth={1.75}><path d="M12 16V4M7 9l5-5 5 5M4 15v5h16v-5" /></svg>
         <p className="text-body text-fg">{t("upload.drop")}</p>

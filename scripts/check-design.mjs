@@ -1,5 +1,5 @@
 // Design guardrails (THEME-MIGRATION-PLAN §5). Usage: node scripts/check-design.mjs [--paths dir1,dir2 | --paths dir1 dir2]
-//  1. legacy colour names in classes      2. rounded-* other than none/full; rounded-full only on circles
+//  1. legacy colour names in classes      2. rounded-* other than none/full/theme tokens (xs…pill, 0 outside .theme-app); rounded-full only on circles
 //  3. raw hex outside the allow-list        4. low-contrast gold/sky text on light, white text on gold
 //  5. more than one bg-grad-* per file (warning)
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -67,6 +67,8 @@ for (const file of files) {
     for (const m of line.matchAll(ROUNDED)) {
       const cls = m[0].split(":").pop();
       if (cls === "rounded-none") continue;
+      // Theme radius tokens: 0 on the public site, real only inside .theme-app (dashboards).
+      if (/^rounded(?:-[tblrsexy]{1,2})?-(?:xs|sm|md|lg|xl|2xl|3xl|4xl|pill)$/.test(cls)) continue;
       if (cls === "rounded-full") {
         const near = lines.slice(Math.max(0, i - 2), i + 3).join(" ");
         const sq =

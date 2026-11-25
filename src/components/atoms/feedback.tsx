@@ -6,7 +6,7 @@ import { cx } from "@/shared/format";
 import { Button } from "@/components/atoms/button";
 
 export function Skeleton({ className }: { className?: string }) {
-  return <span aria-hidden className={cx("block m-shimmer rounded-none", className)} />;
+  return <span aria-hidden className={cx("block m-shimmer rounded-md", className)} />;
 }
 
 export function Spinner({ label, className }: { label?: string; className?: string }) {
@@ -21,8 +21,8 @@ export function Spinner({ label, className }: { label?: string; className?: stri
 
 function StateBox({ icon, title, body, action, className }: { icon: ReactNode; title: ReactNode; body?: ReactNode; action?: ReactNode; className?: string }) {
   return (
-    <div className={cx("flex flex-col items-center gap-3 rounded-none border border-border bg-grad-sky-wash px-6 py-12 text-center", className)}>
-      <span aria-hidden className="flex size-12 items-center justify-center rounded-none border border-sky-200 bg-white text-xl text-sky-600">{icon}</span>
+    <div className={cx("flex flex-col items-center gap-3 rounded-xl border border-border bg-grad-sky-wash px-6 py-12 text-center", className)}>
+      <span aria-hidden className="flex size-12 items-center justify-center rounded-md border border-sky-200 bg-white text-xl text-sky-600">{icon}</span>
       <p className="text-card-title text-fg-heading">{title}</p>
       {body && <p className="max-w-md text-body text-fg-muted">{body}</p>}
       {action}

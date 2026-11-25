@@ -40,7 +40,7 @@ const en = {
     faq_list: "FAQ list", steps: "Steps", table: "Table", quote: "Quote", form: "Form", stats: "Stats", contact: "Contact details", divider: "Divider",
     testimonial: "Testimonials", requirements: "Requirements", tip: "Tip",
     "home.hero": "Home · Hero", "home.tracker": "Home · Tracker", "home.institutions": "Home · Institutions", "home.services": "Home · Services",
-    "home.how": "Home · How it works", "home.pricing": "Home · Pricing", "home.guides": "Home · Guides", "home.cta": "Home · Call to action",
+    "home.how": "Home · How it works", "home.guides": "Home · Guides", "home.cta": "Home · Call to action",
   } as Record<string, string>,
   fields: {
     text: "Text", lines: "One item per line", linesBody: "One step per line. Use “Title | detail”.", label: "Label", href: "Link", variant: "Style", primary: "Primary", secondary: "Secondary",

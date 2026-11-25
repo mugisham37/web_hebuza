@@ -43,7 +43,7 @@ type Common = {
 };
 
 const base =
-  "group/btn inline-flex shrink-0 items-center rounded-none whitespace-nowrap select-none transition-colors duration-(--duration-base) ease-(--ease-standard) disabled:pointer-events-none aria-disabled:pointer-events-none";
+  "group/btn inline-flex shrink-0 items-center rounded-md whitespace-nowrap select-none transition-colors duration-(--duration-base) ease-(--ease-standard) disabled:pointer-events-none aria-disabled:pointer-events-none";
 
 /** Default is `secondary` (navy): the old default black button. Use `primary` (gold) once per view for the main action. */
 export function buttonClass({
@@ -178,7 +178,7 @@ export function CircleLink({
     <Link
       aria-label={label}
       className={cx(
-        "group/circle inline-flex shrink-0 items-center justify-center rounded-none transition-[transform,background-color] duration-(--duration-slow) ease-(--ease-out-expo) hover:scale-105",
+        "group/circle inline-flex shrink-0 items-center justify-center rounded-md transition-[transform,background-color] duration-(--duration-slow) ease-(--ease-out-expo) hover:scale-105",
         size === "lg" ? "size-[4.5rem]" : "size-14",
         SQUARE[tone],
         className,

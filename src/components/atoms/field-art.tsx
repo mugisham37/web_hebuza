@@ -43,7 +43,7 @@ export const ArtPinLock = () => (
 
 export function FieldEmpty({ art, title, body, action }: { art: React.ReactNode; title: React.ReactNode; body?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="m-rise flex flex-col items-center gap-3 rounded-none bg-white px-6 py-12 text-center">
+    <div className="m-rise flex flex-col items-center gap-3 rounded-md bg-white px-6 py-12 text-center">
       {art}
       <p className="mt-2 text-h3">{title}</p>
       {body && <p className="max-w-sm text-body text-fg-muted">{body}</p>}

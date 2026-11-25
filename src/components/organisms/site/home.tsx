@@ -1,54 +1,59 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/shared/i18n/config";
 import { localHref } from "@/shared/i18n/config";
 import { images } from "@/lib/assets";
-import type { FamilyVM, PlanVM, ServiceVM } from "@/lib/catalogue";
+import type { FamilyVM } from "@/lib/catalogue";
 import { FACES } from "@/content/families";
-import { getCopy, INSTITUTIONS } from "@/content/marketing";
+import { getCopy, INSTITUTION_ROWS } from "@/content/marketing";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
 import { Icon } from "@/components/atoms/icon";
 import { BigNumber, FaceCluster, GridLines, } from "@/components/atoms/brand";
 import { HeroIntro, Reveal } from "@/components/atoms/motion";
 import { FamilyCard, GuideCard, SectionHead, StepCard } from "@/components/molecules/site/site";
-import { HeroMosaic } from "@/components/molecules/site/hero-mosaic";
-import { ServiceSearch, TrackForm } from "@/components/organisms/site/interactive";
-import { PricingExplorer } from "@/components/organisms/site/pricing-explorer";
+import type { ShowCat } from "@/components/molecules/site/showcase";
+import { InstitutionsBrowser } from "@/components/organisms/site/institutions";
+import { HeroShowcase } from "@/components/organisms/site/hero-showcase";
+import { TrackForm } from "@/components/organisms/site/interactive";
 
 const GUIDE_IMG: Record<string, string> = images as unknown as Record<string, string>;
 
-export function HomeHero({ locale, search }: { locale: Locale; search: { slug: string; path: string; name: string; family: string }[] }) {
+/** Hero slides per category: its top services (featured, then most requested), each with a photo (the service's own, else
+ *  the category's, else an unused one from the pool so a category never repeats a photo). */
+const SLIDES_PER_CAT = 4;
+function showcaseCats(locale: Locale, families: FamilyVM[]): ShowCat[] {
   const h = getCopy(locale).hero;
-  const L = (p: string) => localHref(locale, p);
+  const bySlug = new Map(h.photos.map((p) => [p.slug, p]));
+  const pool = [...new Map(h.photos.map((p) => [p.src, p])).values()];
+  return families.filter((f) => f.services.length).map((f) => {
+    const top = [...f.services].filter((s) => !s.paused).sort((a, b) => Number(b.featured) - Number(a.featured) || b.popular - a.popular).slice(0, SLIDES_PER_CAT);
+    const used = new Set<string>();
+    const photoFor = (slug: string) => {
+      const own = bySlug.get(slug);
+      if (own && !used.has(own.src)) return own;
+      if (!used.has(f.photo)) return { src: f.photo, alt: f.name };
+      return pool.find((p) => !used.has(p.src)) ?? { src: f.photo, alt: f.name };
+    };
+    return {
+      slug: f.slug, name: f.name, short: f.short, href: localHref(locale, `/services/c/${f.slug}`),
+      slides: top.map((s) => {
+        const ph = photoFor(s.slug);
+        used.add(ph.src);
+        return { key: s.slug, img: ph.src, alt: ph.alt, family: f.name, title: s.name, summary: s.summary.trim().toLowerCase() === s.name.trim().toLowerCase() ? "" : s.summary, href: localHref(locale, `/services/${s.slugs[locale]}`) };
+      }),
+    };
+  });
+}
+
+export function HomeHero({ locale, families }: { locale: Locale; families: FamilyVM[] }) {
+  const h = getCopy(locale).hero;
   return (
-    <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-14 md:pb-20">
+    <section className="relative overflow-hidden px-gutter pt-(--spacing-home-hero-top) pb-(--spacing-home-hero-bottom)">
       <GridLines />
+      {/* The page title stays for search engines and screen readers; the poster carries the visible headlines. */}
+      <h1 className="sr-only">{h.title} {h.acronym}</h1>
       <HeroIntro className="container-page relative">
-        <div className="grid items-center gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-8">
-          <div>
-            <p data-hero="eyebrow" className="flex items-center gap-3 text-eyebrow font-semibold tracking-[0.14em] text-fg-subtle uppercase">
-              <span aria-hidden className="h-px w-10 bg-fg-subtle" />{h.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-[16ch] text-[clamp(2.1rem,1.45rem+2.4vw,3.6rem)] leading-[1.08] font-semibold tracking-[-0.03em] text-fg">
-              <span data-hero="line" className="block">{h.title} <span className="whitespace-nowrap text-navy-600">{h.acronym}</span></span>
-            </h1>
-            <p data-hero="copy" className="mt-6 max-w-[34rem] text-lead text-fg-muted">{h.lead}</p>
-            <ul data-hero="copy" className="mt-6 grid max-w-[34rem] gap-x-6 gap-y-3 sm:grid-cols-2">
-              {h.points.map((pt) => (
-                <li key={pt} className="flex items-start gap-2.5 text-small text-fg">
-                  <span data-round aria-hidden className="mt-px flex size-5 shrink-0 items-center justify-center rounded-full bg-navy-100 text-navy-700"><Icon name="check" size={12} strokeWidth={3} /></span>{pt}
-                </li>
-              ))}
-            </ul>
-            <div data-hero="actions" className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href={L("/services")} size="lg" variant="secondary" dots>{h.start}</ButtonLink>
-              <ButtonLink href={L("/how-it-works")} size="lg" variant="outline">{h.how}</ButtonLink>
-            </div>
-            <div data-hero="actions" className="mt-6 max-w-xl"><div><ServiceSearch items={search} placeholder={h.search} /></div></div>
-          </div>
-          <HeroMosaic tiles={h.mosaic.map((t) => ({ src: t.src, alt: t.alt, caption: t.caption, href: L(`/services/${t.slug}`) }))} />
-        </div>
+        <div data-hero="visual"><HeroShowcase cats={showcaseCats(locale, families)} allHref={localHref(locale, "/services")} startHref={localHref(locale, "/services")} copy={h.showcase} intro={{ ...h.intro, title: `${h.title} ${h.acronym}` }} /></div>
       </HeroIntro>
     </section>
   );
@@ -57,62 +62,34 @@ export function HomeHero({ locale, search }: { locale: Locale; search: { slug: s
 export function TrackerAndRibbon({ locale }: { locale: Locale }) {
   const m = getCopy(locale);
   return (
-    <section className="px-gutter pb-6">
+    <section className="px-gutter pb-(--spacing-home)">
       <Reveal preset="rise-md" className="container-page"><TrackForm copy={m.tracker} /></Reveal>
     </section>
   );
 }
 
 export function Institutions({ locale, partners = [] }: { locale: Locale; partners?: { id: string; name: string; logoUrl: string | null; website: string | null }[] }) {
-  const m = getCopy(locale);
-  const c = m.institutions;
+  const c = getCopy(locale).institutions;
+  // PRT-13: partners the team flagged "shown on website" join the last row.
+  const rows = INSTITUTION_ROWS.map((r, i) => (i === INSTITUTION_ROWS.length - 1 ? [...r, ...partners.map((p) => ({ short: p.name, name: p.name, logo: p.logoUrl ?? undefined }))] : r));
   return (
-    <>
-    <section className="px-gutter py-10 md:py-12">
-      {/* Compact strip: heading left, logos right on desktop (~45% of the old height). */}
-      <Reveal className="container-page grid items-center gap-6 lg:grid-cols-[20rem_1fr] lg:gap-12">
-        <h2 className="max-w-[10ch] text-h2 text-fg-heading">{c.tag}</h2>
-        <div>
-        <ul className="grid grid-cols-3 border-t border-l border-sky-400 sm:grid-cols-4 lg:grid-cols-6">
-          {INSTITUTIONS.map((i) => (
-            <li key={i.short} data-reveal title={i.name}
-              className="group flex h-17 items-center justify-center border-r border-b border-sky-400 bg-white px-4 py-2.5 transition-colors duration-200 hover:bg-navy-700 motion-reduce:transition-none">
-              {i.logo ? (
-                <Image src={`/hebuza/institutions/${i.logo}`} alt={i.name} width={152} height={44}
-                  className="h-auto max-h-11 w-auto max-w-full object-contain transition-[filter,opacity] duration-200 group-hover:opacity-90 group-hover:brightness-0 group-hover:invert motion-reduce:transition-none" />
-              ) : (
-                <span className="text-small font-semibold tracking-wide text-navy-700 transition-colors group-hover:text-white motion-reduce:transition-none">{i.short}<span className="sr-only"> — {i.name}</span></span>
-              )}
-            </li>
-          ))}
-          {/* PRT-13: partners the team flagged "shown on website". */}
-          {partners.map((p) => (
-            <li key={p.id} data-reveal title={p.name} className="flex h-17 items-center justify-center border-r border-b border-sky-400 bg-white px-4 py-2.5">
-              {p.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element -- partner logos are external URLs set by staff
-                <img src={p.logoUrl} alt={p.name} loading="lazy" className="h-auto max-h-11 w-auto max-w-full object-contain" />
-              ) : (
-                <span className="text-small font-semibold tracking-wide text-navy-700">{p.name}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-eyebrow text-fg-muted">{c.caption}</p>
-        </div>
+    // Three tall logo rows: the padding here is 50% of the other sections' (see --spacing-home) to keep the section compact.
+    <section className="px-gutter py-[calc(var(--spacing-home)*0.5)]">
+      <Reveal className="container-page">
+        <InstitutionsBrowser rows={rows} copy={c} />
       </Reveal>
     </section>
-    </>
   );
 }
 
 export function ServicesShowcase({ locale, families, total }: { locale: Locale; families: FamilyVM[]; total: number }) {
   const m = getCopy(locale);
   const c = m.services;
-  // Bento classes from service counts: biggest family → large, ≥2 → standard, 1 → mini strip.
+  // Row 1: families with ≥2 services (biggest = dark card), all stretched to the tallest. Row 2: one-service families as minis.
   const maxCount = Math.max(...families.map((f) => f.count));
   const largeSlug = families.find((f) => f.count === maxCount)?.slug;
   const card = (f: FamilyVM, size: "large" | "standard" | "mini") => {
-    const take = f.services.slice(0, size === "large" ? 8 : size === "standard" ? 4 : 1);
+    const take = f.services.slice(0, size === "mini" ? 1 : 8);
     const top = Math.max(0, ...f.services.map((s) => s.popular));
     return (
       <FamilyCard key={f.slug} size={size} n={families.indexOf(f) + 1} title={f.name} href={localHref(locale, `/services/c/${f.slug}`)} photo={f.photo} popularLabel={c.popular}
@@ -122,7 +99,7 @@ export function ServicesShowcase({ locale, families, total }: { locale: Locale; 
   };
   const minis = families.filter((f) => f.count === 1);
   return (
-    <section className="px-gutter py-12 md:py-14">
+    <section className="px-gutter py-(--spacing-home)">
       <Reveal className="container-page">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="grid gap-2.5">
@@ -137,10 +114,10 @@ export function ServicesShowcase({ locale, families, total }: { locale: Locale; 
             </div>
           </div>
         </div>
-        <Reveal preset="fly-tilt-r" each stagger={0.08} className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Reveal preset="fly-tilt-r" each stagger={0.08} className="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">
           {families.filter((f) => f.count > 1).map((f) => card(f, f.slug === largeSlug ? "large" : "standard"))}
           {minis.length > 0 && (
-            <div tabIndex={0} className="no-scrollbar -mx-gutter flex snap-x gap-3.5 overflow-x-auto px-gutter md:col-span-2 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0">
+            <div tabIndex={0} className="no-scrollbar -mx-gutter flex snap-x gap-3.5 overflow-x-auto px-gutter md:col-span-2 md:mx-0 md:grid md:grid-cols-3 md:gap-4 lg:col-span-3 md:overflow-visible md:px-0">
               {minis.map((f) => card(f, "mini"))}
             </div>
           )}
@@ -157,7 +134,7 @@ export function HowItWorksBand({ locale }: { locale: Locale }) {
   const photos = [undefined, "/hebuza/photos/step-upload.jpg", undefined, "/hebuza/photos/step-handle.jpg", undefined];
   const tags = ["navy", "glass", "new", "glass", "selected"] as const;
   return (
-    <section className="relative px-gutter py-10 md:py-14">
+    <section className="relative px-gutter py-[calc(var(--spacing-home)*0.6)]">
         <Reveal className="container-page">
           <SectionHead tag={h.tag} title={h.title} lead={h.sub} center />
           <Reveal tabIndex={0} preset="rise-lg" each stagger={0.08} className="no-scrollbar -mx-gutter mt-8 flex snap-x gap-3 overflow-x-auto px-gutter md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 lg:grid-cols-5">
@@ -169,31 +146,13 @@ export function HowItWorksBand({ locale }: { locale: Locale }) {
   );
 }
 
-export function PricingTeaser({ locale, services, families, plans }: { locale: Locale; services: ServiceVM[]; families: FamilyVM[]; plans: PlanVM[] }) {
-  const p = getCopy(locale).pricing;
-  const famName = (slug: string) => families.find((f) => f.slug === slug)?.name ?? "";
-  const items = services.map((s) => ({
-    path: s.slugs[locale],
-    slug: s.slug, name: s.name, family: s.family, area: s.subArea?.name ?? null, priceMode: s.priceMode, fromFee: s.fromFee, tiers: s.tiers, planCovered: s.planCovered,
-    haystack: `${s.name} ${famName(s.family)} ${s.subArea?.name ?? ""} ${s.slug.replace(/-/g, " ")}`,
-  }));
-  return (
-    <section className="px-gutter py-[var(--spacing-section-sm)] text-white">
-      <Reveal className="container-page">
-        <SectionHead tone="dark" tag={p.tag} tagVariant="outline-dark" title={p.title} />
-        <PricingExplorer services={items} families={families.map((f) => ({ slug: f.slug, name: f.name }))} plans={plans} copy={p} />
-      </Reveal>
-    </section>
-  );
-}
-
 export function Guides({ locale }: { locale: Locale }) {
   const g = getCopy(locale).guides;
   const L = (p: string) => localHref(locale, p);
   return (
-    <section className="px-gutter py-12 md:py-14">
+    <section className="px-gutter py-(--spacing-home)">
       <Reveal className="container-page">
-        <SectionHead tone="dark" tagVariant="outline-dark" tag={g.tag} title={g.title} aside={<ButtonLink href={L("/knowledge")} variant="outline-dark" dots>{g.cta}</ButtonLink>} />
+        <SectionHead tag={g.tag} title={g.title} aside={<ButtonLink href={L("/knowledge")} variant="secondary" dots>{g.cta}</ButtonLink>} />
         <Reveal tabIndex={0} preset="rise-lg" each className="no-scrollbar -mx-gutter mt-8 flex snap-x gap-3 overflow-x-auto px-gutter md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
           {g.items.map((it) => <GuideCard key={it.title} img={GUIDE_IMG[it.img]} tag={it.tag} date={it.date} read={it.read} title={it.title} excerpt={it.excerpt} href={L("/knowledge")} compact />)}
         </Reveal>

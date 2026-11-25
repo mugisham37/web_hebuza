@@ -2,7 +2,8 @@
 import { readAttribution } from "@/lib/marketing/use-attribution";
 import { api, unwrap } from "@/lib/api/client";
 import Link from "next/link";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
+import { buildIndex, searchServices, type SearchItem } from "@/lib/site/service-search";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/provider";
 import { localHref } from "@/shared/i18n/config";
@@ -39,7 +40,7 @@ export function TrackForm({ copy }: { copy: { title: string; body: string; label
           <label className="sr-only" htmlFor="track-code">{copy.label}</label>
           <input id="track-code" value={v} onChange={(e) => { setV(e.target.value); setErr(false); }} placeholder="HBZ-WMVX19" autoCapitalize="characters" spellCheck={false}
             aria-invalid={err} aria-describedby={err ? "track-err" : undefined}
-            className="h-12 min-w-0 flex-1 border border-white/25 bg-white/5 px-5 font-mono text-body tracking-wider text-white uppercase placeholder:text-navy-200 hover:border-white/45 focus:border-gold-400 focus:outline-none aria-invalid:border-danger" />
+            className="h-12 min-w-0 flex-1 border border-white/40 bg-(--color-ramp-1) px-5 font-mono text-body font-bold tracking-wider text-ink-950 uppercase placeholder:font-bold placeholder:text-ink-950 hover:border-white/70 focus:border-gold-400 focus:outline-none aria-invalid:border-danger" />
           <Button type="submit" variant="primary" dots>{copy.cta}</Button>
         </div>
         {err && <p id="track-err" role="alert" className="pl-5 text-small text-danger">{copy.invalid}</p>}
@@ -48,38 +49,104 @@ export function TrackForm({ copy }: { copy: { title: string; body: string; label
   );
 }
 
-type Suggest = { slug: string; path: string; name: string; family: string };
+export type Suggest = SearchItem;
+export type SearchCopy = { popular: string; results: string; result: string; seeAll: string; none: string; noneHint: string; browse: string; hint: string };
 
-/** Hero/catalogue search with instant suggestions over the catalogue (F-CAT-02 lite; server search later). */
-export function ServiceSearch({ items, placeholder, size = "lg" }: { items: Suggest[]; placeholder: string; size?: "lg" | "md" }) {
+/** Splits a name by highlight ranges into plain / <mark> parts. */
+const Highlight = ({ text, ranges }: { text: string; ranges: [number, number][] }) => {
+  const out: React.ReactNode[] = [];
+  let at = 0;
+  ranges.forEach(([a, b], i) => { if (a > at) out.push(text.slice(at, a)); out.push(<mark key={i} className="bg-gold-200 text-navy-900">{text.slice(a, b)}</mark>); at = b; });
+  out.push(text.slice(at));
+  return <>{out}</>;
+};
+
+/**
+ * Header service search (services only): instant, typo/accent tolerant, ranked left-to-right on the service name
+ * (lib/site/service-search). Empty focus shows popular services; results show category, sub-area and price; the
+ * last row opens the full catalogue filtered by the query. "/" focuses it from anywhere. ARIA combobox + listbox.
+ */
+export function ServiceSearch({ items, placeholder, copy }: { items: Suggest[]; placeholder: string; copy: SearchCopy }) {
   const { locale } = useI18n();
   const router = useRouter();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
-  const results = useMemo(() => {
-    const n = q.trim().toLowerCase();
-    if (n.length < 2) return [];
-    return items.filter((i) => i.name.toLowerCase().includes(n) || i.family.toLowerCase().includes(n)).slice(0, 6);
-  }, [q, items]);
-  const go = (path: string) => { setOpen(false); router.push(localHref(locale, path)); };
+  const id = useId();
+  const input = useRef<HTMLInputElement>(null);
+  const index = useMemo(() => buildIndex(items), [items]);
+  const popular = useMemo(() => [...items].sort((a, b) => (b.popular ?? 0) - (a.popular ?? 0)).slice(0, 6).map((item) => ({ item, ranges: [] as [number, number][] })), [items]);
+  const term = q.trim();
+  const hits = useMemo(() => (term ? searchServices(index, term, 8) : popular), [index, term, popular]);
+  const all = `/services?q=${encodeURIComponent(term)}`;
+  // rows: the hits, then (with a query) the "see all" row
+  const rows = term ? hits.length + 1 : hits.length;
+  const fill = (s: string, v: Record<string, string | number>) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? ""));
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (e.key === "/" && !e.metaKey && !e.ctrlKey && !(t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) { e.preventDefault(); input.current?.focus(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  const go = (path: string) => { setOpen(false); input.current?.blur(); router.push(localHref(locale, path)); };
+  const pick = (i: number) => (i < hits.length ? go(`/services/${hits[i].item.path}`) : go(all));
+  const optId = (i: number) => `${id}-opt-${i}`;
   return (
-    <form role="search" className="relative w-full" onSubmit={(e) => { e.preventDefault(); if (results[active]) go(`/services/${results[active].path}`); else go(`/services?q=${encodeURIComponent(q)}`); }}>
-      <Icon name="search" size={20} className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-fg-subtle" />
-      <input value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(0); }} onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 150)}
-        onKeyDown={(e) => { if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, results.length - 1)); } if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); } if (e.key === "Escape") setOpen(false); }}
-        role="combobox" aria-expanded={open && results.length > 0} aria-controls="svc-suggest" aria-autocomplete="list" aria-label={placeholder}
-        placeholder={placeholder} className={cx("w-full border border-border-strong bg-white pr-5 pl-13 text-body shadow-sm placeholder:text-fg-subtle focus:border-navy-700 focus:outline-none", size === "lg" ? "h-14" : "h-12")} />
-      {open && results.length > 0 && (
-        <ul id="svc-suggest" role="listbox" className="absolute inset-x-0 top-full z-30 mt-2 overflow-hidden border border-border bg-white p-1.5 shadow-lg">
-          {results.map((r, i) => (
-            <li key={r.slug} role="option" aria-selected={i === active}>
-              <Link href={localHref(locale, `/services/${r.path}`)} className={cx("flex items-center justify-between gap-3 px-4 py-3", i === active ? "bg-navy-50 text-navy-700" : "hover:bg-ink-50")}>
-                <span className="text-body">{r.name}</span><span className="shrink-0 text-eyebrow text-fg-subtle">{r.family}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <form role="search" className="relative w-full" onSubmit={(e) => { e.preventDefault(); if (term || hits.length) pick(Math.min(active, rows - 1)); }}>
+      <Icon name="search" size={17} aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-white" />
+      <input ref={input} value={q} type="search" enterKeyHint="search" autoComplete="off" spellCheck={false}
+        onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(0); }} onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setActive((a) => (a + 1) % Math.max(rows, 1)); }
+          else if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => (a - 1 + Math.max(rows, 1)) % Math.max(rows, 1)); }
+          else if (e.key === "Escape") { if (q) setQ(""); else { setOpen(false); input.current?.blur(); } }
+        }}
+        role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-label={placeholder}
+        aria-activedescendant={open && rows ? optId(active) : undefined} placeholder={placeholder}
+        className="h-10 w-full border-2 border-gold-400 bg-(--color-ramp-8) pr-10 pl-10 text-small font-medium text-white shadow-[0_6px_18px_-8px_color-mix(in_oklab,var(--color-ramp-8)_70%,transparent)] transition-[border-color,box-shadow] placeholder:text-white hover:border-gold-300 focus:border-white focus:shadow-[0_0_0_3px_var(--color-gold-400)] focus:outline-none lg:h-11 [&::-webkit-search-cancel-button]:hidden" />
+      {q ? (
+        <button type="button" aria-label="Clear" onMouseDown={(e) => e.preventDefault()} onClick={() => { setQ(""); setActive(0); input.current?.focus(); }}
+          className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center text-white hover:bg-white/15"><Icon name="x" size={16} /></button>
+      ) : (
+        <kbd aria-hidden className="absolute top-1/2 right-2.5 hidden -translate-y-1/2 border border-white/40 px-1.5 text-eyebrow text-white lg:block">/</kbd>
+      )}
+      {open && (
+        // Lives inside the fixed header (z-50), so it floats above the hero and everything else on the page.
+        <div className="absolute inset-x-0 top-full z-60 mt-2 overflow-hidden border border-border bg-white text-fg shadow-[0_24px_48px_-12px_color-mix(in_oklab,var(--color-navy-900)_35%,transparent)] max-lg:fixed max-lg:inset-x-3 max-lg:top-[calc(7rem+env(safe-area-inset-top))]">
+          <p className="flex items-center justify-between border-b border-border bg-bg-subtle px-4 py-2 text-eyebrow text-fg-subtle">
+            <span>{!term ? copy.popular : hits.length === 1 ? copy.result : hits.length ? fill(copy.results, { n: hits.length }) : ""}</span>
+            <span className="hidden lg:inline">{copy.hint}</span>
+          </p>
+          {term && !hits.length ? (
+            <div className="grid gap-1 px-4 py-5">
+              <p className="text-label text-fg-heading">{fill(copy.none, { q: term })}</p>
+              <p className="text-small text-fg-muted">{copy.noneHint}</p>
+            </div>
+          ) : null}
+          <ul id={`${id}-list`} role="listbox" aria-label={placeholder} className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain p-1.5">
+            {hits.map((h, i) => (
+              <li key={h.item.slug} id={optId(i)} role="option" aria-selected={i === active}
+                onMouseDown={(e) => e.preventDefault()} onMouseEnter={() => setActive(i)} onClick={() => pick(i)}
+                className={cx("flex cursor-pointer items-center gap-3 px-3 py-2.5", i === active ? "bg-navy-50" : "hover:bg-ink-50")}>
+                <Icon name="file" size={16} aria-hidden className="shrink-0 text-navy-600" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-body text-fg-heading"><Highlight text={h.item.name} ranges={h.ranges} /></span>
+                  <span className="block truncate text-eyebrow text-fg-subtle">{[h.item.family, h.item.area].filter(Boolean).join(" · ")}</span>
+                </span>
+                <Icon name="arrowRight" size={14} aria-hidden className={cx("shrink-0 transition-opacity", i === active ? "text-navy-700 opacity-100" : "opacity-0")} />
+              </li>
+            ))}
+            {term && (
+              <li id={optId(hits.length)} role="option" aria-selected={active === hits.length}
+                onMouseDown={(e) => e.preventDefault()} onMouseEnter={() => setActive(hits.length)} onClick={() => pick(hits.length)}
+                className={cx("mt-1 flex cursor-pointer items-center justify-between gap-3 border-t border-border px-3 py-3 text-label text-navy-700", active === hits.length ? "bg-navy-50" : "hover:bg-ink-50")}>
+                {hits.length ? fill(copy.seeAll, { q: term }) : copy.browse}<Icon name="arrowRight" size={16} aria-hidden />
+              </li>
+            )}
+          </ul>
+        </div>
       )}
     </form>
   );

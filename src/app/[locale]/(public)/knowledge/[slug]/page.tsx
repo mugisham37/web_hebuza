@@ -255,12 +255,7 @@ export default async function GuidePage({ params }: Props) {
                   <div className="min-w-0 flex-1">
                     <p className="text-label-lg">{svc.name}</p>
                     <p className="text-small text-fg-muted">
-                      {[
-                        svc.fromFee != null && money(svc.fromFee),
-                        svc.tiers[0]?.eta,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
+                      {svc.tiers[0]?.eta}
                     </p>
                   </div>
                   <ButtonLink href={L(`/services/${svc.slugs[locale]}`)} size="sm" dots>

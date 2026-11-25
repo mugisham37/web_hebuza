@@ -1,6 +1,5 @@
 import { Fragment, type ReactNode } from "react";
 import { Fade } from "@/components/atoms/brand";
-import { cx } from "@/shared/format";
 
 /** Section edge tones used by the inner pages (services, how-it-works); token = var(--color-<tone>). */
 export type Tone =
@@ -48,7 +47,7 @@ export function SectionStack({ sections }: { sections: StackEntry[] }) {
             {fade && <Fade from={prev.bottom!} to={s.top!} />}
             {s.paint ? (
               <div
-                className={cx(s.paint.light && "ramp-light")}
+                className={s.paint.light ? "ramp-light" : "ramp-dark"}
                 style={{ backgroundImage: gradient(s.paint) }}
               >
                 {s.node}
@@ -67,44 +66,30 @@ const gradient = (p: Paint) =>
 
 // ---------------------------------------------------------------- home ramp
 /**
- * White → footer navy (#0e174a = grad-night-fade start) in 8 equal OKLab-lightness steps along the brand blues
- * (white → sky-100 → sky-300 → sky-500 → navy-600 → navy-900). Index i = position i/8. Text flips at 50%:
- * above it navy-900 text ≥4.5:1, from 62.5% white text ≥4.5:1; nothing readable sits between (see homePaint).
+ * White → the footer blue (ramp-8 = 60% of the old navy-900 depth) in 8 equal OKLab-lightness steps along the brand
+ * blues; position r = i/8. Navy-900 text clears 4.5:1 up to NAVY_MAX, white text from WHITE_MIN; nothing readable sits
+ * between, so the section crossing each threshold reaches it inside its padding (see homePaint).
  */
-/** var(--color-ramp-0…8) in globals.css (hex values tested there). */
 export const HOME_STOPS = Array.from({ length: 9 }, (_, i) => `var(--color-ramp-${i})`);
-export const FLIP = 0.5;
-/** Ramp colour at position t ∈ [0,1] (exact stop, or an OKLab mix of its two neighbours). */
+export const NAVY_MAX = 0.83, WHITE_MIN = 0.94;
+/** Ramp colour at r ∈ [0,1] (exact stop, or an OKLab mix of its two neighbours). */
 export function stopAt(t: number): string {
-  const x = Math.min(1, Math.max(0, t)) * (HOME_STOPS.length - 1),
-    i = Math.floor(x),
-    f = x - i;
-  if (f < 1e-6 || i >= HOME_STOPS.length - 1)
-    return HOME_STOPS[Math.min(i, HOME_STOPS.length - 1)];
+  const x = Math.min(1, Math.max(0, t)) * (HOME_STOPS.length - 1), i = Math.floor(x + 1e-9), f = x - i;
+  if (f < 1e-6 || i >= HOME_STOPS.length - 1) return HOME_STOPS[Math.min(i, HOME_STOPS.length - 1)];
   return `color-mix(in oklab, ${HOME_STOPS[i + 1]} ${Math.round(f * 100)}%, ${HOME_STOPS[i]})`;
 }
 /**
- * Each visible section spans an equal slice of the ramp (so a CMS reorder or hidden section keeps it white → footer).
- * Sections ending at or above FLIP are `light` (navy text). The one section crossing FLIP keeps navy text: it reaches
- * the FLIP colour 40% down (heading + lead sit there) and finishes the step under its cards and button.
- * shortcut: pricing/guides/CTA are styled for the dark half; make sections tone-aware if the CMS order moves them up.
+ * Each visible section spans an equal slice of the ramp (a CMS reorder or hidden section keeps it white → footer blue).
+ * Navy text while the section starts below NAVY_MAX: if it ends past it, it reaches NAVY_MAX 88% down (its bottom
+ * padding/opaque cards) and finishes the step there. White text otherwise: if it starts below WHITE_MIN it reaches
+ * it 15% down (the home CTA has top padding for this).
+ * shortcut: assumes the default order puts the CTA last; make sections tone-aware if the CMS moves white-text sections up.
  */
 export function homePaint(keys: string[]): Record<string, Paint> {
   const n = keys.length;
-  return Object.fromEntries(
-    keys.map((k, i) => {
-      const a = i / n,
-        b = (i + 1) / n;
-      const crosses = a <= FLIP && b > FLIP;
-      return [
-        k,
-        {
-          from: stopAt(a),
-          to: stopAt(b),
-          light: b <= FLIP || crosses,
-          ...(crosses && { mid: { color: stopAt(FLIP), at: 0.4 } }),
-        },
-      ];
-    }),
-  );
+  return Object.fromEntries(keys.map((k, i) => {
+    const a = i / n, b = (i + 1) / n, light = a < NAVY_MAX;
+    const mid = light ? (b > NAVY_MAX ? { color: stopAt(NAVY_MAX), at: 0.88 } : undefined) : a < WHITE_MIN ? { color: stopAt(WHITE_MIN), at: 0.15 } : undefined;
+    return [k, { from: stopAt(a), to: stopAt(b), light, ...(mid && { mid }) }];
+  }));
 }

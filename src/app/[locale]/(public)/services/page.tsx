@@ -34,7 +34,7 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
   return (
     <SectionStack sections={[
       { key: "hero", top: "white", bottom: "white", node: (
-      <section className="relative overflow-hidden px-gutter pt-28 pb-10 md:pt-32 lg:pt-40 lg:pb-12">
+      <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-10 lg:pb-12">
         <GridLines />
         <HeroIntro className="container-page relative grid items-center gap-8 lg:grid-cols-[1.3fr_26rem] lg:gap-12">
           <div>

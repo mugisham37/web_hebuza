@@ -14,7 +14,7 @@ import type { Rate } from "@/lib/agent/money";
 
 export const useW = () => workCommon(useI18n().locale);
 
-const chip = "inline-flex h-7 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium normal-case whitespace-nowrap";
+const chip = "inline-flex h-7 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium normal-case whitespace-nowrap";
 
 export function ExternalBadge({ className }: { className?: string }) {
   const w = useW();
@@ -63,7 +63,7 @@ export function LockedCount({ n, onRequest }: { n: number; onRequest?: () => voi
   if (!n) return null;
   const text = n === 1 ? w.lockedCountOne : fill(w.lockedCount, { n });
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-none border border-border bg-bg-subtle px-4 py-3 text-small">
+    <div className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-bg-subtle px-4 py-3 text-small">
       <Icon name="lock" size={16} aria-hidden className="text-fg-muted" />
       <span className="flex-1">{text}</span>
       {onRequest && (
@@ -89,7 +89,7 @@ export function EvidenceLine({ signedAt, ip, sha, compact }: { signedAt: string;
       </span>
       <button
         type="button"
-        className="rounded-none bg-ink-100 px-2 py-0.5 hover:bg-ink-200"
+        className="rounded-md bg-ink-100 px-2 py-0.5 hover:bg-ink-200"
         onClick={() => navigator.clipboard?.writeText(sha).then(() => toast({ title: w.sign.copied, tone: "success" }))}
       >
         {w.sign.copySha}
@@ -108,8 +108,8 @@ export function ReadMeter({ pct }: { pct: number }) {
         <span>{p >= 100 ? w.sign.read : fill(w.sign.readPct, { p: 100 })}</span>
         <span className="tabular text-fg-muted">{p}%</span>
       </p>
-      <div role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100} aria-label={fill(w.sign.readPct, { p: 100 })} className="h-2 overflow-hidden rounded-none bg-ink-100">
-        <div className="h-full rounded-none bg-navy-700 transition-[width] duration-(--dur-2)" style={{ width: `${p}%` }} />
+      <div role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100} aria-label={fill(w.sign.readPct, { p: 100 })} className="h-2 overflow-hidden rounded-md bg-ink-100">
+        <div className="h-full rounded-md bg-navy-700 transition-[width] duration-(--dur-2)" style={{ width: `${p}%` }} />
       </div>
     </div>
   );
@@ -167,7 +167,7 @@ export function FirmRoleTag({ role }: { role: "admin" | "member" }) {
 /** Explains a disabled control (plan §4 permission-denied: never a blank). */
 export function WhyNote({ children, action, tone = "lavender" }: { children: ReactNode; action?: ReactNode; tone?: "lavender" | "danger" | "warning" }) {
   return (
-    <p role="note" className={cx("flex flex-wrap items-center gap-2 rounded-none px-3 py-2 text-small", tone === "danger" ? "bg-danger-bg text-danger" : tone === "warning" ? "bg-warning-bg" : "bg-bg-tint")}>
+    <p role="note" className={cx("flex flex-wrap items-center gap-2 rounded-md px-3 py-2 text-small", tone === "danger" ? "bg-danger-bg text-danger" : tone === "warning" ? "bg-warning-bg" : "bg-bg-tint")}>
       <Icon name="lock" size={14} aria-hidden />
       <span className="flex-1">{children}</span>
       {action}

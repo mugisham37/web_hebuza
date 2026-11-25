@@ -7,7 +7,7 @@ export function Tooltip({ content, children, className }: { content: string; chi
   return (
     <span className={cx("group/tt relative inline-flex", className)}>
       {children}
-      <span role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 w-max max-w-64 -translate-x-1/2 rounded-none bg-ink-900 px-2.5 py-1.5 text-small text-white shadow-md opacity-0 transition-opacity group-focus-within/tt:opacity-100 group-hover/tt:opacity-100">
+      <span role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 w-max max-w-64 -translate-x-1/2 rounded-md bg-ink-900 px-2.5 py-1.5 text-small text-white shadow-md opacity-0 transition-opacity group-focus-within/tt:opacity-100 group-hover/tt:opacity-100">
         {content}
       </span>
     </span>

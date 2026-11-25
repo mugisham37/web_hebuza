@@ -143,7 +143,12 @@ export function RiseOnScroll({ children, className }: { children: ReactNode; cla
     mm.add(OK, () => {
       gsap.from(ref.current, { yPercent: 45, ease: "none", scrollTrigger: { trigger: ref.current, start: "top bottom", end: "bottom bottom", scrub: 0.8 } });
     });
-    return () => mm.revert();
+    // Content above the footer keeps changing height after load (images, carousels, marquees); re-measure or the
+    // wordmark freezes half-risen on long pages (the home page) and looks different from short ones.
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const ro = new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => ScrollTrigger.refresh(), 150); });
+    ro.observe(document.body);
+    return () => { clearTimeout(t); ro.disconnect(); mm.revert(); };
   }, { scope: ref });
   return <div ref={ref} className={className}>{children}</div>;
 }

@@ -26,17 +26,17 @@ export function WorkspaceTabs({ current }: { current: Workspace }) {
   const names = authRolesCopy(locale).roles; // same short names as the sign-in role cards
   const tabs = AUTH_ROLES.filter((w) => workspaces.includes(w));
   return (
-    <nav ref={ref} aria-label={t("workspace.switch")} className="sticky top-16 z-20 flex gap-1 overflow-x-auto border-b border-border bg-bg/95 px-gutter py-2 backdrop-blur [scrollbar-width:none] lg:px-8">
+    <nav ref={ref} aria-label={t("workspace.switch")} className="flex gap-1.5 overflow-x-auto px-gutter pt-1 pb-2 [scrollbar-width:none] lg:px-8">
       {tabs.map((w) => {
         const on = w === current;
         return (
-          <Link key={w} href={localHref(locale, roleHome(w))} data-role={w} aria-current={on ? "page" : undefined}
+          <Link key={w} href={localHref(locale, roleHome(w))} aria-current={on ? "page" : undefined}
             onClick={() => {
               setActiveWorkspace(w);
               void api.POST("/api/auth/active-role", { body: { role: roleOf(w) } }).catch(() => {}); // remembers the choice; access is by role set, not this
             }}
-            className={cx("flex h-9 shrink-0 items-center gap-2 border px-3 text-small font-medium transition-colors",
-              on ? "border-role-accent bg-role-accent text-on-role-accent" : "border-transparent text-fg-muted hover:border-border hover:bg-surface hover:text-fg")}>
+            className={cx("flex h-9 shrink-0 items-center gap-2 rounded-pill px-4 text-small font-medium transition-colors",
+              on ? "bg-primary font-semibold text-ink-950" : "bg-ink-950 text-white/85 hover:bg-ink-800 hover:text-white")}>
             <Icon name={ROLE_ICON[w]} size={16} aria-hidden />
             {names[w].name}
           </Link>

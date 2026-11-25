@@ -76,8 +76,8 @@ self.addEventListener("push", (e) => {
     } catch { /* offline: generic notice below */ }
     await self.registration.showNotification(n?.title ?? "HEBUZA", {
       body: n?.body || "You have a new update.",
-      icon: "/orvena/brand/favicon.png",
-      badge: "/orvena/brand/favicon.png",
+      icon: "/brand/icon-192.png",
+      badge: "/brand/favicon-48.png",
       tag: n?.id ?? "hebuza",
       data: { href: n?.href || "/notifications" },
     });

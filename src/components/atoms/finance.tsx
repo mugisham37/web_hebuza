@@ -26,7 +26,7 @@ export const TONE_CLS: Record<FinTone, string> = {
 };
 function Pill({ tone, icon, children, className, title }: { tone: FinTone; icon?: IconName; children: ReactNode; className?: string; title?: string }) {
   return (
-    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap m-tone", TONE_CLS[tone], className)}>
+    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap m-tone", TONE_CLS[tone], className)}>
       {icon && <Icon name={icon} size={12} aria-hidden />}
       {children}
     </span>
@@ -149,7 +149,7 @@ export function MethodTag({ method }: { method: string }) {
   const f = useF();
   const icon: IconName = method.includes("momo") || method.includes("airtel") ? "phone" : method === "card" ? "card" : method === "cash" ? "wallet" : "building";
   return (
-    <span className="inline-flex h-6 items-center gap-1.5 rounded-none border border-border px-2.5 text-eyebrow whitespace-nowrap">
+    <span className="inline-flex h-6 items-center gap-1.5 rounded-pill border border-border px-2.5 text-eyebrow whitespace-nowrap">
       <Icon name={icon} size={12} aria-hidden />{(f.method as Record<string, string>)[method] ?? method}
     </span>
   );
@@ -196,7 +196,7 @@ export function FxNote({ rate, at, currency, demo = true }: { rate: number; at: 
   const f = useF();
   const { locale } = useI18n();
   return (
-    <p className="inline-flex flex-wrap items-center gap-2 rounded-none bg-bg-tint px-3 py-2 text-small">
+    <p className="inline-flex flex-wrap items-center gap-2 rounded-md bg-bg-tint px-3 py-2 text-small">
       <Icon name="globe" size={14} aria-hidden />
       {fill(f.fx.rate, { c: currency, r: formatNumber(rate, locale), d: formatDate(at, locale) })}
       {demo && <Pill tone="warning">{f.fx.demo}</Pill>}

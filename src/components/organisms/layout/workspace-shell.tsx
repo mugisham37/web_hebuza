@@ -32,7 +32,7 @@ function WorkspaceLabel({ current }: { current: Workspace }) {
 }
 
 /** Ctrl/⌘+K command palette: shell extras (ops ids/actions), quick actions, then the workspace's nav (R-18, plan 11 §8.4). */
-function CommandPalette({ workspace }: { workspace: Workspace }) {
+function CommandPalette({ workspace, variant }: { workspace: Workspace; variant?: "sidebar" }) {
   const { t, locale } = useI18n();
   const router = useRouter();
   const { user } = useSession();
@@ -41,12 +41,13 @@ function CommandPalette({ workspace }: { workspace: Workspace }) {
   const [cursor, setCursor] = useState(0);
   const listId = useId();
   useEffect(() => {
+    if (variant !== "sidebar") return; // one hotkey owner: the sidebar search (the header icon is the phone/tablet twin)
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setOpen((o) => !o); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [variant]);
   const roles = user?.roles ?? [];
   const needle = q.trim().toLowerCase();
   const match = (label: string, href: string) => !needle || label.toLowerCase().includes(needle) || href.toLowerCase().includes(needle);
@@ -64,12 +65,17 @@ function CommandPalette({ workspace }: { workspace: Workspace }) {
   const go = (href: string) => { close(); router.push(href); };
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} aria-keyshortcuts="Control+K Meta+K" className="hidden h-10 items-center gap-3 border border-border-strong bg-surface px-4 text-small text-fg-subtle hover:border-ink-400 md:flex">
-        {t("common.search")}… <kbd className="border border-border bg-bg-subtle px-1.5 text-eyebrow text-fg-muted">Ctrl K</kbd>
-      </button>
-      <button type="button" onClick={() => setOpen(true)} aria-label={t("common.search")} className="flex size-10 items-center justify-center hover:bg-navy-50 md:hidden">
-        <Icon name="search" size={20} aria-hidden />
-      </button>
+      {variant === "sidebar" ? (
+        <button type="button" onClick={() => setOpen(true)} aria-keyshortcuts="Control+K Meta+K"
+          className="flex h-11 w-full items-center gap-2.5 rounded-pill bg-white/8 px-4 text-small text-white/60 transition-colors hover:bg-white/12 hover:text-white">
+          <Icon name="search" size={16} aria-hidden />{t("common.search")}…
+          <kbd className="ml-auto rounded-sm bg-white/10 px-1.5 text-eyebrow text-white/70">⌘K</kbd>
+        </button>
+      ) : (
+        <button type="button" onClick={() => setOpen(true)} aria-label={t("common.search")} className="flex size-10 items-center justify-center rounded-full border border-border bg-white hover:bg-ink-50">
+          <Icon name="search" size={18} aria-hidden />
+        </button>
+      )}
       <Dialog open={open} onClose={close} title={t("common.search")}>
         <input autoFocus value={q} placeholder={t("palette.placeholder")} role="combobox" aria-expanded aria-controls={listId}
           aria-activedescendant={rows[active] ? `${listId}-${active}` : undefined} aria-label={t("palette.placeholder")}
@@ -173,10 +179,10 @@ function SideNav({ workspace, onNavigate, dark }: { workspace: Workspace; onNavi
       {items.map((i) => (
         <li key={i.href}>
           <Link href={localHref(locale, i.href)} onClick={onNavigate} aria-current={i.href === active ? "page" : undefined}
-            className={cx("flex h-11 items-center gap-3 border-l-3 px-4 text-button transition-colors",
-              i.href === active ? (dark ? "border-primary bg-primary/12 text-primary" : "border-navy-700 bg-navy-50 text-navy-700") : dark ? "border-transparent text-navy-200 hover:bg-white/5 hover:text-white" : "border-transparent text-fg-muted hover:bg-navy-50 hover:text-navy-700")}>
+            className={cx("flex h-11 items-center gap-3 rounded-xl px-3.5 text-button transition-colors",
+              i.href === active ? "bg-primary font-semibold text-ink-950" : dark ? "text-white/70 hover:bg-white/8 hover:text-white" : "text-fg-muted hover:bg-ink-950/5 hover:text-fg-heading")}>
             <Icon name={navIcon(i.href)} size={18} aria-hidden /><span className="flex-1">{t(i.label)}</span>
-            {badges[i.href]?.n ? <span className={cx("inline-flex h-5 min-w-5 items-center justify-center px-1.5 text-[0.7rem] font-semibold tabular", badges[i.href].tone === "danger" ? "bg-danger text-white" : badges[i.href].tone === "attention" ? "bg-gold-400 text-on-gold" : dark ? "bg-white/15 text-white" : "bg-ink-100 text-ink-700")}>{badges[i.href].n}</span> : null}
+            {badges[i.href]?.n ? <span className={cx("inline-flex h-5 min-w-5 items-center justify-center rounded-pill px-1.5 text-[0.7rem] font-semibold tabular", badges[i.href].tone === "danger" ? "bg-danger text-white" : badges[i.href].tone === "attention" ? (i.href === active ? "bg-ink-950 text-white" : "bg-gold-400 text-on-gold") : i.href === active ? "bg-ink-950/15 text-ink-950" : dark ? "bg-white/15 text-white" : "bg-ink-100 text-ink-700")}>{badges[i.href].n}</span> : null}
           </Link>
         </li>
       ))}
@@ -190,13 +196,13 @@ function AccountCard() {
   const href = useOpsShell()?.accountHref ?? "/settings";
   if (!user) return null;
   return (
-    <Link href={localHref(locale, href)} className="flex items-center gap-3 border border-white/10 bg-white/5 p-3 hover:bg-white/10">
-      <Avatar name={user.name} size="sm" className="ring-navy-900" />
+    <Link href={localHref(locale, href)} className="flex items-center gap-3 rounded-2xl bg-white/6 p-3 transition-colors hover:bg-white/10">
+      <Avatar name={user.name} size="sm" className="ring-ink-950" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-label">{user.name}</span>
-        <span className="block truncate text-eyebrow text-navy-200">{user.roles.map((r) => t(`role.${r}`)).join(" · ")}</span>
+        <span className="block truncate text-eyebrow text-white/55">{user.roles.map((r) => t(`role.${r}`)).join(" · ")}</span>
       </span>
-      <Icon name="arrowRight" size={14} aria-hidden className="text-navy-200" />
+      <Icon name="arrowRight" size={14} aria-hidden className="text-white/55" />
     </Link>
   );
 }
@@ -214,35 +220,37 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
   useEffect(() => { if (blocked && user) router.replace(localHref(locale, homeFor(user.roles))); }, [blocked, user, router, locale]);
 
   return (
-    <div className="min-h-dvh bg-bg-subtle lg:grid lg:grid-cols-[16rem_1fr]">
+    // Dashboard theme (.theme-app): black frame + sidebar; the page sits in a rounded light-blue panel inside it.
+    <div className="theme-app min-h-dvh bg-(--app-frame) lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:p-3 lg:pl-0">
       <a href="#main" className="sr-only-focusable bg-secondary px-4 py-2 text-on-navy">{t("common.skipToContent")}</a>
-      {/* SH1: navy rail — icon nav, help links, "start a request" card, account card. */}
-      <aside className="sticky top-0 theme-dark hidden h-dvh flex-col gap-5 bg-navy-900 p-4 text-white lg:flex">
-        <Wordmark href={localHref(locale, "/")} className="px-2 pt-2 text-white" />
-        <nav aria-label={t(`workspace.${workspace}`)} className="flex-1 overflow-y-auto"><SideNav workspace={workspace} dark /></nav>
-        <div className="grid gap-0.5 border-t border-white/10 pt-3">
-          <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="flex h-10 items-center gap-3 px-4 text-small text-navy-200 hover:bg-white/5 hover:text-white"><WhatsAppGlyph size={16} />WhatsApp</a>
-        </div>
+      <aside className="sticky top-0 theme-dark hidden h-dvh flex-col gap-5 bg-(--app-frame) px-4 pt-6 pb-4 text-white lg:-mt-3 lg:flex">
+        <Wordmark href={localHref(locale, "/")} className="px-2" onDark />
+        <CommandPalette workspace={workspace} variant="sidebar" />
+        <nav aria-label={t(`workspace.${workspace}`)} className="-mx-1 flex-1 overflow-y-auto px-1">
+          <p className="mb-2 px-3.5 text-[0.6875rem] font-semibold tracking-[0.12em] text-white/40 uppercase">{t(`workspace.${workspace}`)}</p>
+          <SideNav workspace={workspace} dark />
+        </nav>
+        <a href={waLink("Muraho HEBUZA")} target="_blank" rel="noopener" className="flex h-10 items-center gap-3 rounded-xl px-3.5 text-small text-white/60 hover:bg-white/8 hover:text-white"><WhatsAppGlyph size={16} />WhatsApp</a>
         {workspace === "client" && (
-          <Link href={localHref(locale, "/services")} className="group grid gap-2 border-t-3 border-gold-400 bg-navy-800 p-4 text-white">
+          <Link href={localHref(locale, "/services")} className="group grid gap-3 rounded-2xl bg-white/6 p-4 text-white transition-colors hover:bg-white/10">
             <span className="text-label">{t("nav.start")}</span>
-            <span className="inline-flex h-8 w-fit items-center gap-1.5 bg-primary px-3 text-eyebrow text-on-gold group-hover:bg-primary-hover">{t("nav.services")}<Icon name="arrowRight" size={14} aria-hidden className="transition-transform group-hover:translate-x-0.5" /></span>
+            <span className="inline-flex h-9 w-fit items-center gap-1.5 rounded-pill bg-primary px-4 text-eyebrow font-semibold text-on-gold group-hover:bg-primary-hover">{t("nav.services")}<Icon name="arrowRight" size={14} aria-hidden className="transition-transform group-hover:translate-x-0.5" /></span>
           </Link>
         )}
         <AccountCard />
       </aside>
-      <div className="flex min-w-0 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-1.5 sm:gap-3 border-b border-border bg-bg/95 px-gutter backdrop-blur pt-[env(safe-area-inset-top)] lg:px-8">
-          <button type="button" className="flex size-10 items-center justify-center hover:bg-navy-50 lg:hidden" aria-label={t("common.menu")} onClick={() => setDrawer(true)}>
+      <div className="flex min-w-0 flex-col bg-(--app-canvas) lg:min-h-[calc(100dvh-1.5rem)] lg:rounded-3xl">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-1.5 bg-(--app-canvas)/90 px-gutter pt-[env(safe-area-inset-top)] backdrop-blur sm:gap-3 lg:top-3 lg:h-18 lg:rounded-t-3xl lg:px-8">
+          <button type="button" className="flex size-10 items-center justify-center rounded-xl hover:bg-ink-950/5 lg:hidden" aria-label={t("common.menu")} onClick={() => setDrawer(true)}>
             <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
           </button>
           <WorkspaceLabel current={workspace} />
           {ops?.headerExtra}
-          <div className="ml-auto flex items-center gap-0.5 sm:gap-2">
-            <CommandPalette workspace={workspace} />
+          <div className="ml-auto flex items-center gap-1 sm:gap-2">
+            <span className="lg:hidden"><CommandPalette workspace={workspace} /></span>
             <span className="hidden xl:block"><LocaleSwitcher /></span>
             {ops?.bell ?? (
-              <Link href={localHref(locale, "/notifications")} aria-label={t("notifications.title")} className="flex size-10 items-center justify-center hover:bg-navy-50">
+              <Link href={localHref(locale, "/notifications")} aria-label={t("notifications.title")} className="flex size-10 items-center justify-center rounded-full border border-border bg-white hover:bg-ink-50">
                 <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 003.4 0" /></svg>
               </Link>
             )}
@@ -250,7 +258,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
           </div>
         </header>
         <WorkspaceTabs current={workspace} />
-        <main id="main" className="min-w-0 flex-1 px-gutter py-8 lg:px-8">
+        <main id="main" className="min-w-0 flex-1 px-gutter pt-4 pb-10 lg:px-8">
           <WorkerBanner />
           {ops?.banner}
           {status === "loading" ? <Spinner /> : children}

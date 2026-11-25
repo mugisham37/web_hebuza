@@ -17,10 +17,10 @@ import { NewsletterForm } from "@/components/organisms/site/interactive";
 import { CookieSettingsButton } from "@/components/organisms/site/cookie-consent";
 
 
-export function CTACard({ locale, title, body, className }: { locale: Locale; title?: string; body?: string; className?: string }) {
+export function CTACard({ locale, title, body, className, pad = "pb-10 md:pb-12" }: { locale: Locale; title?: string; body?: string; className?: string; /** vertical padding classes */ pad?: string }) {
   const c = getCopy(locale).cta;
   return (
-    <section className={cx("px-gutter pb-10 md:pb-12", className)}>
+    <section className={cx("px-gutter", pad, className)}>
       {/* Two columns: headline on the left; pitch and actions centred on the right (compact, no frame). */}
       <Reveal preset="card-in" className="container-page relative grid gap-8 overflow-hidden bg-tint p-7 text-navy-700 md:grid-cols-[1fr_1.1fr] md:gap-12 md:p-8 lg:px-16 lg:py-8">
         <h2 className="max-w-[15ch] self-center text-cta text-fg-heading">{title ?? c.title}</h2>
@@ -81,7 +81,7 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
   const phone = site?.settings?.phone || CONTACT.phone;
   const social = site?.settings?.social?.length ? site.settings.social : null;
   return (
-    <footer className="theme-dark overflow-hidden bg-grad-night-fade text-fg">
+    <footer className="theme-dark ramp-dark overflow-hidden bg-(--color-ramp-8) text-fg">
       <div className="container-page px-gutter">
         <div className="grid gap-10 pt-16 pb-12 sm:grid-cols-2 md:pt-20 lg:grid-cols-4">
           <div>
@@ -114,7 +114,7 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
             style={{ rotate: `${i === 1 ? 4 : -4}deg` }}>{p}<span className="opacity-50">•••</span></span>
         ))}
       </RiseOnScroll>
-      <div className="relative z-10 border-t border-border bg-ink-950 px-gutter py-6 text-center text-small text-fg-muted">
+      <div className="relative z-10 border-t border-border bg-(--color-ramp-8) px-gutter py-6 text-center text-small text-fg-muted">
         © <CopyrightYear /> HEBUZA BUSINESS GROUP LTD ·{" "}
         <Link href={L("/legal/terms")} className="hover:text-fg-heading">Terms</Link> · <Link href={L("/legal/privacy")} className="hover:text-fg-heading">Privacy</Link> · <Link href={L("/legal/cookies")} className="hover:text-fg-heading">Cookies</Link> · <Link href={L("/accessibility")} className="hover:text-fg-heading">{A11Y[locale].eyebrow}</Link> · <CookieSettingsButton>{m.consent.settings}</CookieSettingsButton>
       </div>

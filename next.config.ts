@@ -63,7 +63,7 @@ const nextConfig: NextConfig = {
   // browser's MSW worker answers /api/* with dummy data (src/mocks).
   async rewrites() {
     // Browsers probe /favicon.ico before the streamed <link rel=icon> arrives; serve the brand icon instead of a 404.
-    const favicon = { source: "/favicon.ico", destination: "/orvena/brand/favicon.png" };
+    const favicon = { source: "/favicon.ico", destination: "/brand/favicon-48.png" };
     return process.env.API_URL ? [favicon, { source: "/api/:path*", destination: `${process.env.API_URL}/api/:path*` }] : [favicon];
   },
   async headers() {

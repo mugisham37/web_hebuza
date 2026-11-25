@@ -145,7 +145,7 @@ export async function getFaqs(locale: Locale): Promise<Record<string, { q: strin
 /** Home section order + visibility (copy and facts stay with the section components / catalogue). */
 export async function getHomeSections(): Promise<string[]> {
   const home = (await ofType("page")).find((e) => e.key === "home");
-  const all = ["hero", "tracker", "institutions", "services", "how", "pricing", "guides", "cta"];
+  const all = ["hero", "tracker", "institutions", "services", "how", "guides", "cta"];
   if (!home) return all;
   const order = home.blocks.filter((b) => b.type.startsWith("home.") && (!b.hidden || b.type === "home.hero")).map((b) => b.type.slice(5));
   return order.includes("hero") ? order : ["hero", ...order];

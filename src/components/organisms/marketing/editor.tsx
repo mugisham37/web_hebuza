@@ -34,7 +34,7 @@ import { approverRule, coverageOf, editorBase, localBlockers, moneyIn, newBlock,
 type Panel = "settings" | "seo" | "ai" | "history" | "comments" | "performance";
 const PALETTE: Record<string, BlockType[]> = {
   page: ["heading", "rich_text", "image", "gallery", "video", "callout", "cta", "service_cards", "faq_list", "steps", "table", "quote", "form", "stats", "contact", "divider"],
-  home: ["home.hero", "home.tracker", "home.institutions", "home.services", "home.how", "home.pricing", "home.guides", "home.cta"],
+  home: ["home.hero", "home.tracker", "home.institutions", "home.services", "home.how", "home.guides", "home.cta"],
   landing_page: ["home.hero", "rich_text", "service_cards", "testimonial", "form", "faq_list", "cta", "image", "stats"],
   guide: ["heading", "rich_text", "requirements", "steps", "tip", "image", "callout", "service_cards", "table", "video"],
   regulatory_update: ["heading", "rich_text", "callout", "table", "cta"],

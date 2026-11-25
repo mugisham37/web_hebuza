@@ -26,10 +26,10 @@ import type { CaseDetailVM } from "@/lib/ops/api";
 
 /** Right-hand side panel on desktop, bottom sheet with grab-handle radius on phones. */
 export const SIDE_SHEET =
-  "max-sm:mt-auto max-sm:ml-0 max-sm:h-auto max-sm:max-h-[90dvh] max-sm:max-w-full max-sm:rounded-none";
+  "max-sm:mt-auto max-sm:ml-0 max-sm:h-auto max-sm:max-h-[90dvh] max-sm:max-w-full max-sm:rounded-md";
 /** Centred dialog on desktop, bottom sheet on phones. */
 export const SHEET_SM =
-  "max-sm:mt-auto max-sm:mb-0 max-sm:w-full max-sm:max-w-full max-sm:rounded-none";
+  "max-sm:mt-auto max-sm:mb-0 max-sm:w-full max-sm:max-w-full max-sm:rounded-md";
 
 const STATE_UI: Record<ItemState, { icon: IconName; cls: string }> = {
   provided: { icon: "check", cls: "bg-success-bg text-success" },

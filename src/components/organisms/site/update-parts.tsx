@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/shared/i18n/config";
 import { localHref } from "@/shared/i18n/config";
-import { formatDate, formatMoney } from "@/shared/format";
+import { formatDate } from "@/shared/format";
 import type { ServiceVM } from "@/lib/catalogue";
 import type { LdCopy, Update } from "@/content/pages/ld";
 import { ButtonLink } from "@/components/atoms/button";
@@ -91,14 +91,6 @@ export function HelpPanel({
       <div className="grid gap-3 border border-sky-100 bg-tint p-4">
         <p className="text-body">
           {svc.name}
-          {svc.fromFee != null && (
-            <>
-              <br />
-              <span className="text-small">
-                {formatMoney(svc.fromFee, "RWF", locale)}
-              </span>
-            </>
-          )}
         </p>
         <ButtonLink
           href={localHref(locale, `/services/${svc.slugs[locale]}`)}

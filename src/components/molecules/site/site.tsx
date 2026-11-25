@@ -77,7 +77,7 @@ export function CardFan({ back1, back2, front, alt, caption, meta, tag, badge, p
 
 export type FamilyRow = { name: string; href: string; popular?: boolean };
 const CARD = {
-  large: "theme-dark bg-navy-700 text-white lg:row-span-2 md:col-span-2 lg:col-span-1",
+  large: "theme-dark bg-navy-700 text-white md:col-span-2 lg:col-span-1",
   standard: "border border-ink-200 bg-white text-navy-900",
   mini: "relative min-w-[17rem] snap-start border border-navy-900/10 bg-sky-100 text-navy-900 md:min-w-0",
 };

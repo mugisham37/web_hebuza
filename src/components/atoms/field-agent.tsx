@@ -66,7 +66,7 @@ export function SyncPill({ className }: { className?: string }) {
           : `${online ? c.online : c.offline} · ${pending ? fill(c.pending, { n: pending }) : c.allSynced}`;
   const label = !online ? fill(c.pillLabelOffline, { n: pending }) : pending ? fill(c.pillLabelPending, { n: pending }) : c.pillLabelOnline;
   return (
-    <Link href={base("/outbox")} aria-label={`${text}. ${label}`} className={cx("m-press inline-flex h-9 items-center gap-2 rounded-none px-3 text-small font-medium whitespace-nowrap", tone, className)}>
+    <Link href={base("/outbox")} aria-label={`${text}. ${label}`} className={cx("m-press inline-flex h-9 items-center gap-2 rounded-md px-3 text-small font-medium whitespace-nowrap", tone, className)}>
       {eng.syncing ? (
         <span aria-hidden className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
       ) : (
@@ -100,7 +100,7 @@ export function OfflineBanner() {
     <div className="m-collapse" data-closed={msg ? undefined : ""}>
       <div>
         {msg && (
-          <p role="status" className={cx("flex items-start gap-3 rounded-none px-4 py-3 text-small", ex === "expired" ? "bg-danger-bg text-danger" : "bg-warning-bg text-fg")}>
+          <p role="status" className={cx("flex items-start gap-3 rounded-md px-4 py-3 text-small", ex === "expired" ? "bg-danger-bg text-danger" : "bg-warning-bg text-fg")}>
             <span aria-hidden className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-danger text-[0.7rem] font-bold text-white">!</span>
             <span className="font-medium">{msg}</span>
           </p>
@@ -111,7 +111,7 @@ export function OfflineBanner() {
 }
 
 // ---------------------------------------------------------------- chips
-const chip = "inline-flex h-7 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium normal-case whitespace-nowrap";
+const chip = "inline-flex h-7 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium normal-case whitespace-nowrap";
 
 export function GeoChip({ distanceM, accuracyM, verdict }: { distanceM: number | null; accuracyM: number | null; verdict: "verified" | "far" | "low" | "no_gps" }) {
   const { c } = useFieldCopy();
@@ -155,7 +155,7 @@ export function CustodyChip({ count, since }: { count: number; since?: string })
   const { c, locale } = useFieldCopy();
   if (!count) return null;
   return (
-    <span className="inline-flex items-center gap-2 rounded-none bg-warning-bg px-3 py-2 text-small font-medium text-fg">
+    <span className="inline-flex items-center gap-2 rounded-md bg-warning-bg px-3 py-2 text-small font-medium text-fg">
       <Icon name="lock" size={16} aria-hidden />{fill(c.custody, { n: count, time: since ? hhmm(since, locale) : "—" })}
     </span>
   );
@@ -180,8 +180,8 @@ export function QuotaBar({ used, quota }: { used: number; quota: number }) {
   const level = pct >= 95 ? "bg-danger" : pct >= 80 ? "bg-warning" : "bg-navy-700";
   return (
     <div className="grid gap-1.5">
-      <div role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={fill(c.quota, { used: kb(used), quota: kb(quota) })} className="h-2 overflow-hidden rounded-none bg-ink-100">
-        <span className={cx("block h-full origin-left rounded-none transition-[width] duration-(--dur-3)", level)} style={{ width: `${pct}%` }} />
+      <div role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={fill(c.quota, { used: kb(used), quota: kb(quota) })} className="h-2 overflow-hidden rounded-md bg-ink-100">
+        <span className={cx("block h-full origin-left rounded-md transition-[width] duration-(--dur-3)", level)} style={{ width: `${pct}%` }} />
       </div>
       <p className="text-eyebrow normal-case text-fg-subtle tabular">{fill(c.quota, { used: kb(used), quota: kb(quota) })} · {pct}%</p>
     </div>
@@ -190,8 +190,8 @@ export function QuotaBar({ used, quota }: { used: number; quota: number }) {
 
 export function LocalRef({ localRef, serverRef }: { localRef: string; serverRef?: string | null }) {
   const { c } = useFieldCopy();
-  if (serverRef) return <span key={serverRef} className="m-pop inline-flex h-6 items-center rounded-none bg-ink-100 px-2 font-mono text-eyebrow normal-case">{serverRef}</span>;
-  return <span title={c.localRefHint} className="inline-flex h-6 items-center rounded-none border border-dashed border-border-strong px-2 font-mono text-eyebrow normal-case text-fg-subtle">{localRef}<span className="sr-only"> — {c.localRefHint}</span></span>;
+  if (serverRef) return <span key={serverRef} className="m-pop inline-flex h-6 items-center rounded-pill bg-ink-100 px-2 font-mono text-eyebrow normal-case">{serverRef}</span>;
+  return <span title={c.localRefHint} className="inline-flex h-6 items-center rounded-pill border border-dashed border-border-strong px-2 font-mono text-eyebrow normal-case text-fg-subtle">{localRef}<span className="sr-only"> — {c.localRefHint}</span></span>;
 }
 
 /** Disabled-with-reason wrapper for server-only actions while offline (never hidden, plan §4). */

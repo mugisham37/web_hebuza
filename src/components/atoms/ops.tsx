@@ -23,7 +23,7 @@ export function Kbd({
   return (
     <kbd
       className={cx(
-        "inline-flex h-5 min-w-5 items-center justify-center rounded-none border border-border-strong bg-white px-1.5 font-mono text-[0.72rem] leading-none text-fg-muted",
+        "inline-flex h-5 min-w-5 items-center justify-center rounded-pill border border-border-strong bg-white px-1.5 font-mono text-[0.72rem] leading-none text-fg-muted",
         className,
       )}
     >
@@ -69,7 +69,7 @@ export function SlaChip({
     return (
       <span
         className={cx(
-          "inline-flex h-6 w-24 animate-pulse rounded-none bg-ink-100",
+          "inline-flex h-6 w-24 animate-pulse rounded-md bg-ink-100",
           className,
         )}
         aria-hidden
@@ -94,7 +94,7 @@ export function SlaChip({
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap tabular",
+        "inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap tabular",
         st.cls,
         className,
       )}
@@ -154,7 +154,7 @@ export function FlagChip({
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center gap-1 rounded-none px-2 text-eyebrow font-medium whitespace-nowrap",
+        "inline-flex h-6 items-center gap-1 rounded-pill px-2 text-eyebrow font-medium whitespace-nowrap",
         FLAG_CLS[flag],
       )}
     >
@@ -176,7 +176,7 @@ export function PaymentChip({ status }: { status: string }) {
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap",
+        "inline-flex h-6 items-center rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap",
         PAY_CLS[status] ?? "bg-ink-100 text-fg-muted",
       )}
     >
@@ -261,7 +261,7 @@ export function CapacityBar({
   return (
     <span className={cx("inline-flex min-w-28 items-center gap-2", className)}>
       <span
-        className="relative h-1.5 flex-1 overflow-hidden rounded-none bg-ink-100"
+        className="relative h-1.5 flex-1 overflow-hidden rounded-md bg-ink-100"
         role="meter"
         aria-valuemin={0}
         aria-valuemax={cap}
@@ -270,7 +270,7 @@ export function CapacityBar({
       >
         <span
           className={cx(
-            "absolute inset-y-0 left-0 rounded-none",
+            "absolute inset-y-0 left-0 rounded-md",
             over ? "bg-danger" : warn ? "bg-gold-400" : "bg-navy-700",
           )}
           style={{ width: `${pct}%` }}
@@ -300,7 +300,7 @@ export function CountBadge({
   return (
     <span
       className={cx(
-        "inline-flex h-5 min-w-5 items-center justify-center rounded-none px-1.5 text-[0.7rem] font-semibold tabular",
+        "inline-flex h-5 min-w-5 items-center justify-center rounded-pill px-1.5 text-[0.7rem] font-semibold tabular",
         tone === "attention"
           ? "bg-gold-400 text-navy-950"
           : tone === "danger"
@@ -324,7 +324,7 @@ export function RoleTag({
   return (
     <span
       className={cx(
-        "inline-flex h-5 items-center rounded-none px-2 text-[0.7rem] font-medium",
+        "inline-flex h-5 items-center rounded-pill px-2 text-[0.7rem] font-medium",
         external ? "bg-warning-bg text-warning" : "bg-info-bg text-info",
       )}
     >
@@ -348,7 +348,7 @@ export function OfferPill({ state }: { state: OfferState }) {
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center rounded-none px-2.5 text-eyebrow font-medium",
+        "inline-flex h-6 items-center rounded-pill px-2.5 text-eyebrow font-medium",
         cls,
       )}
     >

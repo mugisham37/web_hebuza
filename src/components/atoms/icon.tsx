@@ -38,6 +38,10 @@ const PATHS = {
   zap: "M13 2 3 14h9l-1 8 10-12h-9l1-8Z",
   refresh: "M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5",
   message: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z",
+  pause: "M8 5v14M16 5v14",
+  play: "M7 4.5v15l12-7.5Z",
+  chevronLeft: "M15 18l-6-6 6-6",
+  chevronRight: "M9 18l6-6-6-6",
 } as const;
 
 export type IconName = keyof typeof PATHS;

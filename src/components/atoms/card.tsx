@@ -15,14 +15,14 @@ const TONE = {
 /** Sharp surface. `interactive` adds the hover lift; `stacked` adds an offset navy-tinted back plate. */
 export function Card({ tone = "white", stacked, interactive, className, children, ...rest }: { tone?: keyof typeof TONE; stacked?: boolean; interactive?: boolean } & ComponentProps<"div">) {
   const card = (
-    <div className={cx("relative rounded-none p-6", TONE[tone], interactive && "transition-[border-color,box-shadow] duration-(--duration-base) hover:border-navy-300 hover:shadow-md", className)} {...rest}>
+    <div className={cx("relative rounded-xl p-6", TONE[tone], interactive && "transition-[border-color,box-shadow] duration-(--duration-base) hover:border-navy-300 hover:shadow-md", className)} {...rest}>
       {children}
     </div>
   );
   if (!stacked) return card;
   return (
     <div className="relative">
-      <div aria-hidden className="absolute inset-0 translate-x-2 translate-y-2 rounded-none bg-navy-100" />
+      <div aria-hidden className="absolute inset-0 translate-x-2 translate-y-2 rounded-md bg-navy-100" />
       {card}
     </div>
   );

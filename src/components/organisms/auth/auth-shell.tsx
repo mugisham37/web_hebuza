@@ -26,7 +26,7 @@ export function AuthShell({ children, year }: { children: ReactNode; year: React
             <Image src={images.studioPortraitOrange} alt="" fill sizes="50vw" className="hidden object-cover opacity-[0.07] mix-blend-luminosity lg:block" />
           )}
           <div className="theme-dark relative flex items-center justify-between bg-transparent">
-            <Wordmark href={localHref(locale, "/")} className="text-white" />
+            <Wordmark href={localHref(locale, "/")} onDark />
             <LocaleSwitcher tone="dark" />
           </div>
           <div className="relative flex min-w-0 flex-col gap-5 lg:flex-1 lg:justify-end lg:gap-10">

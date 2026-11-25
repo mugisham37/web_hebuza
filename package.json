@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "next start",
     "smoke:prod": "node scripts/smoke-prod.mjs",
@@ -17,7 +17,8 @@
     "check:design": "node scripts/check-design.mjs",
     "api:types": "openapi-typescript ${API_URL:-http://localhost:4000}/api/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
     "api:types:file": "openapi-typescript ../server/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
-    "check:mirror": "node scripts/check-mirror.mjs"
+    "check:mirror": "node scripts/check-mirror.mjs",
+    "dev:raw": "next dev"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

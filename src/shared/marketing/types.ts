@@ -7,7 +7,7 @@ export const LOCALES: Locale[] = ["rw", "en", "fr"];
 // ---------------------------------------------------------------- CMS
 export type CmsType = "page" | "landing_page" | "article" | "guide" | "regulatory_update" | "faq" | "team_member" | "testimonial" | "partner_logo" | "legal_doc";
 export type CmsStatus = "draft" | "in_review" | "approved" | "scheduled" | "published" | "stale" | "archived";
-export type HomeSection = "hero" | "tracker" | "institutions" | "services" | "how" | "pricing" | "guides" | "cta";
+export type HomeSection = "hero" | "tracker" | "institutions" | "services" | "how" | "guides" | "cta";
 export type RichDoc = { type: "doc"; content: RichNode[] };
 export type RichNode =
   | { type: "paragraph"; content?: RichInline[] }

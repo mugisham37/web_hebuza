@@ -133,7 +133,12 @@
   --spacing-gutter: clamp(1rem, 0.1rem + 3.7vw, 4rem);           /* 16 → 64px side padding */
   --spacing-section: clamp(4.5rem, 2.6rem + 7.8vw, 8.75rem);     /* 72 → 140px vertical rhythm */
   --spacing-section-sm: clamp(3.5rem, 2.4rem + 4.5vw, 6.875rem); /* 56 → 110px */
-  --spacing-hero-top: clamp(7rem, 5.2rem + 7.4vw, 10.625rem);    /* 112 → 170px under fixed nav */
+  --spacing-home: clamp(7.875rem, 6.75rem + 3vw, 9.1875rem);   /* home sections, top = bottom: 84 → 98px, then +50% = 126 → 147px */
+  /* Fixed header: word ribbon + search bar + nav, painted as the page ramp mirrored (ramp-3 → 2 → 1 → white hero). */
+  --header-h: clamp(10.5rem, 9.9rem + 1.6vw, 11.5rem);             /* ribbon 40 + brand bar 72/80 + nav 56/64 = 168 → 184px */
+  --spacing-hero-top: calc(var(--header-h) + clamp(2.5rem, 2.1rem + 1.6vw, 3.5rem));  /* header + the old 40 → 56px gap */
+  --spacing-home-hero-top: calc(var(--header-h) + clamp(3.75rem, 3.1rem + 2.4vw, 5.25rem)); /* home: that gap +50% (60 → 84px) */
+  --spacing-home-hero-bottom: clamp(5.25rem, 4.4rem + 3.2vw, 7.5rem);  /* home: old 56 → 80px bottom +50% (84 → 120px) */
 
   /* ---- Radius: sharp system (D7). rounded-full stays for true circles. ---- */
   --radius: 0;
@@ -154,7 +159,8 @@
   --duration-slow: 400ms;
   --duration-reveal: 900ms;
 
-  --animate-marquee: marquee 40s linear infinite;
+  --animate-showcase: showcase-progress 6s linear forwards; /* hero slide timer line */
+  --animate-marquee: marquee 60s linear infinite; /* header word ribbon */
   --animate-reveal: reveal var(--duration-reveal) var(--ease-out-expo) both;
   --animate-pop-in: pop-in var(--duration-reveal) var(--ease-out-expo) both;
   --animate-pulse-dot: pulse-dot 2s var(--ease-standard) infinite;
@@ -164,6 +170,7 @@
   --animate-dots: dots 1.2s steps(3) infinite;
 
   @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes showcase-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   @keyframes reveal { from { opacity: 0; transform: translateY(12px); } }
   @keyframes pop-in { from { opacity: 0; transform: scale(.6); } }
   @keyframes pulse-dot { 50% { opacity: .35; transform: scale(.8); } }
@@ -259,6 +266,45 @@
   --info: var(--color-sky-700);
   --info-bg: var(--color-sky-50);
 }
+
+/* ---- Dashboard theme (every signed-in workspace; set on the shell root). Public pages stay sharp + brand.
+   Rounded corners come from the radius tokens: 0 on the public site, real values here, so `rounded-*` classes only
+   round inside dashboards. Palette: black frame + sidebar, gold accent, light-blue canvas (ramp-1), white cards. ---- */
+.theme-app {
+  --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+  --radius-2xl: 24px; --radius-3xl: 28px; --radius-4xl: 32px; --radius-pill: 9999px;
+  --app-frame: var(--color-ink-950);
+  --app-canvas: var(--color-ramp-1);
+  --bg: var(--color-ramp-1);
+  --bg-subtle: color-mix(in oklab, var(--color-ramp-1) 45%, var(--color-white));
+  --bg-tint: color-mix(in oklab, var(--color-ramp-1) 60%, var(--color-white));
+  --surface: var(--color-white);
+  --surface-raised: var(--color-white);
+  --border: color-mix(in oklab, var(--color-ink-950) 9%, transparent);
+  --border-strong: color-mix(in oklab, var(--color-ink-950) 18%, transparent);
+  --fg: var(--color-ink-900);
+  --fg-heading: var(--color-ink-950);
+  --secondary: var(--color-ink-950);
+  --secondary-hover: var(--color-ink-800);
+  --secondary-active: var(--color-ink-700);
+  --on-secondary: var(--color-white);
+  --link: var(--color-navy-700);
+  --focus: var(--color-ink-950);
+  --shadow-sm: 0 1px 2px rgb(9 12 20 / 0.04);
+  --shadow-md: 0 10px 28px -12px rgb(9 12 20 / 0.16);
+  --shadow-lg: 0 24px 48px -18px rgb(9 12 20 / 0.22);
+  --font-sans: var(--font-outfit), "Outfit Placeholder", system-ui, sans-serif;
+  --font-display: var(--font-outfit), "Outfit Placeholder", system-ui, sans-serif;
+  font-family: var(--font-sans);
+}
+/* Everything interactive and every floating layer is rounded; specificity 0 (:where) so a component's own class wins. */
+.theme-app :where(button, a[class*="h-"][class*="px-"], select, textarea, input:not([type="checkbox"], [type="radio"], [type="range"])) { border-radius: var(--radius-md); }
+.theme-app :where(input[type="checkbox"]) { border-radius: var(--radius-xs); }
+.theme-app :where([role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"], [role="tooltip"], [role="status"][class*="shadow"]) { border-radius: var(--radius-2xl); }
+/* Cards / panels: the bordered white boxes used across every workspace. */
+.theme-app :where([class~="border"][class~="bg-surface"], [class~="border"][class~="bg-white"], [class~="border"][class~="bg-bg"], [class~="border"][class~="bg-bg-subtle"], [class~="border"][class~="bg-tint"], [class~="shadow-md"], [class~="shadow-lg"]) { border-radius: var(--radius-xl); }
+.theme-app :where(table) { border-collapse: separate; border-spacing: 0; }
+.theme-app :where([role="dialog"] [role="dialog"]) { border-radius: var(--radius-xl); }
 
 /* Dark sections (D5). Full dark mode later adds :root[data-theme=dark] here (phase 7). */
 .theme-dark {
@@ -432,12 +478,14 @@ dialog[data-motion][open]::backdrop { opacity: 1; }
 /* Colour the footer fade starts from: white by default; a page whose last section is coloured marks it with data-page-end. */
 :root { --color-page-end: var(--color-white); }
 :root:has([data-page-end="navy-300"]) { --color-page-end: var(--color-navy-300); }
-:root:has([data-page-end="navy-900"]) { --color-page-end: var(--color-navy-900); }
+:root:has([data-page-end="ramp-8"]) { --color-page-end: var(--color-ramp-8); }
 
-/* Home ramp (white → footer navy-900, 8 equal OKLab-lightness steps along the brand blues; see section-stack.tsx). */
-:root { --color-ramp-0: #ffffff; --color-ramp-1: #c9e3ff; --color-ramp-2: #96c4fb; --color-ramp-3: #69a5f1; --color-ramp-4: #4d84db; --color-ramp-5: #3d64be; --color-ramp-6: #2f43a2; --color-ramp-7: #1e2c74; --color-ramp-8: #0e174a; }
+/* Home ramp: white → the footer blue (60% of the old navy-900 depth), 8 equal OKLab-lightness steps along the brand blues; see section-stack.tsx. */
+:root { --color-ramp-0: #ffffff; --color-ramp-1: #dfeefe; --color-ramp-2: #beddff; --color-ramp-3: #9fcbfd; --color-ramp-4: #84b8f7; --color-ramp-5: #69a5f1; --color-ramp-6: #5492e6; --color-ramp-7: #4a7ed5; --color-ramp-8: #406ac4; }
 /* Home ramp, light half: text sits on mid blues, so every text token is navy-900 (≥4.5:1 down to the 50% stop). */
-.ramp-light { --fg: var(--color-navy-900); --fg-heading: var(--color-navy-900); --fg-muted: var(--color-navy-900); --fg-subtle: var(--color-navy-900); }
+.ramp-light { color: var(--color-navy-900); --fg: var(--color-navy-900); --fg-heading: var(--color-navy-900); --fg-muted: var(--color-navy-900); --fg-subtle: var(--color-navy-900); }
+/* Ramp dark end (CTA + footer on ramp-7/8 blues): only pure white text clears 4.5:1, so every text token is white. */
+.ramp-dark { color: var(--color-white); --fg: var(--color-white); --fg-heading: var(--color-white); --fg-muted: var(--color-white); --fg-subtle: var(--color-white); --border: color-mix(in oklab, var(--color-white) 30%, transparent); --border-strong: color-mix(in oklab, var(--color-white) 45%, transparent); }
 
 /* ---- Role accents (sign-in shell only: set data-role on the shell root). Accent ≥4.5:1 on white; white text ≥4.5:1 on both gradient stops. ---- */
 @property --role-grad-from { syntax: "<color>"; inherits: true; initial-value: #1d2b7e; }

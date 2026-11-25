@@ -39,7 +39,7 @@ export function OtpInput({
           <span
             key={i}
             className={cx(
-              "flex h-14 w-11 items-center justify-center rounded-none border bg-white text-h3 tabular-nums transition-colors sm:w-12",
+              "flex h-14 w-11 items-center justify-center rounded-md border bg-white text-h3 tabular-nums transition-colors sm:w-12",
               invalid
                 ? "border-danger text-danger"
                 : focused && i === Math.min(value.length, length - 1)
@@ -95,14 +95,14 @@ export function Segmented<T extends string>({
 }) {
   return (
     <fieldset
-      className={cx("inline-flex rounded-none bg-ink-100 p-1", className)}
+      className={cx("inline-flex rounded-md bg-ink-100 p-1", className)}
     >
       <legend className="sr-only">{label}</legend>
       {options.map((o) => (
         <label
           key={o.value}
           className={cx(
-            "cursor-pointer rounded-none px-5 py-2 text-button transition-colors has-focus-visible:outline-2 has-focus-visible:outline-focus",
+            "cursor-pointer rounded-md px-5 py-2 text-button transition-colors has-focus-visible:outline-2 has-focus-visible:outline-focus",
             value === o.value
               ? "bg-navy-700 text-white"
               : "text-fg-muted hover:text-fg-heading",

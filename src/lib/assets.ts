@@ -20,8 +20,11 @@ export const images = {
   testimonialMayaChen: "/hebuza/photos/family-training.jpg",
   journalBrandFirstImpression: "/hebuza/photos/family-training.jpg",
   journalClearCreativeDirection: "/hebuza/photos/family-ict.jpg",
-  brandFavicon: "/orvena/brand/favicon.png",
-  brandOgImage: "/orvena/brand/og-image.png",
+  brandLogo: "/brand/hebuza.svg",
+  brandMark: "/brand/hebuza-mark.svg",
+  brandFavicon: "/brand/favicon-48.png",
+  brandAppleIcon: "/brand/apple-touch-icon.png",
+  brandOgImage: "/brand/og-image.png",
 } as const;
 
 export const icons = {
