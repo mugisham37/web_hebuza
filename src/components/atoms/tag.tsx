@@ -21,7 +21,7 @@ export type TagVariant = keyof typeof TAG;
 
 export function Tag({ variant = "neutral", dot, children, className }: { variant?: TagVariant; dot?: boolean; children: ReactNode; className?: string }) {
   return (
-    <span className={cx("inline-flex h-8 items-center gap-2 rounded-pill px-3 text-small font-medium whitespace-nowrap", TAG[variant], className)}>
+    <span className={cx("inline-flex h-8 items-center gap-2 rounded-none px-3 text-small font-medium whitespace-nowrap", TAG[variant], className)}>
       {dot && <span aria-hidden className="size-1.5 rounded-full bg-current" />}
       {children}
     </span>
@@ -38,7 +38,7 @@ const TONE: Record<Tone, string> = {
   accent: "bg-gold-400 text-navy-950",
 };
 export function Badge({ tone = "neutral", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
-  return <span className={cx("inline-flex h-6 items-center gap-1.5 rounded-pill px-2 text-eyebrow font-medium normal-case whitespace-nowrap", TONE[tone], className)}>{children}</span>;
+  return <span className={cx("inline-flex h-6 items-center gap-1.5 rounded-none px-2 text-eyebrow font-medium normal-case whitespace-nowrap", TONE[tone], className)}>{children}</span>;
 }
 
 /** Pipeline stage colours (guide §7 status badges, plan D12). Domain statuses map onto these by meaning. */
@@ -58,7 +58,7 @@ export const TONE_STAGE: Record<Tone, Stage> = { neutral: "applied", info: "revi
 
 export function StageBadge({ stage, children, className }: { stage: Stage; children: ReactNode; className?: string }) {
   return (
-    <span className={cx("inline-flex h-6 items-center gap-1.5 rounded-pill px-2 text-eyebrow font-medium normal-case whitespace-nowrap", STAGE[stage].chip, className)}>
+    <span className={cx("inline-flex h-6 items-center gap-1.5 rounded-none px-2 text-eyebrow font-medium normal-case whitespace-nowrap", STAGE[stage].chip, className)}>
       <span aria-hidden className={cx("size-1.5 shrink-0 rounded-full", STAGE[stage].dot)} />
       {children}
     </span>

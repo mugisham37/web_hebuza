@@ -20,7 +20,7 @@ export function Star({ points = 8, className }: { points?: 8 | 12; className?: s
 export function HighlightWord({ children, className }: { children: ReactNode; tone?: "lavender" | "lime" | "gold"; rotate?: number; className?: string }) {
   return (
     <span className={cx("relative inline-block max-w-full px-[0.14em] text-navy-950 sm:whitespace-nowrap", className)}>
-      <span aria-hidden data-highlight className="absolute inset-x-0 top-[0.18em] bottom-[0.02em] -z-0 rounded-md bg-gold-200" />
+      <span aria-hidden data-highlight className="absolute inset-x-0 top-[0.18em] bottom-[0.02em] -z-0 rounded-none bg-gold-200" />
       <span className="relative">{children}</span>
     </span>
   );
@@ -29,7 +29,7 @@ export function HighlightWord({ children, className }: { children: ReactNode; to
 /** Square gold block with navy dots, inline in headlines. */
 export function DotsPill({ className }: { className?: string }) {
   return (
-    <span aria-hidden data-pop className={cx("inline-flex h-[0.72em] translate-y-[-0.06em] items-center gap-[0.09em] rounded-md bg-gold-400 px-[0.2em] align-middle", className)}>
+    <span aria-hidden data-pop className={cx("inline-flex h-[0.72em] translate-y-[-0.06em] items-center gap-[0.09em] rounded-none bg-gold-400 px-[0.2em] align-middle", className)}>
       <span className="size-[0.13em] rounded-full bg-navy-950" />
       <span className="size-[0.13em] rounded-full bg-navy-950/45" />
       <span className="size-[0.13em] rounded-full bg-navy-950/20" />
@@ -62,7 +62,7 @@ export function FaceCluster({ srcs, tag, className }: { srcs: string[]; tag: str
           <Image src={s} alt="" fill sizes="80px" className="object-cover" />
         </span>
       ))}
-      <span data-pop className="absolute top-[64%] left-[46%] rounded-md bg-navy-700 px-3 py-1.5 text-small font-medium whitespace-nowrap text-white">{tag}</span>
+      <span data-pop className="absolute top-[64%] left-[46%] rounded-none bg-navy-700 px-3 py-1.5 text-small font-medium whitespace-nowrap text-white">{tag}</span>
     </div>
   );
 }

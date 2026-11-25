@@ -4,7 +4,7 @@ import { cx } from "@/shared/format";
 
 // GOV.UK-style accessible fields (R-17): label above, hint, error under, aria wired, paste always allowed.
 const control =
-  "w-full rounded-md border border-border-strong bg-surface px-3.5 text-body text-fg placeholder:text-fg-disabled transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-ink-400 focus:border-secondary focus:shadow-[0_0_0_3px_rgb(248_183_24/0.45)] focus:outline-none focus-visible:outline-none aria-invalid:border-danger aria-invalid:focus:border-danger disabled:border-border disabled:bg-bg-subtle disabled:text-fg-disabled";
+  "w-full rounded-none border border-border-strong bg-surface px-3.5 text-body text-fg placeholder:text-fg-disabled transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-ink-400 focus:border-secondary focus:shadow-[0_0_0_3px_rgb(248_183_24/0.45)] focus:outline-none focus-visible:outline-none aria-invalid:border-danger aria-invalid:focus:border-danger disabled:border-border disabled:bg-bg-subtle disabled:text-fg-disabled";
 
 type FieldProps = { label: ReactNode; hint?: ReactNode; error?: string; optional?: string; className?: string; children: (ids: { id: string; describedBy?: string; invalid: boolean }) => ReactNode };
 
@@ -51,7 +51,7 @@ export function DateInput({ className, ...rest }: Omit<ComponentProps<"input">, 
 export function Checkbox({ label, className, ...rest }: { label: ReactNode } & Omit<ComponentProps<"input">, "type">) {
   return (
     <label className={cx("flex min-h-6 cursor-pointer items-start gap-3 text-body", className)}>
-      <input type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer appearance-none rounded-md border-[1.5px] border-border-strong bg-surface bg-center bg-no-repeat transition-colors hover:border-ink-400 checked:border-secondary checked:bg-secondary checked:bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22><path d=%22M5 12l5 5 9-10%22/></svg>')] disabled:border-border disabled:bg-bg-subtle" {...rest} />
+      <input type="checkbox" className="mt-0.5 size-5 shrink-0 cursor-pointer appearance-none rounded-none border-[1.5px] border-border-strong bg-surface bg-center bg-no-repeat transition-colors hover:border-ink-400 checked:border-secondary checked:bg-secondary checked:bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22><path d=%22M5 12l5 5 9-10%22/></svg>')] disabled:border-border disabled:bg-bg-subtle" {...rest} />
       <span>{label}</span>
     </label>
   );
@@ -69,7 +69,7 @@ export function Switch({ label, className, ...rest }: { label: ReactNode } & Omi
   return (
     <label className={cx("inline-flex cursor-pointer items-center gap-3 text-body", className)}>
       <input type="checkbox" role="switch" className="peer sr-only" {...rest} />
-      <span aria-hidden className="relative h-6 w-11 shrink-0 rounded-md bg-ink-300 transition-colors peer-checked:bg-secondary peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus peer-disabled:opacity-50 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
+      <span aria-hidden className="relative h-6 w-11 shrink-0 rounded-none bg-ink-300 transition-colors peer-checked:bg-secondary peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus peer-disabled:opacity-50 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
       <span>{label}</span>
     </label>
   );

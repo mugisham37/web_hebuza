@@ -36,11 +36,7 @@
     "help": "Ubufasha",
     "comingSoon": "Biraza vuba",
     "reveal": "Erekana",
-    "signedInAs": "Winjiye nka {name}",
-    "previous": "Ibibanza",
-    "ofN": "{i} kuri {n}",
-    "showMore": "Erekana ibindi",
-    "showLess": "Erekana bike"
+    "signedInAs": "Winjiye nka {name}"
   },
   "nav": {
     "services": "Serivisi",

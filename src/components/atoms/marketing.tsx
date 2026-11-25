@@ -23,7 +23,7 @@ export const TONE_CLS: Record<Tone, string> = {
 };
 export function Pill({ tone = "neutral", icon, children, className, title, motion = "m-pop" }: { tone?: Tone; icon?: IconName; children: ReactNode; className?: string; title?: string; motion?: string }) {
   return (
-    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap", TONE_CLS[tone], motion, className)}>
+    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap", TONE_CLS[tone], motion, className)}>
       {icon && <Icon name={icon} size={12} aria-hidden />}
       {children}
     </span>
@@ -38,7 +38,7 @@ export function LocaleCoverage({ coverage, size = "dots" }: { coverage: Record<L
   return (
     <span role="img" aria-label={label} title={label} className="inline-flex items-center gap-1.5 m-tone">
       {LOCALES.map((l) => size === "pills" ? (
-        <span key={l} className={cx("inline-flex h-5 items-center gap-1 rounded-md px-1.5 text-[0.68rem] font-medium uppercase", coverage[l] === "ok" ? "bg-success-bg text-success" : coverage[l] === "missing" ? "bg-ink-100 text-fg-subtle line-through" : "bg-warning-bg text-warning")}>{l}</span>
+        <span key={l} className={cx("inline-flex h-5 items-center gap-1 rounded-none px-1.5 text-[0.68rem] font-medium uppercase", coverage[l] === "ok" ? "bg-success-bg text-success" : coverage[l] === "missing" ? "bg-ink-100 text-fg-subtle line-through" : "bg-warning-bg text-warning")}>{l}</span>
       ) : (
         <span key={l} className="inline-flex items-center gap-0.5 text-[0.68rem] uppercase text-fg-subtle"><span className={cx("size-2 rounded-full", LOC_TONE[coverage[l]])} />{l}</span>
       ))}
@@ -106,7 +106,7 @@ export function SourceBadge({ touch }: { touch?: Touch | null }) {
   const s = touch?.source ?? "direct";
   const name = m.source[s] ?? s;
   return (
-    <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-md border border-border bg-white px-2 py-0.5 text-eyebrow" title={touch ? [touch.source, touch.medium, touch.campaign].filter(Boolean).join(" / ") : name}>
+    <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-none border border-border bg-white px-2 py-0.5 text-eyebrow" title={touch ? [touch.source, touch.medium, touch.campaign].filter(Boolean).join(" / ") : name}>
       <span aria-hidden className={cx("size-2 rounded-full", s === "facebook" ? "bg-info" : s === "google" ? "bg-warning" : s === "whatsapp" ? "bg-success" : s === "referral" ? "bg-navy-700" : "bg-border-strong")} />
       {name}{touch?.campaign && <span className="truncate text-fg-subtle">· {touch.campaign}</span>}
     </span>
@@ -130,7 +130,7 @@ export function CostPill({ amount, perUnit, state = "ok" }: { amount: number; pe
   const m = useM();
   const { locale } = useI18n();
   return (
-    <span className={cx("inline-flex items-baseline gap-2 rounded-md px-3 py-1 tabular m-tick", state === "block" ? "bg-danger-bg text-danger" : state === "warn" ? "bg-warning-bg text-warning" : "bg-gold-400 text-navy-950")}>
+    <span className={cx("inline-flex items-baseline gap-2 rounded-none px-3 py-1 tabular m-tick", state === "block" ? "bg-danger-bg text-danger" : state === "warn" ? "bg-warning-bg text-warning" : "bg-gold-400 text-navy-950")}>
       <strong className="text-body">{formatMoney(amount, "RWF", locale)}</strong>
       {perUnit != null && <span className="text-eyebrow">{fill(m.cost.per, { amount: formatMoney(perUnit, "RWF", locale) })}</span>}
     </span>
@@ -173,7 +173,7 @@ export function NoAccess() {
       <span className="flex size-14 items-center justify-center rounded-full bg-navy-100 text-navy-700"><Icon name="lock" size={24} aria-hidden /></span>
       <h1 className="text-h3">{m.noAccess.title}</h1>
       <p className="text-body text-fg-muted">{m.noAccess.body}</p>
-      <Link href={localHref(locale, "/")} className="inline-flex h-11 items-center rounded-md bg-navy-700 px-5 text-button text-white m-press">{m.noAccess.home}</Link>
+      <Link href={localHref(locale, "/")} className="inline-flex h-11 items-center rounded-none bg-navy-700 px-5 text-button text-white m-press">{m.noAccess.home}</Link>
     </div>
   );
 }

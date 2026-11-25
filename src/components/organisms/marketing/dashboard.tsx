@@ -36,7 +36,7 @@ export function DashboardView() {
   const me = useMktShell().data?.me;
   const s = q.data;
   const money = (n: number) => formatMoney(n, "RWF", locale);
-  const name = me?.name.split("")[0] ?? "";
+  const name = me?.name.split(" ")[0] ?? "";
 
   const tile = (label: string, k: Kpi | null, fmt: (n: number) => string, href: string, offNote?: string) => {
     if (!k) return <KpiTile label={label} value="—" note={offNote} tone="warning" icon="globe" />;

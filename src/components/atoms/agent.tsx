@@ -46,7 +46,7 @@ export function Countdown({
       <span
         aria-hidden
         className={cx(
-          "inline-block h-6 w-20 rounded-md m-shimmer",
+          "inline-block h-6 w-20 rounded-none m-shimmer",
           className,
         )}
       />
@@ -72,7 +72,7 @@ export function Countdown({
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap tabular m-tone",
+        "inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap tabular m-tone",
         // A missed deadline is urgent (red); only an expired offer is struck through.
         u === "expired" && kind === "due" ? URG.critical : URG[u],
         className,
@@ -108,7 +108,7 @@ export function MoneyStatePill({
   return (
     <span
       className={cx(
-        "inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap",
+        "inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap",
         m.cls,
         className,
       )}
@@ -264,7 +264,7 @@ export function ClearanceBar({
     <div
       role="status"
       className={cx(
-        "flex flex-wrap items-center gap-3 rounded-md p-4 m-rise",
+        "flex flex-wrap items-center gap-3 rounded-none p-4 m-rise",
         warn ? "bg-warning-bg text-fg" : "bg-bg-tint text-fg",
       )}
     >
@@ -314,7 +314,7 @@ export function Group({
           aria-expanded={open}
           aria-controls={`gb-${id}`}
           onClick={() => setOpen(!open)}
-          className="flex w-full items-center gap-2 rounded-md py-2 text-left text-label hover:bg-navy-50"
+          className="flex w-full items-center gap-2 rounded-none py-2 text-left text-label hover:bg-navy-50"
         >
           <span aria-hidden className={cx("size-2 rounded-full", dot)} />
           <span className={cx(tone === "danger" && "text-danger")}>
@@ -357,7 +357,7 @@ export function ChannelTag({ channel }: { channel: Channel }) {
   return (
     <span
       className={cx(
-        "inline-flex h-5 items-center gap-1 rounded-md px-2 text-[0.6875rem] font-medium",
+        "inline-flex h-5 items-center gap-1 rounded-none px-2 text-[0.6875rem] font-medium",
         cls,
       )}
       title={channel === "internal" ? a.channel.internalHint : undefined}
@@ -387,7 +387,7 @@ export function VersionChip({
   return (
     <span
       className={cx(
-        "inline-flex h-5 items-center gap-1 rounded-md px-2 text-[0.6875rem] font-medium tabular",
+        "inline-flex h-5 items-center gap-1 rounded-none px-2 text-[0.6875rem] font-medium tabular",
         cls,
       )}
     >
@@ -400,9 +400,9 @@ export function VersionChip({
 // ---------------------------------------------------------------- calendar
 export type EventKind = "deadline" | "appointment" | "field" | "obligation";
 const EV: Record<EventKind, { cls: string; shape: string }> = {
-  deadline: { cls: "bg-danger", shape: "rounded-md rotate-45" },
+  deadline: { cls: "bg-danger", shape: "rounded-none rotate-45" },
   appointment: { cls: "bg-navy-700", shape: "rounded-full" }, // data-round: event dot
-  field: { cls: "bg-warning", shape: "rounded-md" },
+  field: { cls: "bg-warning", shape: "rounded-none" },
   obligation: {
     cls: "bg-success",
     shape: "rounded-full ring-2 ring-success/30", // data-round: event dot
@@ -467,7 +467,7 @@ export function MaskedValue({
       </span>
       <button
         type="button"
-        className="rounded-md bg-navy-50 px-2 text-[0.6875rem] font-medium text-navy-700 hover:bg-navy-100"
+        className="rounded-none bg-navy-50 px-2 text-[0.6875rem] font-medium text-navy-700 hover:bg-navy-100"
         onClick={() => {
           if (!open) onReveal?.();
           setOpen(!open);
@@ -497,7 +497,7 @@ export function SkillLevel({
           <span
             key={i}
             className={cx(
-              "h-1.5 w-3 rounded-md",
+              "h-1.5 w-3 rounded-none",
               i <= n ? "bg-navy-700" : "bg-ink-200",
             )}
           />
@@ -505,7 +505,7 @@ export function SkillLevel({
       </span>
       <span className="text-small">{a.skill[level]}</span>
       {pending && (
-        <span className="rounded-md bg-warning-bg px-2 text-[0.6875rem] font-medium text-warning">
+        <span className="rounded-none bg-warning-bg px-2 text-[0.6875rem] font-medium text-warning">
           {a.skill.pending}
         </span>
       )}
@@ -560,7 +560,7 @@ export function SkeletonRows({
   return (
     <div aria-hidden className={cx("grid gap-3", className)}>
       {Array.from({ length: n }, (_, i) => (
-        <div key={i} className="h-14 rounded-md m-shimmer" />
+        <div key={i} className="h-14 rounded-none m-shimmer" />
       ))}
     </div>
   );

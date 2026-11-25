@@ -22,7 +22,7 @@ export function useRoleLabel() {
   return (r: string) => ((ROLES as readonly string[]).includes(r) ? t(`role.${r as Role}`) : r === "staff:admin" ? "Legacy admin (all roles)" : r);
 }
 
-const PILL = "inline-flex h-7 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap";
+const PILL = "inline-flex h-7 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap";
 
 // ---------------------------------------------------------------- SK1 identity
 export function RoleChip({ role, privileged, conflict, removable, onRemove, className }: {
@@ -115,7 +115,7 @@ export function PermCell({ value, scope, note, tabIndex = -1 }: { value: PermVal
         <span className={cx(value === "deny" && "sr-only")}>{scope && value === "allow" && scope !== "all" ? s.scope[scope] : s.perm[value]}</span>
       </span>
       {tip && (
-        <span id={id} role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1 w-max max-w-56 -translate-x-1/2 rounded-md bg-ink-900 px-2.5 py-1.5 text-eyebrow font-normal text-white opacity-0 transition-opacity duration-150 group-hover/cell:opacity-100 group-focus/cell:opacity-100">
+        <span id={id} role="tooltip" className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1 w-max max-w-56 -translate-x-1/2 rounded-none bg-ink-900 px-2.5 py-1.5 text-eyebrow font-normal text-white opacity-0 transition-opacity duration-150 group-hover/cell:opacity-100 group-focus/cell:opacity-100">
           {tip}
         </span>
       )}
@@ -213,19 +213,19 @@ export function SecretField({ name, last4, rotatedAt, lastTest, onSave, onTest, 
     <div className="grid gap-2.5">
       <p className="text-label">{name}</p>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex h-10 min-w-0 flex-1 items-center rounded-md border border-border bg-bg-subtle px-3 font-mono text-small tracking-wider tabular" aria-label={`${name} ending ${last4}`}>••••••••••{last4}</span>
-        <button type="button" disabled={disabled || mode !== "idle"} onClick={() => setMode("editing")} className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border-strong bg-white px-3.5 text-small m-press disabled:opacity-50"><Icon name="refresh" size={14} aria-hidden />{s.rotate}</button>
-        {onTest && <button type="button" disabled={disabled || mode !== "idle"} onClick={test} className="inline-flex h-10 items-center gap-1.5 rounded-md border border-border-strong bg-white px-3.5 text-small m-press disabled:opacity-50"><Icon name="zap" size={14} aria-hidden />{mode === "testing" ? s.testing : s.test}</button>}
+        <span className="inline-flex h-10 min-w-0 flex-1 items-center rounded-none border border-border bg-bg-subtle px-3 font-mono text-small tracking-wider tabular" aria-label={`${name} ending ${last4}`}>••••••••••{last4}</span>
+        <button type="button" disabled={disabled || mode !== "idle"} onClick={() => setMode("editing")} className="inline-flex h-10 items-center gap-1.5 rounded-none border border-border-strong bg-white px-3.5 text-small m-press disabled:opacity-50"><Icon name="refresh" size={14} aria-hidden />{s.rotate}</button>
+        {onTest && <button type="button" disabled={disabled || mode !== "idle"} onClick={test} className="inline-flex h-10 items-center gap-1.5 rounded-none border border-border-strong bg-white px-3.5 text-small m-press disabled:opacity-50"><Icon name="zap" size={14} aria-hidden />{mode === "testing" ? s.testing : s.test}</button>}
       </div>
       <p className="flex items-center gap-1.5 text-eyebrow text-fg-subtle tabular"><Icon name="clock" size={12} aria-hidden />{fill(s.lastRotated, { t: formatRelative(rotatedAt, locale) })}</p>
       {(mode === "editing" || mode === "saving") && (
-        <div className="grid gap-2 rounded-xl border border-border bg-white p-3 m-rise">
+        <div className="grid gap-2 rounded-none border border-border bg-white p-3 m-rise">
           <label htmlFor={id} className="text-small font-medium">{s.label}</label>
           <input id={id} type="password" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false} placeholder={s.paste} autoFocus
-            className="h-11 w-full rounded-md border border-border-strong px-3 font-mono text-small" />
+            className="h-11 w-full rounded-none border border-border-strong px-3 font-mono text-small" />
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => { setValue(""); setMode("idle"); }} className="h-9 rounded-md px-3 text-small hover:bg-bg-subtle">{s.cancel}</button>
-            <button type="button" onClick={save} disabled={!value.trim() || mode === "saving"} className="h-9 rounded-md bg-navy-700 px-4 text-small text-white m-press disabled:opacity-50">{s.save}</button>
+            <button type="button" onClick={() => { setValue(""); setMode("idle"); }} className="h-9 rounded-none px-3 text-small hover:bg-bg-subtle">{s.cancel}</button>
+            <button type="button" onClick={save} disabled={!value.trim() || mode === "saving"} className="h-9 rounded-none bg-navy-700 px-4 text-small text-white m-press disabled:opacity-50">{s.save}</button>
           </div>
         </div>
       )}
@@ -263,7 +263,7 @@ const clock = (ms: number) => {
 export function CountdownPill({ until, danger, className }: { until: string; danger?: boolean; className?: string }) {
   const s = useS().countdown;
   const now = useNow(1000);
-  if (!now) return <span aria-hidden className={cx("inline-block h-7 w-20 rounded-md m-shimmer", className)} />;
+  if (!now) return <span aria-hidden className={cx("inline-block h-7 w-20 rounded-none m-shimmer", className)} />;
   const ms = Date.parse(until) - now;
   const ended = ms <= 0;
   const tone = ended ? "bg-ink-100 text-fg-muted" : danger ? "bg-danger text-white" : ms < 15 * 60_000 ? "bg-warning-bg text-warning" : "bg-ink-100 text-ink-700";
@@ -282,13 +282,13 @@ export function LockedContent({ reason, compact }: { reason: "role" | "impersona
   const why = s[`${reason}Why` as const];
   if (compact)
     return (
-      <div className="flex items-start gap-3 rounded-xl border border-border bg-bg-subtle p-4">
+      <div className="flex items-start gap-3 rounded-none border border-border bg-bg-subtle p-4">
         <Icon name="lock" size={18} aria-hidden className="mt-0.5 shrink-0 text-fg-muted" />
         <p className="text-small"><span className="block font-medium">{s[reason]}</span><span className="text-fg-muted">{why}</span></p>
       </div>
     );
   return (
-    <section aria-labelledby="locked-h" className="relative grid place-items-center gap-4 overflow-hidden rounded-md border border-border bg-white px-6 py-14 text-center">
+    <section aria-labelledby="locked-h" className="relative grid place-items-center gap-4 overflow-hidden rounded-none border border-border bg-white px-6 py-14 text-center">
       <span aria-hidden className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(var(--color-border)_1px,transparent_1px),linear-gradient(90deg,var(--color-border)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(closest-side,black,transparent)]" />
       <SysArt name="lock" className="relative m-rise" />
       <h2 id="locked-h" className="relative max-w-md text-h3">{s[reason]}</h2>

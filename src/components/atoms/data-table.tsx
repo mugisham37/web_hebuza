@@ -51,9 +51,9 @@ export function DataTable<T>({ rows, columns, rowKey, loading, error, onRetry, p
   return (
     <div className="grid gap-3">
       {exportName && <div className="flex justify-end"><Button size="sm" variant="outline" onClick={exportCsv} disabled={!rows.length}>{t("common.export")} CSV</Button></div>}
-      <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+      <div className="overflow-x-auto rounded-none border border-border bg-surface">
         <table className="w-full min-w-[40rem] text-left text-body">
-          <thead className="border-b border-border bg-bg-subtle text-small text-fg-muted">
+          <thead className="border-b border-border bg-ink-100 text-small text-ink-700">
             <tr>
               {columns.map((c) => (
                 <th key={c.key} scope="col" className={cx("px-4 py-3 font-medium", c.className)} aria-sort={sort?.key === c.key ? (sort.dir === 1 ? "ascending" : "descending") : undefined}>

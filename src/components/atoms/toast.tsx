@@ -31,14 +31,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-0 z-50 max-lg:bottom-16 flex flex-col items-center gap-2 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-end">
         {items.map((t) => (
-          <div key={t.id} role={t.tone === "danger" ? "alert" : "status"} className={cx("pointer-events-auto flex w-full max-w-sm m-rise items-start gap-3 rounded-xl border border-l-[3px] border-border bg-surface p-4 text-fg shadow-lg", BAR[t.tone])}>
+          <div key={t.id} role={t.tone === "danger" ? "alert" : "status"} className={cx("pointer-events-auto flex w-full max-w-sm m-rise items-start gap-3 rounded-none border border-l-[3px] border-border bg-surface p-4 text-fg shadow-lg", BAR[t.tone])}>
             <span aria-hidden className={cx("mt-0.5 shrink-0", ICON_TONE[t.tone])}>{ICON[t.tone]}</span>
             <div className="flex-1">
               <p className="text-label">{t.title}</p>
               {t.body && <p className="mt-1 text-small text-fg-muted">{t.body}</p>}
             </div>
-            {t.action && <button type="button" onClick={() => { t.action?.onClick(); dismiss(t.id); }} className="inline-flex h-9 shrink-0 items-center rounded-md px-3 text-label text-link underline underline-offset-4 hover:bg-navy-50 hover:text-link-hover">{t.action.label}</button>}
-            <button type="button" aria-label="Dismiss" onClick={() => dismiss(t.id)} className="-my-1 inline-flex size-9 shrink-0 items-center justify-center rounded-md text-fg-subtle hover:bg-bg-subtle hover:text-fg">×</button>
+            {t.action && <button type="button" onClick={() => { t.action?.onClick(); dismiss(t.id); }} className="inline-flex h-9 shrink-0 items-center rounded-none px-3 text-label text-link underline underline-offset-4 hover:bg-navy-50 hover:text-link-hover">{t.action.label}</button>}
+            <button type="button" aria-label="Dismiss" onClick={() => dismiss(t.id)} className="-my-1 inline-flex size-9 shrink-0 items-center justify-center rounded-none text-fg-subtle hover:bg-bg-subtle hover:text-fg">×</button>
           </div>
         ))}
       </div>

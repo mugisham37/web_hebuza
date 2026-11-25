@@ -34,7 +34,7 @@ export function Tabs({ tabs, value, onChange, className }: {
             className={cx("-mb-px flex h-11 items-center gap-2 border-b-2 px-4 text-button whitespace-nowrap transition-colors", t.id === active ? "border-primary text-fg-heading" : "border-transparent text-fg-muted hover:border-border-strong hover:text-fg-heading")}
           >
             {t.label}
-            {t.count !== undefined && <span className={cx("rounded-md px-2 text-eyebrow tabular", t.id === active ? "bg-navy-50 text-navy-700" : "bg-ink-100 text-ink-700")}>{t.count}</span>}
+            {t.count !== undefined && <span className={cx("rounded-none px-2 text-eyebrow tabular", t.id === active ? "bg-navy-50 text-navy-700" : "bg-ink-100 text-ink-700")}>{t.count}</span>}
           </button>
         ))}
       </div>

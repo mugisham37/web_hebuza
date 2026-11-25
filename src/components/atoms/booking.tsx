@@ -42,7 +42,7 @@ const MODE_ICON: Record<Mode, IconName> = { office: "building", video: "laptop",
 export const ModeIcon = ({ mode, size = 16 }: { mode: Mode; size?: number }) => <Icon name={MODE_ICON[mode]} size={size} aria-hidden />;
 export function ModeTag({ mode }: { mode: Mode }) {
   const { c } = useBkg();
-  return <span className="inline-flex items-center gap-1.5 rounded-md bg-ink-100 px-2.5 py-1 text-eyebrow whitespace-nowrap"><ModeIcon mode={mode} size={13} />{c.modeShort[mode]}</span>;
+  return <span className="inline-flex items-center gap-1.5 rounded-none bg-ink-100 px-2.5 py-1 text-eyebrow whitespace-nowrap"><ModeIcon mode={mode} size={13} />{c.modeShort[mode]}</span>;
 }
 export function PriceBadge({ price, className }: { price: number; className?: string }) {
   const { c, locale } = useBkg();
@@ -85,7 +85,7 @@ export function HoldTimer({ expiresAt, online = true }: { expiresAt: string; onl
   const warn = left <= 120_000;
   const announce = left === 0 ? c.time.expired : warn ? `${c.time.hold} 2:00` : "";
   return (
-    <span role="timer" aria-live="off" className={cx("inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-small tabular-nums", left === 0 ? "bg-danger-bg text-danger" : warn ? "bg-warning-bg text-warning m-tone" : "bg-bg-tint text-fg", !online && "opacity-60")}>
+    <span role="timer" aria-live="off" className={cx("inline-flex items-center gap-1.5 rounded-none px-3 py-1 text-small tabular-nums", left === 0 ? "bg-danger-bg text-danger" : warn ? "bg-warning-bg text-warning m-tone" : "bg-bg-tint text-fg", !online && "opacity-60")}>
       <Icon name="clock" size={14} aria-hidden />
       {left === 0 ? c.time.expired : <>{c.time.hold} {mm}:{String(ss).padStart(2, "0")}</>}
       <span className="sr-only" aria-live="polite">{warn && ss === 0 ? announce : ""}</span>
@@ -144,20 +144,20 @@ export function AddToCalendar({ b }: { b: { reference: string; title: string; st
   };
   return (
     <div className="flex flex-wrap gap-2" role="group" aria-label={c.confirmed.addCal}>
-      <a href={googleCalLink(b)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-2 rounded-md border border-border-strong px-4 text-small font-medium hover:bg-navy-50"><Icon name="calendar" size={15} aria-hidden />{c.confirmed.google}</a>
-      <button type="button" onClick={ics} className="inline-flex h-9 items-center gap-2 rounded-md border border-border-strong px-4 text-small font-medium hover:bg-navy-50"><Icon name="file" size={15} aria-hidden />{c.confirmed.ics}</button>
+      <a href={googleCalLink(b)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-2 rounded-none border border-border-strong px-4 text-small font-medium hover:bg-navy-50"><Icon name="calendar" size={15} aria-hidden />{c.confirmed.google}</a>
+      <button type="button" onClick={ics} className="inline-flex h-9 items-center gap-2 rounded-none border border-border-strong px-4 text-small font-medium hover:bg-navy-50"><Icon name="file" size={15} aria-hidden />{c.confirmed.ics}</button>
     </div>
   );
 }
 export function PolicyNote() {
   const { c } = useBkg();
-  return <p className="flex gap-2 rounded-md bg-ink-100 p-3 text-small text-fg-muted"><Icon name="shield" size={16} className="mt-0.5 shrink-0" aria-hidden />{fill(c.manage.policy, { h: 12 })}</p>;
+  return <p className="flex gap-2 rounded-none bg-ink-100 p-3 text-small text-fg-muted"><Icon name="shield" size={16} className="mt-0.5 shrink-0" aria-hidden />{fill(c.manage.policy, { h: 12 })}</p>;
 }
 export function OfflineBanner({ text }: { text?: string }) {
   const { c } = useBkg();
   const online = useOnline();
   if (online) return null;
-  return <p role="status" className="flex items-center gap-2 rounded-md bg-warning-bg px-4 py-2.5 text-small text-warning"><Icon name="globe" size={16} aria-hidden />{text ?? c.common.offline}</p>;
+  return <p role="status" className="flex items-center gap-2 rounded-none bg-warning-bg px-4 py-2.5 text-small text-warning"><Icon name="globe" size={16} aria-hidden />{text ?? c.common.offline}</p>;
 }
 const TURNSTILE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 type TurnstileApi = { render: (el: HTMLElement, o: Record<string, unknown>) => string; remove: (id: string) => void };
@@ -187,7 +187,7 @@ export function Captcha({ value, onChange, error }: { value: string; onChange: (
     return () => { if (id) api?.remove(id); };
   }, [locale, onChange]);
   return (
-    <div className={cx("rounded-xl border p-3", error ? "border-danger" : "border-border")}>
+    <div className={cx("rounded-none border p-3", error ? "border-danger" : "border-border")}>
       <div ref={box} aria-label={c.details.captcha} />
       <p id="captcha-hint" className="mt-1 text-eyebrow text-fg-subtle">{c.details.captchaHint}</p>
       {error && <p className="mt-1 text-small text-danger">{error}</p>}
@@ -198,7 +198,7 @@ export function Captcha({ value, onChange, error }: { value: string; onChange: (
 // ---------------------------------------------------------------- AI atoms
 export function AiLabel({ kind = "generated" }: { kind?: "generated" | "assistant" }) {
   const { c } = useBkg();
-  return <span className="inline-flex items-center gap-1 rounded-md bg-bg-tint px-2 py-0.5 text-eyebrow text-navy-800"><Icon name="sparkle" size={12} aria-hidden />{kind === "generated" ? c.staff.ai : c.aia.sub}</span>;
+  return <span className="inline-flex items-center gap-1 rounded-none bg-bg-tint px-2 py-0.5 text-eyebrow text-navy-800"><Icon name="sparkle" size={12} aria-hidden />{kind === "generated" ? c.staff.ai : c.aia.sub}</span>;
 }
 export function TypingDots() {
   const { c } = useBkg();
@@ -217,14 +217,14 @@ export function Citations({ items }: { items: Citation[] }) {
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-label={c.aia.sources}>
       {shown.map((s) => (
-        <a key={s.id} href={s.url.startsWith("/") ? s.url : "#"} className="inline-flex max-w-full items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1 text-eyebrow hover:border-ink-400">
+        <a key={s.id} href={s.url.startsWith("/") ? s.url : "#"} className="inline-flex max-w-full items-center gap-1.5 rounded-none border border-border bg-white px-2.5 py-1 text-eyebrow hover:border-ink-400">
           <Icon name="file" size={12} aria-hidden />
           <span className="truncate">{s.title}</span>
           <span className="text-fg-subtle">· {fill(c.aia.updated, { date: formatDate(s.updatedAt, locale) })}</span>
-          {s.sourceLang !== locale && s.sourceLang === "en" && <span className="rounded-md bg-ink-100 px-1.5">{c.aia.sourceEn}</span>}
+          {s.sourceLang !== locale && s.sourceLang === "en" && <span className="rounded-none bg-ink-100 px-1.5">{c.aia.sourceEn}</span>}
         </a>
       ))}
-      {!all && items.length > 3 && <button type="button" onClick={() => setAll(true)} className="rounded-md bg-ink-100 px-2.5 py-1 text-eyebrow">{fill(c.aia.moreSources, { n: items.length - 3 })}</button>}
+      {!all && items.length > 3 && <button type="button" onClick={() => setAll(true)} className="rounded-none bg-ink-100 px-2.5 py-1 text-eyebrow">{fill(c.aia.moreSources, { n: items.length - 3 })}</button>}
     </div>
   );
 }
@@ -255,7 +255,7 @@ export const IllusKbEmpty = ({ className }: { className?: string }) => (
 /** Centred illustrated state used by every "nothing / not allowed / resting" panel. */
 export function StatePanel({ art, title, body, children, tone = "plain" }: { art?: ReactNode; title: ReactNode; body?: ReactNode; children?: ReactNode; tone?: "plain" | "danger" }) {
   return (
-    <div role={tone === "danger" ? "alert" : undefined} className={cx("grid place-items-center gap-3 rounded-md border px-6 py-10 text-center m-rise", tone === "danger" ? "border-danger/25 bg-danger-bg" : "border-dashed border-border-strong bg-white")}>
+    <div role={tone === "danger" ? "alert" : undefined} className={cx("grid place-items-center gap-3 rounded-none border px-6 py-10 text-center m-rise", tone === "danger" ? "border-danger/25 bg-danger-bg" : "border-dashed border-border-strong bg-white")}>
       {art}
       <p className="text-card-title">{title}</p>
       {body && <p className="max-w-md text-small text-fg-muted">{body}</p>}
@@ -264,5 +264,5 @@ export function StatePanel({ art, title, body, children, tone = "plain" }: { art
   );
 }
 export function SkeletonList({ n = 3, h = "h-20" }: { n?: number; h?: string }) {
-  return <div className="grid gap-3" aria-busy="true">{Array.from({ length: n }, (_, i) => <div key={i} className={cx("rounded-md m-shimmer", h)} />)}</div>;
+  return <div className="grid gap-3" aria-busy="true">{Array.from({ length: n }, (_, i) => <div key={i} className={cx("rounded-none m-shimmer", h)} />)}</div>;
 }

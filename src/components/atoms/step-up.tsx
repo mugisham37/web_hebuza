@@ -158,7 +158,7 @@ export function StepUpDialog({
           submit();
         }}
       >
-        <p className="flex items-start gap-2 rounded-md bg-bg-tint p-3 text-small">
+        <p className="flex items-start gap-2 rounded-none bg-bg-tint p-3 text-small">
           <Icon
             name="lock"
             size={16}

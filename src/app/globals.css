@@ -267,45 +267,6 @@
   --info-bg: var(--color-sky-50);
 }
 
-/* ---- Dashboard theme (every signed-in workspace; set on the shell root). Public pages stay sharp + brand.
-   Rounded corners come from the radius tokens: 0 on the public site, real values here, so `rounded-*` classes only
-   round inside dashboards. Palette: black frame + sidebar, gold accent, light-blue canvas (ramp-1), white cards. ---- */
-.theme-app {
-  --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
-  --radius-2xl: 24px; --radius-3xl: 28px; --radius-4xl: 32px; --radius-pill: 9999px;
-  --app-frame: var(--color-ink-950);
-  --app-canvas: var(--color-ramp-1);
-  --bg: var(--color-ramp-1);
-  --bg-subtle: color-mix(in oklab, var(--color-ramp-1) 45%, var(--color-white));
-  --bg-tint: color-mix(in oklab, var(--color-ramp-1) 60%, var(--color-white));
-  --surface: var(--color-white);
-  --surface-raised: var(--color-white);
-  --border: color-mix(in oklab, var(--color-ink-950) 9%, transparent);
-  --border-strong: color-mix(in oklab, var(--color-ink-950) 18%, transparent);
-  --fg: var(--color-ink-900);
-  --fg-heading: var(--color-ink-950);
-  --secondary: var(--color-ink-950);
-  --secondary-hover: var(--color-ink-800);
-  --secondary-active: var(--color-ink-700);
-  --on-secondary: var(--color-white);
-  --link: var(--color-navy-700);
-  --focus: var(--color-ink-950);
-  --shadow-sm: 0 1px 2px rgb(9 12 20 / 0.04);
-  --shadow-md: 0 10px 28px -12px rgb(9 12 20 / 0.16);
-  --shadow-lg: 0 24px 48px -18px rgb(9 12 20 / 0.22);
-  --font-sans: var(--font-outfit), "Outfit Placeholder", system-ui, sans-serif;
-  --font-display: var(--font-outfit), "Outfit Placeholder", system-ui, sans-serif;
-  font-family: var(--font-sans);
-}
-/* Everything interactive and every floating layer is rounded; specificity 0 (:where) so a component's own class wins. */
-.theme-app :where(button, a[class*="h-"][class*="px-"], select, textarea, input:not([type="checkbox"], [type="radio"], [type="range"])) { border-radius: var(--radius-md); }
-.theme-app :where(input[type="checkbox"]) { border-radius: var(--radius-xs); }
-.theme-app :where([role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"], [role="tooltip"], [role="status"][class*="shadow"]) { border-radius: var(--radius-2xl); }
-/* Cards / panels: the bordered white boxes used across every workspace. */
-.theme-app :where([class~="border"][class~="bg-surface"], [class~="border"][class~="bg-white"], [class~="border"][class~="bg-bg"], [class~="border"][class~="bg-bg-subtle"], [class~="border"][class~="bg-tint"], [class~="shadow-md"], [class~="shadow-lg"]) { border-radius: var(--radius-xl); }
-.theme-app :where(table) { border-collapse: separate; border-spacing: 0; }
-.theme-app :where([role="dialog"] [role="dialog"]) { border-radius: var(--radius-xl); }
-
 /* Dark sections (D5). Full dark mode later adds :root[data-theme=dark] here (phase 7). */
 .theme-dark {
   color-scheme: dark;

@@ -19,10 +19,10 @@ export function Dialog({ open, onClose, title, description, children, footer, si
   }, [open]);
 
   const shape = side === "right"
-    ? "ml-auto mr-0 h-dvh max-h-dvh w-full max-w-md rounded-l-3xl border-l border-border"
+    ? "ml-auto mr-0 h-dvh max-h-dvh w-full max-w-md rounded-none border-l border-border"
     : side === "bottom"
-      ? "mt-auto mb-0 w-full max-w-full rounded-t-3xl border-t border-border"
-      : "m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-border";
+      ? "mt-auto mb-0 w-full max-w-full rounded-none border-t border-border"
+      : "m-auto w-[calc(100%-2rem)] max-w-lg rounded-none border border-border";
 
   return (
     <dialog
@@ -39,7 +39,7 @@ export function Dialog({ open, onClose, title, description, children, footer, si
             <h2 id={titleId} className="text-card-title text-fg-heading">{title}</h2>
             {description && <p className="mt-1 text-small text-fg-subtle">{description}</p>}
           </div>
-          <button type="button" onClick={onClose} aria-label={t("common.close")} className="-m-2 inline-flex size-10 items-center justify-center rounded-md text-fg-muted transition-colors hover:bg-navy-50 hover:text-fg-heading">
+          <button type="button" onClick={onClose} aria-label={t("common.close")} className="-m-2 inline-flex size-10 items-center justify-center rounded-none text-fg-muted transition-colors hover:bg-navy-50 hover:text-fg-heading">
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden><path d="M6 6l12 12M18 6L6 18" /></svg>
           </button>
         </header>

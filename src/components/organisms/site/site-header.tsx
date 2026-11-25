@@ -154,7 +154,7 @@ export function SiteHeader({ families, total, search, copy, links = [], mobileLi
             <Link href={L("/track")} className="hidden h-10 items-center border-[1.5px] border-secondary px-4 text-button text-secondary hover:bg-navy-50 md:inline-flex">{t("nav.track").split(" ")[0]}</Link>
             {status === "authenticated" && user
               ? <ButtonLink href={L(homeFor(user.roles))} dots>{t("nav.dashboard")}</ButtonLink>
-              : <ButtonLink href={L("/services")} dots className="max-sm:px-4">{t("nav.start")}</ButtonLink>}
+              : <ButtonLink href={L("/login")} dots className="max-sm:px-4">{t("nav.login")}</ButtonLink>}
             <button type="button" aria-label={t("common.menu")} aria-expanded={sheet} aria-controls="mobile-sheet" onClick={() => setSheet(true)}
               className="flex size-11 items-center justify-center text-navy-700 hover:bg-navy-50 lg:hidden"><Icon name="menu" size={24} /></button>
           </div>

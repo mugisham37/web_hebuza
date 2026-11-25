@@ -36,11 +36,7 @@
     "help": "Help",
     "comingSoon": "Coming soon",
     "reveal": "Reveal",
-    "signedInAs": "Signed in as {name}",
-    "previous": "Previous",
-    "ofN": "{i} of {n}",
-    "showMore": "Show more",
-    "showLess": "Show less"
+    "signedInAs": "Signed in as {name}"
   },
   "nav": {
     "services": "Services",

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { TermsGate } from "@/components/organisms/auth/terms-gate";
 import type { Metadata, Viewport } from "next";
-import { Archivo, Host_Grotesk, Inter, Outfit } from "next/font/google";
+import { Archivo, Host_Grotesk, Inter } from "next/font/google";
 import { locales } from "@/shared/i18n/config";
 import { getI18n } from "@/lib/i18n/server";
 import { I18nProvider } from "@/lib/i18n/provider";
@@ -14,8 +14,6 @@ import "../globals.css";
 
 const hostGrotesk = Host_Grotesk({ variable: "--font-host-grotesk", subsets: ["latin", "latin-ext"], weight: ["400", "500", "700"], style: ["normal", "italic"], display: "swap" });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin", "latin-ext"], display: "swap" });
-// Dashboards (.theme-app) only; not preloaded so public pages never fetch it.
-const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700"], display: "swap", preload: false });
 const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"], weight: "900", style: ["normal", "italic"], display: "swap", preload: false });
 
 export function generateStaticParams() {
@@ -50,7 +48,7 @@ export const viewport: Viewport = {
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale, dict } = await getI18n(params);
   return (
-    <html lang={locale} className={`${hostGrotesk.variable} ${inter.variable} ${archivo.variable} ${outfit.variable}`}>
+    <html lang={locale} className={`${hostGrotesk.variable} ${inter.variable} ${archivo.variable}`}>
       <body>
         <I18nProvider locale={locale} dict={dict}>
           {/* Shell chrome reads usePathname(), which suspends on [param] routes without generateStaticParams; this boundary lets those prerender. */}

@@ -18,7 +18,7 @@ type Tone = keyof typeof TONE_CLS;
 
 export function Pill({ tone, icon, children, className, title }: { tone: Tone; icon?: IconName; children: ReactNode; className?: string; title?: string }) {
   return (
-    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-pill px-2.5 text-eyebrow font-medium whitespace-nowrap m-tone", TONE_CLS[tone], className)}>
+    <span title={title} className={cx("inline-flex h-6 items-center gap-1.5 rounded-none px-2.5 text-eyebrow font-medium whitespace-nowrap m-tone", TONE_CLS[tone], className)}>
       {icon && <Icon name={icon} size={12} aria-hidden />}
       {children}
     </span>
@@ -129,9 +129,9 @@ export function BudgetBar({ used, budget, adding = 0, name, compact }: { used: n
   return (
     <div className="grid gap-1">
       <div role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(pct, 100)} aria-valuetext={fill(p.budget.meter, { pct, name })}
-        className={cx("relative overflow-hidden rounded-md bg-ink-100", compact ? "h-1.5" : "h-2.5")}>
-        <span className={cx("absolute inset-y-0 left-0 rounded-md m-grow", fillCls)} style={{ width: w(used) }} />
-        {adding > 0 && <span className={cx("absolute inset-y-0 rounded-md opacity-50 m-grow", fillCls)} style={{ left: w(used), width: `calc(${w(used + adding)} - ${w(used)})` }} />}
+        className={cx("relative overflow-hidden rounded-none bg-ink-100", compact ? "h-1.5" : "h-2.5")}>
+        <span className={cx("absolute inset-y-0 left-0 rounded-none m-grow", fillCls)} style={{ width: w(used) }} />
+        {adding > 0 && <span className={cx("absolute inset-y-0 rounded-none opacity-50 m-grow", fillCls)} style={{ left: w(used), width: `calc(${w(used + adding)} - ${w(used)})` }} />}
       </div>
       {!compact && (
         <p className="flex flex-wrap justify-between gap-x-3 text-eyebrow text-fg-muted tabular">

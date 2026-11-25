@@ -36,11 +36,7 @@
     "help": "Aide",
     "comingSoon": "Bientôt disponible",
     "reveal": "Afficher",
-    "signedInAs": "Connecté en tant que {name}",
-    "previous": "Précédent",
-    "ofN": "{i} sur {n}",
-    "showMore": "Afficher plus",
-    "showLess": "Afficher moins"
+    "signedInAs": "Connecté en tant que {name}"
   },
   "nav": {
     "services": "Services",
