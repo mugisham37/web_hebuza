@@ -135,7 +135,7 @@ function Library() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[15rem_minmax(0,1fr)]">
-      <nav aria-label={c.docs.categories} className="min-w-0">
+      <nav data-guide="client-docs-cats" aria-label={c.docs.categories} className="min-w-0">
         <h2 className="text-fg-heading mb-3 hidden text-card-title lg:block">
           {c.docs.categories}
         </h2>
@@ -162,6 +162,7 @@ function Library() {
             <li className="shrink-0 lg:mt-3">
               <button
                 type="button"
+                data-guide="client-docs-expiring"
                 aria-pressed={cat === "expiring"}
                 onClick={() => setCat("expiring")}
                 className={cx(
@@ -178,7 +179,7 @@ function Library() {
       </nav>
 
       <div className="grid min-w-0 content-start gap-4">
-        <div className="flex flex-wrap items-center gap-3">
+        <div data-guide="client-docs-toolbar" className="flex flex-wrap items-center gap-3">
           <Segmented
             label={c.docs.view}
             value={view}
@@ -188,7 +189,7 @@ function Library() {
               { value: "list", label: c.docs.list },
             ]}
           />
-          <label className="relative min-w-0 flex-1 basis-56">
+          <label data-guide="client-docs-search" className="relative min-w-0 flex-1 basis-56">
             <span className="sr-only">{c.common.search}</span>
             <Icon
               name="search"
@@ -204,7 +205,7 @@ function Library() {
               className="h-11 w-full border border-border bg-surface pr-4 pl-11 text-body focus:border-secondary focus:outline-none"
             />
           </label>
-          <Button dots onClick={() => setUploading(true)}>
+          <Button dots data-guide="vault-upload" onClick={() => setUploading(true)}>
             {c.docs.upload}
           </Button>
         </div>
@@ -235,6 +236,7 @@ function Library() {
             {shown.map((d) => (
               <li key={d.documentId}>
                 <button
+                  data-guide="client-docs-item"
                   type="button"
                   onClick={() => setOpenId(d.documentId)}
                   className="group grid h-full w-full content-start gap-3 border border-border bg-surface p-4 text-left transition-colors hover:border-navy-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-focus"
@@ -445,7 +447,7 @@ function UploadDialog({
               accept="application/pdf,image/jpeg,image/png,image/heic,.docx,.xlsx"
               onFiles={(f) => f[0] && send(f[0])}
             />
-            <p className="text-small text-fg-subtle">{c.docs.drop.hint}</p>
+            <p data-guide="client-docs-hint" className="text-small text-fg-subtle">{c.docs.drop.hint}</p>
           </>
         )}
       </div>
@@ -661,6 +663,7 @@ function DocDrawer({
             e.preventDefault();
             saveExpiry.mutate(expiryVal || null);
           }}
+          data-guide="client-docs-expiry"
         >
           <Field label={d.expiry} hint={d.expiryHint}>
             {({ id, describedBy }) => (
@@ -686,6 +689,7 @@ function DocDrawer({
 
         <div className="mt-6 grid gap-2 border-t border-border pt-5">
           <Button
+            data-guide="client-docs-delete"
             variant="outline"
             disabled={locked}
             onClick={() => setConfirm(true)}

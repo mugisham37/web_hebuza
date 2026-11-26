@@ -49,7 +49,7 @@ export function ReceivablesView() {
   const rows = (d?.clients ?? []).filter((r) => (!bucket || r.buckets[bucket] > 0) && (!search || r.name.toLowerCase().includes(search.toLowerCase())));
   const over90 = d?.clients.filter((x) => x.buckets["90_plus"] > 0).length ?? 0;
   // Display ratio only (not money): share of the receivable that is overdue 31+.
-  const pct = d && d.total ? new Intl.NumberFormat(locale, { style: "percent" }).format(d.overdue31 / d.total) : "—";
+  const pct = d && d.total ? new Intl.NumberFormat(locale, { style: "percent" }).format(d.overdue31 / d.total) : "";
 
   const cols: OpsColumn<ArClient>[] = [
     { key: "client", label: c.cols.client, wrap: true, sort: (r) => r.name, cell: (r) => (
@@ -58,14 +58,14 @@ export function ReceivablesView() {
     { key: "outstanding", label: c.cols.outstanding, align: "right", sort: (r) => r.outstanding, cell: (r) => <Amount value={r.outstanding} className="font-semibold" /> },
     ...BUCKETS.map((b): OpsColumn<ArClient> => ({
       key: b, label: f.bucket[b], align: "right", card: false, sort: (r) => r.buckets[b],
-      cell: (r) => (r.buckets[b] ? <Amount value={r.buckets[b]} size="sm" className={b === "90_plus" ? "text-danger" : undefined} /> : <span className="text-fg-subtle">—</span>),
+      cell: (r) => (r.buckets[b] ? <Amount value={r.buckets[b]} size="sm" className={b === "90_plus" ? "text-danger" : undefined} /> : <span className="text-fg-subtle"></span>),
     })),
     { key: "oldest", label: c.cols.oldest, sort: (r) => r.oldestDays, cell: (r) => (
       <span className="flex items-center gap-2"><AgeingBucketChip bucket={r.bucket} />{r.oldestDays > 0 && <span className="text-eyebrow text-fg-subtle tabular">{fill(c.days, { n: r.oldestDays })}</span>}</span>
     ) },
-    { key: "credit", label: c.cols.credit, align: "right", cell: (r) => (r.credit ? <Amount value={r.credit} credit size="sm" /> : <span className="text-fg-subtle">—</span>) },
+    { key: "credit", label: c.cols.credit, align: "right", cell: (r) => (r.credit ? <Amount value={r.credit} credit size="sm" /> : <span className="text-fg-subtle"></span>) },
     { key: "reminder", label: c.cols.reminder, cell: (r) => (r.lastReminder ? <span className="text-small">{formatRelative(r.lastReminder.at, locale)} · {c.rem.channels[r.lastReminder.channel]}</span> : <span className="text-small text-fg-subtle">{c.drawer.noReminder}</span>) },
-    { key: "promise", label: c.cols.promise, wrap: true, cell: (r) => (r.promise ? <span className="inline-flex items-center gap-1 bg-navy-50 px-2 py-0.5 text-eyebrow text-navy-800"><Icon name="calendar" size={12} aria-hidden />{formatDate(r.promise.at, locale)}</span> : <span className="text-fg-subtle">—</span>) },
+    { key: "promise", label: c.cols.promise, wrap: true, cell: (r) => (r.promise ? <span className="inline-flex items-center gap-1 bg-navy-50 px-2 py-0.5 text-eyebrow text-navy-800"><Icon name="calendar" size={12} aria-hidden />{formatDate(r.promise.at, locale)}</span> : <span className="text-fg-subtle"></span>) },
   ];
 
   const emptyCopy = !d?.clients.length ? c.empty : search ? c.emptySearch : c.emptyBucket;
@@ -196,7 +196,7 @@ function Overview({ d, online, onRemind }: { d: ArClientDetail; online: boolean;
         </div>
         <div className="border border-border p-3 max-sm:col-span-2">
           <dt className="text-eyebrow text-fg-muted">{last ? c.drawer.lastInvoice : c.drawer.credit}</dt>
-          <dd className="mt-1">{last ? <span className="grid"><span className="text-small font-medium">{last.issuedAt ? formatDate(last.issuedAt, locale) : "—"}</span><Amount value={last.totals.total} size="sm" /></span> : <Amount value={s.credit} credit />}</dd>
+          <dd className="mt-1">{last ? <span className="grid"><span className="text-small font-medium">{last.issuedAt ? formatDate(last.issuedAt, locale) : ""}</span><Amount value={last.totals.total} size="sm" /></span> : <Amount value={s.credit} credit />}</dd>
         </div>
       </dl>
       <div style={{ ["--i" as string]: 1 }}><AgeingBar buckets={s.buckets} /></div>
@@ -215,7 +215,7 @@ function Overview({ d, online, onRemind }: { d: ArClientDetail; online: boolean;
       </dl>
       {oldest && (
         <div className="grid gap-2" style={{ ["--i" as string]: 5 }}>
-          <Button onClick={() => onRemind(oldest)} disabled={!online} className="w-fit m-press" dots>
+          <Button data-guide="finance-rcv-remind" onClick={() => onRemind(oldest)} disabled={!online} className="w-fit m-press" dots>
             <Icon name="message" size={16} aria-hidden />{c.drawer.remind} · {oldest.no}
           </Button>
           {!online && <Reason>{c.offline}</Reason>}
@@ -239,7 +239,7 @@ function InvoiceList({ d, online, onRemind }: { d: ArClientDetail; online: boole
             <FinStatus status={i.overdue ? "overdue" : i.status} kind="invoice" />
           </div>
           <dl className="grid grid-cols-3 gap-2 text-small">
-            <div><dt className="text-eyebrow text-fg-subtle">{c.inv.due}</dt><dd className="tabular">{i.dueAt ? formatDate(i.dueAt, locale) : "—"}</dd></div>
+            <div><dt className="text-eyebrow text-fg-subtle">{c.inv.due}</dt><dd className="tabular">{i.dueAt ? formatDate(i.dueAt, locale) : ""}</dd></div>
             <div><dt className="text-eyebrow text-fg-subtle">{c.inv.total}</dt><dd><Amount value={i.totals.total} size="sm" /></dd></div>
             <div><dt className="text-eyebrow text-fg-subtle">{c.inv.balance}</dt><dd><Amount value={i.balanceDue} size="sm" className="font-semibold" /></dd></div>
           </dl>
@@ -346,7 +346,7 @@ function ReminderComposer({ invoice, client, onClose }: { invoice: ArInvoice; cl
   const [tpl, setTpl] = useState<Tpl>(invoice.days > 60 ? "final" : invoice.days > 30 ? "firm" : "standard");
   const [channel, setChannel] = useState<Channel>(firstChannel);
   const compose = (l: Locale, t: Tpl) => fill(REMINDER_TEMPLATES[l][t], {
-    client: client.name, no: invoice.no ?? "", amount: formatMoney(invoice.balanceDue, "RWF", l), due: invoice.dueAt ? formatDate(invoice.dueAt, l) : "—",
+    client: client.name, no: invoice.no ?? "", amount: formatMoney(invoice.balanceDue, "RWF", l), due: invoice.dueAt ? formatDate(invoice.dueAt, l) : "",
   });
   const [text, setText] = useState(() => compose(client.language, tpl));
   const [err, setErr] = useState<string | null>(null);
@@ -367,7 +367,7 @@ function ReminderComposer({ invoice, client, onClose }: { invoice: ArInvoice; cl
 
   return (
     <Dialog open onClose={onClose} className="max-w-3xl" title={c.rem.title}
-      description={fill(c.rem.sub, { no: invoice.no ?? "", amount: formatMoney(invoice.balanceDue, "RWF", locale), d: invoice.dueAt ? formatDate(invoice.dueAt, locale) : "—" })}
+      description={fill(c.rem.sub, { no: invoice.no ?? "", amount: formatMoney(invoice.balanceDue, "RWF", locale), d: invoice.dueAt ? formatDate(invoice.dueAt, locale) : "" })}
       footer={<>
         <Button variant="outline" onClick={onClose}>{f_cancel(locale)}</Button>
         <Button onClick={send} loading={m.isPending} disabled={!online} dots className="m-press">{c.rem.send}</Button>

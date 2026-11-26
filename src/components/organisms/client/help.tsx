@@ -66,7 +66,7 @@ export function HelpView() {
         }
       />
       <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
-        <section aria-labelledby="faq-h" className="min-w-0">
+        <section data-guide="client-help-faq" aria-labelledby="faq-h" className="min-w-0">
           <Field label={h.search}>
             {({ id }) => (
               <div className="relative">
@@ -110,7 +110,7 @@ export function HelpView() {
           )}
           <Tickets />
         </section>
-        <aside className="grid content-start gap-5">
+        <aside data-guide="client-help-contact" className="grid content-start gap-5">
           <Panel icon="message" title={h.contact} body={h.contactLede}>
             <div className="grid gap-2">
               <ButtonLink
@@ -189,7 +189,7 @@ function Tickets() {
         <h2 id="tk-h" className="text-fg-heading text-h3">
           {h.tickets}
         </h2>
-        <Button size="sm" dots onClick={() => setOpen(true)}>
+        <Button data-guide="client-help-newticket" size="sm" dots onClick={() => setOpen(true)}>
           {h.newTicket}
         </Button>
       </div>

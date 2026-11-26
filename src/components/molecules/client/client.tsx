@@ -130,6 +130,7 @@ export function SettingsFrame({ children }: { children: React.ReactNode }) {
       <PageHead title={c.settings.title} lede={c.settings.lede} />
       <div className="grid gap-6 lg:grid-cols-[13rem_1fr] lg:gap-10">
         <nav
+          data-guide="client-settings-nav"
           aria-label={c.settings.title}
           className="overflow-x-auto lg:overflow-visible"
         >
@@ -253,7 +254,7 @@ export function NeedRow({
             onChange={(e) => upload(e.target.files?.[0])}
             aria-label={`${c.dash.upload}: ${need.label}`}
           />
-          <Button
+          <Button data-guide="need-upload"
             size="sm"
             loading={busy}
             onClick={() => file.current?.click()}

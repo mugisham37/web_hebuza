@@ -559,10 +559,10 @@ function StepReview({ d, set, c, msg, go }: StepProps & { go: (s: ApplyStep) => 
     () => [
       ["profile", [d.kind === "firm" ? d.firmName : null, d.name, d.email, d.phone && `+250 ${d.phone}`].filter(Boolean).join(" · ")],
       ["services", d.services.map(name).join(", ")],
-      ["rates", d.services.map((s) => `${name(s)}: ${d.rates[s]?.value ?? "—"} ${d.rates[s] ? c.f.rateMode[d.rates[s].mode] : ""}`).join(" · ")],
+      ["rates", d.services.map((s) => `${name(s)}: ${d.rates[s]?.value ?? ""} ${d.rates[s] ? c.f.rateMode[d.rates[s].mode] : ""}`).join(" · ")],
       ["availability", `${d.grid.length} × · ${c.f.maxJobs}: ${d.maxJobs} · ${d.start}`],
       ["registrations", [d.body && (d.body === "other" ? d.bodyOther : c.f.bodies[d.body as "icpar"]), d.regNumber, `${d.files.length} file(s)`].filter(Boolean).join(" · ")],
-      ["references", d.refs.length ? d.refs.map((r) => r.name).join(", ") : "—"],
+      ["references", d.refs.length ? d.refs.map((r) => r.name).join(", ") : ""],
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [d, names, c],
@@ -583,7 +583,7 @@ function StepReview({ d, set, c, msg, go }: StepProps & { go: (s: ApplyStep) => 
                   {c.f.edit}
                 </button>
               </dd>
-              <dd className="mt-1 text-small break-words text-fg-muted">{v || "—"}</dd>
+              <dd className="mt-1 text-small break-words text-fg-muted">{v || ""}</dd>
             </div>
           );
         })}

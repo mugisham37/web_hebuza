@@ -4,10 +4,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { hasLocale, matchLocale, LOCALE_COOKIE } from "@/shared/i18n/config";
 import { PUBLIC_PLANNED, PUBLIC_PREFIXES } from "@/lib/routes";
 import type { Redirect } from "@/shared/marketing/types";
-import { importSPKI, jwtVerify, decodeJwt, type JWTPayload } from "jose";
+import { accessClaims, ACCESS_COOKIE } from "@/lib/auth/claims";
 import { normalizeRoles, workspaceForPath, mayEnter, homeFor } from "@/shared/auth/roles";
 
-const ACCESS_COOKIE = "hebuza_access";
 const REFRESH_COOKIE = "hebuza_refresh";
 /** Old app paths kept working for one release (spec/02 §5). */
 /** First path segments that can match a route. Root loading.tsx starts streaming before notFound() (soft 404), so unknown paths 404 here via the prerendered /_not-found (a dynamic target 200s on first render).
@@ -16,7 +15,7 @@ const KNOWN = new Set(["", "agent", "billing", "bookings", "claim", "dashboard",
 /** Static-content slugs: unknown ones 404 here (PPR serves a 200 shell for unknown params before notFound() can run).
  * Live slugs + CMS redirects come from GET /api/content/manifest (60 s memo). Until one load succeeds the slug guard is
  * off (pages still notFound() themselves). Service and category slugs are not checked: the live catalogue changes them. */
-const CMS_ROUTE: Record<string, string> = { knowledge: "guide", updates: "regulatory_update", campaign: "landing_page", legal: "legal_doc" };
+const CMS_ROUTE: Record<string, string> = { updates: "regulatory_update", campaign: "landing_page", legal: "legal_doc" };
 let live: { at: number; slugs: Record<string, Set<string>>; redirects: Pick<Redirect, "from" | "to" | "code">[] } = { at: 0, slugs: {}, redirects: [] };
 async function cms() {
   if (Date.now() - live.at < 60_000 || !process.env.API_URL) return live;
@@ -33,7 +32,7 @@ async function cms() {
   return live;
 }
 /** Non-locale handlers (preview, tracked links, hooks, dev CMS) bypass locale routing. */
-const RAW = new Set(["preview", "hooks", "c", "r", "health"]);
+const RAW = new Set(["preview", "hooks", "c", "r", "health", "guides-data"]);
 const unknownSlug = (seg: string[], SLUGS: Record<string, Set<string>>) =>
   (seg.length === 2 && SLUGS[seg[0]] && !SLUGS[seg[0]].has(seg[1])) ||
   seg.length > (seg[0] === "services" && seg[1] === "c" ? 3 : 2) && (seg[0] in SLUGS || seg[0] === "services");
@@ -41,7 +40,9 @@ const LEGACY_REDIRECTS: Record<string, string> = { "/admin": "/ops", "/dashboard
   // Stage 8 §7.2 journey naming
   "/work-with-us": "/join-us", "/join/agent": "/join", "/sign-in/agent": "/login?as=agent",
   // spec cms §routes: /news is served by /updates (the only published news feed; `article` type has no public reader yet).
-  "/news": "/updates" };
+  "/news": "/updates",
+  // Guides moved from /knowledge (old CMS menus still link there).
+  "/knowledge": "/guides" };
 
 /** A redirect target may carry its own query (/login?as=agent): merge the incoming one instead of appending a second "?". */
 const withSearch = (to: string, search: string) => (search && to.includes("?") ? `&${search.slice(1)}` : search);
@@ -89,6 +90,13 @@ export async function proxy(request: NextRequest) {
   if (request.cookies.get(LOCALE_COOKIE)?.value !== locale) {
     response.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
   }
+  // Old team-guides address → the signed-in person's own dashboard guides (or sign in first).
+  if (rest[0] === "guides" && rest[1] === "team") {
+    const roles = normalizeRoles(((await accessClaims(request.cookies.get(ACCESS_COOKIE)?.value)) ?? {}) as Parameters<typeof normalizeRoles>[0]);
+    const home = roles.length ? homeFor(roles) : null;
+    if (!home) { const login = new URL(`/${locale}/login`, request.url); login.searchParams.set("next", `/${locale}/guides/team`); return NextResponse.redirect(login); }
+    return NextResponse.redirect(new URL(`/${locale}${home === "/dashboard" ? "/dashboard" : home}/guides`, request.url));
+  }
   if (!workspace) return response; // public or auth page
 
   // 2. Workspace guard
@@ -116,15 +124,3 @@ export const config = {
   matcher: ["/((?!api|_next/static|_next/image|sw.js|manifest.webmanifest|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)"],
 };
 
-// Verify the access JWT with the API's EdDSA public key (same iss/aud as core/auth/tokens.ts). Without JWT_PUBLIC_KEY
-// (dummy-data mode) fall back to decoding only. Invalid/expired → null (treated as signed out).
-let pub: ReturnType<typeof importSPKI> | undefined;
-async function accessClaims(token: string | undefined): Promise<JWTPayload | null> {
-  if (!token) return null;
-  const pem = process.env.JWT_PUBLIC_KEY;
-  try {
-    if (!pem) return decodeJwt(token);
-    pub ??= importSPKI(pem.replace(/\\n/g, "\n"), "EdDSA");
-    return (await jwtVerify(token, await pub, { issuer: "hebuza", audience: "hebuza-api", algorithms: ["EdDSA"] })).payload;
-  } catch { return null; }
-}

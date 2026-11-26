@@ -32,7 +32,7 @@ const en = {
   scope: { global: "Default (everyone)", service: "Service", agent: "Agent", agent_service: "Agent + service", contract: "Contract" } as Record<string, string>,
   applies: { one_off: "One-off cases", subscription: "Subscriptions", both: "Both" } as Record<string, string>,
   rules: {
-    add: "Add rule", precedence: "Which rule wins", precedenceBody: "The most specific rule applies: contract › agent + service › service › agent › default. Rules are never switched off — they end on a date.",
+    add: "Add rule", precedence: "Which rule wins", precedenceBody: "The most specific rule applies: contract › agent + service › service › agent › default. Rules are never switched off, they end on a date.",
     cols: { scope: "Scope", key: "Applies to", pct: "Agent %", applies: "Cases", from: "From", to: "To", status: "State" },
     timeline: "Timeline", listLabel: "Rate rules", empty: ["Only the default rule exists", "Add a rule for a service, an agent or a contract."],
     end: "End rule", endTitle: "End this rule", endDate: "Last day", endHint: "Today or later. Cases completed after this date use the next matching rule.",
@@ -43,7 +43,7 @@ const en = {
     title: "New rate rule", back: "Rate rules", steps: ["Scope", "Rate", "Preview"],
     scope: "What does the rule cover?", service: "Service", agent: "Agent", contract: "Contract reference", choose: "Choose…",
     pct: "Agent share (%)", pctHint: "Whole or half percent. HEBUZA keeps the rest of the eligible fee.", applies: "Which cases?",
-    from: "Effective from", fromHint: "Today or later — rules never change past cases.", reason: "Reason", reasonHint: "Kept in the audit trail.",
+    from: "Effective from", fromHint: "Today or later, rules never change past cases.", reason: "Reason", reasonHint: "Kept in the audit trail.",
     preview: "Preview", affected: "{n} open cases will use this rule", current: "Today they use: {label} at {pct}",
     example: "On an eligible fee of {eligible}: agents {pool}, HEBUZA {hebuza}", overlap: "Another rule already covers this scope on that date. End it first.",
     retroactive: "The start date is in the past.", needsExec: "This rate differs from the default, so an executive must approve it before it applies.",
@@ -57,7 +57,7 @@ const en = {
     reasons: { refund: "Refund reversal", correction: "Correction", bonus: "Bonus", clawback: "Clawback", other: "Other" } as Record<string, string>,
     title: "New adjustment", worker: "Agent", amount: "Amount (RWF)", direction: "Direction", plus: "Pay more (+)", minus: "Take back (−)",
     note: "What happened?", noteHint: "The agent sees this on their statement.", allocation: "Linked allocation (optional)",
-    submit: "Propose adjustment", created: "Adjustment proposed — a second signer must approve it", approve: "Approve", approved: "Adjustment approved",
+    submit: "Propose adjustment", created: "Adjustment proposed, a second signer must approve it", approve: "Approve", approved: "Adjustment approved",
     secondSigner: "Needs a second signer", positive: "Enter a whole amount above 0",
   },
   fees: {
@@ -71,7 +71,7 @@ const en = {
   },
   sim: { smReview: "Service manager reviews one", question: "Agent asks a question", conflict: "Someone else edits" },
   load: { allocations: "allocations", rules: "rate rules", adjustments: "adjustments", fees: "agent fees" },
-  offline: "Offline — actions are disabled.",
+  offline: "Offline, actions are disabled.",
   execRO: "Read-only for executives except rules waiting for your approval.",
   cancel: "Cancel",
 };
@@ -108,7 +108,7 @@ const rw: Copy = {
   scope: { global: "Rusange (bose)", service: "Serivisi", agent: "Umukozi", agent_service: "Umukozi + serivisi", contract: "Amasezerano" },
   applies: { one_off: "Dosiye zisanzwe", subscription: "Ifatabuguzi", both: "Byombi" },
   rules: {
-    add: "Ongeraho itegeko", precedence: "Itegeko ritsinda", precedenceBody: "Itegeko ryihariye kurusha ayandi ni ryo rikoreshwa: amasezerano › umukozi + serivisi › serivisi › umukozi › rusange. Amategeko ntazimywa — arangira ku itariki.",
+    add: "Ongeraho itegeko", precedence: "Itegeko ritsinda", precedenceBody: "Itegeko ryihariye kurusha ayandi ni ryo rikoreshwa: amasezerano › umukozi + serivisi › serivisi › umukozi › rusange. Amategeko ntazimywa, arangira ku itariki.",
     cols: { scope: "Urwego", key: "Bireba", pct: "% y'umukozi", applies: "Dosiye", from: "Guhera", to: "Kugeza", status: "Imiterere" },
     timeline: "Igihe", listLabel: "Amategeko y'ibipimo", empty: ["Hari itegeko rusange gusa", "Ongeraho itegeko rya serivisi, umukozi cyangwa amasezerano."],
     end: "Soza itegeko", endTitle: "Soza iri tegeko", endDate: "Umunsi wa nyuma", endHint: "Uyu munsi cyangwa nyuma. Dosiye zirangiye nyuma zikoresha itegeko rikurikira.",
@@ -119,7 +119,7 @@ const rw: Copy = {
     title: "Itegeko rishya ry'igipimo", back: "Amategeko y'ibipimo", steps: ["Urwego", "Igipimo", "Isuzuma"],
     scope: "Itegeko rireba iki?", service: "Serivisi", agent: "Umukozi", contract: "Nimero y'amasezerano", choose: "Hitamo…",
     pct: "Umugabane w'umukozi (%)", pctHint: "Ijanisha ryuzuye cyangwa igice. HEBUZA isigarana ibisigaye.", applies: "Dosiye izihe?",
-    from: "Bitangira", fromHint: "Uyu munsi cyangwa nyuma — amategeko ntahindura dosiye zashize.", reason: "Impamvu", reasonHint: "Bibikwa mu bugenzuzi.",
+    from: "Bitangira", fromHint: "Uyu munsi cyangwa nyuma, amategeko ntahindura dosiye zashize.", reason: "Impamvu", reasonHint: "Bibikwa mu bugenzuzi.",
     preview: "Isuzuma", affected: "Dosiye {n} zifunguye zizakoresha iri tegeko", current: "Ubu zikoresha: {label} kuri {pct}",
     example: "Ku mafaranga agabanywa {eligible}: abakozi {pool}, HEBUZA {hebuza}", overlap: "Irindi tegeko risanzwe rireba uru rwego kuri iyo tariki. Banza urisoze.",
     retroactive: "Itariki yo gutangira yarashize.", needsExec: "Iki gipimo gitandukanye n'ibisanzwe, umuyobozi mukuru agomba kucyemeza mbere.",
@@ -133,7 +133,7 @@ const rw: Copy = {
     reasons: { refund: "Isubizwa ry'amafaranga", correction: "Ikosora", bonus: "Agahimbazamusyi", clawback: "Isubizwa", other: "Ibindi" },
     title: "Ikosora rishya", worker: "Umukozi", amount: "Amafaranga (RWF)", direction: "Icyerekezo", plus: "Ishyura byinshi (+)", minus: "Garura (−)",
     note: "Byagenze bite?", noteHint: "Umukozi abibona ku nyandiko ye.", allocation: "Igabanywa rifitanye isano (si ngombwa)",
-    submit: "Saba ikosora", created: "Ikosora ryasabwe — undi musinyi agomba kuryemeza", approve: "Emeza", approved: "Ikosora ryemejwe",
+    submit: "Saba ikosora", created: "Ikosora ryasabwe, undi musinyi agomba kuryemeza", approve: "Emeza", approved: "Ikosora ryemejwe",
     secondSigner: "Rikeneye undi musinyi", positive: "Andika umubare wuzuye urenze 0",
   },
   fees: {
@@ -147,7 +147,7 @@ const rw: Copy = {
   },
   sim: { smReview: "Umuyobozi wa serivisi asuzuma imwe", question: "Umukozi abaza ikibazo", conflict: "Undi muntu arahindura" },
   load: { allocations: "igabanywa", rules: "amategeko", adjustments: "ikosora", fees: "amafaranga y'abakozi" },
-  offline: "Nta interineti — ibikorwa byahagaritswe.",
+  offline: "Nta interineti, ibikorwa byahagaritswe.",
   execRO: "Abayobozi bakuru basoma gusa, uretse amategeko abategereje.",
   cancel: "Reka",
 };
@@ -183,7 +183,7 @@ const fr: Copy = {
   scope: { global: "Par défaut (tous)", service: "Service", agent: "Agent", agent_service: "Agent + service", contract: "Contrat" },
   applies: { one_off: "Dossiers ponctuels", subscription: "Abonnements", both: "Les deux" },
   rules: {
-    add: "Ajouter une règle", precedence: "Quelle règle s'applique", precedenceBody: "La règle la plus précise s'applique : contrat › agent + service › service › agent › défaut. Une règle n'est jamais désactivée — elle prend fin à une date.",
+    add: "Ajouter une règle", precedence: "Quelle règle s'applique", precedenceBody: "La règle la plus précise s'applique : contrat › agent + service › service › agent › défaut. Une règle n'est jamais désactivée, elle prend fin à une date.",
     cols: { scope: "Portée", key: "Concerne", pct: "% agent", applies: "Dossiers", from: "Du", to: "Au", status: "État" },
     timeline: "Chronologie", listLabel: "Règles de taux", empty: ["Seule la règle par défaut existe", "Ajoutez une règle pour un service, un agent ou un contrat."],
     end: "Terminer la règle", endTitle: "Terminer cette règle", endDate: "Dernier jour", endHint: "Aujourd'hui ou plus tard. Les dossiers livrés ensuite suivent la règle suivante.",
@@ -194,7 +194,7 @@ const fr: Copy = {
     title: "Nouvelle règle de taux", back: "Règles de taux", steps: ["Portée", "Taux", "Aperçu"],
     scope: "Que couvre la règle ?", service: "Service", agent: "Agent", contract: "Référence du contrat", choose: "Choisir…",
     pct: "Part agent (%)", pctHint: "Pourcentage entier ou demi. HEBUZA garde le reste des honoraires éligibles.", applies: "Quels dossiers ?",
-    from: "En vigueur le", fromHint: "Aujourd'hui ou plus tard — une règle ne modifie jamais le passé.", reason: "Motif", reasonHint: "Conservé dans le journal d'audit.",
+    from: "En vigueur le", fromHint: "Aujourd'hui ou plus tard, une règle ne modifie jamais le passé.", reason: "Motif", reasonHint: "Conservé dans le journal d'audit.",
     preview: "Aperçu", affected: "{n} dossiers ouverts utiliseront cette règle", current: "Aujourd'hui : {label} à {pct}",
     example: "Pour {eligible} d'honoraires éligibles : agents {pool}, HEBUZA {hebuza}", overlap: "Une autre règle couvre déjà cette portée à cette date. Terminez-la d'abord.",
     retroactive: "La date de début est passée.", needsExec: "Ce taux diffère du défaut : un dirigeant doit l'approuver avant qu'il s'applique.",
@@ -208,7 +208,7 @@ const fr: Copy = {
     reasons: { refund: "Reprise sur remboursement", correction: "Correction", bonus: "Prime", clawback: "Reprise", other: "Autre" },
     title: "Nouvel ajustement", worker: "Agent", amount: "Montant (RWF)", direction: "Sens", plus: "Payer plus (+)", minus: "Reprendre (−)",
     note: "Que s'est-il passé ?", noteHint: "L'agent le voit sur son relevé.", allocation: "Répartition liée (facultatif)",
-    submit: "Proposer l'ajustement", created: "Ajustement proposé — un second signataire doit l'approuver", approve: "Approuver", approved: "Ajustement approuvé",
+    submit: "Proposer l'ajustement", created: "Ajustement proposé, un second signataire doit l'approuver", approve: "Approuver", approved: "Ajustement approuvé",
     secondSigner: "Second signataire requis", positive: "Saisissez un montant entier supérieur à 0",
   },
   fees: {
@@ -222,7 +222,7 @@ const fr: Copy = {
   },
   sim: { smReview: "Le responsable en examine une", question: "Un agent pose une question", conflict: "Quelqu'un d'autre modifie" },
   load: { allocations: "les répartitions", rules: "les règles", adjustments: "les ajustements", fees: "les frais agents" },
-  offline: "Hors ligne — actions désactivées.",
+  offline: "Hors ligne, actions désactivées.",
   execRO: "Lecture seule pour les dirigeants, sauf les règles qui attendent votre approbation.",
   cancel: "Annuler",
 };

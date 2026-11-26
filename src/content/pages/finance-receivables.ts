@@ -3,7 +3,7 @@ import type { Locale } from "@/shared/i18n/config";
 
 const en = {
   title: "Receivables & ageing",
-  sub: "Who owes what, for how long — and a polite nudge when it's time.",
+  sub: "Who owes what, for how long, and a polite nudge when it's time.",
   asOf: "As of {t}",
   tiles: { total: "Total receivable", overdue: "Overdue (31+ days)", due0_30: "1–30 days overdue", over90: "90+ days", clients: "{n} clients" },
   ageing: "Ageing buckets",
@@ -41,13 +41,13 @@ const en = {
     never: "No reminders yet", by: "{who} · {ch}", tooLong: "Too long for 2 SMS.", needText: "Write the message.", noConsentErr: "This client hasn't agreed to that channel.",
   },
   phone: { overdue: "{pct} overdue", over90: "{n} clients over 90 days" },
-  offline: "You're offline — reminders are disabled until you reconnect.",
+  offline: "You're offline, reminders are disabled until you reconnect.",
 };
 type Copy = typeof en;
 
 const rw: Copy = {
   title: "Amadeni n'igihe amaze",
-  sub: "Ni nde ufitiye iki, kuva ryari — n'ubutumwa bwiyubashye iyo igihe kigeze.",
+  sub: "Ni nde ufitiye iki, kuva ryari, n'ubutumwa bwiyubashye iyo igihe kigeze.",
   asOf: "Kugeza {t}",
   tiles: { total: "Amadeni yose", overdue: "Yarengeje igihe (iminsi 31+)", due0_30: "Iminsi 1–30 yarenze", over90: "Iminsi 90+", clients: "Abakiriya {n}" },
   ageing: "Ibyiciro by'igihe",
@@ -85,12 +85,12 @@ const rw: Copy = {
     never: "Nta kwibutsa kuraba", by: "{who} · {ch}", tooLong: "Birerekire SMS 2.", needText: "Andika ubutumwa.", noConsentErr: "Uyu mukiriya ntiyemeye iyi nzira.",
   },
   phone: { overdue: "{pct} yarengeje igihe", over90: "Abakiriya {n} barengeje iminsi 90" },
-  offline: "Nta interineti — kwibutsa birahagaritswe kugeza wongeye kwihuza.",
+  offline: "Nta interineti, kwibutsa birahagaritswe kugeza wongeye kwihuza.",
 };
 
 const fr: Copy = {
   title: "Créances et ancienneté",
-  sub: "Qui doit quoi, depuis quand — et une relance courtoise au bon moment.",
+  sub: "Qui doit quoi, depuis quand, et une relance courtoise au bon moment.",
   asOf: "Au {t}",
   tiles: { total: "Total des créances", overdue: "En retard (31 j et +)", due0_30: "1–30 jours de retard", over90: "90 jours et +", clients: "{n} clients" },
   ageing: "Tranches d'ancienneté",
@@ -128,7 +128,7 @@ const fr: Copy = {
     never: "Aucune relance", by: "{who} · {ch}", tooLong: "Trop long pour 2 SMS.", needText: "Rédigez le message.", noConsentErr: "Ce client n'a pas accepté ce canal.",
   },
   phone: { overdue: "{pct} en retard", over90: "{n} clients à plus de 90 jours" },
-  offline: "Vous êtes hors ligne — les relances sont désactivées jusqu'à la reconnexion.",
+  offline: "Vous êtes hors ligne, les relances sont désactivées jusqu'à la reconnexion.",
 };
 
 const ALL: Record<Locale, Copy> = { en, rw, fr };
@@ -138,18 +138,18 @@ export type ReceivablesCopy = Copy;
 /** Message templates by message language (independent of the UI language). Placeholders: {client} {no} {amount} {due}. */
 export const REMINDER_TEMPLATES: Record<Locale, Record<"standard" | "firm" | "final", string>> = {
   rw: {
-    standard: "Muraho {client}. Murakoze ku bufatanye. Turabibutsa kwishyura inyemezabuguzi {no} ya {amount} yagombaga kwishyurwa ku wa {due}. Murakoze! — HEBUZA",
-    firm: "Muraho {client}. Inyemezabuguzi {no} ya {amount} yarengeje igihe kuva ku wa {due}. Turabasaba kwishyura vuba cyangwa kutwandikira. — HEBUZA",
-    final: "Muraho {client}. Iyi ni integuza ya nyuma ku nyemezabuguzi {no} ya {amount} (yagombaga kwishyurwa ku wa {due}). Mudusubize mu minsi 7. — HEBUZA",
+    standard: "Muraho {client}. Murakoze ku bufatanye. Turabibutsa kwishyura inyemezabuguzi {no} ya {amount} yagombaga kwishyurwa ku wa {due}. Murakoze!, HEBUZA",
+    firm: "Muraho {client}. Inyemezabuguzi {no} ya {amount} yarengeje igihe kuva ku wa {due}. Turabasaba kwishyura vuba cyangwa kutwandikira., HEBUZA",
+    final: "Muraho {client}. Iyi ni integuza ya nyuma ku nyemezabuguzi {no} ya {amount} (yagombaga kwishyurwa ku wa {due}). Mudusubize mu minsi 7., HEBUZA",
   },
   en: {
-    standard: "Hello {client}, thank you for working with us. A friendly reminder that invoice {no} for {amount} was due on {due}. Thank you! — HEBUZA",
-    firm: "Hello {client}, invoice {no} for {amount} has been overdue since {due}. Please pay soon or reply to arrange a plan. — HEBUZA",
-    final: "Hello {client}, this is a final notice for invoice {no} for {amount} (due {due}). Please settle or contact us within 7 days. — HEBUZA",
+    standard: "Hello {client}, thank you for working with us. A friendly reminder that invoice {no} for {amount} was due on {due}. Thank you!, HEBUZA",
+    firm: "Hello {client}, invoice {no} for {amount} has been overdue since {due}. Please pay soon or reply to arrange a plan., HEBUZA",
+    final: "Hello {client}, this is a final notice for invoice {no} for {amount} (due {due}). Please settle or contact us within 7 days., HEBUZA",
   },
   fr: {
-    standard: "Bonjour {client}, merci de votre confiance. Petit rappel : la facture {no} de {amount} était due le {due}. Merci ! — HEBUZA",
-    firm: "Bonjour {client}, la facture {no} de {amount} est en retard depuis le {due}. Merci de régler rapidement ou de nous répondre. — HEBUZA",
-    final: "Bonjour {client}, dernier avis pour la facture {no} de {amount} (échue le {due}). Merci de régler ou de nous contacter sous 7 jours. — HEBUZA",
+    standard: "Bonjour {client}, merci de votre confiance. Petit rappel : la facture {no} de {amount} était due le {due}. Merci !, HEBUZA",
+    firm: "Bonjour {client}, la facture {no} de {amount} est en retard depuis le {due}. Merci de régler rapidement ou de nous répondre., HEBUZA",
+    final: "Bonjour {client}, dernier avis pour la facture {no} de {amount} (échue le {due}). Merci de régler ou de nous contacter sous 7 jours., HEBUZA",
   },
 };

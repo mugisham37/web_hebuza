@@ -82,7 +82,7 @@ const en = {
   change: {
     title: "Change status for {n} cases",
     sub: "Only statuses every selected case can move to are enabled.",
-    cant: "{n} can't move to {s} — {why}",
+    cant: "{n} can't move to {s}, {why}",
     keepMovable: "Deselect them",
     notFrom: "not allowed from {s}",
     none: "These cases have no status in common they can all move to.",
@@ -98,7 +98,7 @@ const en = {
     reasonRequired: "Choose a reason for this move.",
   },
   moved: "{n} cases moved to {s}",
-  failed: "{n} couldn't move — they changed since you loaded the list",
+  failed: "{n} couldn't move, they changed since you loaded the list",
   undone: "Undone",
   export: {
     title: "Export cases",
@@ -213,7 +213,7 @@ const fr: OpsCasesCopy = {
   change: {
     title: "Changer le statut de {n} dossiers",
     sub: "Seuls les statuts possibles pour tous les dossiers sélectionnés sont actifs.",
-    cant: "{n} ne peuvent pas passer à « {s} » — {why}",
+    cant: "{n} ne peuvent pas passer à « {s} », {why}",
     keepMovable: "Les désélectionner",
     notFrom: "impossible depuis « {s} »",
     none: "Ces dossiers n'ont aucun statut commun possible.",
@@ -230,7 +230,7 @@ const fr: OpsCasesCopy = {
   },
   moved: "{n} dossiers passés à « {s} »",
   failed:
-    "{n} n'ont pas pu changer — ils ont été modifiés depuis le chargement",
+    "{n} n'ont pas pu changer, ils ont été modifiés depuis le chargement",
   undone: "Annulé",
   export: {
     title: "Exporter les dossiers",
@@ -343,7 +343,7 @@ const rw: OpsCasesCopy = {
   change: {
     title: "Hindura imiterere ya dosiye {n}",
     sub: "Hemewe gusa imiterere dosiye zose zatoranyijwe zishobora kujyamo.",
-    cant: "{n} ntizishobora kujya kuri {s} — {why}",
+    cant: "{n} ntizishobora kujya kuri {s}, {why}",
     keepMovable: "Zikureho",
     notFrom: "ntibyemewe uvuye kuri {s}",
     none: "Izi dosiye nta miterere zihuriyeho zishobora kujyamo.",
@@ -359,7 +359,7 @@ const rw: OpsCasesCopy = {
     reasonRequired: "Hitamo impamvu y'iyi mpinduka.",
   },
   moved: "Dosiye {n} zimuriwe kuri {s}",
-  failed: "{n} ntibyashobotse — byahindutse kuva urutonde rufunguwe",
+  failed: "{n} ntibyashobotse, byahindutse kuva urutonde rufunguwe",
   undone: "Byasubijwe uko byari biri",
   export: {
     title: "Sohora dosiye",

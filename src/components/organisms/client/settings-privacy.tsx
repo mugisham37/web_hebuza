@@ -79,7 +79,7 @@ export function PrivacySettings() {
             onRetry={() => consents.refetch()}
           />
         ) : (
-          <ul className="divide-y divide-border">
+          <ul data-guide="client-privacy-consents" className="divide-y divide-border">
             {(["processing", "marketingEmail", "marketingSms", "marketingWhatsapp", "analytics", "profileReuse", "aiHistory"] as const).map((k) => {
               const locked =
                 k === "processing" && consents.data.processingLocked;
@@ -132,6 +132,7 @@ export function PrivacySettings() {
         action={
           exp.data?.status === "none" && (
             <Button
+              data-guide="client-privacy-export"
               size="sm"
               variant="outline"
               loading={requestExport.isPending}
@@ -184,6 +185,7 @@ export function PrivacySettings() {
         body={p.deleteLede}
         action={
           <Button
+            data-guide="client-privacy-delete"
             variant="danger"
             size="sm"
             disabled={!check.isSuccess || check.data.blocked}

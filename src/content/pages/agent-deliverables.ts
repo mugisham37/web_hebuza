@@ -61,8 +61,8 @@ const en = {
   submitted: "Submitted",
   submittedBody: "{m} usually reviews within 4 business hours.",
   viewTimeline: "View timeline",
-  returnedBanner: "Returned by {m} — {n} comment",
-  returnedBannerN: "Returned by {m} — {n} comments",
+  returnedBanner: "Returned by {m}, {n} comment",
+  returnedBannerN: "Returned by {m}, {n} comments",
   returnedNoComment:
     "Returned by {m} without a comment. Message her if it's unclear.",
   diffTitle: "Feedback vs previous version",
@@ -151,8 +151,8 @@ const fr: Copy = {
   submitted: "Soumis",
   submittedBody: "{m} relit généralement sous 4 heures ouvrées.",
   viewTimeline: "Voir la chronologie",
-  returnedBanner: "Renvoyé par {m} — {n} commentaire",
-  returnedBannerN: "Renvoyé par {m} — {n} commentaires",
+  returnedBanner: "Renvoyé par {m}, {n} commentaire",
+  returnedBannerN: "Renvoyé par {m}, {n} commentaires",
   returnedNoComment:
     "Renvoyé par {m} sans commentaire. Écrivez-lui si ce n'est pas clair.",
   diffTitle: "Retour vs version précédente",
@@ -241,8 +241,8 @@ const rw: Copy = {
   submitted: "Byoherejwe",
   submittedBody: "{m} akunze gusuzuma mu masaha 4 y'akazi.",
   viewTimeline: "Reba urugendo",
-  returnedBanner: "Byagaruwe na {m} — igitekerezo {n}",
-  returnedBannerN: "Byagaruwe na {m} — ibitekerezo {n}",
+  returnedBanner: "Byagaruwe na {m}, igitekerezo {n}",
+  returnedBannerN: "Byagaruwe na {m}, ibitekerezo {n}",
   returnedNoComment:
     "Byagaruwe na {m} nta gitekerezo. Mwandikire niba bidasobanutse.",
   diffTitle: "Igitekerezo ugereranyije na verisiyo ibanza",

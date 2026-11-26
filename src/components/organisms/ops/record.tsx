@@ -104,7 +104,7 @@ export function TimelineTab({
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
       <Panel>
-        <div
+        <div data-guide="ops-timeline-filters"
           role="group"
           aria-label={t.filters.all}
           className="mb-4 flex flex-wrap gap-1.5"
@@ -276,7 +276,7 @@ function NoteComposer({
           <Kbd>N</Kbd> · <Kbd>⌘</Kbd>
           <Kbd>↵</Kbd>
         </span>
-        <Button
+        <Button data-guide="ops-note-post"
           size="sm"
           onClick={submit}
           loading={add.isPending}
@@ -296,7 +296,7 @@ function Snapshot({ c }: { c: CaseDetailVM }) {
     [t.submitted, formatDate(c.submittedAt, locale)],
     [t.completed, formatDate(c.updatedAt, locale)],
     [t.slaMet, c.breached ? "✕" : "✓"],
-    [t.assignee, c.assignees[0]?.name ?? "—"],
+    [t.assignee, c.assignees[0]?.name ?? ""],
     [t.deliverables, `v${Math.max(1, c.deliverables)}`],
     [t.rating, "★ 5"],
     [t.revenue, "✓"],
@@ -333,8 +333,8 @@ export function AuditTab({ refId }: { refId: string }) {
   if (!q.data.length) return <EmptyPanel title={t.empty} />;
   const change = (e: OpsEvent) =>
     e.from || e.to
-      ? `${st[e.from ?? ""] ?? e.from ?? "—"} → ${st[e.to ?? ""] ?? e.to ?? "—"}`
-      : "—";
+      ? `${st[e.from ?? ""] ?? e.from ?? ""} → ${st[e.to ?? ""] ?? e.to ?? ""}`
+      : "";
   return (
     <Panel title={t.title} padded={false}>
       <div
@@ -365,7 +365,7 @@ export function AuditTab({ refId }: { refId: string }) {
                 <td className="px-4 py-2.5">{evTitle(e, locale)}</td>
                 <td className="px-4 py-2.5 text-fg-muted">{change(e)}</td>
                 <td className="px-4 py-2.5 font-mono text-eyebrow tabular">
-                  {e.ip ?? "—"}
+                  {e.ip ?? ""}
                 </td>
                 <td className="px-4 py-2.5 text-right whitespace-nowrap tabular">
                   {formatDateTime(e.at, locale)}
@@ -386,7 +386,7 @@ export function AuditTab({ refId }: { refId: string }) {
               {e.actor} · {change(e)}
             </span>
             <span className="text-eyebrow text-fg-subtle tabular">
-              {formatDateTime(e.at, locale)} · {e.ip ?? "—"}
+              {formatDateTime(e.at, locale)} · {e.ip ?? ""}
             </span>
           </li>
         ))}
@@ -454,7 +454,7 @@ export function BillingTab({ c }: { c: CaseDetailVM }) {
     <div className="grid gap-4 md:grid-cols-2">
       <Panel title={t.price}>
         <p className="text-h3 tabular">
-          {c.amount != null ? money(c.amount) : "—"}
+          {c.amount != null ? money(c.amount) : ""}
         </p>
         <div className="mt-2">
           <PaymentChip status={c.payment} />

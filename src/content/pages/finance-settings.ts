@@ -22,7 +22,7 @@ const en = {
   edit: "Propose change", view: "Details", pendingBy: "Waiting for executive approval", never: "Never",
   pending: {
     title: "Proposed changes", none: "No changes waiting.", approve: "Approve", reject: "Reject", by: "Proposed by {who}",
-    effective: "From {d}", waitingExec: "Waiting for an executive", youProposed: "You proposed this — another person decides.",
+    effective: "From {d}", waitingExec: "Waiting for an executive", youProposed: "You proposed this, another person decides.",
     approved: "Change approved", rejected: "Change rejected", rejectReason: "Why are you rejecting it?", approveWhat: "approve a settings change",
   },
   propose: {
@@ -30,7 +30,7 @@ const en = {
     effectiveHint: "Today or later. Changes never apply to past documents.", reason: "Reason", reasonHint: "Shown to the approver and kept in the history.",
     submit: "Send for approval", sent: "Sent for executive approval", errors: "Fix these to continue",
     eNext: "Enter a new value different from the current one.", eDate: "Pick today or a later date.", eReason: "Give a reason.",
-    percentHint: "Percent, e.g. 18", amountHint: "Whole RWF", daysHint: "Number of days", stale: "Figures refreshed — check the current value.",
+    percentHint: "Percent, e.g. 18", amountHint: "Whole RWF", daysHint: "Number of days", stale: "Figures refreshed, check the current value.",
   },
   numbering: {
     banner: "Sequences are gapless: a number is never reused, and a void document keeps its number.",
@@ -41,13 +41,13 @@ const en = {
     ePrefix: "Use 2–5 capital letters.", pendingFor: "Change to {p} pending approval",
   },
   accounts: {
-    banner: "Account numbers are masked. Revealing one is logged.", allVerified: "All accounts are verified.", someUnverified: "{n} account(s) not verified yet — payouts can't use them.",
+    banner: "Account numbers are masked. Revealing one is logged.", allVerified: "All accounts are verified.", someUnverified: "{n} account(s) not verified yet, payouts can't use them.",
     cols: { name: "Account", number: "Number", method: "Method", status: "Status", lock: "Payouts" },
     add: "Add account", addedBy: "Added by", verifiedBy: "Verified by", reveal: "Reveal", hide: "Hide", revealWhat: "reveal an account number", addWhat: "add a payout account",
     status: { pending_callback: "Waiting for call-back", verified: "Verified" } as Record<string, string>,
     lockedUntil: "Locked until {t}", ready: "Ready",
     form: { name: "Account name", method: "Method", number: "Account or wallet number", numberHint: "Digits and letters only", eName: "Enter a name.", eNumber: "Enter 6–24 digits or letters." },
-    added: "Account added — confirm it by call-back.",
+    added: "Account added, confirm it by call-back.",
     callback: "Confirm by call-back", callbackTitle: "Call-back confirmation",
     callbackBody: "Call the provider on the number already on file (never one from the request). Confirm the account holder and the last four digits {d}.",
     callbackCheck: "I called back and the holder and digits match.", callbackDone: "Account verified. Payouts to it are locked for 24 hours.",
@@ -66,7 +66,7 @@ const en = {
     showing: "Showing {a}–{b} of {n} changes", empty: "No changes match", emptyBody: "Try a longer period or another record type.",
     export: "Export", exported: "History export ready", diff: "Change details",
   },
-  states: { error: "settings", forbidden: "Settings are for the finance team and executives.", offline: "You're offline — changes are disabled.", conflict: "Someone else changed this setting" },
+  states: { error: "settings", forbidden: "Settings are for the finance team and executives.", offline: "You're offline, changes are disabled.", conflict: "Someone else changed this setting" },
   sim: { callback: "Simulate call-back confirmed" },
 };
 type Copy = typeof en;
@@ -92,7 +92,7 @@ const rw: Copy = {
   edit: "Saba impinduka", view: "Ibisobanuro", pendingBy: "Bitegereje umuyobozi", never: "Ntibirahinduka",
   pending: {
     title: "Impinduka zasabwe", none: "Nta mpinduka zitegereje.", approve: "Emeza", reject: "Anga", by: "Byasabwe na {who}",
-    effective: "Guhera {d}", waitingExec: "Bitegereje umuyobozi", youProposed: "Ni wowe wabisabye — undi muntu ni we ufata icyemezo.",
+    effective: "Guhera {d}", waitingExec: "Bitegereje umuyobozi", youProposed: "Ni wowe wabisabye, undi muntu ni we ufata icyemezo.",
     approved: "Impinduka zemejwe", rejected: "Impinduka zanzwe", rejectReason: "Kuki uzanze?", approveWhat: "kwemeza impinduka",
   },
   propose: {
@@ -100,7 +100,7 @@ const rw: Copy = {
     effectiveHint: "Uyu munsi cyangwa nyuma. Ntibihindura inyandiko zabanje.", reason: "Impamvu", reasonHint: "Igaragara ku wemeza kandi ibikwa mu mateka.",
     submit: "Ohereza kwemezwa", sent: "Byoherejwe ku muyobozi", errors: "Kosora ibi ukomeze",
     eNext: "Andika agaciro gashya gatandukanye n'akariho.", eDate: "Hitamo uyu munsi cyangwa nyuma.", eReason: "Tanga impamvu.",
-    percentHint: "Ijanisha, urugero 18", amountHint: "RWF zuzuye", daysHint: "Umubare w'iminsi", stale: "Imibare yavuguruwe — reba agaciro kariho.",
+    percentHint: "Ijanisha, urugero 18", amountHint: "RWF zuzuye", daysHint: "Umubare w'iminsi", stale: "Imibare yavuguruwe, reba agaciro kariho.",
   },
   numbering: {
     banner: "Inomero zikurikirana nta cyuho: nomero ntisubirwamo, inyandiko yahagaritswe igumana nomero yayo.",
@@ -111,13 +111,13 @@ const rw: Copy = {
     ePrefix: "Koresha inyuguti nkuru 2–5.", pendingFor: "Guhindura kuri {p} bitegereje kwemezwa",
   },
   accounts: {
-    banner: "Nomero za konti zirahishwe. Kuzigaragaza birandikwa.", allVerified: "Konti zose zaremejwe.", someUnverified: "Konti {n} ntiziremezwa — ntizikoreshwa mu kwishyura.",
+    banner: "Nomero za konti zirahishwe. Kuzigaragaza birandikwa.", allVerified: "Konti zose zaremejwe.", someUnverified: "Konti {n} ntiziremezwa, ntizikoreshwa mu kwishyura.",
     cols: { name: "Konti", number: "Nomero", method: "Uburyo", status: "Imiterere", lock: "Kwishyura" },
     add: "Ongeramo konti", addedBy: "Yongewemo na", verifiedBy: "Yemejwe na", reveal: "Garagaza", hide: "Hisha", revealWhat: "kugaragaza nomero ya konti", addWhat: "kongeramo konti yo kwishyura",
     status: { pending_callback: "Bitegereje guhamagara", verified: "Yemejwe" },
     lockedUntil: "Bifunze kugeza {t}", ready: "Biteguye",
     form: { name: "Izina rya konti", method: "Uburyo", number: "Nomero ya konti cyangwa ya telefoni", numberHint: "Imibare n'inyuguti gusa", eName: "Andika izina.", eNumber: "Andika imibare cyangwa inyuguti 6–24." },
-    added: "Konti yongewemo — yemeze uhamagara.",
+    added: "Konti yongewemo, yemeze uhamagara.",
     callback: "Emeza uhamagara", callbackTitle: "Kwemeza uhamagara",
     callbackBody: "Hamagara utanga serivisi kuri nomero isanzwe ifite (si iyo mu busabe). Emeza nyir'konti n'imibare ine ya nyuma {d}.",
     callbackCheck: "Nahamagaye kandi nyirayo n'imibare birahura.", callbackDone: "Konti yemejwe. Kwishyura kuri yo bifunze amasaha 24.",
@@ -136,7 +136,7 @@ const rw: Copy = {
     showing: "{a}–{b} muri {n}", empty: "Nta mpinduka zihuye", emptyBody: "Gerageza igihe kirekire cyangwa ubundi bwoko.",
     export: "Kohereza hanze", exported: "Amateka yiteguye", diff: "Ibisobanuro by'impinduka",
   },
-  states: { error: "igenamiterere", forbidden: "Igenamiterere ni iry'itsinda ry'imari n'abayobozi.", offline: "Nta interineti — impinduka zahagaritswe.", conflict: "Undi muntu yahinduye iri genamiterere" },
+  states: { error: "igenamiterere", forbidden: "Igenamiterere ni iry'itsinda ry'imari n'abayobozi.", offline: "Nta interineti, impinduka zahagaritswe.", conflict: "Undi muntu yahinduye iri genamiterere" },
   sim: { callback: "Igerageza: guhamagara byemejwe" },
 };
 
@@ -161,7 +161,7 @@ const fr: Copy = {
   edit: "Proposer", view: "Détails", pendingBy: "En attente d'un dirigeant", never: "Jamais",
   pending: {
     title: "Modifications proposées", none: "Aucune modification en attente.", approve: "Approuver", reject: "Refuser", by: "Proposé par {who}",
-    effective: "À partir du {d}", waitingExec: "En attente d'un dirigeant", youProposed: "Vous l'avez proposée — une autre personne décide.",
+    effective: "À partir du {d}", waitingExec: "En attente d'un dirigeant", youProposed: "Vous l'avez proposée, une autre personne décide.",
     approved: "Modification approuvée", rejected: "Modification refusée", rejectReason: "Pourquoi la refusez-vous ?", approveWhat: "approuver une modification",
   },
   propose: {
@@ -169,7 +169,7 @@ const fr: Copy = {
     effectiveHint: "Aujourd'hui ou plus tard. Jamais appliqué aux documents passés.", reason: "Motif", reasonHint: "Visible par l'approbateur et conservé dans l'historique.",
     submit: "Envoyer pour approbation", sent: "Envoyé pour approbation", errors: "Corrigez ces points",
     eNext: "Saisissez une valeur différente de l'actuelle.", eDate: "Choisissez aujourd'hui ou plus tard.", eReason: "Indiquez un motif.",
-    percentHint: "Pourcentage, ex. 18", amountHint: "RWF entiers", daysHint: "Nombre de jours", stale: "Données actualisées — vérifiez la valeur actuelle.",
+    percentHint: "Pourcentage, ex. 18", amountHint: "RWF entiers", daysHint: "Nombre de jours", stale: "Données actualisées, vérifiez la valeur actuelle.",
   },
   numbering: {
     banner: "Les séquences sont sans trou : un numéro n'est jamais réutilisé et un document annulé garde le sien.",
@@ -180,13 +180,13 @@ const fr: Copy = {
     ePrefix: "Utilisez 2 à 5 majuscules.", pendingFor: "Passage à {p} en attente d'approbation",
   },
   accounts: {
-    banner: "Les numéros de compte sont masqués. Les afficher est journalisé.", allVerified: "Tous les comptes sont vérifiés.", someUnverified: "{n} compte(s) non vérifié(s) — inutilisables pour les versements.",
+    banner: "Les numéros de compte sont masqués. Les afficher est journalisé.", allVerified: "Tous les comptes sont vérifiés.", someUnverified: "{n} compte(s) non vérifié(s), inutilisables pour les versements.",
     cols: { name: "Compte", number: "Numéro", method: "Moyen", status: "Statut", lock: "Versements" },
     add: "Ajouter un compte", addedBy: "Ajouté par", verifiedBy: "Vérifié par", reveal: "Afficher", hide: "Masquer", revealWhat: "afficher un numéro de compte", addWhat: "ajouter un compte de versement",
     status: { pending_callback: "Rappel à faire", verified: "Vérifié" },
     lockedUntil: "Bloqué jusqu'au {t}", ready: "Prêt",
     form: { name: "Nom du compte", method: "Moyen", number: "Numéro de compte ou de portefeuille", numberHint: "Chiffres et lettres uniquement", eName: "Saisissez un nom.", eNumber: "Saisissez 6 à 24 chiffres ou lettres." },
-    added: "Compte ajouté — confirmez-le par rappel.",
+    added: "Compte ajouté, confirmez-le par rappel.",
     callback: "Confirmer par rappel", callbackTitle: "Confirmation par rappel",
     callbackBody: "Appelez le prestataire au numéro déjà enregistré (jamais celui de la demande). Confirmez le titulaire et les quatre derniers chiffres {d}.",
     callbackCheck: "J'ai rappelé ; titulaire et chiffres concordent.", callbackDone: "Compte vérifié. Versements bloqués 24 heures.",
@@ -205,7 +205,7 @@ const fr: Copy = {
     showing: "{a}–{b} sur {n} modifications", empty: "Aucune modification", emptyBody: "Essayez une période plus longue ou un autre type.",
     export: "Exporter", exported: "Export de l'historique prêt", diff: "Détail de la modification",
   },
-  states: { error: "paramètres", forbidden: "Les paramètres sont réservés à la finance et aux dirigeants.", offline: "Hors ligne — modifications désactivées.", conflict: "Quelqu'un d'autre a modifié ce paramètre" },
+  states: { error: "paramètres", forbidden: "Les paramètres sont réservés à la finance et aux dirigeants.", offline: "Hors ligne, modifications désactivées.", conflict: "Quelqu'un d'autre a modifié ce paramètre" },
   sim: { callback: "Simuler le rappel confirmé" },
 };
 

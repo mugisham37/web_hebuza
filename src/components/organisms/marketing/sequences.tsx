@@ -38,7 +38,7 @@ export function SequencesView() {
   const flip = (a: SequenceRow) => toggle.mutate(a.id, { onError: (e) => toast({ title: err(e), tone: "danger" }) });
   return (
     <>
-      <PageHead title={c.seq.title} sub={c.seq.sub} actions={<ButtonLink href={localHref(locale, "/marketing/sequences/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.seq.new}</ButtonLink>} />
+      <PageHead title={c.seq.title} sub={c.seq.sub} actions={<ButtonLink data-guide="marketing-new-sequence" href={localHref(locale, "/marketing/sequences/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.seq.new}</ButtonLink>} />
       {q.data && q.data.excludedNoWa > 0 && <p role="status" className="mb-4 bg-info-bg px-4 py-3 text-small text-info">{fill(c.seq.excludedBar, { n: n(q.data.excludedNoWa) })}</p>}
       <SavedViewTabs views={TABS.map((k) => ({ key: k, label: c.seq.tabs[k] }))} active={tab} onChange={(k) => setUrlParams({ tab: k === "all" ? null : k })} />
       <div className="mt-4 grid gap-5 xl:grid-cols-[1fr_22rem]">

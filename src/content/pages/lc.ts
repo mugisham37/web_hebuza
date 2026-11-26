@@ -12,7 +12,7 @@ const en = {
     submit: "Track",
     signIn: "Have an account? Sign in",
     start: "Start a new request",
-    tip1: "Your code starts with HBZ — it's in your SMS",
+    tip1: "Your code starts with HBZ, it's in your SMS",
     tip2: "See every step, what's missing and what's next",
     invalidTitle: "There is a problem",
     invalidBody: "That doesn't look right. Codes look like HBZ-WMVX19.",
@@ -51,8 +51,8 @@ const en = {
   legal: {
     eyebrow: "Legal",
     contents: "On this page",
-    version: "Draft — not in force",
-    review: "Placeholder text — pending legal review. Not a binding document.",
+    version: "Draft, not in force",
+    review: "Placeholder text, pending legal review. Not a binding document.",
     rightsTitle: "Your data, your rights",
     rightsBody: "You can ask for a copy of your data or ask us to delete it.",
     rightsCta: "Privacy settings",
@@ -84,7 +84,7 @@ const en = {
     support: "Contact support",
     offlineBody:
       "Your drafts are saved on this phone and will send when you're back online.",
-    offlineBanner: "Offline — your changes will send when you reconnect",
+    offlineBanner: "Offline, your changes will send when you reconnect",
     saved: "Saved on this phone",
   },
 };
@@ -101,7 +101,7 @@ const rw: LcCopy = {
     submit: "Kurikirana",
     signIn: "Ufite konti? Injira",
     start: "Tangira ubusabe bushya",
-    tip1: "Kode yawe itangirwa na HBZ — iri muri SMS yawe",
+    tip1: "Kode yawe itangirwa na HBZ, iri muri SMS yawe",
     tip2: "Reba buri ntambwe, ibibura n'ibikurikiraho",
     invalidTitle: "Hari ikibazo",
     invalidBody: "Ibi ntibisa neza. Kode zimeze nka HBZ-WMVX19.",
@@ -141,9 +141,9 @@ const rw: LcCopy = {
   legal: {
     eyebrow: "Amategeko",
     contents: "Kuri uru rupapuro",
-    version: "Inyandiko y'agateganyo — ntirakurikizwa",
+    version: "Inyandiko y'agateganyo, ntirakurikizwa",
     review:
-      "Inyandiko y'agateganyo — itegereje gusuzumwa n'abanyamategeko. Ntabwo ari amasezerano.",
+      "Inyandiko y'agateganyo, itegereje gusuzumwa n'abanyamategeko. Ntabwo ari amasezerano.",
     rightsTitle: "Amakuru yawe, uburenganzira bwawe",
     rightsBody: "Ushobora gusaba kopi y'amakuru yawe cyangwa ko tuyasiba.",
     rightsCta: "Igenamiterere ry'ibanga",
@@ -175,7 +175,7 @@ const rw: LcCopy = {
     support: "Vugana n'ubufasha",
     offlineBody:
       "Ibyo wanditse bibitswe kuri iyi telefoni kandi bizoherezwa nugaruka kuri murandasi.",
-    offlineBanner: "Nta murandasi — impinduka zizoherezwa nugaruka",
+    offlineBanner: "Nta murandasi, impinduka zizoherezwa nugaruka",
     saved: "Bibitswe kuri iyi telefoni",
   },
 };
@@ -191,7 +191,7 @@ const fr: LcCopy = {
     submit: "Suivre",
     signIn: "Vous avez un compte ? Connexion",
     start: "Nouvelle demande",
-    tip1: "Votre code commence par HBZ — il est dans votre SMS",
+    tip1: "Votre code commence par HBZ, il est dans votre SMS",
     tip2: "Voyez chaque étape, ce qui manque et la suite",
     invalidTitle: "Il y a un problème",
     invalidBody:
@@ -233,9 +233,9 @@ const fr: LcCopy = {
   legal: {
     eyebrow: "Mentions légales",
     contents: "Sur cette page",
-    version: "Projet — non en vigueur",
+    version: "Projet, non en vigueur",
     review:
-      "Texte provisoire — en attente de revue juridique. Document non contractuel.",
+      "Texte provisoire, en attente de revue juridique. Document non contractuel.",
     rightsTitle: "Vos données, vos droits",
     rightsBody:
       "Vous pouvez demander une copie de vos données ou leur suppression.",
@@ -268,7 +268,7 @@ const fr: LcCopy = {
     support: "Contacter le support",
     offlineBody:
       "Vos brouillons sont enregistrés sur ce téléphone et partiront dès votre retour en ligne.",
-    offlineBanner: "Hors ligne — vos modifications partiront à la reconnexion",
+    offlineBanner: "Hors ligne, vos modifications partiront à la reconnexion",
     saved: "Enregistré sur ce téléphone",
   },
 };

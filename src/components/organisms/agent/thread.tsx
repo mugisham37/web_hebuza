@@ -493,6 +493,7 @@ function Composer({
       <div className="flex flex-wrap items-center gap-2">
         <div
           role="radiogroup"
+          data-guide="msg-mode"
           aria-label={c.compose.modeLabel}
           className="inline-flex bg-ink-100 p-1"
         >
@@ -583,6 +584,7 @@ function Composer({
           size="icon"
           variant="ghost"
           className="size-9"
+          data-guide="msg-attach"
           aria-label={c.compose.attach}
           title={c.compose.attach}
           onClick={() => file.current?.click()}
@@ -592,6 +594,7 @@ function Composer({
         <Button
           size="sm"
           variant="ghost"
+          data-guide="msg-templates"
           onClick={() => setDlg("tpl")}
         >
           {c.compose.templates}
@@ -601,6 +604,7 @@ function Composer({
           variant="ghost"
           disabled={internal}
           title={internal ? c.compose.cardsClientOnly : undefined}
+          data-guide="msg-cards"
           onClick={() => setDlg("card")}
         >
           <Icon name="plus" size={14} aria-hidden />
@@ -624,7 +628,7 @@ function Composer({
         >
           {internal ? c.compose.internalHint : c.compose.enterHint}
         </span>
-        <Button type="submit" size="sm" disabled={!draft.trim()}>
+        <Button type="submit" size="sm" data-guide="msg-send" disabled={!draft.trim()}>
           {internal ? c.compose.sendNote : c.compose.send}
         </Button>
       </div>

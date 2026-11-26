@@ -648,7 +648,7 @@ export function CallbackForm({ topics, onDone }: { topics: Topic[]; onDone?: (id
         <Field id="phone" label={c.details.phone} error={errors.phone}>{(p) => (<Input id={p.id} aria-describedby={p.describedBy} aria-invalid={p.invalid || undefined} type="tel" value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} autoComplete="tel" />)}</Field>
         <Field id="email" label={c.details.email} optional={c.common.optional} error={errors.email}>{(p) => (<Input id={p.id} aria-describedby={p.describedBy} aria-invalid={p.invalid || undefined} type="email" value={v.email} onChange={(e) => setV({ ...v, email: e.target.value })} autoComplete="email" />)}</Field>
       </div>
-      <Field id="topic" label={c.callback.topic} error={errors.topic}>{(p) => (<Select id={p.id} aria-describedby={p.describedBy} aria-invalid={p.invalid || undefined} value={v.topic} onChange={(e) => setV({ ...v, topic: e.target.value })}><option value="">—</option>{topics.map((t) => <option key={t.slug} value={t.slug}>{t.name}</option>)}</Select>)}</Field>
+      <Field id="topic" label={c.callback.topic} error={errors.topic}>{(p) => (<Select id={p.id} aria-describedby={p.describedBy} aria-invalid={p.invalid || undefined} value={v.topic} onChange={(e) => setV({ ...v, topic: e.target.value })}><option value=""></option>{topics.map((t) => <option key={t.slug} value={t.slug}>{t.name}</option>)}</Select>)}</Field>
       <fieldset>
         <legend className="mb-2 text-label">{c.callback.times}</legend>
         <div className="flex flex-wrap gap-2">

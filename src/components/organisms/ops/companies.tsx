@@ -61,8 +61,8 @@ export function CompanyQueue() {
               {q.data.rows.map((r) => (
                 <tr key={r.id}>
                   <td className="px-4 py-3"><button type="button" className="text-left font-medium underline underline-offset-2" onClick={() => setOpen(r.id)}>{r.name}</button></td>
-                  <td className="px-4 py-3 font-mono tabular">{r.tin ?? "—"}{r.duplicateTin && <span className="ml-2"><Badge tone="danger">{c.dupTin}</Badge></span>}</td>
-                  <td className="px-4 py-3 font-mono tabular">{r.customerNo ?? "—"}</td>
+                  <td className="px-4 py-3 font-mono tabular">{r.tin ?? ""}{r.duplicateTin && <span className="ml-2"><Badge tone="danger">{c.dupTin}</Badge></span>}</td>
+                  <td className="px-4 py-3 font-mono tabular">{r.customerNo ?? ""}</td>
                   <td className="px-4 py-3 tabular">{r.members}</td>
                   <td className="px-4 py-3"><Badge tone={TONE[r.verificationStatus]}>{c.status[r.verificationStatus]}</Badge></td>
                   <td className="px-4 py-3 tabular">{formatDate(r.createdAt, locale)}</td>
@@ -105,9 +105,9 @@ function CompanyDetail({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="grid gap-5 text-small">
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
             <dt className="text-fg-muted">{c.cols.name}</dt><dd>{d.legalName}</dd>
-            <dt className="text-fg-muted">{c.cols.tin}</dt><dd className="font-mono">{d.tin ?? "—"}</dd>
-            <dt className="text-fg-muted">RDB</dt><dd className="font-mono">{d.rdbNumber ?? "—"}</dd>
-            <dt className="text-fg-muted">{c.cols.customer}</dt><dd className="font-mono">{d.customerNo ?? "—"}</dd>
+            <dt className="text-fg-muted">{c.cols.tin}</dt><dd className="font-mono">{d.tin ?? ""}</dd>
+            <dt className="text-fg-muted">RDB</dt><dd className="font-mono">{d.rdbNumber ?? ""}</dd>
+            <dt className="text-fg-muted">{c.cols.customer}</dt><dd className="font-mono">{d.customerNo ?? ""}</dd>
             <dt className="text-fg-muted">{c.cols.status}</dt><dd><Badge tone={TONE[d.verificationStatus]}>{c.status[d.verificationStatus]}</Badge></dd>
           </dl>
           <section>

@@ -95,7 +95,7 @@ export function SlaView() {
           <h1 className="text-h2">{c.title}</h1>
           <p className="text-body text-fg-muted">{c.lede}</p>
         </div>
-        <Button
+        <Button data-guide="ops-sla-rules"
           variant="outline"
           size="sm"
           aria-expanded={showRules}
@@ -253,7 +253,7 @@ function SlaCard({ x, active }: { x: CaseVM; active: boolean }) {
         {lead ? (
           <Avatar name={lead.name} size="sm" />
         ) : (
-          <span className="text-eyebrow text-fg-subtle">—</span>
+          <span className="text-eyebrow text-fg-subtle"></span>
         )}
       </span>
       <span className="truncate text-small text-fg-muted">{x.service}</span>
@@ -380,7 +380,7 @@ function Ladder({ x }: { x: CaseVM }) {
         })}
       </ol>
       <div className="grid gap-2 sm:grid-cols-2">
-        <Button
+        <Button data-guide="ops-sla-extend"
           size="sm"
           dots
           onClick={() => setExtend(true)}
@@ -402,7 +402,7 @@ function Ladder({ x }: { x: CaseVM }) {
         >
           {c.actions.message}
         </ButtonLink>
-        <Button
+        <Button data-guide="ops-sla-escalate"
           size="sm"
           variant="ghost"
           className="sm:col-span-2"

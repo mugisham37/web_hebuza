@@ -58,7 +58,7 @@ const en = {
   export: { label: "Export", queued: "Queued", running: "Preparing…", ready: "Download", failed: "Export failed", expired: "Link expired", logged: "Export logged in the audit trail", retry: "Export again" },
   conflict: { title: "This record changed", body: "{who} changed it {when}. Refresh to see the latest before you continue.", refresh: "Refresh" },
   noAccess: { title: "No access to Finance", body: "This area is for the finance team. Executives can open the approvals waiting for them.", exec: "Open my approvals", home: "Go to my workspace" },
-  stepUp: { cancelled: "Cancelled — nothing changed." },
+  stepUp: { cancelled: "Cancelled, nothing changed." },
   sim: { label: "Simulate", hint: "Mock mode only" },
   states: { loading: "Loading…", error: "Couldn't load this.", retry: "Try again", empty: "Nothing here yet." },
 };
@@ -120,7 +120,7 @@ const rw: Copy = {
   export: { label: "Kohereza hanze", queued: "Biri ku murongo", running: "Biri gutegurwa…", ready: "Kuramo", failed: "Byanze", expired: "Ihuza ryarangiye", logged: "Byanditswe mu bubiko bw'igenzura", retry: "Ongera wohereze" },
   conflict: { title: "Iyi nyandiko yahindutse", body: "{who} yayihinduye {when}. Ongera ufungure urebe ibiheruka mbere yo gukomeza.", refresh: "Ongera ufungure" },
   noAccess: { title: "Nta burenganzira ku Mari", body: "Uyu mwanya ni uw'itsinda ry'imari. Abayobozi bashobora gufungura ibyemezo bibategereje.", exec: "Fungura ibyemezo byanjye", home: "Jya ku mwanya wanjye" },
-  stepUp: { cancelled: "Byahagaritswe — nta cyahindutse." },
+  stepUp: { cancelled: "Byahagaritswe, nta cyahindutse." },
   sim: { label: "Igerageza", hint: "Mu buryo bw'igerageza gusa" },
   states: { loading: "Biri gufunguka…", error: "Ntibyafunguye.", retry: "Ongera ugerageze", empty: "Nta kintu kirahari." },
 };
@@ -181,7 +181,7 @@ const fr: Copy = {
   export: { label: "Exporter", queued: "En file", running: "Préparation…", ready: "Télécharger", failed: "Échec de l'export", expired: "Lien expiré", logged: "Export consigné dans l'audit", retry: "Exporter à nouveau" },
   conflict: { title: "Cet enregistrement a changé", body: "{who} l'a modifié {when}. Actualisez pour voir la dernière version avant de continuer.", refresh: "Actualiser" },
   noAccess: { title: "Pas d'accès à la Finance", body: "Cet espace est réservé à l'équipe finance. La direction peut ouvrir les validations qui l'attendent.", exec: "Ouvrir mes validations", home: "Aller à mon espace" },
-  stepUp: { cancelled: "Annulé — rien n'a changé." },
+  stepUp: { cancelled: "Annulé, rien n'a changé." },
   sim: { label: "Simuler", hint: "Mode maquette uniquement" },
   states: { loading: "Chargement…", error: "Impossible de charger.", retry: "Réessayer", empty: "Rien pour l'instant." },
 };

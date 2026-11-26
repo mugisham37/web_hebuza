@@ -31,7 +31,7 @@ export function TemplatesView() {
   const items = q.data?.items ?? [];
   return (
     <>
-      <PageHead title={c.tpl.title} sub={c.tpl.sub} actions={<Button onClick={() => setCreating(true)}>{c.tpl.new}</Button>} />
+      <PageHead title={c.tpl.title} sub={c.tpl.sub} actions={<Button data-guide="marketing-new-template" onClick={() => setCreating(true)}>{c.tpl.new}</Button>} />
       <div className="mb-4 flex flex-wrap gap-2">
         <Select aria-label={c.list.channel} className="w-auto" value={channel} onChange={(e) => setUrlParams({ channel: e.target.value || null })}>
           <option value="">{mc.common.all}</option>{(["whatsapp", "email", "sms"] as const).map((x) => <option key={x} value={x}>{c.common.channel[x]}</option>)}

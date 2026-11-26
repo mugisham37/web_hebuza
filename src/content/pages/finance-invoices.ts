@@ -18,7 +18,7 @@ const en = {
   back: "All invoices",
   tabs: { details: "Details", payments: "Payments", credit: "Credit notes", documents: "Documents", reminders: "Reminders", history: "History", disbursements: "Disbursements" } as Record<string, string>,
   dsb: { intro: "Third-party costs paid for this case. Each one adds a pass-through line to the case's draft invoice so the client is rebilled.", vendor: "Vendor", label: "What was paid", amount: "Amount (RWF)", bill: "Vendor bill no. (optional)", add: "Record disbursement", added: "Disbursement recorded on draft {key}.", empty: "No disbursements on this case.", err: "disbursements", pick: "Choose a vendor", noVendors: "No vendors you can use. Ask procurement to add the vendor first." },
-  fields: { client: "Client", case: "Case reference", issued: "Issue date", due: "Due date", series: "Series", language: "PDF language", quote: "From quote", none: "—" },
+  fields: { client: "Client", case: "Case reference", issued: "Issue date", due: "Due date", series: "Series", language: "PDF language", quote: "From quote", none: "" },
   side: {
     balance: "Balance due", payments: "Payments", noPayments: "No confirmed payments yet.", ebm: "EBM receipt number",
     ebmHint: "Required before the invoice counts as final for tax.", ebmSave: "Save EBM number", ebmSaved: "EBM number saved",
@@ -50,7 +50,7 @@ const en = {
   overpay: "Overpaid amounts go to the client's credit balance.",
   deposit: { title: "Deposit invoice", body: "Part of quote {no}. The balance invoice follows." },
   overdueBy: "Overdue",
-  draftNote: "Draft — numbers are assigned on issue. You can still edit lines.",
+  draftNote: "Draft, numbers are assigned on issue. You can still edit lines.",
   voided: "Voided: {reason}",
   ebmMissing: "EBM missing",
   phone: { view: "View details", readOnly: "Editing invoices needs a larger screen. Continue on desktop." },
@@ -68,7 +68,7 @@ const en = {
   sim: { renewal: "Run the monthly renewal job" },
   forbidden: "Invoices are for finance users.",
   stale: "Refreshing before this money action…",
-  offline: "You're offline — money actions are off.",
+  offline: "You're offline, money actions are off.",
 };
 type Copy = typeof en;
 
@@ -89,7 +89,7 @@ const rw: Copy = {
   back: "Inyemezabuguzi zose",
   tabs: { details: "Ibisobanuro", payments: "Ubwishyu", credit: "Inyemezabuguzi zisubiza", documents: "Inyandiko", reminders: "Ibyibutsa", history: "Amateka", disbursements: "Ibyishyuwe abandi" },
   dsb: { intro: "Amafaranga yishyuwe abandi kuri iyi dosiye. Buri imwe yongera umurongo kuri fagitire y'agateganyo kugira ngo umukiriya ayishyure.", vendor: "Utanga serivisi", label: "Icyishyuwe", amount: "Amafaranga (RWF)", bill: "Nimero ya fagitire ye (si ngombwa)", add: "Andika icyishyuwe", added: "Byanditswe kuri fagitire y'agateganyo {key}.", empty: "Nta byishyuwe abandi kuri iyi dosiye.", err: "ibyishyuwe abandi", pick: "Hitamo utanga serivisi", noVendors: "Nta batanga serivisi uhari. Saba abashinzwe kugura kubanza kumwandika." },
-  fields: { client: "Umukiriya", case: "Dosiye", issued: "Itariki yatangiweho", due: "Itariki ntarengwa", series: "Ubwoko", language: "Ururimi rwa PDF", quote: "Bivuye ku nyemezabiciro", none: "—" },
+  fields: { client: "Umukiriya", case: "Dosiye", issued: "Itariki yatangiweho", due: "Itariki ntarengwa", series: "Ubwoko", language: "Ururimi rwa PDF", quote: "Bivuye ku nyemezabiciro", none: "" },
   side: {
     balance: "Ibisigaye kwishyurwa", payments: "Ubwishyu", noPayments: "Nta bwishyu bwemejwe buraboneka.", ebm: "Nimero ya EBM",
     ebmHint: "Irakenewe mbere y'uko inyemezabuguzi ifatwa nk'iya nyuma ku misoro.", ebmSave: "Bika nimero ya EBM", ebmSaved: "Nimero ya EBM yabitswe",
@@ -121,7 +121,7 @@ const rw: Copy = {
   overpay: "Amafaranga yarenze ajya mu nguzanyo y'umukiriya.",
   deposit: { title: "Inyemezabuguzi y'ingwate", body: "Igice cy'inyemezabiciro {no}. Iy'ibisigaye irakurikira." },
   overdueBy: "Yarengeje igihe",
-  draftNote: "Imbanzirizamushinga — nimero itangwa igihe itanzwe. Urashobora guhindura imirongo.",
+  draftNote: "Imbanzirizamushinga, nimero itangwa igihe itanzwe. Urashobora guhindura imirongo.",
   voided: "Yahagaritswe: {reason}",
   ebmMissing: "Nta EBM",
   phone: { view: "Reba ibisobanuro", readOnly: "Guhindura inyemezabuguzi bisaba ecran nini. Komereza kuri mudasobwa." },
@@ -139,7 +139,7 @@ const rw: Copy = {
   sim: { renewal: "Koresha igikorwa cy'ivugurura cya buri kwezi" },
   forbidden: "Inyemezabuguzi ni iz'abakozi b'imari.",
   stale: "Birimo kuvugururwa mbere y'iki gikorwa cy'amafaranga…",
-  offline: "Nta murandasi — ibikorwa by'amafaranga birahagaritswe.",
+  offline: "Nta murandasi, ibikorwa by'amafaranga birahagaritswe.",
 };
 
 const fr: Copy = {
@@ -159,7 +159,7 @@ const fr: Copy = {
   back: "Toutes les factures",
   tabs: { details: "Détails", payments: "Paiements", credit: "Avoirs", documents: "Documents", reminders: "Relances", history: "Historique", disbursements: "Débours" },
   dsb: { intro: "Frais tiers payés pour ce dossier. Chacun ajoute une ligne de débours au brouillon de facture du dossier pour refacturer le client.", vendor: "Fournisseur", label: "Objet du paiement", amount: "Montant (RWF)", bill: "N° de facture fournisseur (facultatif)", add: "Enregistrer le débours", added: "Débours enregistré sur le brouillon {key}.", empty: "Aucun débours sur ce dossier.", err: "débours", pick: "Choisir un fournisseur", noVendors: "Aucun fournisseur disponible. Demandez aux achats de l'ajouter." },
-  fields: { client: "Client", case: "Dossier", issued: "Date d'émission", due: "Échéance", series: "Série", language: "Langue du PDF", quote: "Issue du devis", none: "—" },
+  fields: { client: "Client", case: "Dossier", issued: "Date d'émission", due: "Échéance", series: "Série", language: "Langue du PDF", quote: "Issue du devis", none: "" },
   side: {
     balance: "Solde dû", payments: "Paiements", noPayments: "Aucun paiement confirmé.", ebm: "Numéro de reçu EBM",
     ebmHint: "Requis avant que la facture soit définitive pour la fiscalité.", ebmSave: "Enregistrer le numéro EBM", ebmSaved: "Numéro EBM enregistré",
@@ -191,7 +191,7 @@ const fr: Copy = {
   overpay: "Les trop-perçus vont au crédit du client.",
   deposit: { title: "Facture d'acompte", body: "Partie du devis {no}. La facture de solde suit." },
   overdueBy: "En retard",
-  draftNote: "Brouillon — le numéro est attribué à l'émission. Les lignes restent modifiables.",
+  draftNote: "Brouillon, le numéro est attribué à l'émission. Les lignes restent modifiables.",
   voided: "Annulée : {reason}",
   ebmMissing: "EBM manquant",
   phone: { view: "Voir le détail", readOnly: "La modification des factures nécessite un grand écran. Continuez sur ordinateur." },
@@ -209,7 +209,7 @@ const fr: Copy = {
   sim: { renewal: "Lancer le renouvellement mensuel" },
   forbidden: "Les factures sont réservées aux finances.",
   stale: "Actualisation avant cette action financière…",
-  offline: "Vous êtes hors ligne — actions financières désactivées.",
+  offline: "Vous êtes hors ligne, actions financières désactivées.",
 };
 
 const ALL: Record<Locale, Copy> = { en, rw, fr };

@@ -121,8 +121,8 @@ export function ReceiptBuilder({ visit, direction: initialDir = "collected", sup
 
       <dl className="grid grid-cols-3 gap-2 bg-ink-100 p-3 text-small">
         <div><dt className="text-eyebrow text-fg-subtle">{t.place}</dt><dd className="font-medium">{visit.institution ?? visit.address}</dd></div>
-        <div><dt className="text-eyebrow text-fg-subtle">{t.time}</dt><dd className="font-medium tabular">{now ? hhmm(new Date(now).toISOString(), locale) : "—"}</dd></div>
-        <div><dt className="text-eyebrow text-fg-subtle">{t.agent}</dt><dd className="font-medium">{me.data?.name ?? "—"}</dd></div>
+        <div><dt className="text-eyebrow text-fg-subtle">{t.time}</dt><dd className="font-medium tabular">{now ? hhmm(new Date(now).toISOString(), locale) : ""}</dd></div>
+        <div><dt className="text-eyebrow text-fg-subtle">{t.agent}</dt><dd className="font-medium">{me.data?.name ?? ""}</dd></div>
       </dl>
 
       <PhotoCapture label={t.itemsPhoto} value={d.photo} onCapture={({ file, ...p }) => { void file; setD((x) => ({ ...x, photo: p })); }} />
@@ -137,7 +137,7 @@ export function ReceiptBuilder({ visit, direction: initialDir = "collected", sup
         <div className="mb-4 flex gap-1 bg-ink-100 p-1" role="group" aria-label={t.signTitle}>
           <button type="button" aria-pressed={sign === "pad"} onClick={() => setSign("pad")} className={cx("h-10 flex-1 text-small font-medium", sign === "pad" ? "bg-surface shadow-sm" : "text-fg-muted")}>{t.draw} / {t.type}</button>
           <button type="button" aria-pressed={sign === "sms"} onClick={() => setSign("sms")} className={cx("h-10 flex-1 text-small font-medium", sign === "sms" ? "bg-surface shadow-sm" : "text-fg-muted")}>
-            {t.sms}{!online && <span className="sr-only"> — {t.smsOffline}</span>}
+            {t.sms}{!online && <span className="sr-only">, {t.smsOffline}</span>}
           </button>
         </div>
         {sign === "pad" && (

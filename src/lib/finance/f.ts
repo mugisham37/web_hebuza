@@ -77,7 +77,7 @@ export function showValue(k: FinanceSettingKey, v: unknown, l: Locale, u: { days
     case "money": return formatMoney(Number(v), "RWF", l);
     case "days": return u.days.replace("{n}", String(v));
     case "day": return u.dayOfMonth.replace("{n}", String(v));
-    default: return String(v ?? "—");
+    default: return String(v ?? "");
   }
 }
 /** Form string → API value; `undefined` when invalid. Percent → bps (integer). */

@@ -52,7 +52,7 @@ export function RetentionQueue() {
                 <tr key={f.id}>
                   <td className="px-4 py-3">{f.label}</td>
                   <td className="px-4 py-3">{c.classes[f.retentionClass] ?? f.retentionClass}</td>
-                  <td className="px-4 py-3 font-mono">{f.caseCode ?? "—"}</td>
+                  <td className="px-4 py-3 font-mono">{f.caseCode ?? ""}</td>
                   <td className="px-4 py-3 tabular">{formatDate(f.anchorAt, locale)}</td>
                   <td className="px-4 py-3">
                     {f.decision ? <Badge tone={f.decision === "shred" ? "danger" : undefined}>{f.decision === "shred" ? c.shredded : c.kept}{f.reason ? ` · ${f.reason}` : ""}</Badge> : (

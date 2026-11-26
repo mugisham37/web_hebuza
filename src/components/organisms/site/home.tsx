@@ -1,22 +1,22 @@
 import Link from "next/link";
 import type { Locale } from "@/shared/i18n/config";
 import { localHref } from "@/shared/i18n/config";
-import { images } from "@/lib/assets";
 import type { FamilyVM } from "@/lib/catalogue";
 import { FACES } from "@/content/families";
 import { getCopy, INSTITUTION_ROWS } from "@/content/marketing";
+import { getUpdates } from "@/lib/marketing/cms/read";
+import { formatDate } from "@/shared/format";
 import { ButtonLink } from "@/components/atoms/button";
 import { Tag } from "@/components/atoms/tag";
 import { Icon } from "@/components/atoms/icon";
-import { BigNumber, FaceCluster, GridLines, } from "@/components/atoms/brand";
+import { BigNumber, FaceCluster } from "@/components/atoms/brand";
 import { HeroIntro, Reveal } from "@/components/atoms/motion";
-import { FamilyCard, GuideCard, SectionHead, StepCard } from "@/components/molecules/site/site";
+import { FamilyCard, SectionHead, StepCard } from "@/components/molecules/site/site";
 import type { ShowCat } from "@/components/molecules/site/showcase";
 import { InstitutionsBrowser } from "@/components/organisms/site/institutions";
 import { HeroShowcase } from "@/components/organisms/site/hero-showcase";
 import { TrackForm } from "@/components/organisms/site/interactive";
 
-const GUIDE_IMG: Record<string, string> = images as unknown as Record<string, string>;
 
 /** Hero slides per category: its top services (featured, then most requested), each with a photo (the service's own, else
  *  the category's, else an unused one from the pool so a category never repeats a photo). */
@@ -49,11 +49,10 @@ export function HomeHero({ locale, families }: { locale: Locale; families: Famil
   const h = getCopy(locale).hero;
   return (
     <section className="relative overflow-hidden px-gutter pt-(--spacing-home-hero-top) pb-(--spacing-home-hero-bottom)">
-      <GridLines />
       {/* The page title stays for search engines and screen readers; the poster carries the visible headlines. */}
       <h1 className="sr-only">{h.title} {h.acronym}</h1>
       <HeroIntro className="container-page relative">
-        <div data-hero="visual"><HeroShowcase cats={showcaseCats(locale, families)} allHref={localHref(locale, "/services")} startHref={localHref(locale, "/services")} copy={h.showcase} intro={{ ...h.intro, title: `${h.title} ${h.acronym}` }} /></div>
+        <div data-hero="visual"><HeroShowcase cats={showcaseCats(locale, families)} startHref={localHref(locale, "/services")} copy={h.showcase} intro={{ ...h.intro, title: h.title, acronym: h.acronym, consult: h.secondary, consultHref: localHref(locale, "/book"), faces: FACES.slice(0, 4), services: families.reduce((n, f) => n + f.count, 0), areas: families.length }} /></div>
       </HeroIntro>
     </section>
   );
@@ -62,7 +61,7 @@ export function HomeHero({ locale, families }: { locale: Locale; families: Famil
 export function TrackerAndRibbon({ locale }: { locale: Locale }) {
   const m = getCopy(locale);
   return (
-    <section className="px-gutter pb-(--spacing-home)">
+    <section className="px-gutter py-[calc(var(--spacing-home)*0.6)]">{/* own colour band now: card centred, equal space above and below */}
       <Reveal preset="rise-md" className="container-page"><TrackForm copy={m.tracker} /></Reveal>
     </section>
   );
@@ -146,19 +145,28 @@ export function HowItWorksBand({ locale }: { locale: Locale }) {
   );
 }
 
-export function Guides({ locale }: { locale: Locale }) {
-  const g = getCopy(locale).guides;
+/** Home "Updates" band: the three newest regulatory updates from the CMS, each linking to its page. */
+export async function LatestUpdates({ locale }: { locale: Locale }) {
+  const g = getCopy(locale).latest;
   const L = (p: string) => localHref(locale, p);
+  const list = [...(await getUpdates())].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
   return (
     <section className="px-gutter py-(--spacing-home)">
       <Reveal className="container-page">
-        <SectionHead tag={g.tag} title={g.title} aside={<ButtonLink href={L("/knowledge")} variant="secondary" dots>{g.cta}</ButtonLink>} />
-        <Reveal tabIndex={0} preset="rise-lg" each className="no-scrollbar -mx-gutter mt-8 flex snap-x gap-3 overflow-x-auto px-gutter md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
-          {g.items.map((it) => <GuideCard key={it.title} img={GUIDE_IMG[it.img]} tag={it.tag} date={it.date} read={it.read} title={it.title} excerpt={it.excerpt} href={L("/knowledge")} compact />)}
+        <SectionHead tag={g.tag} title={g.title} aside={<ButtonLink href={L("/updates")} variant="secondary" dots>{g.cta}</ButtonLink>} />
+        <Reveal preset="rise-lg" each className="ramp-light mt-8 grid gap-4 md:grid-cols-3">
+          {list.map((u) => (
+            <Link key={u.slug} href={L(`/updates/${u.slug}`)} className="group flex flex-col gap-3 border border-border bg-white p-6 transition-colors hover:border-navy-300">
+              <span className="flex items-center justify-between gap-3 text-small">
+                <span className="bg-secondary px-2.5 py-1 font-medium text-on-secondary">{u.inst}</span>
+                <span className="text-fg-subtle tabular">{formatDate(u.date, locale)}</span>
+              </span>
+              <span className="text-card-title text-fg-heading group-hover:underline">{u.t[locale].title}</span>
+              <span className="line-clamp-2 text-small text-fg-muted">{u.t[locale].changed}</span>
+              <Icon name="arrowRight" size={16} className="mt-auto self-end text-navy-700" />
+            </Link>
+          ))}
         </Reveal>
-        <Link data-reveal href={L("/updates")} className="mt-3 flex flex-wrap items-center gap-3 border border-sky-300 bg-white px-5 py-2.5 text-body text-navy-700 transition-colors hover:bg-sky-100">
-          <Tag variant="selected" className="h-7 text-eyebrow">{g.update}</Tag>{g.updateText}<Icon name="arrowRight" size={16} className="ml-auto" />
-        </Link>
       </Reveal>
     </section>
   );

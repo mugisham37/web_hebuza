@@ -101,7 +101,7 @@ function Picker({
   const ref = useRef<HTMLInputElement>(null);
   return (
     <>
-      <Button size="sm" variant={variant} onClick={() => ref.current?.click()}>
+      <Button size="sm" variant={variant} data-guide="case-upload" onClick={() => ref.current?.click()}>
         <Icon name="upload" size={14} aria-hidden />
         {label}
       </Button>
@@ -375,7 +375,7 @@ function Returned({ data }: { data: DeliverablesVM }) {
                 <div className="grid min-w-[18rem] grid-cols-2 overflow-hidden border border-border text-small">
                   <p className="bg-ink-100 p-2 font-medium">{prev.v}</p>
                   <p className="bg-tint p-2 font-medium">
-                    {draft ? `${draft.v} (${d.draft})` : `— (${d.draft})`}
+                    {draft ? `${draft.v} (${d.draft})` : `(${d.draft})`}
                   </p>
                   <p className="p-2 text-danger">
                     <span aria-hidden>− </span>
@@ -779,6 +779,7 @@ export function CaseDeliverables({ caseRef }: { caseRef: string }) {
             <Button
               dots
               className="max-lg:w-full max-lg:justify-center"
+              data-guide="case-submit"
               aria-disabled={blockers.length > 0 || undefined}
               onClick={() => !blockers.length && setOpen(true)}
             >

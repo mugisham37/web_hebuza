@@ -80,7 +80,7 @@ export function AccountingExport() {
 
   function next() {
     if (step === "period") {
-      const e = !from || !to || from > to ? [{ field: "j-from", message: `${c.period}: ${from || "—"} – ${to || "—"}` }] : [];
+      const e = !from || !to || from > to ? [{ field: "j-from", message: `${c.period}: ${from || ""} – ${to || ""}` }] : [];
       setErrors(e);
       if (!e.length) go("map");
     } else if (step === "map") {
@@ -190,8 +190,8 @@ export function AccountingExport() {
                               {pv.data.byAccount.map((r) => (
                                 <tr key={r.account} className="border-t border-border">
                                   <th scope="row" className="p-3 text-left font-normal"><span className="mr-2 bg-ink-100 px-1.5 py-0.5 text-eyebrow tabular">{r.code}</span>{c.accounts[r.account]}</th>
-                                  <td className="p-3 text-right">{r.debit ? <Amount value={r.debit} size="sm" /> : "—"}</td>
-                                  <td className="p-3 text-right">{r.credit ? <Amount value={r.credit} size="sm" /> : "—"}</td>
+                                  <td className="p-3 text-right">{r.debit ? <Amount value={r.debit} size="sm" /> : ""}</td>
+                                  <td className="p-3 text-right">{r.credit ? <Amount value={r.credit} size="sm" /> : ""}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -207,7 +207,7 @@ export function AccountingExport() {
                                 <tr key={i} className="border-t border-border">
                                   <td className="p-3 tabular text-fg-muted">{formatDate(r.date, locale)}</td><td className="p-3 tabular">{r.ref}</td>
                                   <td className="p-3"><span className="tabular text-fg-subtle">{r.code}</span> {c.accounts[r.account]}</td>
-                                  <td className="p-3 text-right">{r.debit ? <Amount value={r.debit} size="sm" /> : "—"}</td><td className="p-3 text-right">{r.credit ? <Amount value={r.credit} size="sm" /> : "—"}</td>
+                                  <td className="p-3 text-right">{r.debit ? <Amount value={r.debit} size="sm" /> : ""}</td><td className="p-3 text-right">{r.credit ? <Amount value={r.credit} size="sm" /> : ""}</td>
                                 </tr>
                               ))}
                             </tbody>

@@ -312,7 +312,7 @@ function LoadTab() {
                       <Availability a={a} />
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <Button
+                      <Button data-guide="ops-agent-view"
                         size="sm"
                         variant="outline"
                         onClick={() => open(a.id)}

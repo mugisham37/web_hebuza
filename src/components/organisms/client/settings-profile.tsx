@@ -83,6 +83,7 @@ export function ProfileSettings() {
           </div>
         ) : (
           <form
+            data-guide="client-profile-form"
             noValidate
             onSubmit={onSubmit}
             className="grid gap-5 md:grid-cols-2"
@@ -144,6 +145,7 @@ export function ProfileSettings() {
         <Field label={c.settings.language.label} className="max-w-sm">
           {({ id }) => (
             <Select
+              data-guide="client-profile-language"
               id={id}
               value={locale}
               onChange={(e) => setLanguage(e.target.value as Locale)}
@@ -251,7 +253,7 @@ function PhotoPanel() {
             </>
           ) : (
             <>
-              <Button variant="outline" disabled={busy || q.isPending} onClick={() => input.current?.click()}>
+              <Button data-guide="client-profile-photo" variant="outline" disabled={busy || q.isPending} onClick={() => input.current?.click()}>
                 {q.data?.url ? p.photoChange : p.photoPick}
               </Button>
               {q.data?.url && (

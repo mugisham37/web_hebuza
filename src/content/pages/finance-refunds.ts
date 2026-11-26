@@ -47,13 +47,13 @@ const en = {
   stages: { before_work: "Before work started", assigned: "Assigned, not started", in_progress: "In progress", submitted: "Submitted to institution", completed: "Delivered", duplicate: "Duplicate payment" } as Record<string, string>,
   calc: {
     title: "Policy calculator", stage: "Case stage", max: "Max of eligible fee", eligible: "Eligible part", vat: "VAT (proportional)",
-    passThrough: "Government & third-party fees", spent: "Already spent", unspent: "Not spent — refund them", suggested: "Suggested refund",
+    passThrough: "Government & third-party fees", spent: "Already spent", unspent: "Not spent, refund them", suggested: "Suggested refund",
     dup: "Duplicate payments bypass the stage policy (100%).", policy: "Policy by stage", pct: "Refund %", use: "Use suggestion",
   },
   sm: { title: "Service manager recommendation", none: "Waiting for the service manager.", changed: "Amount changed from {amount}" },
   impact: {
     title: "Allocation impact", allocated: "Allocated", reversal: "Reversal", net: "Net", paid: "Already paid out → adjustment in the next payout batch",
-    voided: "Full refund before payout → allocation voided", none: "No allocation on this case yet — nothing to reverse.",
+    voided: "Full refund before payout → allocation voided", none: "No allocation on this case yet, nothing to reverse.",
   },
   chain: "Approvals",
   approve: "Approve {amount}",
@@ -62,20 +62,20 @@ const en = {
   approveWhat: "approve refund {no}",
   executeWhat: "pay out refund {no}",
   why: {
-    same_approver: "You changed or already signed this refund — another person signs the next step.",
+    same_approver: "You changed or already signed this refund, another person signs the next step.",
     forbidden: "The next step belongs to someone else.", complete: "Every step is signed.",
     exec: "Waiting for an executive.", readOnly: "Read-only for you.",
   },
-  offline: "You're offline — money actions are disabled until you reconnect.",
+  offline: "You're offline, money actions are disabled until you reconnect.",
   locked: "Today's period is closed. Ask for a reopen before approving.",
   toast: {
-    approved: "Refund approved · credit note {cn} issued", needsExec: "Signed — now waiting for an executive", adjusted: "Saved — approval starts again",
+    approved: "Refund approved · credit note {cn} issued", needsExec: "Signed, now waiting for an executive", adjusted: "Saved, approval starts again",
     rejected: "Refund rejected", executing: "Payout started", refunded: "Refund paid", credit: "Kept as client credit",
   },
   adjustDlg: {
     title: "Adjust refund", amount: "Refund amount", max: "Up to {amount} can still be refunded", method: "Pay back by", dest: "New number or account",
     destHint: "Leave empty to pay the payer's number. A new destination needs an executive.", note: "Why are you changing it?",
-    notice: "Changing the amount, method or destination restarts finance approval — and you won't be able to approve it yourself.",
+    notice: "Changing the amount, method or destination restarts finance approval, and you won't be able to approve it yourself.",
     save: "Save and restart approval", tooMuch: "That's more than can still be refunded.", needNote: "Say why you're changing it.", needAmount: "Enter an amount above zero.",
   },
   rejectDlg: {
@@ -88,7 +88,7 @@ const en = {
     inProgress: "In progress…", processing: "Refunding via {method}", to: "to {dest}", mayTake: "This may take up to 2 minutes.",
     failed: "Payout failed", retry: "Retry", change: "Change method", proof: "Bank transfer proof", proofHint: "PDF or photo of the transfer slip.",
     markPaid: "Mark paid", start: "Pay {amount}", done: "Paid · ref {ref}", proofDone: "Paid by bank transfer · proof attached",
-    waiting: "Approved. A finance user who didn't sign it pays it out.", credit: "Kept as credit on the client's account — nothing to pay out.",
+    waiting: "Approved. A finance user who didn't sign it pays it out.", credit: "Kept as credit on the client's account, nothing to pay out.",
   },
   cn: {
     title: "Credit note", created: "Credit note {no} created", invoice: "Linked invoice", refund: "Refund", client: "Client", amount: "Amount",
@@ -152,7 +152,7 @@ const rw: Copy = {
   stages: { before_work: "Mbere y'akazi", assigned: "Yahawe umukozi, ntiyatangira", in_progress: "Akazi karakorwa", submitted: "Byoherejwe ku kigo", completed: "Byatanzwe", duplicate: "Kwishyura kabiri" },
   calc: {
     title: "Ibarura rya politiki", stage: "Icyiciro", max: "Ntarengwa ku mafaranga agabanywa", eligible: "Igice kigabanywa", vat: "TVA (ijyanye)",
-    passThrough: "Amafaranga ya Leta n'abandi", spent: "Yamaze gukoreshwa", unspent: "Ntiyakoreshejwe — asubizwe", suggested: "Igitekerezo cyo gusubiza",
+    passThrough: "Amafaranga ya Leta n'abandi", spent: "Yamaze gukoreshwa", unspent: "Ntiyakoreshejwe, asubizwe", suggested: "Igitekerezo cyo gusubiza",
     dup: "Kwishyura kabiri ntibikurikiza politiki y'icyiciro (100%).", policy: "Politiki ku cyiciro", pct: "% isubizwa", use: "Koresha igitekerezo",
   },
   sm: { title: "Icyifuzo cy'umuyobozi wa serivisi", none: "Bitegereje umuyobozi wa serivisi.", changed: "Amafaranga yahinduwe avuye kuri {amount}" },
@@ -167,20 +167,20 @@ const rw: Copy = {
   approveWhat: "kwemeza gusubiza {no}",
   executeWhat: "kwishyura gusubiza {no}",
   why: {
-    same_approver: "Wahinduye cyangwa wasinye uku gusubiza — undi muntu ni we usinya intambwe ikurikira.",
+    same_approver: "Wahinduye cyangwa wasinye uku gusubiza, undi muntu ni we usinya intambwe ikurikira.",
     forbidden: "Intambwe ikurikira ni iy'undi muntu.", complete: "Intambwe zose zarasinywe.",
     exec: "Bitegereje umuyobozi.", readOnly: "Ushobora kureba gusa.",
   },
-  offline: "Nta interineti — ibikorwa by'amafaranga birahagaritswe kugeza wongeye kwihuza.",
+  offline: "Nta interineti, ibikorwa by'amafaranga birahagaritswe kugeza wongeye kwihuza.",
   locked: "Igihe cy'uyu munsi cyafunzwe. Saba ko cyongera gufungurwa mbere yo kwemeza.",
   toast: {
-    approved: "Byemejwe · inyandiko y'inguzanyo {cn} yatanzwe", needsExec: "Wasinye — bitegereje umuyobozi", adjusted: "Byabitswe — kwemeza kongeye gutangira",
+    approved: "Byemejwe · inyandiko y'inguzanyo {cn} yatanzwe", needsExec: "Wasinye, bitegereje umuyobozi", adjusted: "Byabitswe, kwemeza kongeye gutangira",
     rejected: "Byanzwe", executing: "Kwishyura kwatangiye", refunded: "Byishyuwe", credit: "Byabitswe nk'inguzanyo y'umukiriya",
   },
   adjustDlg: {
     title: "Hindura gusubiza", amount: "Amafaranga asubizwa", max: "Kugeza kuri {amount} bishobora gusubizwa", method: "Uburyo bwo kwishyura", dest: "Nimero cyangwa konti nshya",
     destHint: "Siga ubusa wishyure nimero y'uwishyuye. Aho kohereza hashya hasaba umuyobozi.", note: "Kuki ubihindura?",
-    notice: "Guhindura amafaranga, uburyo cyangwa aho byoherezwa bitangiza bushya kwemeza — kandi ntuzashobora kubyemeza wowe ubwawe.",
+    notice: "Guhindura amafaranga, uburyo cyangwa aho byoherezwa bitangiza bushya kwemeza, kandi ntuzashobora kubyemeza wowe ubwawe.",
     save: "Bika utangize kwemeza", tooMuch: "Birenze ibishobora gusubizwa.", needNote: "Vuga impamvu ubihindura.", needAmount: "Andika amafaranga arenze zeru.",
   },
   rejectDlg: {
@@ -193,7 +193,7 @@ const rw: Copy = {
     inProgress: "Birakorwa…", processing: "Gusubiza binyuze kuri {method}", to: "kuri {dest}", mayTake: "Bishobora gufata iminota 2.",
     failed: "Kwishyura kwanze", retry: "Ongera ugerageze", change: "Hindura uburyo", proof: "Icyemezo cyo kohereza kuri banki", proofHint: "PDF cyangwa ifoto y'urupapuro rwo kohereza.",
     markPaid: "Emeza ko byishyuwe", start: "Ishyura {amount}", done: "Byishyuwe · ref {ref}", proofDone: "Byishyuwe kuri banki · icyemezo cyometseho",
-    waiting: "Byemejwe. Umukozi w'imari utarasinye ni we ubyishyura.", credit: "Byabitswe nk'inguzanyo ku mukiriya — nta kwishyura.",
+    waiting: "Byemejwe. Umukozi w'imari utarasinye ni we ubyishyura.", credit: "Byabitswe nk'inguzanyo ku mukiriya, nta kwishyura.",
   },
   cn: {
     title: "Inyandiko y'inguzanyo", created: "Inyandiko y'inguzanyo {no} yakozwe", invoice: "Inyemezabuguzi bijyanye", refund: "Gusubiza", client: "Umukiriya", amount: "Amafaranga",
@@ -256,13 +256,13 @@ const fr: Copy = {
   stages: { before_work: "Avant travaux", assigned: "Attribué, non commencé", in_progress: "En cours", submitted: "Déposé auprès de l'institution", completed: "Livré", duplicate: "Paiement en double" },
   calc: {
     title: "Calcul selon la politique", stage: "Étape du dossier", max: "Max. des honoraires éligibles", eligible: "Part éligible", vat: "TVA (proportionnelle)",
-    passThrough: "Frais publics et de tiers", spent: "Déjà dépensés", unspent: "Non dépensés — à rembourser", suggested: "Remboursement suggéré",
+    passThrough: "Frais publics et de tiers", spent: "Déjà dépensés", unspent: "Non dépensés, à rembourser", suggested: "Remboursement suggéré",
     dup: "Les paiements en double échappent à la politique par étape (100 %).", policy: "Politique par étape", pct: "% remboursé", use: "Utiliser la suggestion",
   },
   sm: { title: "Recommandation du responsable de service", none: "En attente du responsable de service.", changed: "Montant modifié depuis {amount}" },
   impact: {
     title: "Impact sur les répartitions", allocated: "Alloué", reversal: "Reprise", net: "Net", paid: "Déjà versé → ajustement au prochain lot de paiement",
-    voided: "Remboursement total avant versement → répartition annulée", none: "Aucune répartition sur ce dossier — rien à reprendre.",
+    voided: "Remboursement total avant versement → répartition annulée", none: "Aucune répartition sur ce dossier, rien à reprendre.",
   },
   chain: "Approbations",
   approve: "Approuver {amount}",
@@ -271,20 +271,20 @@ const fr: Copy = {
   approveWhat: "approuver le remboursement {no}",
   executeWhat: "verser le remboursement {no}",
   why: {
-    same_approver: "Vous avez modifié ou déjà signé ce remboursement — une autre personne signe l'étape suivante.",
+    same_approver: "Vous avez modifié ou déjà signé ce remboursement, une autre personne signe l'étape suivante.",
     forbidden: "L'étape suivante revient à quelqu'un d'autre.", complete: "Toutes les étapes sont signées.",
     exec: "En attente de la direction.", readOnly: "Lecture seule pour vous.",
   },
-  offline: "Vous êtes hors ligne — les actions sur l'argent sont désactivées jusqu'à la reconnexion.",
+  offline: "Vous êtes hors ligne, les actions sur l'argent sont désactivées jusqu'à la reconnexion.",
   locked: "La période du jour est clôturée. Demandez sa réouverture avant d'approuver.",
   toast: {
-    approved: "Remboursement approuvé · avoir {cn} émis", needsExec: "Signé — en attente de la direction", adjusted: "Enregistré — l'approbation recommence",
+    approved: "Remboursement approuvé · avoir {cn} émis", needsExec: "Signé, en attente de la direction", adjusted: "Enregistré, l'approbation recommence",
     rejected: "Remboursement refusé", executing: "Versement lancé", refunded: "Remboursement versé", credit: "Conservé en crédit client",
   },
   adjustDlg: {
     title: "Ajuster le remboursement", amount: "Montant à rembourser", max: "Jusqu'à {amount} restent remboursables", method: "Rembourser par", dest: "Nouveau numéro ou compte",
     destHint: "Laissez vide pour payer le numéro du payeur. Une nouvelle destination exige la direction.", note: "Pourquoi le modifier ?",
-    notice: "Modifier le montant, le moyen ou la destination relance l'approbation finance — et vous ne pourrez pas l'approuver vous-même.",
+    notice: "Modifier le montant, le moyen ou la destination relance l'approbation finance, et vous ne pourrez pas l'approuver vous-même.",
     save: "Enregistrer et relancer", tooMuch: "Montant supérieur au remboursable restant.", needNote: "Indiquez pourquoi.", needAmount: "Saisissez un montant supérieur à zéro.",
   },
   rejectDlg: {
@@ -297,7 +297,7 @@ const fr: Copy = {
     inProgress: "En cours…", processing: "Remboursement via {method}", to: "vers {dest}", mayTake: "Cela peut prendre jusqu'à 2 minutes.",
     failed: "Versement échoué", retry: "Réessayer", change: "Changer de moyen", proof: "Preuve de virement", proofHint: "PDF ou photo du bordereau.",
     markPaid: "Marquer comme versé", start: "Verser {amount}", done: "Versé · réf. {ref}", proofDone: "Versé par virement · preuve jointe",
-    waiting: "Approuvé. Un utilisateur finance qui ne l'a pas signé effectue le versement.", credit: "Conservé en crédit sur le compte client — rien à verser.",
+    waiting: "Approuvé. Un utilisateur finance qui ne l'a pas signé effectue le versement.", credit: "Conservé en crédit sur le compte client, rien à verser.",
   },
   cn: {
     title: "Avoir", created: "Avoir {no} créé", invoice: "Facture liée", refund: "Remboursement", client: "Client", amount: "Montant",

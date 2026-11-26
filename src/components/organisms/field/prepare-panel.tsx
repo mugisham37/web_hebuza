@@ -68,7 +68,7 @@ export function PreparePanel() {
         </ul>
         {(size ?? eng.bundle?.bytesEstimate) ? <p className="text-small text-fg-muted tabular">{fill(d.estimate, { size: kb(size ?? eng.bundle!.bytesEstimate) })}</p> : null}
         <NeedsConnection online={online}>
-          <Button variant="primary" size="lg" className="w-full justify-center" disabled={!online || busy} loading={busy} onClick={download}>
+          <Button variant="primary" size="lg" data-guide="field-download" className="w-full justify-center" disabled={!online || busy} loading={busy} onClick={download}>
             {busy ? d.downloading : ready ? d.redownload : d.download}
           </Button>
         </NeedsConnection>

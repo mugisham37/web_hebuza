@@ -80,6 +80,7 @@ export function NotificationsView() {
               {n.prefs}
             </ButtonLink>
             <Button
+              data-guide="client-notif-markall"
               size="sm"
               onClick={() => mark.mutate(undefined)}
               disabled={!unread}
@@ -156,7 +157,7 @@ export function NotificationsView() {
             {formatRelative(x.created_at, locale)}
           </time>
         </div>
-        <div className="flex gap-2">
+        <div data-guide="client-notif-actions" className="flex gap-2">
           {x.href && (
             <Link
               href={localHref(locale, x.href)}

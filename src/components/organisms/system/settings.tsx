@@ -129,7 +129,7 @@ export function SettingsView({ group }: { group: string }) {
   if (q.isError && !q.data && errorState(q.error) === "locked") return <LockedContent reason="role" />;
 
   const nav = (
-    <nav aria-label={c.groupsLabel} className="lg:sticky lg:top-24 lg:self-start">
+    <nav data-guide="system-settings-groups" aria-label={c.groupsLabel} className="lg:sticky lg:top-24 lg:self-start">
       <label className="lg:hidden">
         <span className="sr-only">{c.groupsLabel}</span>
         <select value={valid ? g : ""} onChange={(e) => go(`/system/settings/${e.target.value}`)} className="h-11 w-full border border-border-strong bg-surface px-3 text-body">
@@ -407,7 +407,7 @@ function Maintenance({ c, valueOf, set, errFor, values, disabled, toned }: BodyP
   const scheduled = win && now && Date.parse(win.start) > now;
   const dOn = settingDef("maintenance.on")!, dMsg = settingDef("maintenance.message")!, dWin = settingDef("maintenance.window")!;
   const msgErr = errFor("maintenance.message"), winErr = errFor("maintenance.window");
-  const preview = msg[lang] || msg.en || "—";
+  const preview = msg[lang] || msg.en || "";
   return (
     <div className="grid gap-4">
       <Card className={cx(toned.includes("maintenance.on") && "m-tone")}>
@@ -643,7 +643,7 @@ function SaveBar(p: {
             {!p.online ? <span className="block text-danger">{c.save.offline}</span> : approval && <span className="block text-fg-muted">{c.save.approvalNote}</span>}
           </p>
           <Button variant="ghost" size="sm" onClick={p.onDiscard}>{c.save.discard}</Button>
-          <Button size="sm" onClick={p.onSave} loading={p.busy} disabled={!p.online}>{p.busy ? c.save.saving : approval ? c.save.sendForApproval : c.save.save}</Button>
+          <Button size="sm" data-guide="system-settings-save" onClick={p.onSave} loading={p.busy} disabled={!p.online}>{p.busy ? c.save.saving : approval ? c.save.sendForApproval : c.save.save}</Button>
         </div>
       </div>
     </div>

@@ -63,7 +63,7 @@ export function MediaView() {
   return (
     <div>
       <PageHead title={c.titles.media} sub={c.subs.media} />
-      <label onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); take(e.dataTransfer.files); }}
+      <label data-guide="marketing-upload" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); take(e.dataTransfer.files); }}
         className="mb-4 grid cursor-pointer place-items-center gap-1 border-2 border-dashed border-border-strong bg-white px-4 py-8 text-center hover:border-navy-300 focus-within:outline-2 focus-within:outline-focus">
         <Icon name="upload" size={22} aria-hidden className="text-link" />
         <span className="text-label">{c.media.drop}</span>
@@ -83,7 +83,7 @@ export function MediaView() {
             </li>))}</ul>
         </div>
       )}
-      <div className="mb-4 flex flex-wrap gap-1" role="toolbar">
+      <div data-guide="marketing-media-filters" className="mb-4 flex flex-wrap gap-1" role="toolbar">
         {["all", "image", "pdf", "unused"].map((k) => <button key={k} type="button" aria-pressed={filter === k && !missing} onClick={() => setUrlParams({ type: k === "all" ? null : k, missingAlt: null })} className={cx("h-9 px-3 text-small", filter === k && !missing ? "bg-secondary text-on-secondary" : "bg-white hover:bg-ink-100")}>{c.media.filters[k]}</button>)}
         {LOCALES.map((l) => <button key={l} type="button" aria-pressed={missing === l} onClick={() => setUrlParams({ missingAlt: missing === l ? null : l, type: null })} className={cx("h-9 px-3 text-small", missing === l ? "bg-secondary text-on-secondary" : "bg-white hover:bg-ink-100")}>{fill(c.media.filters.missingAlt, { l: l.toUpperCase() })}</button>)}
       </div>

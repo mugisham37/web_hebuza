@@ -245,10 +245,10 @@ function Side({ d, q }: { d: InvoiceDetail; q: Q }) {
       {live && (
         <section className="grid gap-2">
           {payable && <ButtonLink href={localHref(locale, `/finance/payments?tab=record&invoice=${inv.no}`)} dots aria-disabled={!online} className="m-press">{c.actions.record}</ButtonLink>}
-          {payable && <Button variant="outline" disabled={!online} title={off} onClick={() => { setKey(newIdempotencyKey()); setRemind(true); }}>{c.actions.remind}</Button>}
+          {payable && <Button data-guide="finance-inv-remind" variant="outline" disabled={!online} title={off} onClick={() => { setKey(newIdempotencyKey()); setRemind(true); }}>{c.actions.remind}</Button>}
           {(inv.status === "paid" || inv.status === "partially_paid") && <ButtonLink variant="outline" href={localHref(locale, `/finance/refunds?new=credit&invoice=${inv.no}`)}>{c.actions.creditNote}</ButtonLink>}
           {canVoid
-            ? <Button variant="ghost" className="text-danger" disabled={!online} title={off} onClick={() => setVoid(true)}>{c.actions.void}</Button>
+            ? <Button data-guide="finance-inv-void" variant="ghost" className="text-danger" disabled={!online} title={off} onClick={() => setVoid(true)}>{c.actions.void}</Button>
             : inv.status !== "credited" && <p className="flex items-start gap-2 bg-bg-subtle p-3 text-small text-fg-muted"><Icon name="lock" size={14} aria-hidden className="mt-0.5 shrink-0" />{c.voidBlocked}</p>}
         </section>
       )}

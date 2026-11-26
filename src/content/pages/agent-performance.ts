@@ -23,7 +23,7 @@ const en = {
   teamMedian: "Team median",
   period: "Period",
   ending: "to {date}",
-  footnote: "Compared with the team median — no colleagues are named.",
+  footnote: "Compared with the team median, no colleagues are named.",
   byService: "By service",
   byServiceLabel: "Performance by service",
   cols: {
@@ -75,7 +75,7 @@ const rw: Copy = {
   period: "Igihe",
   ending: "kugeza {date}",
   footnote:
-    "Ugereranyijwe n'ihagati ry'itsinda — nta mukozi mugenzi uvugwa izina.",
+    "Ugereranyijwe n'ihagati ry'itsinda, nta mukozi mugenzi uvugwa izina.",
   byService: "Ku serivisi",
   byServiceLabel: "Imikorere ku serivisi",
   cols: {
@@ -125,7 +125,7 @@ const fr: Copy = {
   teamMedian: "Médiane équipe",
   period: "Période",
   ending: "au {date}",
-  footnote: "Comparé à la médiane de l'équipe — aucun collègue n'est nommé.",
+  footnote: "Comparé à la médiane de l'équipe, aucun collègue n'est nommé.",
   byService: "Par service",
   byServiceLabel: "Performances par service",
   cols: {

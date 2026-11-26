@@ -105,7 +105,7 @@ export function OrgsView() {
     <>
       <PageHead title={o.title} lede={o.lede} />
       <div className="mb-4 flex justify-end">
-        <Button dots onClick={() => setAdding(true)}>{o.add}</Button>
+        <Button data-guide="client-orgs-add" dots onClick={() => setAdding(true)}>{o.add}</Button>
       </div>
       {!orgs.length ? (
         <EmptyState title={o.none} body={o.noneBody} />
@@ -142,6 +142,7 @@ export function OrgsView() {
                     <Badge tone="success">{o.active}</Badge>
                   ) : (
                     <Button
+                      data-guide="client-orgs-switch"
                       size="sm"
                       variant="outline"
                       loading={sw.isPending && sw.variables?.id === org.id}
@@ -153,11 +154,11 @@ export function OrgsView() {
                 }
               >
                 <div className="mb-4 flex flex-wrap items-center gap-2 text-small">
-                  <Link href={localHref(locale, `/orgs/${org.id}`)} className="font-medium text-link underline underline-offset-2">{o.open}</Link>
+                  <Link data-guide="client-orgs-open" href={localHref(locale, `/orgs/${org.id}`)} className="font-medium text-link underline underline-offset-2">{o.open}</Link>
                   <Badge tone={TONE[org.verificationStatus]}>{o.status[org.verificationStatus]}</Badge>
                   {org.customerNo && <span className="text-fg-muted">{o.customerNo}: <span className="font-mono tabular">{org.customerNo}</span></span>}
                   {manage && (org.verificationStatus === "unverified" || org.verificationStatus === "rejected") && (
-                    <Button size="sm" variant="outline" loading={verify.isPending && verify.variables?.id === org.id} onClick={() => verify.mutate(org)} title={o.verifyHint}>{o.askVerify}</Button>
+                    <Button data-guide="client-orgs-verify" size="sm" variant="outline" loading={verify.isPending && verify.variables?.id === org.id} onClick={() => verify.mutate(org)} title={o.verifyHint}>{o.askVerify}</Button>
                   )}
                   {org.verificationStatus === "rejected" && org.verificationNote && <p className="basis-full text-danger">{org.verificationNote}</p>}
                 </div>
@@ -166,7 +167,7 @@ export function OrgsView() {
                     {o.members} ({org.members.length})
                   </h3>
                   {manage ? (
-                    <Button size="sm" dots onClick={() => setInviteTo(org)}>
+                    <Button data-guide="client-orgs-invite" size="sm" dots onClick={() => setInviteTo(org)}>
                       {o.invite}
                     </Button>
                   ) : (
@@ -395,7 +396,7 @@ export function AddOrg({ onClose, onDone, edit }: { onClose: () => void; onDone:
         {!edit && <Field label={o.sizeBand} optional={t("common.optional")}>
           {({ id }) => (
             <Select id={id} name="sizeBand" defaultValue="">
-              <option value="">—</option>
+              <option value=""></option>
               {SIZES.map((k) => <option key={k} value={k}>{o.sizes[k]}</option>)}
             </Select>
           )}

@@ -156,7 +156,7 @@ export function CustodyChip({ count, since }: { count: number; since?: string })
   if (!count) return null;
   return (
     <span className="inline-flex items-center gap-2 rounded-none bg-warning-bg px-3 py-2 text-small font-medium text-fg">
-      <Icon name="lock" size={16} aria-hidden />{fill(c.custody, { n: count, time: since ? hhmm(since, locale) : "—" })}
+      <Icon name="lock" size={16} aria-hidden />{fill(c.custody, { n: count, time: since ? hhmm(since, locale) : "" })}
     </span>
   );
 }
@@ -191,7 +191,7 @@ export function QuotaBar({ used, quota }: { used: number; quota: number }) {
 export function LocalRef({ localRef, serverRef }: { localRef: string; serverRef?: string | null }) {
   const { c } = useFieldCopy();
   if (serverRef) return <span key={serverRef} className="m-pop inline-flex h-6 items-center rounded-none bg-ink-100 px-2 font-mono text-eyebrow normal-case">{serverRef}</span>;
-  return <span title={c.localRefHint} className="inline-flex h-6 items-center rounded-none border border-dashed border-border-strong px-2 font-mono text-eyebrow normal-case text-fg-subtle">{localRef}<span className="sr-only"> — {c.localRefHint}</span></span>;
+  return <span title={c.localRefHint} className="inline-flex h-6 items-center rounded-none border border-dashed border-border-strong px-2 font-mono text-eyebrow normal-case text-fg-subtle">{localRef}<span className="sr-only">, {c.localRefHint}</span></span>;
 }
 
 /** Disabled-with-reason wrapper for server-only actions while offline (never hidden, plan §4). */

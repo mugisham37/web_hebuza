@@ -10,7 +10,7 @@ import { resolveConflict } from "@/lib/field/sync";
 import type { ConflictPayload } from "@/shared/field/types";
 
 const show = (v: unknown, c: ReturnType<typeof useFieldCopy>["c"]): string => {
-  if (v == null || v === "") return "—";
+  if (v == null || v === "") return "";
   if (Array.isArray(v)) return v.map((x) => show(x, c)).join(" · ");
   const s = String(v);
   return (c.status as Record<string, string>)[s] ?? (c.outcome as Record<string, string>)[s] ?? s;
@@ -20,7 +20,7 @@ export function ConflictReview({ opId, payload, onDone }: { opId: string; payloa
   const { c } = useFieldCopy();
   const d = useCopyD();
   const toast = useToast();
-  const manager = useFieldMe().data?.manager ?? "—";
+  const manager = useFieldMe().data?.manager ?? "";
   const [busy, setBusy] = useState<"office" | "escalate" | null>(null);
   const mine = payload.mine as Record<string, unknown>;
   const what = show(mine.outcome ?? mine.status, c);

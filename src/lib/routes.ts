@@ -6,11 +6,11 @@ import type { Workspace } from "@/shared/auth/roles";
 export const PUBLIC_PLANNED = [
   "/pricing", "/about", "/about/team", "/faq", "/contact", "/track",
   "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility",
-  "/knowledge", "/updates", "/book", "/pay", "/apply", "/offline",
+  "/updates", "/guides", "/book", "/pay", "/apply", "/offline",
 ] as const;
 
 /** Dynamic children allowed under these (e.g. /apply/[slug], /track/[code]) until their stage ships. */
-export const PUBLIC_PREFIXES = ["apply", "pay", "track", "knowledge", "updates"] as const;
+export const PUBLIC_PREFIXES = ["apply", "pay", "track", "updates", "guides"] as const;
 
 
 /** Optional catch-all params for one workspace prefix: "/ops" → [{rest:undefined},{rest:["intake"]},…]. */

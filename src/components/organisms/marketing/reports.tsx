@@ -92,7 +92,7 @@ function CampaignsTab({ r, model }: { r: Range; model: string }) {
                 <td className="p-3">{row.source}</td>
                 {[row.leads, row.consultations, row.requests, row.paid].map((n, i) => <td key={i} className="p-3 tabular">{formatNumber(n, locale)}</td>)}
                 <td className="p-3 tabular">{money(row.revenue)}</td><td className="p-3 tabular">{money(row.cost)}</td>
-                <td className="p-3 tabular">{row.cpl == null ? "—" : money(row.cpl)}</td><td className="p-3 tabular">{row.roi == null ? "—" : `${row.roi}%`}</td>
+                <td className="p-3 tabular">{row.cpl == null ? "" : money(row.cpl)}</td><td className="p-3 tabular">{row.roi == null ? "" : `${row.roi}%`}</td>
               </tr>
               {open === row.id && (
                 <tr className="bg-bg-subtle"><td colSpan={10} className="p-3">
@@ -121,8 +121,8 @@ function LeadsTab({ r }: { r: Range }) {
       <>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
           <KpiTile label={t.rep.leads.total} value={formatNumber(d.total, locale)} />
-          <KpiTile label={t.rep.leads.ttfr} value={d.ttfrHours == null ? "—" : fill(t.rep.leads.hours, { n: d.ttfrHours })} />
-          <KpiTile label={t.rep.leads.winRate} value={d.winRate == null ? "—" : `${d.winRate}%`} />
+          <KpiTile label={t.rep.leads.ttfr} value={d.ttfrHours == null ? "" : fill(t.rep.leads.hours, { n: d.ttfrHours })} />
+          <KpiTile label={t.rep.leads.winRate} value={d.winRate == null ? "" : `${d.winRate}%`} />
         </div>
         <div className="grid gap-4 lg:grid-cols-3">
           <Panel title={t.rep.leads.bySource}><Bars items={d.bySource.map((x) => ({ label: t.rep.leadSource[x.key] ?? x.key, value: x.n }))} /></Panel>
@@ -280,8 +280,8 @@ function ClientsTab({ r }: { r: Range }) {
         <KpiTile label={c.returning} value={formatNumber(d.returning, locale)} />
         <KpiTile label={c.active} value={formatNumber(d.active, locale)} />
         <KpiTile label={fill(c.inactive, { d: d.inactiveDays })} value={formatNumber(d.inactive, locale)} href={undefined} tone="warning" />
-        <KpiTile label={c.reactivation} value={d.reactivationRate == null ? "—" : `${d.reactivationRate}%`} note={d.reactivationRate == null ? c.pending : undefined} />
-        <KpiTile label={c.renewals} value={d.renewalsDue == null ? "—" : formatNumber(d.renewalsDue, locale)} note={d.renewalsDue == null ? c.pending : undefined} />
+        <KpiTile label={c.reactivation} value={d.reactivationRate == null ? "" : `${d.reactivationRate}%`} note={d.reactivationRate == null ? c.pending : undefined} />
+        <KpiTile label={c.renewals} value={d.renewalsDue == null ? "" : formatNumber(d.renewalsDue, locale)} note={d.renewalsDue == null ? c.pending : undefined} />
       </div>
     )}</Frame>
   );

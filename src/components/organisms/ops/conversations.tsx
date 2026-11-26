@@ -234,7 +234,7 @@ export function ConversationsConsole() {
                   key={r.conversation_id}
                   className="border-b border-border last:border-b-0"
                 >
-                  <button
+                  <button data-guide="ops-conv-item"
                     type="button"
                     aria-current={r.conversation_id === id || undefined}
                     onClick={() => pick(r.conversation_id)}
@@ -538,7 +538,7 @@ function Thread({
         </div>
         <SlaBadge since={since} now={now} c={c} />
         {!dm && !claimedBy && (
-          <Button size="sm" loading={claim.isPending} onClick={doClaim}>
+          <Button data-guide="ops-conv-claim" size="sm" loading={claim.isPending} onClick={doClaim}>
             {c.claim}
           </Button>
         )}
@@ -550,7 +550,7 @@ function Thread({
         {!dm && (
           <Button size="sm" variant="outline" onClick={() => setDlg("export")}>
             <Icon name="file" size={14} aria-hidden />
-            <span className="max-sm:sr-only">{c.exportTranscript}</span>
+            <span data-guide="ops-conv-export" className="max-sm:sr-only">{c.exportTranscript}</span>
           </Button>
         )}
         {!dm && <ComplaintButton id={id} />}
@@ -612,7 +612,7 @@ function Thread({
                 {l === "internal" && <Icon name="lock" size={12} aria-hidden />}
               </button>
             ))}
-            <Button
+            <Button data-guide="ops-conv-templates"
               type="button"
               size="sm"
               variant="ghost"

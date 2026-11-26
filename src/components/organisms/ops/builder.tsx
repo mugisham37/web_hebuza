@@ -312,10 +312,10 @@ function Editor({
           {chip}
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={() => setPreview(true)}>
+          <Button data-guide="ops-builder-preview" variant="outline" size="sm" onClick={() => setPreview(true)}>
             {c.builder.preview} <Kbd>P</Kbd>
           </Button>
-          <Button
+          <Button data-guide="ops-builder-publish"
             size="sm"
             dots
             onClick={() => setUrlParams({ step: "versions", publish: "1" })}
@@ -326,7 +326,7 @@ function Editor({
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]">
-        <nav aria-label={c.builder.rail} className="min-w-0">
+        <nav data-guide="ops-builder-steps" aria-label={c.builder.rail} className="min-w-0">
           <ol className="theme-dark flex gap-1 overflow-x-auto bg-navy-900 p-2 lg:grid lg:overflow-visible">
             {STEPS.map((s, i) => {
               const cur = s === step;

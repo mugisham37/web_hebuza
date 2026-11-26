@@ -94,9 +94,9 @@ const en = {
     },
     message: "Message to client",
     messageDefault:
-      "We're sorry — we can't take on this request. Our team can advise you in a free consultation.",
+      "We're sorry, we can't take on this request. Our team can advise you in a free consultation.",
     refund:
-      "Client paid {amount} via {m} — a refund request will be created for Finance.",
+      "Client paid {amount} via {m}, a refund request will be created for Finance.",
     consult: "Offer a free consultation instead",
     refundChip: "Refund requested",
   },
@@ -114,7 +114,7 @@ const en = {
     answers: "Client answers",
     shareholders: "Shareholders",
     total: "Total",
-    totalBad: "Shares total {n}% — should be 100%",
+    totalBad: "Shares total {n}%, should be 100%",
     groups: {
       company: "Company details",
       request: "Request details",
@@ -211,7 +211,7 @@ const en = {
   },
   quote: {
     open: "Build quotation",
-    title: "New quotation for {client} — {service}",
+    title: "New quotation for {client}, {service}",
     priceList: "From the price list",
     add: "Add",
     item: "Item",
@@ -434,9 +434,9 @@ const fr: OpsCaseCopy = {
     },
     message: "Message au client",
     messageDefault:
-      "Nous sommes désolés — nous ne pouvons pas traiter cette demande. Notre équipe peut vous conseiller lors d'une consultation gratuite.",
+      "Nous sommes désolés, nous ne pouvons pas traiter cette demande. Notre équipe peut vous conseiller lors d'une consultation gratuite.",
     refund:
-      "Le client a payé {amount} via {m} — une demande de remboursement sera créée pour la Finance.",
+      "Le client a payé {amount} via {m}, une demande de remboursement sera créée pour la Finance.",
     consult: "Proposer plutôt une consultation gratuite",
     refundChip: "Remboursement demandé",
   },
@@ -454,7 +454,7 @@ const fr: OpsCaseCopy = {
     answers: "Réponses du client",
     shareholders: "Actionnaires",
     total: "Total",
-    totalBad: "Total des parts : {n} % — doit être 100 %",
+    totalBad: "Total des parts : {n} %, doit être 100 %",
     groups: { company: "Société", request: "Détails de la demande" },
     checklist: "Liste de complétude",
     ofComplete: "{d} sur {t} complets",
@@ -545,7 +545,7 @@ const fr: OpsCaseCopy = {
   },
   quote: {
     open: "Établir un devis",
-    title: "Nouveau devis pour {client} — {service}",
+    title: "Nouveau devis pour {client}, {service}",
     priceList: "Depuis la grille tarifaire",
     add: "Ajouter",
     item: "Article",
@@ -767,9 +767,9 @@ const rw: OpsCaseCopy = {
     },
     message: "Ubutumwa ku mukiriya",
     messageDefault:
-      "Mutwihanganire — ntidushobora gukora ubu busabe. Itsinda ryacu rishobora kubagira inama mu kiganiro cy'ubuntu.",
+      "Mutwihanganire, ntidushobora gukora ubu busabe. Itsinda ryacu rishobora kubagira inama mu kiganiro cy'ubuntu.",
     refund:
-      "Umukiriya yishyuye {amount} na {m} — hazakorwa ubusabe bwo gusubizwa amafaranga kuri Finance.",
+      "Umukiriya yishyuye {amount} na {m}, hazakorwa ubusabe bwo gusubizwa amafaranga kuri Finance.",
     consult: "Mutange ahubwo ikiganiro cy'ubuntu",
     refundChip: "Gusubizwa byasabwe",
   },
@@ -787,7 +787,7 @@ const rw: OpsCaseCopy = {
     answers: "Ibisubizo by'umukiriya",
     shareholders: "Abanyamigabane",
     total: "Igiteranyo",
-    totalBad: "Imigabane yose ni {n}% — igomba kuba 100%",
+    totalBad: "Imigabane yose ni {n}%, igomba kuba 100%",
     groups: { company: "Amakuru y'ikigo", request: "Amakuru y'ubusabe" },
     checklist: "Igenzura ry'ibisabwa",
     ofComplete: "{d} kuri {t} byuzuye",
@@ -877,7 +877,7 @@ const rw: OpsCaseCopy = {
   },
   quote: {
     open: "Kora igiciro",
-    title: "Igiciro gishya cya {client} — {service}",
+    title: "Igiciro gishya cya {client}, {service}",
     priceList: "Biva ku rutonde rw'ibiciro",
     add: "Ongeraho",
     item: "Ikintu",

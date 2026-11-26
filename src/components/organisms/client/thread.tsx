@@ -236,7 +236,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
       )}
 
       <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
-        <label className="relative min-w-0 flex-1">
+        <label data-guide="client-thread-search" className="relative min-w-0 flex-1">
           <span className="sr-only">{c.search}</span>
           <Icon name="search" size={14} aria-hidden className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-fg-subtle" />
           <input
@@ -250,6 +250,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
         <Button
           size="sm"
           variant="ghost"
+          data-guide="client-thread-mute"
           aria-pressed={conv.muted}
           loading={mute.isPending}
           onClick={() => mute.mutate({ id, muted: !conv.muted })}
@@ -448,7 +449,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
         }}
       >
         {!text && !files.length && (
-          <div className="flex gap-2 overflow-x-auto">
+          <div data-guide="client-thread-quick" className="flex gap-2 overflow-x-auto">
             {c.quick.map((s) => (
               <button
                 key={s}
@@ -499,6 +500,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
             type="button"
             variant="ghost"
             size="icon"
+            data-guide="client-thread-attach"
             aria-label={c.attach}
             onClick={() => picker.current?.click()}
           >
@@ -511,6 +513,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
               value={text}
               placeholder={c.placeholder}
               aria-invalid={tooLong || undefined}
+              data-guide="client-thread-input"
               aria-describedby="c2-msg-hint"
               onChange={(e) => {
                 setText(e.target.value);
@@ -532,6 +535,7 @@ function Conversation({ conv, title }: { conv: Conv; title: string }) {
           <Button
             type="submit"
             size="icon"
+            data-guide="client-thread-send"
             aria-label={c.send}
             disabled={tooLong || (!text.trim() && !files.length)}
           >

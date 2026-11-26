@@ -169,7 +169,7 @@ export function ComplianceRulesView() {
         r.active && r.nextDates[0] ? (
           <span className="tabular">{day(r.nextDates[0], locale)}</span>
         ) : (
-          "—"
+          ""
         ),
     },
     {
@@ -233,7 +233,7 @@ export function ComplianceRulesView() {
           <h1 className="text-h2">{c.title}</h1>
           <p className="text-small text-fg-subtle">{c.lede}</p>
         </div>
-        <Button dots onClick={() => setEditing("new")}>
+        <Button data-guide="ops-new-rule" dots onClick={() => setEditing("new")}>
           {c.new} <Kbd>N</Kbd>
         </Button>
       </header>
@@ -301,7 +301,7 @@ export function ComplianceRulesView() {
             </span>
             <span className="text-small text-fg-subtle">
               {c.cols.next}:{" "}
-              {r.active && r.nextDates[0] ? day(r.nextDates[0], locale) : "—"}
+              {r.active && r.nextDates[0] ? day(r.nextDates[0], locale) : ""}
               {!r.verified && ` · ${c.unverified}`}
             </span>
           </span>

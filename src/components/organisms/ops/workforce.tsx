@@ -65,19 +65,19 @@ export function WorkforceView() {
     { key: "name", label: c.cols.name, sort: (w) => w.name, cell: (w) => <span className="grid"><span className="font-medium">{w.name}</span><span className="text-eyebrow text-fg-subtle">{w.role}</span></span> },
     { key: "type", label: c.cols.type, cell: (w) => <span className="text-small">{c.type[w.type]}{w.field ? ` · ${c.type.field}` : ""}</span> },
     { key: "status", label: c.cols.status, sort: (w) => w.status, cell: (w) => <ProcPill state={w.status} machine="worker" /> },
-    { key: "services", label: c.cols.services, wrap: true, card: false, cell: (w) => <span className="text-small text-fg-muted">{w.services.map(svcName).join(", ") || "—"}</span> },
+    { key: "services", label: c.cols.services, wrap: true, card: false, cell: (w) => <span className="text-small text-fg-muted">{w.services.map(svcName).join(", ") || ""}</span> },
     { key: "load", label: c.cols.load, sort: (w) => w.load.open / w.load.cap, cell: (w) => <span className="flex items-center gap-2"><CapacityBar load={w.load.open} cap={w.load.cap} className="w-20" /><span className="text-eyebrow tabular">{w.load.open}/{w.load.cap}</span></span> },
-    { key: "onTime", label: c.cols.onTime, align: "right", sort: (w) => w.onTimePct ?? -1, cell: (w) => <span className="tabular">{w.onTimePct != null ? `${w.onTimePct}%` : "—"}</span> },
-    { key: "rating", label: c.cols.rating, sort: (w) => w.rating ?? -1, cell: (w) => (w.rating ? <StarRating value={w.rating} /> : <span className="text-fg-subtle">—</span>) },
-    { key: "end", label: c.cols.contractEnd, sort: (w) => w.contractEnd ?? "", cell: (w) => <span className="text-small tabular">{w.contractEnd ? formatDate(w.contractEnd, locale) : "—"}</span> },
+    { key: "onTime", label: c.cols.onTime, align: "right", sort: (w) => w.onTimePct ?? -1, cell: (w) => <span className="tabular">{w.onTimePct != null ? `${w.onTimePct}%` : ""}</span> },
+    { key: "rating", label: c.cols.rating, sort: (w) => w.rating ?? -1, cell: (w) => (w.rating ? <StarRating value={w.rating} /> : <span className="text-fg-subtle"></span>) },
+    { key: "end", label: c.cols.contractEnd, sort: (w) => w.contractEnd ?? "", cell: (w) => <span className="text-small tabular">{w.contractEnd ? formatDate(w.contractEnd, locale) : ""}</span> },
   ];
 
   return (
     <div className="grid gap-5">
       <PageHead title={c.title} sub={c.sub} actions={<>
         <ButtonLink variant="secondary" href={localHref(locale, "/ops/workload?tab=approvals")}>{c.approvals}</ButtonLink>
-        <ButtonLink variant="secondary" href={localHref(locale, "/ops/workforce/applications")}>{c.apps.link}</ButtonLink>
-        {user && canAdmin(user.roles) && <ButtonLink href={localHref(locale, "/ops/workforce/new")} dots><Icon name="plus" size={16} aria-hidden />{c.add}</ButtonLink>}
+        <ButtonLink data-guide="ops-applications" variant="secondary" href={localHref(locale, "/ops/workforce/applications")}>{c.apps.link}</ButtonLink>
+        {user && canAdmin(user.roles) && <ButtonLink data-guide="ops-add-person" href={localHref(locale, "/ops/workforce/new")} dots><Icon name="plus" size={16} aria-hidden />{c.add}</ButtonLink>}
       </>} />
       <SavedViewTabs active={seg} onChange={(k) => setUrlParams({ seg: k === "all" ? null : k })}
         views={SEGS.map((s) => ({ key: s, label: c.seg[s], count: s === "all" ? all.length : all.filter((w) => (s === "field" ? w.field : w.type === s)).length }))} />

@@ -119,7 +119,7 @@ function BookingTable({ rows, onAct }: { rows: StaffBooking[]; onAct: (k: "reass
               <td className="px-3 py-2.5 font-mono">{b.reference}</td>
               <td className="max-w-[12rem] truncate px-3 py-2.5">{b.contactFull.name}{!b.clientId && <span className="ml-1 text-eyebrow text-fg-subtle">· {c.room.lead}</span>}</td>
               <td className="px-3 py-2.5">{b.typeName[locale]}</td>
-              <td className="px-3 py-2.5">{b.adviser?.name ?? "—"}</td>
+              <td className="px-3 py-2.5">{b.adviser?.name ?? ""}</td>
               <td className="px-3 py-2.5"><BkgStatus status={b.status} /></td>
               <td className="px-3 py-2.5 text-fg-muted">{b.source}</td>
               <td className="px-3 py-2.5">
@@ -202,7 +202,7 @@ function ActionDialog({ act, advisers, onClose }: { act: { kind: "reassign" | "c
       await bk(api.PATCH("/api/admin/bookings/{id}", { params: { path: { id: b.id } }, body: { action: kind, adviser_id: kind === "reassign" ? to : undefined, override: kind === "override" ? ov : undefined, reason, version: b.version }, headers: idem(key) }));
       toast({ title: c.common.saved, tone: "success" }); qc.invalidateQueries({ queryKey: ["bkg"] }); onClose();
     } catch (e) {
-      if (e instanceof BkgError && e.errorType === "slot_taken") setErr(`${advisers.find((a) => a.id === to)?.name ?? ""} — ${c.ops.busy}`);
+      if (e instanceof BkgError && e.errorType === "slot_taken") setErr(`${advisers.find((a) => a.id === to)?.name ?? ""}, ${c.ops.busy}`);
       else if (e instanceof BkgError && e.errorType === "version_conflict") { toast({ title: c.manage.changedByStaff, tone: "danger" }); qc.invalidateQueries({ queryKey: ["bkg"] }); onClose(); }
       else setErr(errorCopy(e, locale));
     } finally { setBusy(false); }
@@ -214,7 +214,7 @@ function ActionDialog({ act, advisers, onClose }: { act: { kind: "reassign" | "c
         <p className="text-small text-fg-muted tabular-nums">{b.contactFull.name} · {formatDay(b.startsAt, locale)} {formatTime(b.startsAt, locale)} · {b.typeName[locale]}</p>
         {kind === "reassign" && (
           <>
-            <Field label={c.ops.reassignTo}>{(f) => <Select id={f.id} value={to} onChange={(e) => setTo(e.target.value)}><option value="">—</option>{advisers.filter((a) => !a.deactivated && !a.onLeave).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</Select>}</Field>
+            <Field label={c.ops.reassignTo}>{(f) => <Select id={f.id} value={to} onChange={(e) => setTo(e.target.value)}><option value=""></option>{advisers.filter((a) => !a.deactivated && !a.onLeave).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</Select>}</Field>
             <p className="text-eyebrow text-fg-subtle">{c.ops.notify}</p>
           </>
         )}
@@ -267,7 +267,7 @@ export function BookOnBehalfDialog({ request, onClose }: { request?: CallbackReq
           <Field label={c.details.phone}>{(f) => <Input id={f.id} type="tel" value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />}</Field>
           <Field label={c.details.email} optional={c.common.optional}>{(f) => <Input id={f.id} type="email" value={v.email} onChange={(e) => setV({ ...v, email: e.target.value })} />}</Field>
         </div>
-        <Field label={c.ops.type}>{(f) => <Select id={f.id} value={slug} onChange={(e) => { setSlug(e.target.value); setHold(null); }}><option value="">—</option>{types.data?.types.filter((x) => x.isActive).map((x) => <option key={x.slug} value={x.slug}>{x.name[locale]}</option>)}</Select>}</Field>
+        <Field label={c.ops.type}>{(f) => <Select id={f.id} value={slug} onChange={(e) => { setSlug(e.target.value); setHold(null); }}><option value=""></option>{types.data?.types.filter((x) => x.isActive).map((x) => <option key={x.slug} value={x.slug}>{x.name[locale]}</option>)}</Select>}</Field>
         {t && (
           <>
             <fieldset className="flex flex-wrap gap-3"><legend className="mb-1 text-label">{c.topic.mode}</legend>{t.modes.map((m) => <Radio key={m} name="bm" label={c.mode[m]} checked={(v.mode || t.modes[0]) === m} onChange={() => setV({ ...v, mode: m })} />)}</fieldset>
@@ -316,7 +316,7 @@ function CallbackQueue() {
       {sched && <BookOnBehalfDialog request={sched} onClose={() => setSched(null)} />}
       <Dialog open={!!close} onClose={() => setClose(null)} title={c.ops.closeReq}
         footer={<><Button variant="ghost" onClick={() => setClose(null)}>{c.common.cancel}</Button><Button disabled={!reason.trim()} onClick={async () => {
-          try { await bk(api.PATCH("/api/admin/consultation-requests/{id}", { params: { path: { id: close!.id } }, body: { status: "closed", close_reason: reason }, headers: idem() })); qc.invalidateQueries({ queryKey: ["bkg"] }); setClose(null); }
+          try { await bk(api.PATCH("/api/admin/consultation-requests/{id}", { params: { path: { id: close?.id ?? "" } }, body: { status: "closed", close_reason: reason }, headers: idem() })); qc.invalidateQueries({ queryKey: ["bkg"] }); setClose(null); }
           catch (e) { toast({ title: errorCopy(e, locale), tone: "danger" }); }
         }}>{c.common.confirm}</Button></>}>
         <Field label={c.ops.closeReason}>{(f) => <Textarea id={f.id} rows={3} value={reason} onChange={(e) => setReason(e.target.value)} />}</Field>

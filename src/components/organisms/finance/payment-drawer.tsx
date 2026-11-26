@@ -210,7 +210,7 @@ export function CheckerPanel({ d, q, compact }: { d: PaymentDetail; q: ReturnTyp
           setKey(newIdempotencyKey());
           toast({ title: p.reject.done, tone: "success" });
         }} />
-      <ConflictDialog open={!!conflict.conflict} who={pay.lockedBy?.name ?? "—"} when={conflict.conflict?.at ?? new Date(0).toISOString()}
+      <ConflictDialog open={!!conflict.conflict} who={pay.lockedBy?.name ?? ""} when={conflict.conflict?.at ?? new Date(0).toISOString()}
         onClose={conflict.clear} onRefresh={() => { conflict.clear(); q.refetch(); }} />
       {stepUp.dialog}
     </section>

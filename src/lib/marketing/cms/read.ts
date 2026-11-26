@@ -1,10 +1,10 @@
 import "server-only";
 // CMS reader for the public site (F-CMS-01/17): published entries from GET /api/content/entries, cached under every
 // `cms:list:<type>` tag the API's cms.revalidate webhook sends on publish. Draft Mode overlays the previewed entry.
-// Returns today's view-model shapes (Guide/Update/Campaign) so pages only change their data line.
+// Returns today's view-model shapes (Update/Campaign) so pages only change their data line.
 import { cacheTag } from "next/cache";
 import { cookies, draftMode } from "next/headers";
-import type { Campaign, Guide, GuideCat, Institution, Affects, Update } from "@/content/pages/ld";
+import type { Campaign, Institution, Affects, Update } from "@/content/pages/ld";
 import type { BlockShape, CmsEntry, CmsType, CmsVariant, Locale, NavNode, RichDoc, SiteSettings } from "@/shared/marketing/types";
 import { LOCALES } from "@/shared/marketing/types";
 import { docText, kbEligible, liveLocales, resolveVariant } from "@/shared/marketing/cms/rules";
@@ -51,31 +51,6 @@ const blockOf = (blocks: BlockShape[], type: string) => blocks.find((b) => b.typ
 const txt = (v: CmsVariant, b?: BlockShape) => (b ? v.body[b.id] ?? {} : {}) as { text?: string; doc?: RichDoc; items?: unknown[]; [k: string]: unknown };
 const strings = (x: unknown[] | undefined) => (x ?? []).map((i) => (typeof i === "string" ? i : (i as { title?: string }).title ?? "")).filter(Boolean);
 
-export type GuideVM = Guide & Served;
-export async function getGuides(): Promise<GuideVM[]> {
-  const draft = await isDraft();
-  return (await ofType("guide", draft)).flatMap((e) => {
-    const r = resolveAll(e, draft);
-    if (!r) return [];
-    const m = e.meta.guide;
-    const en = r.v.en;
-    return [{
-      ...r.served, slug: e.key, cat: (m?.category ?? "registration") as GuideCat, date: (en.publishedAt ?? e.createdAt).slice(0, 10),
-      updated: en.updatedAt.slice(0, 10) !== (en.publishedAt ?? "").slice(0, 10) ? en.updatedAt.slice(0, 10) : undefined,
-      read: m?.readMinutes ?? 3, img: m?.image ?? "/hebuza/guides/register-a-company-in-rwanda.jpg", // PLACEHOLDER(default-guide-image)
-      service: e.serviceSlugs[0], featured: e.tags.includes("featured"),
-      t: Object.fromEntries(LOCALES.map((l) => {
-        const v = r.v[l];
-        return [l, {
-          title: v.title, excerpt: v.excerpt ?? "", overview: docText(txt(v, blockOf(e.blocks, "rich_text")).doc),
-          reqs: strings(txt(v, blockOf(e.blocks, "requirements")).items), steps: strings(txt(v, blockOf(e.blocks, "steps")).items),
-          tip: String(txt(v, blockOf(e.blocks, "tip")).text ?? ""),
-        }];
-      })) as Guide["t"],
-    }];
-  });
-}
-export const getGuide = async (slug: string) => (await getGuides()).find((g) => g.slug === slug) ?? null;
 
 export type UpdateVM = Update & Served & { /** F-CMS-10 linked compliance-calendar rule codes */ calendar: string[] };
 export async function getUpdates(): Promise<UpdateVM[]> {
@@ -178,7 +153,7 @@ export async function getTeam(): Promise<TeamVM[]> {
 export async function getManifest() {
   const all = await entries();
   const live = (t: CmsType) => all.filter((e) => e.type === t && !e.archivedTo && liveLocales(e).length).map((e) => ({ slug: e.key, locales: liveLocales(e), at: e.variants[liveLocales(e)[0]]!.updatedAt }));
-  return { knowledge: live("guide"), updates: live("regulatory_update"), campaign: live("landing_page"), legal: live("legal_doc") };
+  return { updates: live("regulatory_update"), campaign: live("landing_page"), legal: live("legal_doc") };
 }
 
 export type LegalVM = { version: number; effective: string | null; sections: { id: string; title: string; body: string }[]; fallback?: Locale };
@@ -195,15 +170,6 @@ export async function getLegal(key: string, locale: Locale): Promise<LegalVM | n
       return { id: b.id, title: String(t.title ?? ""), body: t.doc ? docText(t.doc) : String(t.text ?? "") };
     }).filter((x) => x.title || x.body),
   };
-}
-
-/** FAQs linked to a service (entry.serviceSlugs), for the service page block and its FAQPage JSON-LD (F-CMS-09/13). */
-export async function getServiceFaqs(slug: string, locale: Locale): Promise<{ q: string; a: string }[]> {
-  const draft = await isDraft();
-  return (await ofType("faq", draft)).filter((e) => e.serviceSlugs.includes(slug)).flatMap((e) => {
-    const r = resolveVariant(e, locale, draft);
-    return r ? [{ q: r.variant.title, a: String((r.variant.body[e.blocks[0]?.id ?? "a"] as { text?: string })?.text ?? "") }] : [];
-  });
 }
 
 /** Stage 11 hook: the AI assistant indexes only ai_approved, published, non-stale content (F-AIA-02). */

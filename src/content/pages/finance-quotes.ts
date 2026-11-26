@@ -38,7 +38,7 @@ const en = {
     offline: "You're offline.",
   },
   banners: {
-    acceptedOther: "v{v} was accepted — your draft v{d} will be discarded. Sending is off.",
+    acceptedOther: "v{v} was accepted, your draft v{d} will be discarded. Sending is off.",
     expired: "This quote expired on {d}. Revise it to send a new version.",
     declined: "The client declined: “{note}”",
     changes: "The client asked for changes: “{note}”",
@@ -52,7 +52,7 @@ const en = {
   send: {
     title: "Send quote", channels: "Channels", email: "Email", portal: "Client portal", whatsapp: "WhatsApp",
     message: "Message (optional)", messageDefault: "Here is your quotation. Thank you.", count: "{n}/200",
-    recipient: "Recipient", channelError: "Choose at least one channel", over: "Total over {amount} — you approve it as you send.",
+    recipient: "Recipient", channelError: "Choose at least one channel", over: "Total over {amount}, you approve it as you send.",
     cancel: "Cancel", confirm: "Send", done: "Quote {no} sent",
   },
   approve: { done: "Quote {no} approved and sent", same: "You prepared this quote, so another finance user must approve it." },
@@ -111,7 +111,7 @@ const rw: Copy = {
     offline: "Nta murandasi ufite.",
   },
   banners: {
-    acceptedOther: "v{v} yaremewe — imbanzirizamushinga v{d} izakurwaho. Kohereza byahagaritswe.",
+    acceptedOther: "v{v} yaremewe, imbanzirizamushinga v{d} izakurwaho. Kohereza byahagaritswe.",
     expired: "Iyi nyemezabiciro yarangiye ku wa {d}. Yivugurure kugira ngo wohereze indi.",
     declined: "Umukiriya yayanze: “{note}”",
     changes: "Umukiriya yasabye impinduka: “{note}”",
@@ -125,7 +125,7 @@ const rw: Copy = {
   send: {
     title: "Ohereza inyemezabiciro", channels: "Inzira", email: "Imeyili", portal: "Urubuga rw'umukiriya", whatsapp: "WhatsApp",
     message: "Ubutumwa (si ngombwa)", messageDefault: "Dore inyemezabiciro yanyu. Murakoze.", count: "{n}/200",
-    recipient: "Uyakira", channelError: "Hitamo nibura inzira imwe", over: "Igiteranyo kirenze {amount} — urayemeza uyohereza.",
+    recipient: "Uyakira", channelError: "Hitamo nibura inzira imwe", over: "Igiteranyo kirenze {amount}, urayemeza uyohereza.",
     cancel: "Reka", confirm: "Ohereza", done: "Inyemezabiciro {no} yoherejwe",
   },
   approve: { done: "Inyemezabiciro {no} yemejwe kandi yoherejwe", same: "Ni wowe wayiteguye, undi mukozi w'imari agomba kuyemeza." },
@@ -183,7 +183,7 @@ const fr: Copy = {
     offline: "Vous êtes hors ligne.",
   },
   banners: {
-    acceptedOther: "La v{v} a été acceptée — votre brouillon v{d} sera abandonné. Envoi désactivé.",
+    acceptedOther: "La v{v} a été acceptée, votre brouillon v{d} sera abandonné. Envoi désactivé.",
     expired: "Ce devis a expiré le {d}. Révisez-le pour envoyer une nouvelle version.",
     declined: "Le client a refusé : « {note} »",
     changes: "Le client demande des modifications : « {note} »",
@@ -197,7 +197,7 @@ const fr: Copy = {
   send: {
     title: "Envoyer le devis", channels: "Canaux", email: "E-mail", portal: "Espace client", whatsapp: "WhatsApp",
     message: "Message (facultatif)", messageDefault: "Voici votre devis. Merci.", count: "{n}/200",
-    recipient: "Destinataire", channelError: "Choisissez au moins un canal", over: "Total supérieur à {amount} — vous l'approuvez en l'envoyant.",
+    recipient: "Destinataire", channelError: "Choisissez au moins un canal", over: "Total supérieur à {amount}, vous l'approuvez en l'envoyant.",
     cancel: "Annuler", confirm: "Envoyer", done: "Devis {no} envoyé",
   },
   approve: { done: "Devis {no} approuvé et envoyé", same: "Vous avez préparé ce devis ; un autre membre des finances doit l'approuver." },

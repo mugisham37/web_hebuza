@@ -18,7 +18,8 @@
     "api:types": "openapi-typescript ${API_URL:-http://localhost:4000}/api/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
     "api:types:file": "openapi-typescript ../server/openapi.json -o src/lib/api/schema.d.ts --default-non-nullable false",
     "check:mirror": "node scripts/check-mirror.mjs",
-    "dev:raw": "next dev"
+    "dev:raw": "next dev",
+    "guides:shots": "playwright test -c scripts/guides/playwright.config.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

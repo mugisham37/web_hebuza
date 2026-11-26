@@ -60,8 +60,8 @@ export function VisitEvidencePanel({ visitId }: { visitId: string }) {
         <div className="flex flex-wrap gap-4">
           {v.lat !== null && v.lng !== null && <PinPlot pin={{ lat: v.lat, lng: v.lng }} fix={v.checkin?.fix ?? null} label={t.plot} pinLabel={t.pin} fixLabel={t.fix} />}
           <dl className="grid min-w-0 flex-1 gap-2 text-small">
-            <div><dt className="text-fg-subtle">{t.checkin}</dt><dd>{v.checkin ? <>{when(v.checkin.at)} · {fixline(v.checkin.fix)}{v.checkin.reason && <span className="block">{fill(t.reason, { r: v.checkin.reason })}</span>}</> : "—"}</dd></div>
-            <div><dt className="text-fg-subtle">{t.checkout}</dt><dd>{v.checkout ? <>{when(v.checkout.at)} · {fixline(v.checkout.fix)}</> : "—"}</dd></div>
+            <div><dt className="text-fg-subtle">{t.checkin}</dt><dd>{v.checkin ? <>{when(v.checkin.at)} · {fixline(v.checkin.fix)}{v.checkin.reason && <span className="block">{fill(t.reason, { r: v.checkin.reason })}</span>}</> : ""}</dd></div>
+            <div><dt className="text-fg-subtle">{t.checkout}</dt><dd>{v.checkout ? <>{when(v.checkout.at)} · {fixline(v.checkout.fix)}</> : ""}</dd></div>
             {v.checkout && <div><dt className="text-fg-subtle">{t.outcome}</dt><dd><OutcomeChip outcome={v.checkout.outcome} /></dd></div>}
             {flags.length > 0 && <div className="flex flex-wrap gap-1.5">{flags.map((f) => <FieldFlagChip key={f} flag={f} />)}</div>}
           </dl>

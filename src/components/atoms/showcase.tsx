@@ -1,24 +1,6 @@
 "use client";
-import type { KeyboardEvent, Ref } from "react";
 import { Icon } from "@/components/atoms/icon";
 import { cx } from "@/shared/format";
-
-/** One row of the hero's category menu (a tab): just the category name; rows share the panel height on desktop. */
-export function CategoryTab({ name, selected, panelId, id, onSelect, onKeyDown, ref }: {
-  name: string; selected: boolean; panelId: string; id: string;
-  onSelect: () => void; onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => void; ref?: Ref<HTMLButtonElement>;
-}) {
-  return (
-    <button ref={ref} id={id} type="button" role="tab" aria-selected={selected} aria-controls={panelId} tabIndex={selected ? 0 : -1}
-      onClick={onSelect} onKeyDown={onKeyDown}
-      className={cx("relative flex shrink-0 items-center text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-navy-700",
-        "h-11 border px-4 text-small font-medium whitespace-nowrap",
-        "lg:h-auto lg:w-full lg:flex-1 lg:border-0 lg:border-b lg:border-l-3 lg:px-5 lg:text-[1.0625rem] lg:leading-snug lg:whitespace-normal",
-        selected ? "border-navy-700 bg-navy-700 text-white lg:border-l-gold-400" : "border-border bg-white text-fg-heading hover:bg-navy-50 lg:border-l-transparent lg:border-b-border")}>
-      {name}
-    </button>
-  );
-}
 
 /** The autoplay clock: a thin gold line filling over one slide. Its CSS animation IS the timer (onEnd fires when full), so
  *  pausing it pauses autoplay and reduced motion (line hidden) never autoplays. */

@@ -15,10 +15,3 @@ describe("hero rotation", () => {
   });
 });
 
-import { nextView, VIEW_MS } from "./rotation";
-describe("hero views", () => {
-  it("intro 12 s, then browse 30 s, then back", () => {
-    expect(VIEW_MS).toEqual({ intro: 12_000, browse: 30_000 });
-    expect([nextView("intro"), nextView("browse")]).toEqual(["browse", "intro"]);
-  });
-});

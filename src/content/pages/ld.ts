@@ -115,7 +115,7 @@ const en = {
       "Accountants",
       "Tax advisers",
       "Business consultants",
-      "Field agents — visit RDB, RRA and sector offices",
+      "Field agents, visit RDB, RRA and sector offices",
     ],
     howT: "How it works",
     steps: [
@@ -129,7 +129,7 @@ const en = {
     earnB:
       "You earn a share of the service fee on every task you complete. Your exact rate is in your contract.",
     stmt: "Example statement",
-    stmtSub: "Illustration only — not real earnings",
+    stmtSub: "Illustration only, not real earnings",
     needT: "What you need",
     need: [
       "National ID or passport",
@@ -166,7 +166,7 @@ const en = {
     l1: "Plain-language",
     hl: "help",
     l2: "for Rwandan businesses.",
-    search: "Search guides — e.g. VAT, RDB, loan",
+    search: "Search guides, e.g. VAT, RDB, loan",
     all: "All",
     cats: {
       registration: "Registration",
@@ -190,7 +190,7 @@ const en = {
     page: "Page {n}",
     newsT: "Get new guides and regulatory updates",
     newsPh: "Your email or phone",
-    newsDone: "Thanks — check your inbox or SMS to confirm.",
+    newsDone: "Thanks, check your inbox or SMS to confirm.",
     newsErr: "Enter a valid email or phone number.",
     crumb: "Guides",
     published: "Published {d}",
@@ -227,7 +227,7 @@ const en = {
     tag: "Regulatory updates",
     l1: "Rule changes,",
     hl: "explained.",
-    sub: "What changed at RRA, RDB, RSSB and others — who it affects, and what to do.",
+    sub: "What changed at RRA, RDB, RSSB and others, who it affects, and what to do.",
     inst: "Institution",
     affects: "Affects",
     all: "All",
@@ -412,7 +412,7 @@ const fr: LdCopy = {
       "Comptables",
       "Conseillers fiscaux",
       "Consultants d'entreprise",
-      "Agents de terrain — RDB, RRA et bureaux de secteur",
+      "Agents de terrain, RDB, RRA et bureaux de secteur",
     ],
     howT: "Comment ça marche",
     steps: [
@@ -426,7 +426,7 @@ const fr: LdCopy = {
     earnB:
       "Vous percevez une part des frais de service pour chaque mission réalisée. Votre taux exact figure dans votre contrat.",
     stmt: "Exemple de relevé",
-    stmtSub: "Illustration uniquement — pas de revenus réels",
+    stmtSub: "Illustration uniquement, pas de revenus réels",
     needT: "Ce qu'il vous faut",
     need: [
       "Carte d'identité ou passeport",
@@ -463,7 +463,7 @@ const fr: LdCopy = {
     l1: "Une aide",
     hl: "claire",
     l2: "pour les entreprises rwandaises.",
-    search: "Rechercher — ex. TVA, RDB, prêt",
+    search: "Rechercher, ex. TVA, RDB, prêt",
     all: "Tous",
     cats: {
       registration: "Création",
@@ -488,7 +488,7 @@ const fr: LdCopy = {
     page: "Page {n}",
     newsT: "Recevez les nouveaux guides et les mises à jour réglementaires",
     newsPh: "Votre e-mail ou téléphone",
-    newsDone: "Merci — confirmez via votre e-mail ou SMS.",
+    newsDone: "Merci, confirmez via votre e-mail ou SMS.",
     newsErr: "Saisissez un e-mail ou un numéro valide.",
     crumb: "Guides",
     published: "Publié le {d}",
@@ -525,7 +525,7 @@ const fr: LdCopy = {
     tag: "Mises à jour réglementaires",
     l1: "Les règles changent,",
     hl: "expliquées.",
-    sub: "Ce qui change à la RRA, la RDB, la RSSB et ailleurs — qui est concerné, et quoi faire.",
+    sub: "Ce qui change à la RRA, la RDB, la RSSB et ailleurs, qui est concerné, et quoi faire.",
     inst: "Institution",
     affects: "Concerne",
     all: "Toutes",
@@ -713,7 +713,7 @@ const rw: LdCopy = {
       "Abacungamari",
       "Abajyanama mu misoro",
       "Abajyanama mu bucuruzi",
-      "Abakozi bo hanze — basura RDB, RRA n'ibiro by'imirenge",
+      "Abakozi bo hanze, basura RDB, RRA n'ibiro by'imirenge",
     ],
     howT: "Uko bikora",
     steps: [
@@ -727,7 +727,7 @@ const rw: LdCopy = {
     earnB:
       "Uhabwa igice cy'igiciro cya serivisi kuri buri murimo urangije. Igipimo cyawe nyacyo kiri mu masezerano yawe.",
     stmt: "Urugero rwa raporo",
-    stmtSub: "Ni urugero gusa — si amafaranga nyayo",
+    stmtSub: "Ni urugero gusa, si amafaranga nyayo",
     needT: "Ibyo ukeneye",
     need: [
       "Indangamuntu cyangwa pasiporo",
@@ -761,7 +761,7 @@ const rw: LdCopy = {
     l1: "Ubufasha",
     hl: "bwumvikana",
     l2: "ku bucuruzi bwo mu Rwanda.",
-    search: "Shakisha — urugero TVA, RDB, inguzanyo",
+    search: "Shakisha, urugero TVA, RDB, inguzanyo",
     all: "Byose",
     cats: {
       registration: "Kwiyandikisha",
@@ -786,7 +786,7 @@ const rw: LdCopy = {
     page: "Urupapuro {n}",
     newsT: "Habwa amabwiriza mashya n'impinduka z'amategeko",
     newsPh: "Imeyili cyangwa telefoni",
-    newsDone: "Murakoze — emeza ukoresheje imeyili cyangwa SMS.",
+    newsDone: "Murakoze, emeza ukoresheje imeyili cyangwa SMS.",
     newsErr: "Andika imeyili cyangwa nimero nyayo.",
     crumb: "Amabwiriza",
     published: "Byatangajwe {d}",
@@ -823,7 +823,7 @@ const rw: LdCopy = {
     tag: "Impinduka z'amategeko",
     l1: "Amategeko arahinduka,",
     hl: "dore ibisobanuro.",
-    sub: "Ibyahindutse muri RRA, RDB, RSSB n'ahandi — abo bireba n'icyo gukora.",
+    sub: "Ibyahindutse muri RRA, RDB, RSSB n'ahandi, abo bireba n'icyo gukora.",
     inst: "Ikigo",
     affects: "Bireba",
     all: "Byose",
@@ -907,491 +907,6 @@ export const CONSULT_FEE = 20000;
 export const PROVISIONAL: Record<Locale, string> = { en: "provisional", fr: "provisoire", rw: "by'agateganyo" };
 export const BOOK_LANGS = ["rw", "en", "fr"] as const;
 
-// ---------- Guides ----------
-export type GuideCat = keyof LdCopy["knowledge"]["cats"];
-type GuideText = {
-  title: string;
-  excerpt: string;
-  overview: string;
-  reqs: string[];
-  steps: string[];
-  tip: string;
-};
-export type Guide = {
-  slug: string;
-  cat: GuideCat;
-  date: string;
-  updated?: string;
-  read: number;
-  img: string;
-  service?: string;
-  featured?: boolean;
-  t: Record<Locale, GuideText>;
-};
-
-export const GUIDES: Guide[] = [
-  {
-    slug: "register-a-company-in-rwanda",
-    cat: "registration",
-    date: "2026-10-12",
-    updated: "2026-11-02",
-    read: 5,
-    img: "/hebuza/guides/register-a-company-in-rwanda.jpg",
-    service: "company-registration",
-    featured: true,
-    t: {
-      en: {
-        title: "How to register a company in Rwanda, step by step",
-        excerpt: "A simple guide to company registration, documents and fees.",
-        overview:
-          "Registering a company in Rwanda is done online with RDB. With your documents ready, it usually takes a few working days, and you receive your TIN with your registration.",
-        reqs: [
-          "ID or passport of every shareholder and director",
-          "Three company names, in order of preference",
-          "Business activity and registered address",
-          "Share split between shareholders",
-        ],
-        steps: [
-          "Prepare your documents.",
-          "Choose and check a company name.",
-          "Submit your application online.",
-          "Pay the required fees.",
-          "Download your certificate and TIN.",
-        ],
-        tip: "Prepare three company names in order of preference, in case the first is taken.",
-      },
-      fr: {
-        title: "Créer une société au Rwanda, étape par étape",
-        excerpt:
-          "Un guide simple sur l'immatriculation, les documents et les frais.",
-        overview:
-          "La création d'une société au Rwanda se fait en ligne auprès de la RDB. Avec des documents prêts, cela prend en général quelques jours ouvrables, et vous recevez votre NIF avec l'immatriculation.",
-        reqs: [
-          "Pièce d'identité ou passeport de chaque associé et dirigeant",
-          "Trois noms de société, par ordre de préférence",
-          "Activité et adresse du siège",
-          "Répartition des parts entre associés",
-        ],
-        steps: [
-          "Préparez vos documents.",
-          "Choisissez et vérifiez un nom.",
-          "Déposez la demande en ligne.",
-          "Payez les frais requis.",
-          "Téléchargez votre certificat et votre NIF.",
-        ],
-        tip: "Préparez trois noms par ordre de préférence, au cas où le premier serait pris.",
-      },
-      rw: {
-        title: "Uko wandikisha sosiyete mu Rwanda, intambwe ku yindi",
-        excerpt:
-          "Amabwiriza yoroshye ku kwandikisha sosiyete, inyandiko n'ibiciro.",
-        overview:
-          "Kwandikisha sosiyete mu Rwanda bikorerwa kuri murandasi muri RDB. Iyo inyandiko ziteguye, bifata iminsi mike y'akazi, kandi uhabwa TIN hamwe n'icyemezo.",
-        reqs: [
-          "Indangamuntu cyangwa pasiporo ya buri munyamigabane n'umuyobozi",
-          "Amazina atatu ya sosiyete, ukurikije ayo ukunda",
-          "Ibikorwa n'aderesi ya sosiyete",
-          "Uko imigabane igabanywa",
-        ],
-        steps: [
-          "Tegura inyandiko zawe.",
-          "Hitamo kandi ugenzure izina.",
-          "Ohereza ubusabe kuri murandasi.",
-          "Ishyura amafaranga asabwa.",
-          "Kuramo icyemezo na TIN.",
-        ],
-        tip: "Tegura amazina atatu ukurikije ayo ukunda, mu gihe irya mbere ryaba ryarafashwe.",
-      },
-    },
-  },
-  {
-    slug: "vat-paye-cit-monthly-calendar",
-    cat: "tax",
-    date: "2026-10-12",
-    read: 5,
-    img: "/hebuza/guides/vat-paye-cit-monthly-calendar.jpg",
-    service: "monthly-tax-advisory-service",
-    t: {
-      en: {
-        title: "VAT, PAYE and CIT: your monthly calendar",
-        excerpt: "Know when to file and pay.",
-        overview:
-          "Most monthly declarations to RRA are due by the 15th of the following month. Annual income tax has its own deadline. A simple calendar keeps you clear of penalties.",
-        reqs: [
-          "Your TIN and e-Tax access",
-          "Sales and purchase records for the month",
-          "Payroll for the month, if you have staff",
-        ],
-        steps: [
-          "List which taxes apply to your business.",
-          "Close your books at month end.",
-          "File each declaration on e-Tax.",
-          "Pay by the due date and keep the receipt.",
-        ],
-        tip: "Set a reminder for the 10th so you are never filing on the last day.",
-      },
-      fr: {
-        title: "TVA, IRPP et IS : votre calendrier mensuel",
-        excerpt: "Sachez quand déclarer et payer.",
-        overview:
-          "La plupart des déclarations mensuelles à la RRA sont dues le 15 du mois suivant. L'impôt annuel a sa propre échéance. Un calendrier simple vous évite les pénalités.",
-        reqs: [
-          "Votre NIF et votre accès e-Tax",
-          "Les ventes et achats du mois",
-          "La paie du mois, si vous avez du personnel",
-        ],
-        steps: [
-          "Listez les impôts qui vous concernent.",
-          "Clôturez vos comptes en fin de mois.",
-          "Déposez chaque déclaration sur e-Tax.",
-          "Payez avant l'échéance et gardez le reçu.",
-        ],
-        tip: "Programmez un rappel le 10 pour ne jamais déclarer le dernier jour.",
-      },
-      rw: {
-        title: "TVA, PAYE na CIT: kalendari yawe ya buri kwezi",
-        excerpt: "Menya igihe cyo kumenyekanisha no kwishyura.",
-        overview:
-          "Imenyekanisha ryinshi rya buri kwezi muri RRA rikorwa bitarenze tariki 15 z'ukwezi gukurikira. Umusoro w'umwaka ufite itariki yawo. Kalendari yoroshye ikurinda ibihano.",
-        reqs: [
-          "TIN yawe no kwinjira muri e-Tax",
-          "Ibyo wagurishije n'ibyo waguze mu kwezi",
-          "Imishahara y'ukwezi, niba ufite abakozi",
-        ],
-        steps: [
-          "Andika imisoro ikureba.",
-          "Funga ibitabo by'ukwezi.",
-          "Menyekanisha buri musoro kuri e-Tax.",
-          "Ishyura mbere y'itariki ntarengwa ubike inyemezabwishyu.",
-        ],
-        tip: "Shyiraho kwibutswa ku itariki 10 kugira ngo utazamenyekanisha ku munsi wa nyuma.",
-      },
-    },
-  },
-  {
-    slug: "how-vat-refunds-work",
-    cat: "tax",
-    date: "2026-10-10",
-    read: 4,
-    img: "/hebuza/guides/how-vat-refunds-work.jpg",
-    service: "vat-refund-application-and-follow-up",
-    t: {
-      en: {
-        title: "How VAT refunds work in Rwanda",
-        excerpt: "Get your refund faster.",
-        overview:
-          "If you paid more input VAT than you collected, you can ask RRA for a refund. Clean records and matching invoices are what make it quick.",
-        reqs: [
-          "VAT registration",
-          "EBM invoices for your purchases",
-          "Filed VAT returns for the period",
-        ],
-        steps: [
-          "Check the credit on your VAT returns.",
-          "Match every purchase to an EBM invoice.",
-          "Submit the refund request.",
-          "Answer any RRA questions and follow up.",
-        ],
-        tip: "Missing EBM invoices are the most common reason refunds slow down.",
-      },
-      fr: {
-        title: "Comment fonctionne le remboursement de TVA au Rwanda",
-        excerpt: "Obtenez votre remboursement plus vite.",
-        overview:
-          "Si vous avez payé plus de TVA déductible que vous n'en avez collecté, vous pouvez demander un remboursement à la RRA. Des comptes propres et des factures concordantes accélèrent tout.",
-        reqs: [
-          "Immatriculation à la TVA",
-          "Factures EBM de vos achats",
-          "Déclarations de TVA déposées pour la période",
-        ],
-        steps: [
-          "Vérifiez le crédit sur vos déclarations.",
-          "Rapprochez chaque achat d'une facture EBM.",
-          "Déposez la demande de remboursement.",
-          "Répondez aux questions de la RRA et suivez le dossier.",
-        ],
-        tip: "Les factures EBM manquantes sont la première cause de retard.",
-      },
-      rw: {
-        title: "Uko gusubizwa TVA bikorwa mu Rwanda",
-        excerpt: "Subizwa amafaranga yawe vuba.",
-        overview:
-          "Niba warishyuye TVA nyinshi ku byo waguze kurusha iyo wakiriye, ushobora gusaba RRA kuyigusubiza. Ibitabo bisukuye n'inyemezabuguzi zihuye nibyo byihutisha.",
-        reqs: [
-          "Kwiyandikisha muri TVA",
-          "Inyemezabuguzi za EBM z'ibyo waguze",
-          "Imenyekanisha rya TVA ry'icyo gihe",
-        ],
-        steps: [
-          "Reba umwenda uri ku imenyekanisha rya TVA.",
-          "Huza buri kintu waguze n'inyemezabuguzi ya EBM.",
-          "Ohereza ubusabe bwo gusubizwa.",
-          "Subiza ibibazo bya RRA ukurikirane.",
-        ],
-        tip: "Inyemezabuguzi za EBM zibura nizo zikunze gutinza gusubizwa.",
-      },
-    },
-  },
-  {
-    slug: "bank-loan-for-your-cooperative",
-    cat: "funding",
-    date: "2026-10-08",
-    read: 6,
-    img: "/hebuza/guides/bank-loan-for-your-cooperative.jpg",
-    service: "bank-loan-facilitation",
-    t: {
-      en: {
-        title: "Getting a bank loan for your cooperative",
-        excerpt: "Tips and requirements.",
-        overview:
-          "Lenders want to see that your cooperative is registered, organised and able to repay. A clear business plan and tidy accounts do most of the work.",
-        reqs: [
-          "Cooperative registration and statutes",
-          "Recent financial statements",
-          "A business plan with cash-flow projections",
-          "Collateral or a guarantee, where required",
-        ],
-        steps: [
-          "Decide the amount and what it will pay for.",
-          "Prepare your plan and accounts.",
-          "Compare lenders and products.",
-          "Submit the application and answer questions.",
-        ],
-        tip: "Ask lenders about sector programmes; some products are designed for cooperatives.",
-      },
-      fr: {
-        title: "Obtenir un prêt bancaire pour votre coopérative",
-        excerpt: "Conseils et conditions.",
-        overview:
-          "Les prêteurs veulent voir une coopérative enregistrée, organisée et capable de rembourser. Un plan d'affaires clair et des comptes à jour font l'essentiel.",
-        reqs: [
-          "Enregistrement et statuts de la coopérative",
-          "États financiers récents",
-          "Un plan d'affaires avec prévisions de trésorerie",
-          "Une garantie, si exigée",
-        ],
-        steps: [
-          "Fixez le montant et son usage.",
-          "Préparez le plan et les comptes.",
-          "Comparez les prêteurs et les produits.",
-          "Déposez la demande et répondez aux questions.",
-        ],
-        tip: "Renseignez-vous sur les programmes sectoriels ; certains produits visent les coopératives.",
-      },
-      rw: {
-        title: "Kubona inguzanyo ya banki kuri koperative yawe",
-        excerpt: "Inama n'ibisabwa.",
-        overview:
-          "Abatanga inguzanyo bashaka kubona ko koperative yanditswe, iteguye kandi ishobora kwishyura. Umushinga usobanutse n'ibitabo bisukuye nibyo by'ingenzi.",
-        reqs: [
-          "Icyemezo cya koperative n'amategeko shingiro",
-          "Raporo z'imari za vuba",
-          "Umushinga ufite iteganyamafaranga",
-          "Ingwate, aho isabwa",
-        ],
-        steps: [
-          "Menya amafaranga ukeneye n'icyo azakora.",
-          "Tegura umushinga n'ibitabo.",
-          "Gereranya banki n'ibyo zitanga.",
-          "Ohereza ubusabe usubize ibibazo.",
-        ],
-        tip: "Baza banki gahunda zihariye; zimwe zagenewe amakoperative.",
-      },
-    },
-  },
-  {
-    slug: "investment-certificates-explained",
-    cat: "investment",
-    date: "2026-10-05",
-    read: 5,
-    img: "/hebuza/guides/investment-certificates-explained.jpg",
-    service: "application-for-investment-certificate",
-    t: {
-      en: {
-        title: "Investment certificates explained",
-        excerpt: "Invest with confidence.",
-        overview:
-          "An RDB investment certificate can give eligible investors access to incentives. Whether you qualify depends on your sector and the size of the investment.",
-        reqs: [
-          "Registered company",
-          "Business plan and investment amount",
-          "Evidence of funds",
-        ],
-        steps: [
-          "Check whether your project is eligible.",
-          "Prepare the business plan.",
-          "Submit the application to RDB.",
-          "Receive the certificate and keep it current.",
-        ],
-        tip: "Ask about incentives before you invest — some apply only from the start.",
-      },
-      fr: {
-        title: "Le certificat d'investissement expliqué",
-        excerpt: "Investissez en confiance.",
-        overview:
-          "Un certificat d'investissement de la RDB peut ouvrir l'accès à des incitations pour les investisseurs éligibles. L'éligibilité dépend du secteur et du montant investi.",
-        reqs: [
-          "Société immatriculée",
-          "Plan d'affaires et montant investi",
-          "Preuve des fonds",
-        ],
-        steps: [
-          "Vérifiez l'éligibilité du projet.",
-          "Préparez le plan d'affaires.",
-          "Déposez la demande à la RDB.",
-          "Recevez le certificat et tenez-le à jour.",
-        ],
-        tip: "Renseignez-vous sur les incitations avant d'investir — certaines ne s'appliquent qu'au départ.",
-      },
-      rw: {
-        title: "Icyemezo cy'ishoramari gisobanuwe",
-        excerpt: "Shora imari wizeye.",
-        overview:
-          "Icyemezo cy'ishoramari cya RDB gishobora guha abashoramari babyujuje inyoroshyo. Kubyuzuza biterwa n'urwego n'ingano y'ishoramari.",
-        reqs: [
-          "Sosiyete yanditswe",
-          "Umushinga n'ingano y'ishoramari",
-          "Ibimenyetso by'amafaranga",
-        ],
-        steps: [
-          "Reba niba umushinga wawe ubyujuje.",
-          "Tegura umushinga.",
-          "Ohereza ubusabe muri RDB.",
-          "Akira icyemezo ukivugurure.",
-        ],
-        tip: "Baza ku nyoroshyo mbere yo gushora — zimwe zitangwa mu ntangiriro gusa.",
-      },
-    },
-  },
-  {
-    slug: "ebm-what-every-shop-owner-must-know",
-    cat: "compliance",
-    date: "2026-10-02",
-    read: 4,
-    img: "/hebuza/guides/ebm-what-every-shop-owner-must-know.jpg",
-    service: "application-for-ebm-acquisition-and-installation",
-    t: {
-      en: {
-        title: "EBM: what every shop owner must know",
-        excerpt: "Stay compliant.",
-        overview:
-          "VAT-registered businesses must issue receipts through an Electronic Billing Machine (EBM). Using it correctly protects you in audits and keeps your VAT claims valid.",
-        reqs: [
-          "TIN and VAT registration",
-          "An EBM device or software",
-          "Staff trained to issue receipts",
-        ],
-        steps: [
-          "Get your EBM installed.",
-          "Learn to issue and cancel receipts.",
-          "Give a receipt for every sale.",
-          "Keep the EBM synchronised.",
-        ],
-        tip: "Train everyone who sells for you — a missing receipt is the shop's responsibility.",
-      },
-      fr: {
-        title: "EBM : ce que tout commerçant doit savoir",
-        excerpt: "Restez en règle.",
-        overview:
-          "Les entreprises assujetties à la TVA doivent émettre leurs reçus via une machine de facturation électronique (EBM). Bien l'utiliser vous protège en cas de contrôle.",
-        reqs: [
-          "NIF et immatriculation TVA",
-          "Un appareil ou logiciel EBM",
-          "Un personnel formé à l'émission des reçus",
-        ],
-        steps: [
-          "Faites installer l'EBM.",
-          "Apprenez à émettre et annuler un reçu.",
-          "Remettez un reçu à chaque vente.",
-          "Gardez l'EBM synchronisée.",
-        ],
-        tip: "Formez tous vos vendeurs — un reçu manquant engage la boutique.",
-      },
-      rw: {
-        title: "EBM: ibyo buri mucuruzi agomba kumenya",
-        excerpt: "Kurikiza amategeko.",
-        overview:
-          "Ubucuruzi bwanditse muri TVA bugomba gutanga inyemezabuguzi zikoreshejwe imashini ya EBM. Kuyikoresha neza bikurinda mu igenzura.",
-        reqs: [
-          "TIN no kwiyandikisha muri TVA",
-          "Imashini cyangwa porogaramu ya EBM",
-          "Abakozi bazi gutanga inyemezabuguzi",
-        ],
-        steps: [
-          "Shyirisha EBM.",
-          "Iga gutanga no gusiba inyemezabuguzi.",
-          "Tanga inyemezabuguzi kuri buri kugurisha.",
-          "Komeza EBM ihuye n'iya RRA.",
-        ],
-        tip: "Hugura abagurisha bose — inyemezabuguzi ibuze ibazwa iduka.",
-      },
-    },
-  },
-  {
-    slug: "writing-a-business-plan-banks-accept",
-    cat: "accounting",
-    date: "2026-09-30",
-    read: 5,
-    img: "/hebuza/guides/writing-a-business-plan-banks-accept.jpg",
-    service: "business-plan-preparation",
-    t: {
-      en: {
-        title: "Writing a business plan banks accept",
-        excerpt: "Plan for growth.",
-        overview:
-          "A bank reads your plan to answer one question: can you repay? Keep it short, use real numbers, and show where the money goes.",
-        reqs: [
-          "Your sales and costs history",
-          "Clear use of funds",
-          "Realistic projections for 3 years",
-        ],
-        steps: [
-          "Describe the business and market in one page.",
-          "Show past numbers honestly.",
-          "Project cash flow month by month.",
-          "Explain how the loan is repaid.",
-        ],
-        tip: "Lenders trust conservative numbers more than optimistic ones.",
-      },
-      fr: {
-        title: "Rédiger un plan d'affaires accepté par les banques",
-        excerpt: "Préparez la croissance.",
-        overview:
-          "Une banque lit votre plan pour une seule question : pouvez-vous rembourser ? Soyez bref, chiffré et montrez l'usage des fonds.",
-        reqs: [
-          "Historique des ventes et charges",
-          "Usage clair des fonds",
-          "Prévisions réalistes sur 3 ans",
-        ],
-        steps: [
-          "Présentez l'activité et le marché en une page.",
-          "Montrez les chiffres passés avec honnêteté.",
-          "Prévoyez la trésorerie mois par mois.",
-          "Expliquez le remboursement.",
-        ],
-        tip: "Les prêteurs font plus confiance à des chiffres prudents qu'optimistes.",
-      },
-      rw: {
-        title: "Kwandika umushinga banki zemera",
-        excerpt: "Tegura iterambere.",
-        overview:
-          "Banki isoma umushinga wawe ishaka igisubizo kimwe: uzashobora kwishyura? Wugire mugufi, ukoreshe imibare nyayo, werekane aho amafaranga azajya.",
-        reqs: [
-          "Amateka y'ibyo wagurishije n'ibyo wakoresheje",
-          "Aho amafaranga azakoreshwa",
-          "Iteganyagihe rifatika ry'imyaka 3",
-        ],
-        steps: [
-          "Sobanura ubucuruzi n'isoko ku rupapuro rumwe.",
-          "Erekana imibare ya kera nta guhisha.",
-          "Teganya amafaranga ukwezi ku kundi.",
-          "Sobanura uko inguzanyo izishyurwa.",
-        ],
-        tip: "Banki zizera imibare yitondewe kurusha iyirenze urugero.",
-      },
-    },
-  },
-];
 
 // ---------- Updates ----------
 export type Institution = "RRA" | "RDB" | "RSSB" | "RURA" | "BNR";

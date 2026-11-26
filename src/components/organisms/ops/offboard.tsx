@@ -92,7 +92,7 @@ export function OffboardView({ id }: { id: string }) {
           <ul className="grid gap-1 text-small">
             <li>{c.off.reassignTitle}: {w.openCases.length - unresolved}/{w.openCases.length}</li>
             <li>{c.off.offersTitle}: {w.pendingOffers.length}</li>
-            <li>{c.off.reason}: {reason || "—"}</li>
+            <li>{c.off.reason}: {reason || ""}</li>
           </ul>
           <p className="bg-bg-tint px-3 py-2 text-small text-navy-800">{c.off.summary}</p>
           {(unresolved > 0 || !reason.trim()) && <p role="alert" className="text-small text-danger">{unresolved > 0 ? fill(c.off.unresolved, { n: unresolved }) : c.off.reason}</p>}

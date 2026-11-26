@@ -51,7 +51,7 @@ export function ContentList({ kind }: { kind: "content" | "landing" | "knowledge
   return (
     <div>
       <PageHead title={c.titles[kind]} sub={c.subs[kind]}
-        actions={<Button onClick={() => setCreating(true)}><Icon name="plus" size={16} aria-hidden />{fill(c.list.new, { type: c.types[type].toLowerCase() })}</Button>} />
+        actions={<Button data-guide="marketing-new" onClick={() => setCreating(true)}><Icon name="plus" size={16} aria-hidden />{fill(c.list.new, { type: c.types[type].toLowerCase() })}</Button>} />
       {extra}
       <SavedViewTabs views={VIEWS.map((v) => ({ key: v, label: c.views[v] }))} active={view} onChange={(k) => setUrlParams({ status: k === "all" ? null : k })} />
       <form className="my-4 flex flex-wrap items-center gap-2" role="search" onSubmit={(e) => { e.preventDefault(); setUrlParams({ q: q.trim() || null }); }}>
@@ -81,7 +81,7 @@ export function ContentList({ kind }: { kind: "content" | "landing" | "knowledge
       ) : (
         <ul className="grid gap-2 m-stagger">
           {rows.map((r, i) => (
-            <li key={r.id} style={{ ["--i" as string]: i }} className="grid grid-cols-1 items-center gap-3 border border-border bg-white p-4 sm:grid-cols-[1fr_auto_auto_auto] hover:border-navy-300">
+            <li data-guide="marketing-row" key={r.id} style={{ ["--i" as string]: i }} className="grid grid-cols-1 items-center gap-3 border border-border bg-white p-4 sm:grid-cols-[1fr_auto_auto_auto] hover:border-navy-300">
               <div className="min-w-0">
                 <Link href={L(`${editorBase(r.type)}/${r.id}`)} className="block truncate text-label-lg hover:underline" title={r.title}>{r.title || r.key}</Link>
                 <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-eyebrow text-fg-subtle">
@@ -94,7 +94,7 @@ export function ContentList({ kind }: { kind: "content" | "landing" | "knowledge
               <span className="flex flex-wrap items-center gap-1.5"><WorkflowChip status={r.status} at={r.scheduledAt} />{(kind === "knowledge" || kind === "updates" || r.aiApproved) && <KbChip state={r.kb} />}</span>
               <span className="flex items-center gap-1">
                 <Link href={L(`${editorBase(r.type)}/${r.id}`)} className="inline-flex h-9 items-center px-3 text-small hover:bg-navy-50 m-press">{c.list.edit}</Link>
-                <button type="button" onClick={() => preview(r)} className="inline-flex h-9 items-center px-3 text-small hover:bg-navy-50 m-press">{c.list.preview}</button>
+                <button data-guide="marketing-preview" type="button" onClick={() => preview(r)} className="inline-flex h-9 items-center px-3 text-small hover:bg-navy-50 m-press">{c.list.preview}</button>
                 <button type="button" disabled={dup.isPending} onClick={() => dup.mutate(r.id, { onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }) })}
                   className={cx("hidden h-9 items-center px-3 text-small hover:bg-navy-50 m-press md:inline-flex")}>{c.list.duplicate}</button>
               </span>
@@ -115,7 +115,7 @@ function KnowledgeExtras({ published }: { published: number }) {
     <div className="mb-5 grid gap-3 lg:grid-cols-3">
       <TargetMeter n={published} />
       <Panel title={c.insights.helpful}>
-        {ins.isPending ? <div className="h-10 m-shimmer" /> : !d?.helpful.length ? <p className="text-small text-fg-muted">—</p> : (
+        {ins.isPending ? <div className="h-10 m-shimmer" /> : !d?.helpful.length ? <p className="text-small text-fg-muted"></p> : (
           <ul className="grid gap-1 text-small">{d.helpful.slice(0, 4).map((h) => <li key={h.entryId} className="flex justify-between gap-2"><span className="truncate">{h.title}</span><span className="tabular text-fg-subtle">{c.insights.yes} {h.yes} · {c.insights.no} {h.no}</span></li>)}</ul>
         )}
       </Panel>

@@ -160,13 +160,13 @@ export function BillForm() {
             </div>
             {d.link === "po" && (
               <Select aria-label={c.form.po} value={d.poNo} onChange={(e) => pickPo(e.target.value)} className="m-rise">
-                <option value="">—</option>
+                <option value=""></option>
                 {pos.map((x) => <option key={x.no} value={x.no}>{x.no} · {o.vendors.find((v) => v.id === x.vendorId)?.name}</option>)}
               </Select>
             )}
             {d.link === "contract" && (
               <Select aria-label={c.form.contract} value={d.contractRef} onChange={(e) => pickContract(e.target.value)} className="m-rise">
-                <option value="">—</option>
+                <option value=""></option>
                 {contracts.map((x) => <option key={x.ref} value={x.ref}>{x.ref} · {x.title}</option>)}
               </Select>
             )}

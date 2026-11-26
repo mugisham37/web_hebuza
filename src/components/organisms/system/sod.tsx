@@ -34,7 +34,7 @@ export function SodView() {
   const q = useSod();
   const [open, setOpen] = useState(false);
 
-  const head = <SysPageHead title={c.sod} sub={c.sodSub} actions={<Button size="sm" disabled={!online || !q.data} onClick={() => setOpen(true)}><Icon name="plus" size={15} aria-hidden />{c.requestWaiver}</Button>} />;
+  const head = <SysPageHead title={c.sod} sub={c.sodSub} actions={<Button size="sm" data-guide="system-sod-waiver" disabled={!online || !q.data} onClick={() => setOpen(true)}><Icon name="plus" size={15} aria-hidden />{c.requestWaiver}</Button>} />;
   if (q.isError && !q.data) return <div className="m-rise">{head}<QueryFail error={q.error} what={c.sod} onRetry={() => q.refetch()} /></div>;
   if (!q.data) return <div className="m-rise" aria-busy>{head}<Skeleton rows={6} /></div>;
   const d = q.data;
@@ -59,7 +59,7 @@ export function SodView() {
                     </td>
                     <td className={cx(TD, "text-fg-muted")}>{c.allBranches}</td>
                     <td className={TD}><PairStatus status={p.status} /></td>
-                    <td className={cx(TD, "text-fg-muted")}>{w.length ? w.map((x) => x.userName).join(", ") : "—"}</td>
+                    <td className={cx(TD, "text-fg-muted")}>{w.length ? w.map((x) => x.userName).join(", ") : ""}</td>
                   </tr>
                 );
               })}
@@ -67,7 +67,7 @@ export function SodView() {
                 <td className={TD}><span className="font-medium">{c.makerChecker}</span><span className="mt-1 block text-small text-fg-muted">{c.processSub}</span></td>
                 <td className={cx(TD, "text-fg-muted")}>{c.allBranches}</td>
                 <td className={TD}><PairStatus status="enforced" /></td>
-                <td className={cx(TD, "text-fg-muted")}>—</td>
+                <td className={cx(TD, "text-fg-muted")}></td>
               </tr>
             </tbody>
           </table>
@@ -201,7 +201,7 @@ function WaiverDialog({ open, onClose, people, pairs }: { open: boolean; onClose
               {(f) => (
                 <Select id={f.id} aria-describedby={f.describedBy} aria-invalid={f.invalid} value={userId} onChange={(e) => setUserId(e.target.value)}>
                   <option value="">{c.pickPerson}</option>
-                  {people.map((p) => <option key={p.id} value={p.id}>{p.name} — {p.roles.map(label).join(", ")}</option>)}
+                  {people.map((p) => <option key={p.id} value={p.id}>{p.name}, {p.roles.map(label).join(", ")}</option>)}
                 </Select>
               )}
             </Field>

@@ -129,7 +129,7 @@ export const editorBase = (type: CmsType) =>
 export function publicPath(type: CmsType, lang: Locale, slug?: string, key?: string) {
   if (type === "page") return key === "home" ? `/${lang}` : `/${lang}/${slug ?? key}`;
   if (!slug) return null;
-  return type === "landing_page" ? `/${lang}/campaign/${slug}` : type === "guide" || type === "article" ? `/${lang}/knowledge/${slug}`
+  return type === "landing_page" ? `/${lang}/campaign/${slug}` // guides/articles: no public page
     : type === "regulatory_update" ? `/${lang}/updates/${slug}` : type === "faq" ? `/${lang}/faq` : null;
 }
 
@@ -252,7 +252,7 @@ export function RangePicker({ value }: { value: Range }) {
   const t = useI();
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div role="group" aria-label={t.dash.range.label} className="flex flex-wrap border border-border bg-surface p-1">
+      <div data-guide="marketing-range" role="group" aria-label={t.dash.range.label} className="flex flex-wrap border border-border bg-surface p-1">
         {RANGES.map((r) => (
           <button key={r} type="button" aria-pressed={value.range === r} onClick={() => setUrlParams({ range: r })}
             className={cx("h-8 px-3 text-small m-press", value.range === r ? "bg-secondary text-on-secondary" : "text-fg-muted hover:bg-ink-100 hover:text-fg")}>{t.dash.range[r]}</button>
@@ -340,7 +340,7 @@ export function FunnelChart({ rows }: { rows: FunnelRow[] }) {
   );
   return (
     <ChartFrame chart={<>{chart}<p className="mt-2 text-eyebrow text-fg-subtle">{t.dash.stepNote}</p></>}
-      table={<SimpleTable head={["", "#", "%", fill(t.dash.ofVisits, { p: "%" })]} rows={rows.map((r) => [t.dash.steps[r.key], formatNumber(r.count, locale), r.stepPct ?? "—", r.ofVisits ?? "—"])} />} />
+      table={<SimpleTable head={["", "#", "%", fill(t.dash.ofVisits, { p: "%" })]} rows={rows.map((r) => [t.dash.steps[r.key], formatNumber(r.count, locale), r.stepPct ?? "", r.ofVisits ?? ""])} />} />
   );
 }
 

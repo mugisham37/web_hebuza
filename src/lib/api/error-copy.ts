@@ -43,7 +43,7 @@ const COPY: Record<string, Record<"rw" | "en" | "fr", string>> = {
   unbalanced: { en: "Debits and credits don't balance.", fr: "Débits et crédits ne s'équilibrent pas.", rw: "Debit na credit ntibingana." },
   awaiting_executive: { en: "Waiting for an executive to approve.", fr: "En attente de la direction.", rw: "Bitegereje kwemezwa n'umuyobozi." },
   // Stage 8 external agents (plan 08 §9.2)
-  worker_not_cleared: { en: "You're not cleared yet — finish verification first.", fr: "Vous n'êtes pas encore habilité — terminez la vérification.", rw: "Ntiwemezwa — banza urangize isuzuma." },
+  worker_not_cleared: { en: "You're not cleared yet, finish verification first.", fr: "Vous n'êtes pas encore habilité, terminez la vérification.", rw: "Ntiwemezwa, banza urangize isuzuma." },
   service_not_cleared: { en: "You're not cleared for this service.", fr: "Vous n'êtes pas habilité pour ce service.", rw: "Ntiwemerewe iyi serivisi." },
   contract_expired: { en: "Your contract has expired. Renew it to accept new offers.", fr: "Votre contrat a expiré. Renouvelez-le pour accepter des offres.", rw: "Amasezerano yawe yarangiye. Yavugurure kugira ngo wakire akazi gashya." },
   capacity_full: { en: "You're at your maximum active jobs.", fr: "Vous avez atteint votre maximum de dossiers.", rw: "Wageze ku mubare ntarengwa w'akazi." },
@@ -100,7 +100,7 @@ const COPY: Record<string, Record<"rw" | "en" | "fr", string>> = {
   STAGE_RULE: { en: "That stage change isn't allowed.", fr: "Ce changement d'étape n'est pas permis.", rw: "Iryo hinduka ntiryemewe." },
   NEXT_ACTION_REQUIRED: { en: "Set the next action date.", fr: "Indiquez la date de prochaine action.", rw: "Shyiraho itariki y'igikorwa gikurikira." },
   // Stage 12 procurement (plan 12 §9.2)
-  segregation_violation: { en: "Someone else must do this step — you already did an earlier one.", fr: "Une autre personne doit faire cette étape.", rw: "Undi muntu agomba gukora iyi ntambwe." },
+  segregation_violation: { en: "Someone else must do this step, you already did an earlier one.", fr: "Une autre personne doit faire cette étape.", rw: "Undi muntu agomba gukora iyi ntambwe." },
   limit_exceeded: { en: "This is above your approval limit.", fr: "Au-delà de votre limite d'approbation.", rw: "Birenze urugero wemerewe kwemeza." },
   payment_locked: { en: "Payments to this supplier are locked after a bank-detail change.", fr: "Paiements bloqués après un changement de coordonnées bancaires.", rw: "Ubwishyu kuri uyu bwahagaritswe nyuma yo guhindura konti." },
   duplicate_invoice: { en: "This invoice number is already recorded for this supplier.", fr: "Ce numéro de facture existe déjà pour ce fournisseur.", rw: "Iyi nomero ya fagitire isanzwe yanditswe kuri uyu." },

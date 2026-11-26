@@ -149,7 +149,7 @@ export function ChecklistPanel({
       <p className="-mt-2 mb-2 text-small font-medium tabular">
         {fill(t.ofComplete, { d: ev.done, t: ev.total })}
       </p>
-      <div
+      <div data-guide="ops-checklist"
         className="mb-3 h-1.5 overflow-hidden bg-bg-subtle"
         role="progressbar"
         aria-valuenow={ev.pct}
@@ -212,7 +212,7 @@ export function ChecklistPanel({
       </ul>
       <div className="mt-4 grid gap-2 border-t border-border pt-4">
         <div className="flex flex-wrap gap-2">
-          <Button
+          <Button data-guide="ops-mark-complete"
             size="sm"
             dots
             disabled={!!blocker}
@@ -230,7 +230,7 @@ export function ChecklistPanel({
           >
             {t.markComplete}
           </Button>
-          <Button
+          <Button data-guide="ops-request-missing"
             size="sm"
             variant="outline"
             disabled={locked || !ev.missing.length}
@@ -238,7 +238,7 @@ export function ChecklistPanel({
           >
             {t.requestMissing}
           </Button>
-          <Button
+          <Button data-guide="ops-reject"
             size="sm"
             variant="ghost"
             disabled={locked}
@@ -294,7 +294,7 @@ export function RequestDocsDialog({
         day: "numeric",
         month: "short",
       })
-    : "—";
+    : "";
   const send = () => {
     if (!picked.length) return setErr(t.noItems);
     if (!channels.length) return setErr(t.noChannel);

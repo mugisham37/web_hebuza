@@ -3,9 +3,9 @@ import { images } from "@/lib/assets";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "HEBUZA — POSIBA",
+    name: "HEBUZA, POSIBA",
     short_name: "HEBUZA",
-    description: "Business, tax & investment services online — track, pay by MoMo, get documents.",
+    description: "Business, tax & investment services online, track, pay by MoMo, get documents.",
     start_url: "/rw",
     scope: "/",
     display: "standalone",

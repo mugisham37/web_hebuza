@@ -383,7 +383,7 @@ export function CasesView() {
             {formatMoney(r.amount, "RWF", locale)}
           </span>
         ) : (
-          "—"
+          ""
         ),
     },
     {
@@ -421,7 +421,7 @@ export function CasesView() {
       key: "submissionRef",
       label: t.cols.submissionRef,
       sort: (r) => r.submissionRef ?? "",
-      cell: (r) => <span className="tabular">{r.submissionRef ?? "—"}</span>,
+      cell: (r) => <span className="tabular">{r.submissionRef ?? ""}</span>,
     },
     {
       key: "submitted",
@@ -456,7 +456,7 @@ export function CasesView() {
             )}
           </span>
         ) : (
-          "—"
+          ""
         ),
     },
     {
@@ -547,7 +547,7 @@ export function CasesView() {
           }
         }}
         extra={
-          <button
+          <button data-guide="ops-save-view"
             type="button"
             onClick={() => setDialog("save")}
             className="-mb-px inline-flex h-10 shrink-0 items-center px-3 text-small whitespace-nowrap text-link hover:underline"
@@ -628,7 +628,7 @@ export function CasesView() {
                 }}
               />
             )}
-            <Button
+            <Button data-guide="ops-export"
               size="sm"
               variant="outline"
               onClick={() => setDialog("export")}
@@ -1013,7 +1013,7 @@ function BulkChangeDialog({
               className="h-11 border border-border-strong bg-white px-3 text-body"
             >
               <option value="" disabled>
-                —
+
               </option>
               {Object.entries(t.change.reasons).map(([k, v]) => (
                 <option key={k} value={k}>

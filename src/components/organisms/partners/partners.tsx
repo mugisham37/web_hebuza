@@ -57,7 +57,7 @@ const HTONE: Record<Health, "success" | "warning" | "danger"> = {
   red: "danger",
 };
 const usePc = () => partnersCopy(useI18n().locale);
-const S = (v: unknown) => (v == null || v === "" ? "—" : String(v));
+const S = (v: unknown) => (v == null || v === "" ? "" : String(v));
 
 function useAllowed() {
   const { user } = useSession();
@@ -386,7 +386,7 @@ export function PartnerList() {
           <p className="text-body text-fg-muted">{c.lede}</p>
         </div>
         {write && (
-          <Button dots onClick={() => setAdding(true)}>
+          <Button dots data-guide="partners-add" onClick={() => setAdding(true)}>
             {c.add}
           </Button>
         )}
@@ -648,7 +648,7 @@ export function PartnerDetail({ id }: { id: string }) {
           {S(r.name)}
           {r.title ? ` · ${S(r.title)}` : ""} · {S(r.email ?? r.phone)}
           {r.isPrimary ? " ★" : ""}
-          {r.active === false ? " · —" : ""}
+          {r.active === false ? " ·" : ""}
         </>
       ),
     },
@@ -681,7 +681,7 @@ export function PartnerDetail({ id }: { id: string }) {
       rows: d.actions,
       line: (r) => (
         <>
-          {S(r.title)} · {r.dueOn ? formatDate(String(r.dueOn), locale) : "—"} ·{" "}
+          {S(r.title)} · {r.dueOn ? formatDate(String(r.dueOn), locale) : ""} ·{" "}
           {L(c.actionStatus, r.status)} · {S(r.progress)}%
         </>
       ),
@@ -748,7 +748,7 @@ export function PartnerDetail({ id }: { id: string }) {
     },
     objectives: { rows: d.objectives, line: (r) => <>{S(r.title)}{r.period ? ` · ${S(r.period)}` : ""} · {d.actions.filter((a) => a.objectiveId === r.id).length} {c.tabs.actions.toLowerCase()}</> },
     opportunities: { rows: d.opportunities, line: (r) => <>{S(r.title)} · {L(c.oppStage, r.stage)}{r.value != null ? ` · ${formatMoney(Number(r.value), "RWF", locale)}` : ""}</> },
-    obligations: { rows: d.obligations, line: (r) => <>{S(r.description)} · {d.agreements.find((a) => a.id === r.agreementId)?.title as string ?? S(r.agreementId)} · {r.dueOn ? formatDate(String(r.dueOn), locale) : "—"} · {L(c.oblStatus, r.status)}</> },
+    obligations: { rows: d.obligations, line: (r) => <>{S(r.description)} · {d.agreements.find((a) => a.id === r.agreementId)?.title as string ?? S(r.agreementId)} · {r.dueOn ? formatDate(String(r.dueOn), locale) : ""} · {L(c.oblStatus, r.status)}</> },
   };
   const panel = (k: Kind) => (
     <div className="mt-4 grid gap-3">
@@ -757,6 +757,7 @@ export function PartnerDetail({ id }: { id: string }) {
           <Button
             size="sm"
             dots
+            data-guide="partners-add-row"
             onClick={() => setEdit({ kind: k, row: null })}
           >
             {c.new}
@@ -835,12 +836,14 @@ export function PartnerDetail({ id }: { id: string }) {
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
+              data-guide="partners-edit"
               onClick={() => setEdit({ kind: "partner", row: d })}
             >
               {c.save}
             </Button>
             <Button
               variant="ghost"
+              data-guide="partners-archive"
               loading={status.isPending}
               onClick={() => status.mutate(d.status !== "archived")}
             >
@@ -863,7 +866,7 @@ export function PartnerDetail({ id }: { id: string }) {
                     [
                       c.score.onTime,
                       sc.actionsOnTimePct == null
-                        ? "—"
+                        ? ""
                         : `${sc.actionsOnTimePct}%`,
                     ],
                     [c.score.referrals, sc.referrals],
@@ -1034,7 +1037,7 @@ export function PartnerCommissions() {
               {q.data.items.map((r) => (
                 <tr key={r.id}>
                   <td className="px-4 py-3">{r.partner}</td>
-                  <td className="px-4 py-3 font-mono">{r.caseCode ?? "—"}</td>
+                  <td className="px-4 py-3 font-mono">{r.caseCode ?? ""}</td>
                   <td className="px-4 py-3 tabular">
                     {formatMoney(r.baseAmount, "RWF", locale)}
                   </td>

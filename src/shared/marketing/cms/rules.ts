@@ -137,7 +137,7 @@ export const youtubeId = (id?: unknown) => (typeof id === "string" && /^[\w-]{11
 
 /** Public path of an entry per locale (types without a page return null). */
 export function publicPath(type: CmsType, key: string, slug: string, locale: Locale) {
-  if (type === "guide" || type === "article") return `/${locale}/knowledge/${slug}`;
+  // guides/articles have no public page (they feed the AI assistant only)
   if (type === "regulatory_update") return `/${locale}/updates/${slug}`;
   if (type === "landing_page") return `/${locale}/campaign/${slug}`;
   if (type === "faq") return `/${locale}/faq`;

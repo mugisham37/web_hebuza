@@ -40,7 +40,7 @@ const en = {
   prev: "Previous page",
   next: "Next page",
   listErr: "your clients",
-  none: "—",
+  none: "",
   back: "My clients",
   tabs: {
     overview: "Overview",
@@ -63,7 +63,7 @@ const en = {
   contact: "Contact",
   language: "Language",
   since: "Client since {y}",
-  phoneHidden: "Personal number hidden — call through the HEBUZA line.",
+  phoneHidden: "Personal number hidden, call through the HEBUZA line.",
   send: "Send message",
   call: "Call (HEBUZA line)",
   callTitle: "Call through the HEBUZA line",
@@ -130,7 +130,7 @@ const rw: Copy = {
   prev: "Urupapuro rubanza",
   next: "Urupapuro rukurikira",
   listErr: "abakiriya bawe",
-  none: "—",
+  none: "",
   back: "Abakiriya banjye",
   tabs: {
     overview: "Incamake",
@@ -158,7 +158,7 @@ const rw: Copy = {
   language: "Ururimi",
   since: "Umukiriya kuva {y}",
   phoneHidden:
-    "Nimero ye bwite irahishe — hamagara ukoresheje umurongo wa HEBUZA.",
+    "Nimero ye bwite irahishe, hamagara ukoresheje umurongo wa HEBUZA.",
   send: "Ohereza ubutumwa",
   call: "Hamagara (umurongo wa HEBUZA)",
   callTitle: "Hamagara ukoresheje umurongo wa HEBUZA",
@@ -231,7 +231,7 @@ const fr: Copy = {
   prev: "Page précédente",
   next: "Page suivante",
   listErr: "vos clients",
-  none: "—",
+  none: "",
   back: "Mes clients",
   tabs: {
     overview: "Aperçu",
@@ -254,7 +254,7 @@ const fr: Copy = {
   contact: "Contact",
   language: "Langue",
   since: "Client depuis {y}",
-  phoneHidden: "Numéro personnel masqué — appelez via la ligne HEBUZA.",
+  phoneHidden: "Numéro personnel masqué, appelez via la ligne HEBUZA.",
   send: "Envoyer un message",
   call: "Appeler (ligne HEBUZA)",
   callTitle: "Appeler via la ligne HEBUZA",

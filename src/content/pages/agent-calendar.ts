@@ -60,13 +60,13 @@ const en = {
     url: "Private calendar link",
     copy: "Copy",
     copied: "Link copied",
-    copyFailed: "Couldn't copy — select the link and copy it manually.",
+    copyFailed: "Couldn't copy, select the link and copy it manually.",
     warn: "Keep this link private. Anyone with it can see your schedule.",
     regen: "Regenerate link",
     regenWarn:
       "The current link stops working immediately. You'll need to re-add the new one in Google or Outlook.",
     regenConfirm: "Yes, regenerate",
-    regenDone: "New link created — the old one no longer works.",
+    regenDone: "New link created, the old one no longer works.",
   },
 };
 export type CalendarCopy = typeof en;
@@ -130,13 +130,13 @@ const fr: CalendarCopy = {
     url: "Lien privé de l'agenda",
     copy: "Copier",
     copied: "Lien copié",
-    copyFailed: "Copie impossible — sélectionnez le lien et copiez-le.",
+    copyFailed: "Copie impossible, sélectionnez le lien et copiez-le.",
     warn: "Gardez ce lien privé. Toute personne qui l'a voit votre planning.",
     regen: "Régénérer le lien",
     regenWarn:
       "Le lien actuel cessera immédiatement de fonctionner. Il faudra ajouter le nouveau dans Google ou Outlook.",
     regenConfirm: "Oui, régénérer",
-    regenDone: "Nouveau lien créé — l'ancien ne fonctionne plus.",
+    regenDone: "Nouveau lien créé, l'ancien ne fonctionne plus.",
   },
 };
 
@@ -203,13 +203,13 @@ const rw: CalendarCopy = {
     url: "Umuyoboro bwite wa kalendari",
     copy: "Koporora",
     copied: "Umuyoboro wakoporowe",
-    copyFailed: "Ntibyakoporowe — hitamo umuyoboro uwukoporore.",
+    copyFailed: "Ntibyakoporowe, hitamo umuyoboro uwukoporore.",
     warn: "Bika uyu muyoboro mu ibanga. Uwuwufite wese abona gahunda yawe.",
     regen: "Kora umuyoboro mushya",
     regenWarn:
       "Umuyoboro usanzwe uhita uhagarara. Uzongera ushyiremo mushya muri Google cyangwa Outlook.",
     regenConfirm: "Yego, kora mushya",
-    regenDone: "Umuyoboro mushya wakozwe — uwa kera ntugikora.",
+    regenDone: "Umuyoboro mushya wakozwe, uwa kera ntugikora.",
   },
 };
 

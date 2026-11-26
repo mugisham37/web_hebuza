@@ -90,7 +90,7 @@ export function AssignView({ refId }: { refId: string }) {
         </Link>
         <h1 className="text-h3">{fill(t.title, { ref: c.ref })}</h1>
       </div>
-      <nav
+      <nav data-guide="ops-assign-steps"
         aria-label={t.title.replace("{ref}", "")}
         className="-mx-1 overflow-x-auto px-1"
       >
@@ -156,13 +156,13 @@ function CaseRail({ c }: { c: CaseDetailVM }) {
           <SlaChip due={c.dueAt} />
         </span>
       ) : (
-        "—"
+        ""
       ),
     ],
-    [t.language, ctx.data?.language ?? c.clientInfo?.language ?? "—"],
-    [t.location, ctx.data?.location ?? "—"],
+    [t.language, ctx.data?.language ?? c.clientInfo?.language ?? ""],
+    [t.location, ctx.data?.location ?? ""],
     [t.payment, <PaymentChip key="p" status={c.payment} />],
-    [t.current, c.assignees[0]?.name ?? "—"],
+    [t.current, c.assignees[0]?.name ?? ""],
   ];
   return (
     <aside
@@ -306,7 +306,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
         <h2 id="sg-h" className="text-label-lg">
           {t.suggested}
         </h2>
-        <Switch
+        <Switch data-guide="ops-include-external"
           label={t.includeExternal}
           checked={external}
           onChange={(e) =>
@@ -344,7 +344,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
           </select>
         </label>
         <details className="relative ml-auto text-small">
-          <summary className="cursor-pointer font-medium text-link">
+          <summary data-guide="ops-why" className="cursor-pointer font-medium text-link">
             {t.why}
           </summary>
           <div className="theme-dark absolute right-0 z-30 mt-2 grid w-72 gap-2 bg-navy-900 p-4 text-fg shadow-md">
@@ -388,7 +388,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
         />
       ) : (
         <>
-          <ol className="grid gap-3" aria-live="polite">
+          <ol data-guide="ops-suggestions" className="grid gap-3" aria-live="polite">
             {list.map((s, i) => (
               <li
                 key={s.agent.id}
@@ -460,7 +460,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
                           a: ctx.data.revenueRule.agency,
                           b: ctx.data.revenueRule.agent,
                         })
-                      : "—"}
+                      : ""}
                   </span>
                   <Switch
                     label={t.external.override}
@@ -586,7 +586,7 @@ function Suggest({ c }: { c: CaseDetailVM }) {
                 {problems.join(" · ")}
               </p>
             )}
-            <Button
+            <Button data-guide="ops-assign-submit"
               dots
               className="ml-auto max-sm:w-full max-sm:justify-center"
               loading={assign.isPending}
@@ -944,7 +944,7 @@ function IneligibleList({
                         day: "numeric",
                         month: "short",
                       })
-                    : "—",
+                    : "",
                   load: x.agent.load,
                   cap: x.agent.cap,
                 })}

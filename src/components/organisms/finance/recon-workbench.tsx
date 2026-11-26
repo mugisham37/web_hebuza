@@ -149,7 +149,7 @@ export function MatchWorkbench({ importId }: { importId: string }) {
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
             <section aria-label={r.bench.lineLabel} className={cx("min-w-0", side !== "statement" && "hidden lg:block")}>
               <h2 className="mb-2 hidden items-center gap-2 text-label lg:flex">
-                <span className="bg-gold-100 text-gold-800 px-3 py-1">{fill(r.bench.statement, { provider: r.providers[d.import.provider] })} — {fill(r.bench.unmatchedN, { n: needs })}</span>
+                <span className="bg-gold-100 text-gold-800 px-3 py-1">{fill(r.bench.statement, { provider: r.providers[d.import.provider] })}, {fill(r.bench.unmatchedN, { n: needs })}</span>
               </h2>
               {!lines.length ? (
                 view === "needs"
@@ -168,7 +168,7 @@ export function MatchWorkbench({ importId }: { importId: string }) {
               )}
             </section>
             <section aria-label={r.bench.platformLabel} className={cx("grid min-w-0 content-start gap-2", side !== "platform" && "hidden lg:grid")}>
-              <h2 className="mb-0 hidden text-label lg:block"><span className="bg-navy-50 px-3 py-1 text-navy-800">{r.bench.platform} — {fill(r.bench.platformN, { n: d.platform.length })}</span></h2>
+              <h2 className="mb-0 hidden text-label lg:block"><span className="bg-navy-50 px-3 py-1 text-navy-800">{r.bench.platform}, {fill(r.bench.platformN, { n: d.platform.length })}</span></h2>
               <p className="text-eyebrow text-fg-subtle">{r.bench.platformHint}</p>
               {!d.platform.length ? <EmptyPanel compact title={r.bench.platformEmpty} /> : (
                 <ul className="grid gap-2">
@@ -207,7 +207,7 @@ export function MatchWorkbench({ importId }: { importId: string }) {
         } satisfies ManualPrefill : undefined}
         onDone={(id) => { const l = act?.line; setAct(null); setPayment(id); if (l) resolved(l.id, r.link.done); }} />
       <PaymentDrawer id={payment} onClose={() => setPayment(null)} />
-      <ConflictDialog open={!!conflict.conflict} who={sel?.by?.name ?? "—"} when={conflict.conflict?.at ?? new Date(0).toISOString()}
+      <ConflictDialog open={!!conflict.conflict} who={sel?.by?.name ?? ""} when={conflict.conflict?.at ?? new Date(0).toISOString()}
         onClose={conflict.clear} onRefresh={() => { conflict.clear(); setKey(newIdempotencyKey()); q.refetch(); }} />
     </div>
   );

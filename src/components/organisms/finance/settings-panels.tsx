@@ -35,7 +35,7 @@ const STALE_MS = 5 * 60_000;
 function useConflict(refetch: () => unknown) {
   const [c, setC] = useState<{ who: string; when: string } | null>(null);
   return {
-    open: (who = "—") => setC({ who, when: new Date().toISOString() }),
+    open: (who = "") => setC({ who, when: new Date().toISOString() }),
     node: <ConflictDialog open={!!c} who={c?.who ?? ""} when={c?.when ?? ""} onClose={() => setC(null)} onRefresh={() => { setC(null); void refetch(); }} />,
   };
 }
@@ -75,7 +75,7 @@ function SettingsTable({ keys, label }: { keys: readonly FinanceSettingKey[]; la
     { key: "status", label: s.cols.status, cell: (r) => <FinStatus status={r.status} />, wrap: true },
     { key: "enforced", label: s.cols.enforced, cell: (r) => <span className="text-fg-muted">{s.enforcedBy[r.enforcedBy] ?? r.enforcedBy}</span> },
     { key: "actions", label: s.cols.actions, align: "right", card: false, cell: (r) => (
-      <Button size="sm" variant={editable(r) ? "secondary" : "ghost"} className="m-press" onClick={(e) => { e.stopPropagation(); void open(r); }}
+      <Button data-guide="finance-settings-propose" size="sm" variant={editable(r) ? "secondary" : "ghost"} className="m-press" onClick={(e) => { e.stopPropagation(); void open(r); }}
         title={!c.online && c.finance ? s.states.offline : r.status === "pending_approval" ? s.pendingBy : undefined}>
         {editable(r) ? s.edit : s.view}
       </Button>
@@ -137,7 +137,7 @@ export function NumberingSection() {
     { key: "reset", label: s.numbering.cols.reset, cell: (r) => r.reset === "monthly" ? s.numbering.resetMonthly : s.numbering.reset },
     { key: "next", label: s.numbering.cols.next, cell: (r) => r.next
       ? <span className="inline-flex items-center gap-1.5 tabular" title={s.numbering.readOnly}><Icon name="lock" size={12} aria-hidden className="text-fg-subtle" />{r.next}</span>
-      : <span className="text-fg-subtle">—</span> },
+      : <span className="text-fg-subtle"></span> },
     { key: "last", label: s.numbering.cols.last, cell: (r) => <span className="tabular text-fg-muted">{r.last ?? s.numbering.none}</span> },
     { key: "status", label: s.numbering.cols.status, wrap: true, cell: (r) => <FinStatus status={pendingFor(r.series) ? "pending_approval" : "active"} /> },
   ];
@@ -192,7 +192,7 @@ export function AccountsSection() {
   }
   const lock = (a: FinAccount) => a.payoutLockedUntil && Date.parse(a.payoutLockedUntil) > c.now
     ? <span className="inline-flex items-center gap-1.5 text-warning"><Icon name="lock" size={12} aria-hidden />{fill(s.accounts.lockedUntil, { t: formatDateTime(a.payoutLockedUntil, locale) })}</span>
-    : a.status === "verified" ? <span className="text-success">{s.accounts.ready}</span> : <span className="text-fg-subtle">—</span>;
+    : a.status === "verified" ? <span className="text-success">{s.accounts.ready}</span> : <span className="text-fg-subtle"></span>;
   const cols: OpsColumn<FinAccount>[] = [
     { key: "name", label: s.accounts.cols.name, cell: (a) => <span className="font-medium">{a.name}</span>, sort: (a) => a.name },
     { key: "number", label: s.accounts.cols.number, cell: (a) => <span className="tabular">{revealed[a.id] ?? a.masked}</span> },
@@ -238,7 +238,7 @@ export function AccountsSection() {
               <div><dt className="text-fg-muted">{s.accounts.cols.method}</dt><dd><MethodTag method={cur.method} /></dd></div>
               <div><dt className="text-fg-muted">{s.accounts.cols.lock}</dt><dd>{lock(cur)}</dd></div>
               <div><dt className="text-fg-muted">{s.accounts.addedBy}</dt><dd>{cur.addedBy.name}</dd></div>
-              <div><dt className="text-fg-muted">{s.accounts.verifiedBy}</dt><dd>{cur.verifiedBy?.name ?? "—"}</dd></div>
+              <div><dt className="text-fg-muted">{s.accounts.verifiedBy}</dt><dd>{cur.verifiedBy?.name ?? ""}</dd></div>
             </dl>
             {cur.status === "pending_callback" && c.finance && (
               cur.addedBy.id === c.me
@@ -334,17 +334,17 @@ export function HistorySection() {
   const short = (v: unknown, field: string | null) => {
     const o = (v ?? {}) as Record<string, unknown>;
     const x = field ? o[field] : null;
-    return x == null ? "—" : typeof x === "object" ? JSON.stringify(x) : String(x);
+    return x == null ? "" : typeof x === "object" ? JSON.stringify(x) : String(x);
   };
   const cols: OpsColumn<HistoryRow>[] = [
     { key: "at", label: s.history.cols.at, cell: (r) => <span className="tabular">{formatDateTime(r.at, locale)}</span>, sort: (r) => r.at },
     { key: "user", label: s.history.cols.user, cell: (r) => r.actor, sort: (r) => r.actor },
     { key: "record", label: s.history.cols.record, wrap: true, cell: (r) => <span><span className="font-medium">{r.record}</span><span className="block text-eyebrow text-fg-subtle">{r.action}</span></span> },
-    { key: "field", label: s.history.cols.field, cell: (r) => r.field ?? "—" },
+    { key: "field", label: s.history.cols.field, cell: (r) => r.field ?? "" },
     { key: "diff", label: s.history.cols.diff, wrap: true, cell: (r) => (
       <span className="inline-flex flex-wrap items-center gap-1.5 tabular"><del className="text-fg-muted">{short(r.before, r.field)}</del><Icon name="arrowRight" size={12} aria-hidden /><ins className="no-underline">{short(r.after, r.field)}</ins></span>
     ) },
-    { key: "reason", label: s.history.cols.reason, wrap: true, cell: (r) => <span className="text-fg-muted">{r.reason ?? "—"}</span> },
+    { key: "reason", label: s.history.cols.reason, wrap: true, cell: (r) => <span className="text-fg-muted">{r.reason ?? ""}</span> },
   ];
   async function onExport() {
     setJob({ id: "pending", status: "running", format: "csv" } as ExportJob);

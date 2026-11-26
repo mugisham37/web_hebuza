@@ -48,7 +48,7 @@ function Wizard({ x, prefill, step }: { x: CampaignView | null; prefill: { segme
   const [approverId, setApproverId] = useState(x?.approverId ?? "");
   const idx = STEPS.indexOf(step);
   const save = useCmpMutation((body: Partial<Campaign>) => x ? unwrap<CampaignView>(api.PATCH("/api/admin/crm/campaigns/{id}", { params: { path: { id: x.id } }, body: body })) : unwrap<CampaignView>(api.POST("/api/admin/crm/campaigns", { body: body })));
-  const act = useCmpMutation((v: { action: string; body?: Record<string, unknown> }) => unwrap<CampaignView>(api.POST("/api/admin/crm/campaigns/{id}/{action}", { params: { path: { id: x!.id, action: v.action } }, body: v.body ?? {} })));
+  const act = useCmpMutation((v: { action: string; body?: Record<string, unknown> }) => unwrap<CampaignView>(api.POST("/api/admin/crm/campaigns/{id}/{action}", { params: { path: { id: x?.id ?? "", action: v.action } }, body: v.body ?? {} })));
   const editable = !x || x.status === "draft";
 
   const go = (to: Step) => {
@@ -73,7 +73,7 @@ function Wizard({ x, prefill, step }: { x: CampaignView | null; prefill: { segme
       <Stepper steps={STEPS.map((s) => c.wiz.steps[s])} current={idx} />
       {x?.rejectedReason && <p role="status" className="mt-4 bg-danger-bg px-4 py-3 text-small text-danger">{fill(c.wiz.rejected, { r: x.rejectedReason })}</p>}
       <div className="mt-6 grid gap-5 xl:grid-cols-[1fr_22rem]">
-        <section aria-label={c.wiz.steps[step]} className="grid content-start gap-4 m-rise" key={step}>
+        <section data-guide="marketing-wizard-step" aria-label={c.wiz.steps[step]} className="grid content-start gap-4 m-rise" key={step}>
           {step === "audience" && <Audience d={d} setD={setD} />}
           {step === "channel" && <ChannelStep d={d} setD={setD} />}
           {step === "content" && <Content d={d} setD={setD} x={x} />}
@@ -88,7 +88,7 @@ function Wizard({ x, prefill, step }: { x: CampaignView | null; prefill: { segme
           </div>
           {!online && <p role="status" className="text-small text-warning">{c.common.offline}</p>}
         </section>
-        <aside className="grid content-start gap-4">
+        <aside data-guide="marketing-wizard-rail" className="grid content-start gap-4">
           {x ? (
             <>
               <ConsentExclusionCard count={x.live.count} eligible={x.live.eligible} excluded={x.live.excluded} />
@@ -157,7 +157,7 @@ function Content({ d, setD, x }: StepProps & { x: CampaignView | null }) {
             <div className="grid gap-3">
               <Field label={c.wiz.template}>{(a) => (
                 <Select {...fa(a)} value={t.templateKey ?? ""} onChange={(e) => set(l, { templateKey: e.target.value || undefined })}>
-                  <option value="">—</option>
+                  <option value=""></option>
                   {options.map((o) => {
                     const usable = o.category === "marketing" && o.status === "active";
                     return <option key={o.id} value={o.key} disabled={!usable}>{o.name}{usable ? "" : ` · ${fill(c.wiz.notActive, { s: o.category === "marketing" ? o.status : o.category })}`}</option>;
@@ -239,7 +239,7 @@ function Review({ x, approverId, setApproverId }: { x: CampaignView; approverId:
       {x.approvalNeeded && (
         <Field label={c.wiz.approver} hint={c.wiz.approverHint}>{(a) => (
           <Select {...fa(a)} value={approverId} onChange={(e) => setApproverId(e.target.value)}>
-            <option value="">—</option>
+            <option value=""></option>
             {approvers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </Select>
         )}</Field>

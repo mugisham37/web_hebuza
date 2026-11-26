@@ -82,8 +82,8 @@ export function LeadsView() {
   return (
     <div className="grid gap-5">
       <PageHead title={c.leads.title} sub={c.leads.sub} actions={<>
-        <Button variant="secondary" size="sm" onClick={() => setImporting(true)}><Icon name="upload" size={15} aria-hidden />{c.leads.import}</Button>
-        <Button size="sm" onClick={() => setAdding(true)}><Icon name="plus" size={15} aria-hidden />{c.leads.add}</Button>
+        <Button data-guide="marketing-import" variant="secondary" size="sm" onClick={() => setImporting(true)}><Icon name="upload" size={15} aria-hidden />{c.leads.import}</Button>
+        <Button data-guide="marketing-add-lead" size="sm" onClick={() => setAdding(true)}><Icon name="plus" size={15} aria-hidden />{c.leads.add}</Button>
       </>} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 m-stagger">
         {(["total", "new", "contacted", "qualified", "quote_sent", "wonMonth"] as const).map((key, i) => (
@@ -136,7 +136,7 @@ export function LeadsView() {
       <ReasonDialog open={exporting} onClose={() => setExporting(false)} title={c.leads.exportTitle} description={c.leads.exportBody} audited confirmLabel={c.leads.bulk.export}
         options={Object.entries(c.leads.exportReasons).map(([value, label]) => ({ value, label }))}
         onConfirm={async ({ reason, note }) => {
-          const r = await exportLeads(ids, [c.leads.exportReasons[reason], note].filter(Boolean).join(" — "));
+          const r = await exportLeads(ids, [c.leads.exportReasons[reason], note].filter(Boolean).join(", "));
           downloadCsv(`leads-${new Date().toISOString().slice(0, 10)}.csv`, r.csv);
           toast({ title: fill(c.leads.exported, { n: r.count }), tone: "success" });
           setExporting(false);
@@ -192,7 +192,7 @@ function LeadCard({ lead: l, onMove }: { lead: Lead; onMove: (l: Lead, to: LeadS
   const overdue = !!(now && l.nextActionAt && Date.parse(l.nextActionAt) < now);
   const service = l.serviceInterest[0];
   return (
-    <article draggable onDragStart={(e) => { e.dataTransfer.setData("text/plain", l.id); setDrag(true); }} onDragEnd={() => setDrag(false)}
+    <article data-guide="marketing-lead-card" draggable onDragStart={(e) => { e.dataTransfer.setData("text/plain", l.id); setDrag(true); }} onDragEnd={() => setDrag(false)}
       onKeyDown={(e) => { if (e.target !== e.currentTarget) return; if (e.key === "]") onMove(l, NEXT(l.stage)); if (e.key === "[") onMove(l, PREV(l.stage)); }}
       tabIndex={0} aria-label={`${l.name}, ${m.stage[l.stage]}`}
       className={cx("group grid gap-2 border border-border bg-white p-3 text-small shadow-xs focus-visible:outline-2 focus-visible:outline-focus", drag && "m-lift opacity-80")}>
@@ -237,7 +237,7 @@ function LeadTable({ leads, sel, setSel }: { leads: Lead[]; sel: Set<string>; se
         { key: "stage", header: c.drawer.stage, sortValue: (l) => BOARD_STAGES.indexOf(l.stage), cell: (l) => <LeadStageChip stage={l.stage} /> },
         { key: "source", header: c.leads.source, cell: (l) => <SourceBadge touch={l.lastTouch} /> },
         { key: "owner", header: c.leads.owner, cell: (l) => <StaffName staff={staff.of(l.ownerId)} /> },
-        { key: "next", header: c.leads.next, sortValue: (l) => l.nextActionAt ?? "", cell: (l) => (l.nextActionAt ? formatDate(l.nextActionAt, locale) : "—") },
+        { key: "next", header: c.leads.next, sortValue: (l) => l.nextActionAt ?? "", cell: (l) => (l.nextActionAt ? formatDate(l.nextActionAt, locale) : "") },
         { key: "phone", header: c.add.phone, cell: (l) => <span className="tabular">{maskPhone(l.phoneE164)}</span> },
       ]} />
   );
@@ -270,7 +270,7 @@ function EnrolBulk({ ids, onDone }: { ids: string[]; onDone: () => void }) {
           try { const res = await enrol(r.id, ids); toast({ title: fill(c.leads.bulk.enrolled, { n: res.enrolled }), tone: "success" }); onDone(); }
           catch (e) { toast({ title: errorCopy(e, locale), tone: "danger" }); }
         }}>{r.name}</button>
-      ))}{!rules.length && <p className="px-2 py-1.5 text-small text-fg-subtle">—</p>}</div>}
+      ))}{!rules.length && <p className="px-2 py-1.5 text-small text-fg-subtle"></p>}</div>}
     </MenuButton>
   );
 }
@@ -443,7 +443,7 @@ function Facts({ d }: { d: LeadDetail }) {
         </F>
         <F label={c.drawer.interest}>
           <Select value={l.serviceInterest[0] ?? ""} onChange={(e) => save({ serviceInterest: e.target.value ? [e.target.value] : [] })}>
-            <option value="">—</option>
+            <option value=""></option>
             {SERVICE_SLUGS.map((s) => <option key={s} value={s}>{serviceLabel(s)}</option>)}
           </Select>
         </F>
@@ -456,7 +456,7 @@ function Facts({ d }: { d: LeadDetail }) {
           <Input inputMode="numeric" defaultValue={l.estimatedValue ?? ""} onBlur={(e) => { const n = Math.round(Number(e.target.value.replace(/\D/g, ""))); if (n !== (l.estimatedValue ?? 0)) save({ estimatedValue: n || undefined }); }} />
         </F>
       </dl>
-      <p className="flex items-center gap-2 text-small"><Icon name="phone" size={14} aria-hidden />{maskPhone(l.phoneE164) || "—"}{l.email && <><Icon name="mail" size={14} aria-hidden className="ml-2" /><span className="truncate">{l.email}</span></>}</p>
+      <p className="flex items-center gap-2 text-small"><Icon name="phone" size={14} aria-hidden />{maskPhone(l.phoneE164) || ""}{l.email && <><Icon name="mail" size={14} aria-hidden className="ml-2" /><span className="truncate">{l.email}</span></>}</p>
     </div>
   );
 }
@@ -479,7 +479,7 @@ function DuplicateBanner({ lead, dups }: { lead: Lead; dups: Lead[] }) {
           {all.map((x) => (
             <label key={x.id} className={cx("flex cursor-pointer items-center gap-3 border p-3", keep === x.id ? "border-navy-700 bg-navy-50" : "border-border")}>
               <input type="radio" name="keep" checked={keep === x.id} onChange={() => setKeep(x.id)} className="accent-navy-700" />
-              <span className="min-w-0 flex-1"><span className="block font-medium">{x.name}</span><span className="text-eyebrow text-fg-subtle tabular">{x.id} · {maskPhone(x.phoneE164)} · {x.email ?? "—"}</span></span>
+              <span className="min-w-0 flex-1"><span className="block font-medium">{x.name}</span><span className="text-eyebrow text-fg-subtle tabular">{x.id} · {maskPhone(x.phoneE164)} · {x.email ?? ""}</span></span>
               <LeadStageChip stage={x.stage} />
             </label>
           ))}
@@ -593,7 +593,7 @@ function DrawerFooter({ lead: l, onConvert, onLost }: { lead: Lead; onConvert: (
   const online = useOnline();
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button size="sm" disabled={!online || l.stage === "won" || l.stage === "merged"} onClick={() => onConvert(l)}>{c.drawer.convert}</Button>
+      <Button data-guide="marketing-convert" size="sm" disabled={!online || l.stage === "won" || l.stage === "merged"} onClick={() => onConvert(l)}>{c.drawer.convert}</Button>
       <span title={c.drawer.quoteNo}><Button size="sm" variant="secondary" disabled aria-describedby={`q-${l.id}`}>{c.drawer.quote}</Button></span>
       <span id={`q-${l.id}`} className="sr-only">{c.drawer.quoteNo}</span>
       {isOpen(l.stage) && <Button size="sm" variant="ghost" className="ml-auto text-danger" onClick={() => onLost(l)}>{c.drawer.lost}</Button>}
@@ -638,7 +638,7 @@ function AddLeadSheet({ open, onClose }: { open: boolean; onClose: () => void })
       <form className="grid gap-4" onSubmit={(e) => { e.preventDefault(); submit(); }} noValidate>
         {dups.length > 0 && <p role="alert" className="bg-warning-bg p-3 text-small text-warning">{c.add.dupWarn} {dups.map((d) => `${d.name} (${d.id})`).join(", ")}</p>}
         <F label={c.add.source} error={err.source}>
-          <Select value={f.source} onChange={set("source")} required><option value="">—</option>{Object.entries(c.add.sources).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</Select>
+          <Select value={f.source} onChange={set("source")} required><option value=""></option>{Object.entries(c.add.sources).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</Select>
         </F>
         <F label={c.add.name} error={err.name}><Input value={f.name} onChange={set("name")} required autoComplete="off" /></F>
         <F label={c.add.org} optional><Input value={f.org} onChange={set("org")} /></F>
@@ -647,7 +647,7 @@ function AddLeadSheet({ open, onClose }: { open: boolean; onClose: () => void })
           <F label={c.add.email} optional><Input type="email" value={f.email} onChange={set("email")} /></F>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <F label={c.add.service} optional><Select value={f.service} onChange={set("service")}><option value="">—</option>{SERVICE_SLUGS.map((s) => <option key={s} value={s}>{serviceLabel(s)}</option>)}</Select></F>
+          <F label={c.add.service} optional><Select value={f.service} onChange={set("service")}><option value=""></option>{SERVICE_SLUGS.map((s) => <option key={s} value={s}>{serviceLabel(s)}</option>)}</Select></F>
           <F label={c.add.language}><Select value={f.language} onChange={set("language")}>{(["rw", "en", "fr"] as const).map((l) => <option key={l} value={l}>{m.locale[l]}</option>)}</Select></F>
         </div>
         <fieldset className="grid gap-2"><legend className="mb-1 text-small font-medium">{c.add.consent}</legend>
@@ -715,7 +715,7 @@ function ImportWizard({ onClose }: { onClose: () => void }) {
         <div className="max-h-80 overflow-auto border border-border">
           <table className="w-full text-left text-small"><tbody>{preview.rows.map((r) => (
             <tr key={r.i} className="border-t border-border first:border-0">
-              <td className="p-2 tabular text-fg-subtle">{r.i}</td><td className="p-2">{r.data.name || "—"}</td><td className="p-2 tabular">{maskPhone(r.data.phone) || r.data.email || "—"}</td>
+              <td className="p-2 tabular text-fg-subtle">{r.i}</td><td className="p-2">{r.data.name || ""}</td><td className="p-2 tabular">{maskPhone(r.data.phone) || r.data.email || ""}</td>
               <td className="p-2">{r.errors.length ? <span className="text-danger">{c.importer.invalid}: {r.errors.join(", ")}</span> : r.dupInFile ? <span className="text-warning">{c.importer.dupFile}</span> : r.dupInCrm ? <span className="text-warning">{fill(c.importer.dupCrm, { id: r.dupInCrm })}</span> : <span className="text-success">{c.importer.ok}</span>}</td>
             </tr>
           ))}</tbody></table>

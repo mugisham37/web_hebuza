@@ -90,6 +90,7 @@ export function HistoryView() {
           {a.title}
           {a.kind === "request" && a.slug && (
             <Button
+              data-guide="client-history-again"
               variant="outline"
               size="sm"
               aria-label={`${h.again}: ${a.title}`}
@@ -105,13 +106,13 @@ export function HistoryView() {
     {
       key: "ref",
       header: h.cols.ref,
-      cell: (a) => <span className="font-mono text-small">{a.ref ?? "—"}</span>,
+      cell: (a) => <span className="font-mono text-small">{a.ref ?? ""}</span>,
       csv: (a) => a.ref ?? "",
     },
     {
       key: "amount",
       header: h.cols.amount,
-      cell: (a) => (a.amount ? formatMoney(a.amount, "RWF", locale) : "—"),
+      cell: (a) => (a.amount ? formatMoney(a.amount, "RWF", locale) : ""),
       sortValue: (a) => a.amount ?? 0,
       csv: (a) => a.amount ?? "",
       className: "text-right tabular-nums",
@@ -121,7 +122,7 @@ export function HistoryView() {
   return (
     <>
       <PageHead title={h.title} lede={h.lede} />
-      <div className="mb-6 grid gap-4 sm:grid-cols-[1fr_auto_auto]">
+      <div data-guide="client-history-filters" className="mb-6 grid gap-4 sm:grid-cols-[1fr_auto_auto]">
         <Field label={h.search}>
           {({ id }) => (
             <Input

@@ -53,7 +53,7 @@ export function ProofsView() {
                     <span className="grid min-w-0 flex-1 gap-0.5">
                       <span className="truncate text-small font-medium">{r.clientName}</span>
                       <Amount value={r.amount} size="lg" />
-                      <span className="truncate text-eyebrow text-fg-muted tabular">{r.ref ?? "—"}</span>
+                      <span className="truncate text-eyebrow text-fg-muted tabular">{r.ref ?? ""}</span>
                       <span className="text-eyebrow text-fg-subtle">{fill(p.proofs.received, { t: now ? formatRelative(r.at, locale, now) : formatDateTime(r.at, locale) })}</span>
                     </span>
                     {r.state === "under_verification" && <Icon name="lock" size={14} aria-label={p.tabs.verification} className="text-navy-600" />}

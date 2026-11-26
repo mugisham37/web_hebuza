@@ -169,7 +169,7 @@ export function StatusesView() {
           <span className="font-medium">{name(r)}</span>
           <span className="text-eyebrow text-fg-subtle">
             {LANGS.filter((l) => l !== locale)
-              .map((l) => `${l.toUpperCase()}: ${r.name[l] || "—"}`)
+              .map((l) => `${l.toUpperCase()}: ${r.name[l] || ""}`)
               .join(" · ")}
           </span>
         </span>
@@ -252,7 +252,7 @@ export function StatusesView() {
           <h1 className="text-h2">{c.title}</h1>
           <p className="text-small text-fg-subtle">{c.lede}</p>
         </div>
-        <Button dots onClick={() => setEditing("new")}>
+        <Button data-guide="ops-new-status" dots onClick={() => setEditing("new")}>
           {c.new} <Kbd>N</Kbd>
         </Button>
       </header>

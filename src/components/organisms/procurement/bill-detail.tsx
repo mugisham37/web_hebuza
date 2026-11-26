@@ -74,7 +74,7 @@ export function BillDetailView({ no }: { no: string }) {
   const doSubmit = () => guarded(async () => { try { return await submit.mutateAsync({ no: b.no, idempotencyKey: newIdempotencyKey() }); } catch (e) { toast({ title: errorCopy(e, locale), tone: "danger" }); throw e; } }, fill(c.detail.done.submit, { no: b.no }));
   const creditNote = () => {
     const bad = b.match?.lines.filter((l) => l.result === "exception") ?? [];
-    const text = `Credit note request — ${b.no} / ${b.vendorInvoiceNo}\n${bad.map((l) => `${l.description}: billed ${l.billed}, received ${l.received}`).join("\n")}`;
+    const text = `Credit note request, ${b.no} / ${b.vendorInvoiceNo}\n${bad.map((l) => `${l.description}: billed ${l.billed}, received ${l.received}`).join("\n")}`;
     navigator.clipboard?.writeText(text).catch(() => {});
     toast({ title: c.detail.creditCopied, tone: "success" });
   };
@@ -118,7 +118,7 @@ export function BillDetailView({ no }: { no: string }) {
       <div className="grid gap-3">
         <SegregationStrip steps={billSteps(b, d.limits.financeMax, payer)} me={me?.id} selfNote={selfNote} />
         <div className="flex flex-wrap gap-2">{b.routeReasons.map((r) => <Pill key={r} tone="warning" icon="zap">{p.reasons[r]}</Pill>)}{b.total > d.limits.financeMax && <Pill tone="warning" icon="shield">{p.reasons.over_limit}</Pill>}</div>
-        {b.override && <p className="text-small text-warning">{p.seg.override}: {b.override.by.name} — {b.override.reason}</p>}
+        {b.override && <p className="text-small text-warning">{p.seg.override}: {b.override.by.name}, {b.override.reason}</p>}
       </div>
     ) },
     { id: "payments", label: c.detail.tabs.payments, content: d.payments.length ? (
@@ -144,9 +144,9 @@ export function BillDetailView({ no }: { no: string }) {
         title={<span className="flex flex-wrap items-center gap-3"><DocNo kind="BL" no={b.no} copy /><ProcPill state={b.status} machine="bill" /></span>}
         sub={<span className="block max-w-full truncate" title={b.vendorName}>{b.vendorName} · {b.vendorInvoiceNo}</span>}
         actions={<div className="flex flex-wrap justify-end gap-2">{actions}</div>} />
-      {banner?.kind === "conflict" && <ConflictBanner who="—" when={new Date().toISOString()} onReload={() => { setBanner(null); q.refetch(); }} />}
+      {banner?.kind === "conflict" && <ConflictBanner who="" when={new Date().toISOString()} onReload={() => { setBanner(null); q.refetch(); }} />}
       {banner?.kind === "forbidden" && <p role="alert" className="bg-danger-bg px-4 py-3 text-small text-danger">{c.detail.forbidden}</p>}
-      {banner?.kind === "already" && <ConflictBanner who={banner.who ?? "—"} when={new Date().toISOString()} onReload={() => { setBanner(null); q.refetch(); }} />}
+      {banner?.kind === "already" && <ConflictBanner who={banner.who ?? ""} when={new Date().toISOString()} onReload={() => { setBanner(null); q.refetch(); }} />}
       {b.locked && !["paid", "void"].includes(b.status) && (
         <div role="status" className="grid gap-2 bg-danger-bg px-4 py-3 text-small text-danger"><p>{c.detail.lockBanner}</p><LockChip until={b.lockUntil} /></div>
       )}

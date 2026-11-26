@@ -1,8 +1,8 @@
 {
   "meta": {
-    "siteName": "HEBUZA",
-    "title": "HEBUZA — Services d'affaires, fiscaux et d'investissement en ligne",
-    "description": "Vos formalités et conseils d'entreprise, traités par des professionnels vérifiés — suivez chaque étape, payez par MoMo, recevez vos documents en ligne."
+    "siteName": "Hebuza",
+    "title": "Hebuza · Services d'affaires, fiscaux et d'investissement en ligne",
+    "description": "Vos formalités et conseils d'entreprise, traités par des professionnels vérifiés, suivez chaque étape, payez par MoMo, recevez vos documents en ligne."
   },
   "common": {
     "skipToContent": "Aller au contenu",
@@ -42,7 +42,7 @@
     "services": "Services",
     "pricing": "Tarifs",
     "about": "À propos",
-    "knowledge": "Guides",
+    "guides": "Guides",
     "contact": "Contact",
     "track": "Suivre une demande",
     "login": "Se connecter",
@@ -169,7 +169,7 @@
   },
   "footer": {
     "tagline": "Centre privé de guichet unique pour l'investissement et le conseil aux entreprises",
-    "address": "Sonatube, Kicukiro — Kigali, Rwanda",
+    "address": "Sonatube, Kicukiro, Kigali, Rwanda",
     "legal": "Mentions légales",
     "terms": "Conditions",
     "privacy": "Confidentialité",
@@ -279,7 +279,8 @@
     "feedback": "Avis",
     "seo": "SEO et suivi",
     "assistant": "Assistant",
-    "targets": "Objectifs"
+    "targets": "Objectifs",
+    "guides": "Guides"
   },
   "sessionExpiry": {
     "title": "Toujours là ?",

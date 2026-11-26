@@ -47,13 +47,13 @@ export function InvoicesView() {
   const cols: OpsColumn<InvoiceRow>[] = [
     { key: "no", label: c.cols.no, cell: (r) => <span className="grid gap-1"><DocNumber no={r.no} void={r.status === "void"} />{r.series !== "standard" && <SeriesTag series={r.series} />}</span>, sort: (r) => r.no ?? "~" },
     { key: "client", label: c.cols.client, cell: (r) => <span className="font-medium">{r.clientName}</span>, wrap: true, sort: (r) => r.clientName },
-    { key: "case", label: c.cols.case, cell: (r) => <span className="tabular text-fg-muted">{r.caseRef ?? "—"}</span>, card: false },
-    { key: "issued", label: c.cols.issued, cell: (r) => (r.issuedAt ? <span className="tabular">{formatDate(r.issuedAt, locale)}</span> : "—"), sort: (r) => r.issuedAt ?? "", card: false },
-    { key: "due", label: c.cols.due, cell: (r) => <span className="grid gap-1"><span className="tabular">{r.dueAt ? formatDate(r.dueAt, locale) : "—"}</span>{r.overdue && <FinStatus status="overdue" kind="invoice" />}</span>, sort: (r) => r.dueAt ?? "" },
+    { key: "case", label: c.cols.case, cell: (r) => <span className="tabular text-fg-muted">{r.caseRef ?? ""}</span>, card: false },
+    { key: "issued", label: c.cols.issued, cell: (r) => (r.issuedAt ? <span className="tabular">{formatDate(r.issuedAt, locale)}</span> : ""), sort: (r) => r.issuedAt ?? "", card: false },
+    { key: "due", label: c.cols.due, cell: (r) => <span className="grid gap-1"><span className="tabular">{r.dueAt ? formatDate(r.dueAt, locale) : ""}</span>{r.overdue && <FinStatus status="overdue" kind="invoice" />}</span>, sort: (r) => r.dueAt ?? "" },
     { key: "total", label: c.cols.total, align: "right", cell: (r) => <Amount value={r.totals.total} strike={r.status === "void"} />, sort: (r) => r.totals.total },
     { key: "paid", label: c.cols.paid, align: "right", cell: (r) => <Amount value={r.amountPaid} />, card: false },
     { key: "balance", label: c.cols.balance, align: "right", cell: (r) => <Amount value={r.balanceDue} className={r.overdue ? "font-medium text-danger" : undefined} />, sort: (r) => r.balanceDue },
-    { key: "ebm", label: c.cols.ebm, cell: (r) => (r.ebmRequired || r.ebmReceiptNo ? <EbmBadge no={r.ebmReceiptNo} required={r.ebmRequired} /> : "—"), card: false },
+    { key: "ebm", label: c.cols.ebm, cell: (r) => (r.ebmRequired || r.ebmReceiptNo ? <EbmBadge no={r.ebmReceiptNo} required={r.ebmRequired} /> : ""), card: false },
     { key: "state", label: c.cols.state, cell: (r) => <FinStatus status={r.status} kind="invoice" /> },
   ];
 

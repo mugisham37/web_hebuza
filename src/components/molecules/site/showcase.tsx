@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ButtonLink } from "@/components/atoms/button";
 import { cx } from "@/shared/format";
 
 export type ShowSlide = {
@@ -20,23 +19,17 @@ export type ShowCat = {
   slides: ShowSlide[];
 };
 
-/** One advert on the hero poster: photo, navy wash for legibility, category, service, summary, two actions (prices live on the service pages). */
+/** One hero slide: the photo carries it; a small, quiet caption (category + service, linked) sits bottom-left. No buttons. */
 export function PosterSlide({
   slide,
   active,
   priority,
   label,
-  applyLabel,
-  allLabel,
-  allHref,
 }: {
   slide: ShowSlide;
   active: boolean;
   priority?: boolean;
   label: string;
-  applyLabel: string;
-  allLabel: string;
-  allHref: string;
 }) {
   return (
     <div
@@ -55,38 +48,18 @@ export function PosterSlide({
         alt={slide.alt}
         fill
         priority={priority}
-        sizes="(min-width: 1024px) 70vw, 100vw"
+        sizes="(min-width: 1024px) 60vw, 100vw"
         className={cx(
           "object-cover transition-transform duration-[6000ms] ease-linear motion-reduce:transition-none",
           active ? "scale-100" : "scale-105",
         )}
       />
-      {/* Wash: dark on the text side (left on desktop, bottom on phones) so white type clears 4.5:1 over any photo. */}
-      <span
-        aria-hidden
-        className="absolute inset-0 bg-linear-to-t from-navy-950 via-navy-950/75 to-navy-950/10 lg:bg-linear-to-r lg:from-navy-950/95 lg:via-navy-950/70 lg:to-transparent"
-      />
-      <div className="relative flex h-full max-w-xl flex-col justify-end gap-4 p-6 pb-24 text-white sm:p-8 sm:pb-24 lg:justify-center lg:p-12 lg:pb-12">
-        <span className="w-fit border border-white/30 px-2.5 py-1 text-eyebrow tracking-[0.12em] uppercase">
-          {slide.family}
-        </span>
-        <h2 className="text-[clamp(1.75rem,1.2rem+2.2vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
-          {slide.title}
-        </h2>
-        {slide.summary && (
-          <p className="line-clamp-2 max-w-md text-body text-white/90">
-            {slide.summary}
-          </p>
-        )}
-        <div className="mt-1 flex flex-wrap gap-3">
-          <ButtonLink href={slide.href} variant="primary" dots>
-            {applyLabel}
-          </ButtonLink>
-          <ButtonLink href={allHref} variant="outline-dark">
-            {allLabel}
-          </ButtonLink>
-        </div>
-      </div>
+      {/* Light wash only along the bottom, enough for the small caption to clear 4.5:1. */}
+      <span aria-hidden className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-navy-950/85 to-transparent" />
+      <a href={slide.href} className="absolute bottom-14 left-6 flex max-w-xs flex-col gap-1 text-white sm:left-8 lg:left-10">
+        <span className="text-eyebrow tracking-[0.12em] text-white/70 uppercase">{slide.family}</span>
+        <span className="text-label-lg font-medium underline-offset-4 hover:underline">{slide.title}</span>
+      </a>
     </div>
   );
 }

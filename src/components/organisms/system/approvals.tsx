@@ -96,11 +96,11 @@ export function ApprovalsInbox({ viewer }: { viewer: Viewer }) {
         <label className="relative ml-auto w-full sm:w-72">
           <span className="sr-only">{c.inbox.searchLabel}</span>
           <Icon name="search" size={16} aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-fg-subtle" />
-          <Input type="search" value={term} placeholder={c.inbox.search} onChange={(e) => setUrlParams({ q: e.target.value || null })} className="h-11 pl-10" />
+          <Input type="search" data-guide="system-appr-search" value={term} placeholder={c.inbox.search} onChange={(e) => setUrlParams({ q: e.target.value || null })} className="h-11 pl-10" />
         </label>
       </div>
 
-      <ul className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label={c.inbox.cols.request}>
+      <ul data-guide="system-appr-areas" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label={c.inbox.cols.request}>
         {AREAS.map((a) => (
           <li key={a}>
             <button type="button" aria-pressed={area === a} onClick={() => setUrlParams({ area: a === "all" ? null : a })}
@@ -172,7 +172,7 @@ function Row({ r, i }: { r: ChangeRequestVM; i: number }) {
       <span className="text-small max-lg:hidden"><Needs r={r} /></span>
       <span className="flex flex-wrap items-center gap-2"><StatePill state={r.state} />{r.state === "proposed" && <CountdownPill until={r.expiresAt} className="lg:hidden" />}</span>
       <span className="lg:text-right">
-        <Button size="sm" variant={r.state === "proposed" && !mine ? "primary" : "outline"} onClick={open} className="m-press max-lg:w-full" aria-label={`${r.state === "proposed" && !mine ? c.inbox.review : c.inbox.view}: ${r.title}`}>
+        <Button size="sm" data-guide="system-appr-review" variant={r.state === "proposed" && !mine ? "primary" : "outline"} onClick={open} className="m-press max-lg:w-full" aria-label={`${r.state === "proposed" && !mine ? c.inbox.review : c.inbox.view}: ${r.title}`}>
           {r.state === "proposed" && !mine ? c.inbox.review : c.inbox.view}<Icon name="arrowRight" size={14} aria-hidden />
         </Button>
       </span>

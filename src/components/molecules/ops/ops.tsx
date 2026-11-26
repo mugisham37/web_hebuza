@@ -40,7 +40,7 @@ export function FilterBar({
 }) {
   const c = useC();
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div data-guide="ops-filterbar" className="flex flex-wrap items-center gap-2">
       <label className="relative min-w-0 flex-1 basis-72 sm:min-w-72 sm:max-w-96">
         <span className="sr-only">{placeholder}</span>
         <Icon
@@ -49,7 +49,7 @@ export function FilterBar({
           className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-fg-subtle"
           aria-hidden
         />
-        <input
+        <input data-guide="ops-search"
           type="search"
           value={search}
           onChange={(e) => onSearch(e.target.value)}
@@ -190,7 +190,7 @@ export function SavedViewTabs({
   extra?: ReactNode;
 }) {
   return (
-    <div
+    <div data-guide="ops-views"
       className="no-scrollbar -mx-gutter flex items-end gap-1 overflow-x-auto border-b border-border px-gutter sm:mx-0 sm:px-0"
       role="toolbar"
       aria-label="Views"
@@ -241,7 +241,7 @@ export function BulkBar({
   const c = useC();
   if (!count) return null;
   return (
-    <div
+    <div data-guide="ops-bulkbar"
       role="toolbar"
       aria-label={c.selected.replace("{n}", String(count))}
       className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+5rem)] z-40 mx-auto flex max-w-3xl m-rise flex-wrap items-center gap-2 theme-dark bg-bg px-4 py-3 text-fg shadow-lg lg:bottom-6"
@@ -294,7 +294,7 @@ export function DensityToggle({
 }) {
   const c = useC().density;
   return (
-    <div
+    <div data-guide="ops-density"
       role="radiogroup"
       aria-label={c.label}
       className="inline-flex h-8 border border-border-strong bg-surface p-0.5"
@@ -563,7 +563,7 @@ export function ReasonDialog({
               className="h-11 border border-border-strong bg-surface px-3 text-body focus:border-focus focus:outline-none"
             >
               <option value="" disabled>
-                —
+
               </option>
               {options.map((o) => (
                 <option key={o.value} value={o.value}>

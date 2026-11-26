@@ -160,7 +160,7 @@ function Editor({ t, rev, onReload }: { t: TemplateVM; rev: number; onReload: ()
         )}
       </header>
 
-      {conflict && <ConflictBanner by="—" at={cur.editedAt} onReload={() => { setConflict(false); setBase({ rev: -1, langs: cur.languages, category: t.category }); setLangs(cur.languages); onReload(); }} />}
+      {conflict && <ConflictBanner by="" at={cur.editedAt} onReload={() => { setConflict(false); setBase({ rev: -1, langs: cur.languages, category: t.category }); setLangs(cur.languages); onReload(); }} />}
       {readOnly && <LockedNote text={fill(c.readOnly, { role: cc.tpl.ownerRole[t.ownerKind] })} />}
       {viewing && (
         <p role="status" className="flex flex-wrap items-center gap-3 bg-ink-100 p-4 text-small">
@@ -173,7 +173,7 @@ function Editor({ t, rev, onReload }: { t: TemplateVM; rev: number; onReload: ()
           {process.env.NODE_ENV !== "production" && <Button size="sm" variant="ghost" loading={act.isPending && act.variables?.op === "simulate-rejection"} onClick={() => mutate({ op: "simulate-rejection", rev })}>{c.simulateReject}</Button>}
         </p>
       )}
-      {cur.status === "rejected" && <p role="alert" className="border border-danger/30 bg-danger-bg p-4 text-small font-medium text-danger">{fill(c.rejected, { v: cur.v, r: cur.rejectedReason ?? "—" })}</p>}
+      {cur.status === "rejected" && <p role="alert" className="border border-danger/30 bg-danger-bg p-4 text-small font-medium text-danger">{fill(c.rejected, { v: cur.v, r: cur.rejectedReason ?? "" })}</p>}
       {cur.status === "active" && !readOnly && !viewing && <p className="text-small text-fg-muted">{fill(c.newVersion, { v: cur.v })}</p>}
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
@@ -242,7 +242,7 @@ function Editor({ t, rev, onReload }: { t: TemplateVM; rev: number; onReload: ()
                   </button>
                 </li>
               ))}
-              {!Object.keys(t.variablesSchema).length && <li className="text-small text-fg-muted">—</li>}
+              {!Object.keys(t.variablesSchema).length && <li className="text-small text-fg-muted"></li>}
             </ul>
           </div>
         </section>

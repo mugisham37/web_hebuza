@@ -84,7 +84,7 @@ export function FeeTable({
   const LIMIT = 8;
   const shown = all ? visible : visible.slice(0, LIMIT);
   const money = (n: number | null, quote: boolean) =>
-    quote ? copy.quote : n === null ? "—" : formatMoney(n, "RWF", locale);
+    quote ? copy.quote : n === null ? "" : formatMoney(n, "RWF", locale);
   return (
     <div className="grid gap-4">
       <div className="relative">

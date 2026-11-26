@@ -111,7 +111,7 @@ export function PermCell({ value, scope, note, tabIndex = -1 }: { value: PermVal
     <td role="gridcell" tabIndex={tabIndex} aria-describedby={tip ? id : undefined}
       className={cx("group/cell relative h-11 px-3 text-small whitespace-nowrap m-tone focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus", p.cls)}>
       <span className="inline-flex items-center gap-1.5">
-        {p.icon ? <Icon name={p.icon} size={14} aria-hidden /> : <span aria-hidden>—</span>}
+        {p.icon ? <Icon name={p.icon} size={14} aria-hidden /> : <span aria-hidden></span>}
         <span className={cx(value === "deny" && "sr-only")}>{scope && value === "allow" && scope !== "all" ? s.scope[scope] : s.perm[value]}</span>
       </span>
       {tip && (
@@ -201,7 +201,7 @@ export function SecretField({ name, last4, rotatedAt, lastTest, onSave, onTest, 
     if (!onTest) return;
     setMode("testing");
     const at = new Date().toISOString();
-    try { setResult({ ...(await onTest()), at }); } catch { setResult({ ok: false, message: "—", at }); } finally { setMode("idle"); }
+    try { setResult({ ...(await onTest()), at }); } catch { setResult({ ok: false, message: "", at }); } finally { setMode("idle"); }
   };
   const save = async () => {
     if (!value.trim()) return;

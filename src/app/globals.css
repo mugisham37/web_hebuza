@@ -19,6 +19,8 @@
   --color-navy-50: #f3f7ff; --color-navy-100: #e2ebff; --color-navy-200: #c7d7fd; --color-navy-300: #9db6f2;
   --color-navy-400: #6d8bde; --color-navy-500: #4963c2; --color-navy-600: #2f44a3; --color-navy-700: #1d2b7e;
   --color-navy-800: #152064; --color-navy-900: #0e174a; --color-navy-950: #070b2e;
+  --color-rw-blue: #00a1de; --color-rw-yellow: #fad201; --color-rw-green: #20603d; /* Rwandan flag */
+  --color-hero: color-mix(in oklab, var(--color-navy-900) 80%, white); /* hero + footer: navy-900, 20% lighter */
 
   --color-gold-50: #fffaeb; --color-gold-100: #fff3d3; --color-gold-200: #fee6aa; --color-gold-300: #fed16d;
   --color-gold-400: #f8b718; --color-gold-500: #e49e1a; --color-gold-600: #c78115; --color-gold-700: #a46313;
@@ -135,7 +137,7 @@
   --spacing-section-sm: clamp(3.5rem, 2.4rem + 4.5vw, 6.875rem); /* 56 → 110px */
   --spacing-home: clamp(7.875rem, 6.75rem + 3vw, 9.1875rem);   /* home sections, top = bottom: 84 → 98px, then +50% = 126 → 147px */
   /* Fixed header: word ribbon + search bar + nav, painted as the page ramp mirrored (ramp-3 → 2 → 1 → white hero). */
-  --header-h: clamp(10.5rem, 9.9rem + 1.6vw, 11.5rem);             /* ribbon 40 + brand bar 72/80 + nav 56/64 = 168 → 184px */
+  --header-h: clamp(11.5rem, 10.9rem + 1.6vw, 12.5rem);             /* ribbon 40 + brand bar 72/80 + nav 56/64 = 168 → 184px */
   --spacing-hero-top: calc(var(--header-h) + clamp(2.5rem, 2.1rem + 1.6vw, 3.5rem));  /* header + the old 40 → 56px gap */
   --spacing-home-hero-top: calc(var(--header-h) + clamp(3.75rem, 3.1rem + 2.4vw, 5.25rem)); /* home: that gap +50% (60 → 84px) */
   --spacing-home-hero-bottom: clamp(5.25rem, 4.4rem + 3.2vw, 7.5rem);  /* home: old 56 → 80px bottom +50% (84 → 120px) */
@@ -440,9 +442,10 @@ dialog[data-motion][open]::backdrop { opacity: 1; }
 :root { --color-page-end: var(--color-white); }
 :root:has([data-page-end="navy-300"]) { --color-page-end: var(--color-navy-300); }
 :root:has([data-page-end="ramp-8"]) { --color-page-end: var(--color-ramp-8); }
+:root:has([data-page-end="home-cta"]) { --color-page-end: color-mix(in oklab, var(--color-ramp-6) 71%, var(--color-ramp-5)); } /* = stopAt(5/7), the CTA step */
 
-/* Home ramp: white → the footer blue (60% of the old navy-900 depth), 8 equal OKLab-lightness steps along the brand blues; see section-stack.tsx. */
-:root { --color-ramp-0: #ffffff; --color-ramp-1: #dfeefe; --color-ramp-2: #beddff; --color-ramp-3: #9fcbfd; --color-ramp-4: #84b8f7; --color-ramp-5: #69a5f1; --color-ramp-6: #5492e6; --color-ramp-7: #4a7ed5; --color-ramp-8: #406ac4; }
+/* Home ramp: white → the footer blue (80% of the old navy-900 depth), 8 equal OKLab-lightness steps along the brand blues; see section-stack.tsx. */
+:root { --color-ramp-0: #ffffff; --color-ramp-1: #d4e8ff; --color-ramp-2: #a8d1ff; --color-ramp-3: #84b8f7; --color-ramp-4: #5f9fef; --color-ramp-5: #4d84db; --color-ramp-6: #406ac4; --color-ramp-7: #3450ad; --color-ramp-8: #283a8f; }
 /* Home ramp, light half: text sits on mid blues, so every text token is navy-900 (≥4.5:1 down to the 50% stop). */
 .ramp-light { color: var(--color-navy-900); --fg: var(--color-navy-900); --fg-heading: var(--color-navy-900); --fg-muted: var(--color-navy-900); --fg-subtle: var(--color-navy-900); }
 /* Ramp dark end (CTA + footer on ramp-7/8 blues): only pure white text clears 4.5:1, so every text token is white. */

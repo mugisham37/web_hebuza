@@ -143,7 +143,7 @@ function AvailabilityEditor({ onClose }: { onClose: () => void }) {
               <h3 className="text-label">{c.adviser.overrides}</h3>
               <Button size="sm" variant="secondary" onClick={() => setOv({ date: addDays(dayOf(Date.now()), 1), kind: "blocked" })}><Icon name="plus" size={14} aria-hidden />{c.adviser.addOverride}</Button>
             </div>
-            {!a.overrides.length ? <p className="text-small text-fg-muted">—</p> : (
+            {!a.overrides.length ? <p className="text-small text-fg-muted"></p> : (
               <ul className="grid gap-2">
                 {a.overrides.map((o) => (
                   <li key={o.id} className="flex items-center gap-3 bg-bg-subtle px-3 py-2 text-small">

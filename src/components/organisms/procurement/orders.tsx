@@ -65,7 +65,7 @@ export function OrdersView() {
   ];
   return (
     <div className="grid gap-5">
-      <PageHead title={c.po.title} sub={c.po.sub} actions={<Button variant="primary" onClick={() => setPick(true)} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.po.newFrom}</Button>} />
+      <PageHead title={c.po.title} sub={c.po.sub} actions={<Button data-guide="procurement-new-po" variant="primary" onClick={() => setPick(true)} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.po.newFrom}</Button>} />
       <SavedViewTabs active={tab} onChange={(k) => setUrlParams({ tab: k === "all" ? null : k })}
         views={TABS.map((t) => ({ key: t, label: c.po.tabs[t], count: t === "all" ? all.length : all.filter((r) => r.status === t).length }))} />
       <div className="border border-border bg-surface m-rise">
@@ -137,7 +137,7 @@ function PoBuilder({ prNo, onClose, onDone }: { prNo: string; onClose: () => voi
           <Field label={c.po.supplier}>{(a) => (
             <Select id={a.id} value={vendorId} onChange={(e) => setForm({ ...form, vendorId: e.target.value })}>
               <option value="">{c.sheet.choose}</option>
-              {vs.map((x) => <option key={x.id} value={x.id} disabled={x.status !== "active"}>{x.name}{x.status !== "active" ? ` — ${p.status[x.status]}${x.blockReason ? `: ${x.blockReason}` : ""}` : ""}</option>)}
+              {vs.map((x) => <option key={x.id} value={x.id} disabled={x.status !== "active"}>{x.name}{x.status !== "active" ? `, ${p.status[x.status]}${x.blockReason ? `: ${x.blockReason}` : ""}` : ""}</option>)}
             </Select>
           )}</Field>
           <VatLines lines={lines} mode={form.mode} onMode={(m) => setForm({ ...form, mode: m })} onChange={(l) => setForm({ ...form, lines: l })} vatRegistered={v?.vatRegistered ?? true} />

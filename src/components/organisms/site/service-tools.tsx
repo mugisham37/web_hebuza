@@ -139,7 +139,7 @@ export function EligibilityGate({
                     </Link>
                   ) : (
                     <a
-                      href={waLink(`${service} — HEBUZA`)}
+                      href={waLink(`${service}, HEBUZA`)}
                       target="_blank"
                       rel="noopener"
                       className={buttonClass({ className: "gap-2" })}

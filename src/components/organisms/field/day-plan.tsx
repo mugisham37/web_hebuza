@@ -88,7 +88,7 @@ export function DayPlan() {
             : <><b className="font-medium">{fill(a.prep.ready, { time: hhmm(new Date(eng.meta!.preparedAt!).toISOString(), locale) })}</b>
               <span className="block text-fg-muted">{fill(a.prep.expires, { left: duration(eng.meta!.expiresAt! - eng.now) })}</span></>}
       </span>
-      <ButtonLink href={base("/prepare")} size="sm" variant={ex === "fresh" ? "ghost" : "primary"}>{ex === "fresh" || ex === "stale" || ex === "expiring" ? a.prep.redo : a.prep.cta}</ButtonLink>
+      <ButtonLink href={base("/prepare")} data-guide="field-prepare" size="sm" variant={ex === "fresh" ? "ghost" : "primary"}>{ex === "fresh" || ex === "stale" || ex === "expiring" ? a.prep.redo : a.prep.cta}</ButtonLink>
     </div>
   );
 

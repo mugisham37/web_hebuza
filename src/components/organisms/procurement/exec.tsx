@@ -108,7 +108,7 @@ function Card({ item }: { item: ProcApproval }) {
       {needsOverride && (
         <label className="flex items-start gap-2 bg-warning-bg p-3 text-small text-warning">
           <input type="checkbox" checked={override} onChange={(e) => setOverride(e.target.checked)} className="mt-1" />
-          <span><strong>{c.exec.override}</strong> — {c.exec.overrideHint}</span>
+          <span><strong>{c.exec.override}</strong>, {c.exec.overrideHint}</span>
         </label>
       )}
       {(rejecting || override) && <label className="grid gap-1 text-small m-rise">{c.exec.reason}<Textarea rows={2} value={reason} onChange={(e) => setReason(e.target.value)} /></label>}

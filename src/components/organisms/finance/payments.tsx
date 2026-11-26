@@ -53,19 +53,19 @@ export function PaymentsView() {
   const columns: OpsColumn<PaymentRow>[] = [
     { key: "at", label: p.cols.at, cell: (r) => <span className="tabular">{formatDateTime(r.at, locale)}</span>, sort: (r) => r.at },
     { key: "method", label: p.cols.method, cell: (r) => <MethodTag method={r.method} /> },
-    { key: "ref", label: p.cols.ref, cell: (r) => <span className="block max-w-40 truncate tabular" title={r.ref}>{r.ref ?? "—"}</span> },
+    { key: "ref", label: p.cols.ref, cell: (r) => <span className="block max-w-40 truncate tabular" title={r.ref}>{r.ref ?? ""}</span> },
     { key: "client", label: p.cols.client, cell: (r) => <span className="block max-w-44 truncate">{r.clientName}</span>, sort: (r) => r.clientName },
     { key: "invoice", label: p.cols.invoice, cell: (r) => <DocNumber no={r.invoiceNo} href={localHref(locale, `/finance/invoices/${r.invoiceNo}`)} /> },
-    { key: "case", label: p.cols.case, cell: (r) => <span className="tabular">{r.caseRef ?? "—"}</span>, card: false },
+    { key: "case", label: p.cols.case, cell: (r) => <span className="tabular">{r.caseRef ?? ""}</span>, card: false },
     { key: "amount", label: p.cols.amount, align: "right", cell: (r) => <Amount value={r.amount} />, sort: (r) => r.amount },
-    { key: "fee", label: p.cols.fee, align: "right", cell: (r) => (r.fee == null ? "—" : <Amount value={r.fee} size="sm" />), card: false },
+    { key: "fee", label: p.cols.fee, align: "right", cell: (r) => (r.fee == null ? "" : <Amount value={r.fee} size="sm" />), card: false },
     { key: "state", label: p.cols.state, wrap: true, cell: (r) => (
       <span className="flex flex-wrap items-center gap-1.5">
         <FinStatus status={r.state} kind="payment" />
         {r.duplicate && <span className="inline-flex items-center gap-1 text-eyebrow text-danger"><Icon name="layers" size={12} aria-hidden />{p.cards.duplicate[0]}</span>}
       </span>
     ) },
-    { key: "verify", label: p.cols.verify, wrap: true, card: false, cell: (r) => (r.verify ? <VerifyScheduleChip nextAt={r.verify.nextAt} cadence={r.verify.cadence} /> : "—") },
+    { key: "verify", label: p.cols.verify, wrap: true, card: false, cell: (r) => (r.verify ? <VerifyScheduleChip nextAt={r.verify.nextAt} cadence={r.verify.cadence} /> : "") },
   ];
 
   const emptyCopy = filtered ? p.empty.filtered : tab === "attention" ? p.empty.attention : p.empty.all;
@@ -81,7 +81,7 @@ export function PaymentsView() {
             <Icon name="fileCheck" size={16} aria-hidden />{p.openProofs}
             {!!meta?.counts.verification && <span className="bg-gold-400 px-2 text-eyebrow text-on-gold tabular">{meta.counts.verification}</span>}
           </Link>
-          <Button onClick={() => setRecord(true)} disabled={!guard.can} title={!guard.online ? p.offline : undefined} className="m-press">
+          <Button data-guide="finance-record-payment" onClick={() => setRecord(true)} disabled={!guard.can} title={!guard.online ? p.offline : undefined} className="m-press">
             <Icon name="plus" size={16} aria-hidden />{p.recordCash}
           </Button>
         </>}

@@ -191,7 +191,7 @@ export function SignDocument({
           ))}
         </ol>
         {extra}
-        <p className="mt-4 text-fg-subtle">— {doc.title} v{doc.version} · {formatDate(doc.start, locale)}</p>
+        <p className="mt-4 text-fg-subtle">{doc.title} v{doc.version} · {formatDate(doc.start, locale)}</p>
       </div>
       <ReadMeter pct={pct} />
       <Checkbox label={w.sign.agree} checked={agree} disabled={pct < 99.5} onChange={(e) => setAgree(e.target.checked)} />

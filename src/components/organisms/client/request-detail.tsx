@@ -99,7 +99,7 @@ export function RequestDetailView() {
   return (
     <div className="grid gap-6">
       {back}
-      <header className="flex flex-wrap items-start justify-between gap-4">
+      <header data-guide="client-request-header" className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-small text-fg-subtle tabular">{r.code}</p>
           <h1 className="text-fg-heading text-h3">{r.service_name}</h1>
@@ -339,7 +339,7 @@ function CancelPanel({ code, mode }: { code: string; mode: "cancel" | "request" 
   const ask = mode === "request";
   return (
     <>
-      <Button variant="outline" onClick={() => setOpen(true)} className="justify-center">{ask ? c.ask : c.open}</Button>
+      <Button data-guide="client-request-cancel" variant="outline" onClick={() => setOpen(true)} className="justify-center">{ask ? c.ask : c.open}</Button>
       <Dialog
         open={open}
         onClose={() => setOpen(false)}

@@ -135,8 +135,8 @@ export function ApprovalsView() {
   const cols: OpsColumn<ApprovalItem>[] = [
     { key: "type", label: c.col.type, sort: (r) => r.type, cell: (r) => <span className="text-small text-fg-muted">{c.type[r.type]}</span> },
     { key: "record", label: c.col.record, sort: (r) => r.record, cell: (r) => <span className="font-medium tabular">{r.record}</span> },
-    { key: "maker", label: c.col.maker, sort: (r) => r.maker.name, cell: (r) => <span className="inline-flex items-center gap-2"><Avatar name={r.maker.name || "?"} size="sm" />{r.maker.name || "—"}</span> },
-    { key: "amount", label: c.col.amount, align: "right", sort: (r) => r.amount ?? -1, cell: (r) => (r.amount == null ? <span className="text-fg-subtle">—</span> : <Amount value={r.amount} size="sm" />) },
+    { key: "maker", label: c.col.maker, sort: (r) => r.maker.name, cell: (r) => <span className="inline-flex items-center gap-2"><Avatar name={r.maker.name || "?"} size="sm" />{r.maker.name || ""}</span> },
+    { key: "amount", label: c.col.amount, align: "right", sort: (r) => r.amount ?? -1, cell: (r) => (r.amount == null ? <span className="text-fg-subtle"></span> : <Amount value={r.amount} size="sm" />) },
     { key: "reason", label: c.col.reason, wrap: true, cell: (r) => <span className="text-small">{c.reason[r.reason] ?? r.reason}</span> },
     { key: "age", label: c.col.age, sort: (r) => r.at, cell: (r) => <span className="text-small text-fg-muted tabular">{formatRelative(r.at, locale)}</span> },
     { key: "sla", label: c.col.sla, sort: (r) => r.slaAt ?? "~", cell: (r) => <SlaCell at={r.slaAt} /> },

@@ -178,7 +178,7 @@ export function PricingStep({
   return (
     <div className="grid gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <fieldset className="flex flex-wrap gap-x-5 gap-y-2">
+        <fieldset data-guide="ops-pricing-mode" className="flex flex-wrap gap-x-5 gap-y-2">
           <legend className="mb-2 text-card-title">{t.mode}</legend>
           {(["fixed", "range", "quote"] as Mode[]).map((m) => (
             <Radio
@@ -196,7 +196,7 @@ export function PricingStep({
       {s.mode !== "quote" && (
         <section>
           <h2 className="mb-2 text-card-title">{t.tiers}</h2>
-          <div
+          <div data-guide="ops-tiers"
             role="region"
             aria-label={t.tiers}
             tabIndex={0}
@@ -520,7 +520,7 @@ export function PricingStep({
             {reason}
           </p>
         )}
-        <Button
+        <Button data-guide="ops-pricing-save"
           onClick={submit}
           loading={save.isPending}
           disabled={!!reason}
@@ -715,7 +715,7 @@ export function SlaStep({
             <span aria-hidden className="size-2 rounded-full bg-success" />
             {fill(t.policyLine, {
               first: `${sla.firstResponse} ${sla.firstResponseUnit === "hours" ? t.hours : t.daysUnit}`,
-              std: sla.days.standard ?? Object.values(sla.days)[0] ?? "—",
+              std: sla.days.standard ?? Object.values(sla.days)[0] ?? "",
             })}
           </p>
         </div>
@@ -749,7 +749,7 @@ function ChangeList({ changes }: { changes: Change[] }) {
           </span>
           <span className="min-w-0 break-words">
             <strong className="font-medium">{t.kinds[x.kind]}</strong>{" "}
-            {t.areas[x.area]}: {x.label || "—"}
+            {t.areas[x.area]}: {x.label || ""}
             {x.detail && <span className="text-fg-muted"> ({x.detail})</span>}
           </span>
         </li>

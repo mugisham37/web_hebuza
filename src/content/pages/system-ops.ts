@@ -31,7 +31,7 @@ const en = {
     more: "Show {n} more",
   },
   incidents: {
-    new: "New incident", list: "Incidents", empty: "No open incidents", emptyBody: "The platform is stable. Open one when something breaks — the timeline starts the moment you do.",
+    new: "New incident", list: "Incidents", empty: "No open incidents", emptyBody: "The platform is stable. Open one when something breaks, the timeline starts the moment you do.",
     closed: "Closed", open: "Open", started: "Started {t}", sev: "Severity", components: "Components", impact: "Impact", titleL: "Title", start: "Started at",
     create: "Open incident", created: "Incident opened", titleErr: "Give it a short title.", impactErr: "Describe who is affected.", compErr: "Pick at least one component.",
     statuses: { open: "Open", investigating: "Investigating", mitigated: "Mitigated", resolved: "Resolved", postmortem_done: "Postmortem done" },
@@ -46,7 +46,7 @@ const en = {
     target: "Response target: {t}", noteErr: "Write something first.", pmLocked: "Postmortem opens once the incident is resolved.",
   },
   security: { title: "Posture checks", live: "Live header from this site", liveMissing: "Not sent by this deployment", declared: "Declared, not measured" },
-  deps: { pkg: "Package", change: "Change", type: "Type", merged: "Merged", cves: "CVEs", none: "—", window: "Next patch window: {t}", types: { security: "Security", minor: "Minor", major: "Major" }, empty: "No updates logged" },
+  deps: { pkg: "Package", change: "Change", type: "Type", merged: "Merged", cves: "CVEs", none: "", window: "Next patch window: {t}", types: { security: "Security", minor: "Minor", major: "Major" }, empty: "No updates logged" },
   forbidden: "Operations is only available to the System Administrator.",
 };
 const fr: typeof en = {
@@ -79,7 +79,7 @@ const fr: typeof en = {
     more: "Afficher {n} de plus",
   },
   incidents: {
-    new: "Nouvel incident", list: "Incidents", empty: "Aucun incident ouvert", emptyBody: "La plateforme est stable. Ouvrez-en un dès qu'un problème survient — la chronologie démarre aussitôt.",
+    new: "Nouvel incident", list: "Incidents", empty: "Aucun incident ouvert", emptyBody: "La plateforme est stable. Ouvrez-en un dès qu'un problème survient, la chronologie démarre aussitôt.",
     closed: "Clos", open: "Ouverts", started: "Début {t}", sev: "Gravité", components: "Composants", impact: "Impact", titleL: "Titre", start: "Début",
     create: "Ouvrir l'incident", created: "Incident ouvert", titleErr: "Donnez un titre court.", impactErr: "Décrivez qui est touché.", compErr: "Choisissez au moins un composant.",
     statuses: { open: "Ouvert", investigating: "Analyse", mitigated: "Atténué", resolved: "Résolu", postmortem_done: "Post-mortem fait" },
@@ -94,7 +94,7 @@ const fr: typeof en = {
     target: "Délai de réponse : {t}", noteErr: "Écrivez quelque chose.", pmLocked: "Le post-mortem s'ouvre une fois l'incident résolu.",
   },
   security: { title: "Contrôles de sécurité", live: "En-tête réel de ce site", liveMissing: "Non envoyé par ce déploiement", declared: "Déclaré, non mesuré" },
-  deps: { pkg: "Paquet", change: "Changement", type: "Type", merged: "Fusionné", cves: "CVE", none: "—", window: "Prochaine fenêtre de correctifs : {t}", types: { security: "Sécurité", minor: "Mineure", major: "Majeure" }, empty: "Aucune mise à jour" },
+  deps: { pkg: "Paquet", change: "Changement", type: "Type", merged: "Fusionné", cves: "CVE", none: "", window: "Prochaine fenêtre de correctifs : {t}", types: { security: "Sécurité", minor: "Mineure", major: "Majeure" }, empty: "Aucune mise à jour" },
   forbidden: "L'exploitation est réservée à l'administrateur système.",
 };
 const rw: typeof en = {
@@ -127,7 +127,7 @@ const rw: typeof en = {
     more: "Erekana {n} zindi",
   },
   incidents: {
-    new: "Ikibazo gishya", list: "Ibibazo", empty: "Nta kibazo gifunguye", emptyBody: "Urubuga ruhagaze neza. Fungura ikibazo igihe hari ikintu cyapfuye — amateka atangira ako kanya.",
+    new: "Ikibazo gishya", list: "Ibibazo", empty: "Nta kibazo gifunguye", emptyBody: "Urubuga ruhagaze neza. Fungura ikibazo igihe hari ikintu cyapfuye, amateka atangira ako kanya.",
     closed: "Byafunzwe", open: "Bifunguye", started: "Cyatangiye {t}", sev: "Uburemere", components: "Ibice", impact: "Ingaruka", titleL: "Umutwe", start: "Cyatangiye",
     create: "Fungura ikibazo", created: "Ikibazo cyafunguwe", titleErr: "Tanga umutwe mugufi.", impactErr: "Sobanura abagezweho.", compErr: "Hitamo nibura igice kimwe.",
     statuses: { open: "Gifunguye", investigating: "Kirakurikiranwa", mitigated: "Cyagabanyijwe", resolved: "Cyakemutse", postmortem_done: "Isesengura ryarangiye" },
@@ -142,7 +142,7 @@ const rw: typeof en = {
     target: "Igihe cyo gusubiza: {t}", noteErr: "Banza wandike.", pmLocked: "Isesengura rifunguka ikibazo kimaze gukemuka.",
   },
   security: { title: "Igenzura ry'umutekano", live: "Umutwe nyawo w'uru rubuga", liveMissing: "Ntiwoherejwe n'iyi verisiyo", declared: "Byatangajwe, ntibyapimwe" },
-  deps: { pkg: "Porogaramu", change: "Impinduka", type: "Ubwoko", merged: "Byahujwe", cves: "CVE", none: "—", window: "Igihe gikurikira cyo gukosora: {t}", types: { security: "Umutekano", minor: "Ntoya", major: "Nini" }, empty: "Nta mpinduka zanditswe" },
+  deps: { pkg: "Porogaramu", change: "Impinduka", type: "Ubwoko", merged: "Byahujwe", cves: "CVE", none: "", window: "Igihe gikurikira cyo gukosora: {t}", types: { security: "Umutekano", minor: "Ntoya", major: "Nini" }, empty: "Nta mpinduka zanditswe" },
   forbidden: "Imikorere igenewe Umuyobozi wa sisitemu gusa.",
 };
 

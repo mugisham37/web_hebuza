@@ -116,7 +116,7 @@ export function SignerAvatar({ user, state, caption }: { user: { name: string } 
         )}
       </span>
       <span className="min-w-0">
-        <span className="block truncate text-small font-medium">{user?.name ?? "—"}</span>
+        <span className="block truncate text-small font-medium">{user?.name ?? ""}</span>
         <span className="block truncate text-eyebrow text-fg-subtle">{caption ? `${caption} · ` : ""}{f.signer[state]}</span>
       </span>
     </span>

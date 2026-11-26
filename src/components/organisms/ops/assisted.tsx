@@ -54,7 +54,7 @@ export function AssistedForm() {
             <Select id={a.id} name="consent">{(["verbal", "signed", "field_visit"] as const).map((k) => <option key={k} value={k}>{c.consents[k]}</option>)}</Select>
           )}</Field>
           <Field label={c.consentNote}>{(a) => <Input id={a.id} name="note" maxLength={500} />}</Field>
-          <div className="sm:col-span-2"><Button type="submit" loading={send.isPending}>{c.submit}</Button></div>
+          <div data-guide="ops-assisted-submit" className="sm:col-span-2"><Button type="submit" loading={send.isPending}>{c.submit}</Button></div>
         </form>
       )}
     </div>

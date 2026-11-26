@@ -74,7 +74,7 @@ export function IdentityView() {
                   <span className="line-clamp-2">{r.reason}</span>
                   <span className="block text-eyebrow">{c.idc.cols.manager}: {r.managerName}{r.decidedBy && r.decidedAt ? ` · ${fill(c.idc.decidedBy, { who: r.decidedBy, t: formatDateTime(r.decidedAt, locale) })}` : ""}</span>
                 </span>
-                <Button size="sm" variant={tab === "done" ? "outline" : "primary"} onClick={() => setQ({ id: r.id })}>{tab === "done" ? c.idc.view : c.idc.review}</Button>
+                <Button size="sm" data-guide="system-idc-review" variant={tab === "done" ? "outline" : "primary"} onClick={() => setQ({ id: r.id })}>{tab === "done" ? c.idc.view : c.idc.review}</Button>
               </li>
             ))}
           </ul>
@@ -141,7 +141,7 @@ function ReviewDialog({ r, onClose, onReload }: { r: IdentityRequestVM | null; o
           {decided ? (
             <p className={cx("flex items-start gap-2 p-3 text-small", r.status === "approved" ? "bg-success-bg text-success" : "bg-danger-bg text-danger")}>
               <Icon name={r.status === "approved" ? "check" : "x"} size={16} aria-hidden className="mt-0.5 shrink-0" />
-              <span>{c.idc.status[r.status]}{r.decidedBy && r.decidedAt ? ` — ${fill(c.idc.decidedBy, { who: r.decidedBy, t: formatDateTime(r.decidedAt, locale) })}` : ""}{r.declineReason ? ` · ${r.declineReason}` : ""}</span>
+              <span>{c.idc.status[r.status]}{r.decidedBy && r.decidedAt ? `, ${fill(c.idc.decidedBy, { who: r.decidedBy, t: formatDateTime(r.decidedAt, locale) })}` : ""}{r.declineReason ? ` · ${r.declineReason}` : ""}</span>
             </p>
           ) : decline !== null ? (
             <Field label={c.idc.declineReason} error={err ?? undefined}>

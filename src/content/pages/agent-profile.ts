@@ -17,7 +17,7 @@ const en = {
     contacts: "Contact details",
     cv: "CV",
     certs: "Certificates",
-    edit: "Edit in place — changes save automatically.",
+    edit: "Edit in place, changes save automatically.",
     kigali: "Kigali, Rwanda",
   },
   skills: {
@@ -41,7 +41,7 @@ const en = {
     cancelled: "Request cancelled",
     sent: "Request sent to {m}",
     noChange: "Choose at least one change.",
-    pendingOne: "Only one request at a time — cancel the pending one first.",
+    pendingOne: "Only one request at a time, cancel the pending one first.",
   },
   avail: {
     title: "Weekly availability",
@@ -54,7 +54,7 @@ const en = {
     on: "Available",
     off: "Off",
     saved: "Availability saved",
-    failed: "Couldn't save — your change was undone.",
+    failed: "Couldn't save, your change was undone.",
   },
   leave: {
     title: "Request leave",
@@ -65,7 +65,7 @@ const en = {
     submit: "Request leave",
     range: "The end date must be on or after the start date.",
     conflicts:
-      "{n} of your cases are due in that period — {m} will reassign them.",
+      "{n} of your cases are due in that period, {m} will reassign them.",
     noConflicts: "None of your cases are due in that period.",
     history: "Leave history",
     none: "No leave requests yet.",
@@ -75,12 +75,12 @@ const en = {
     cancelled: "Leave request cancelled",
     simApprove: "Simulate {m} approves leave",
     simDecline: "Simulate {m} declines",
-    approved: "Leave approved — offers pause on those dates.",
+    approved: "Leave approved, offers pause on those dates.",
     pendingOnly: "You already have a pending request.",
   },
   contract: {
     title: "Contract details",
-    readOnly: "Read-only — managed by HEBUZA. Contact {m} for changes.",
+    readOnly: "Read-only, managed by HEBUZA. Contact {m} for changes.",
     type: "Type",
     share: "Revenue share",
     start: "Start",
@@ -101,13 +101,13 @@ const en = {
       reviews: "Reviews",
       payouts: "Payouts",
     },
-    locked: "Required — can't be turned off",
+    locked: "Required, can't be turned off",
     saved: "Preferences saved",
-    failed: "Couldn't save — your change was undone.",
+    failed: "Couldn't save, your change was undone.",
   },
   security: {
     mfa: "2-step verification",
-    mfaOn: "Enabled — required for staff",
+    mfaOn: "Enabled, required for staff",
     mfaBody:
       "Staff accounts always use 2-step verification. To change your device, contact IT.",
   },
@@ -130,7 +130,7 @@ const fr: ProfileCopy = {
     contacts: "Coordonnées",
     cv: "CV",
     certs: "Certificats",
-    edit: "Modifiez sur place — enregistrement automatique.",
+    edit: "Modifiez sur place, enregistrement automatique.",
     kigali: "Kigali, Rwanda",
   },
   skills: {
@@ -155,7 +155,7 @@ const fr: ProfileCopy = {
     sent: "Demande envoyée à {m}",
     noChange: "Choisissez au moins un changement.",
     pendingOne:
-      "Une seule demande à la fois — annulez d'abord celle en attente.",
+      "Une seule demande à la fois, annulez d'abord celle en attente.",
   },
   avail: {
     title: "Disponibilité hebdomadaire",
@@ -168,7 +168,7 @@ const fr: ProfileCopy = {
     on: "Disponible",
     off: "Indisponible",
     saved: "Disponibilité enregistrée",
-    failed: "Échec de l'enregistrement — modification annulée.",
+    failed: "Échec de l'enregistrement, modification annulée.",
   },
   leave: {
     title: "Demander un congé",
@@ -179,7 +179,7 @@ const fr: ProfileCopy = {
     submit: "Demander le congé",
     range: "La date de fin doit être égale ou postérieure à la date de début.",
     conflicts:
-      "{n} de vos dossiers arrivent à échéance sur cette période — {m} les réattribuera.",
+      "{n} de vos dossiers arrivent à échéance sur cette période, {m} les réattribuera.",
     noConflicts: "Aucun de vos dossiers n'arrive à échéance sur cette période.",
     history: "Historique des congés",
     none: "Aucune demande de congé.",
@@ -189,13 +189,13 @@ const fr: ProfileCopy = {
     cancelled: "Demande de congé annulée",
     simApprove: "Simuler l'approbation du congé par {m}",
     simDecline: "Simuler le refus de {m}",
-    approved: "Congé approuvé — offres suspendues sur ces dates.",
+    approved: "Congé approuvé, offres suspendues sur ces dates.",
     pendingOnly: "Vous avez déjà une demande en attente.",
   },
   contract: {
     title: "Détails du contrat",
     readOnly:
-      "Lecture seule — géré par HEBUZA. Contactez {m} pour toute modification.",
+      "Lecture seule, géré par HEBUZA. Contactez {m} pour toute modification.",
     type: "Type",
     share: "Partage des revenus",
     start: "Début",
@@ -216,13 +216,13 @@ const fr: ProfileCopy = {
       reviews: "Relectures",
       payouts: "Paiements",
     },
-    locked: "Obligatoire — ne peut pas être désactivé",
+    locked: "Obligatoire, ne peut pas être désactivé",
     saved: "Préférences enregistrées",
-    failed: "Échec de l'enregistrement — modification annulée.",
+    failed: "Échec de l'enregistrement, modification annulée.",
   },
   security: {
     mfa: "Vérification en 2 étapes",
-    mfaOn: "Activée — obligatoire pour le personnel",
+    mfaOn: "Activée, obligatoire pour le personnel",
     mfaBody:
       "Les comptes du personnel utilisent toujours la vérification en 2 étapes. Pour changer d'appareil, contactez l'IT.",
   },
@@ -244,7 +244,7 @@ const rw: ProfileCopy = {
     contacts: "Aho ubarizwa",
     cv: "CV",
     certs: "Impamyabumenyi",
-    edit: "Hindura hano — bibikwa ubwabyo.",
+    edit: "Hindura hano, bibikwa ubwabyo.",
     kigali: "Kigali, Rwanda",
   },
   skills: {
@@ -269,7 +269,7 @@ const rw: ProfileCopy = {
     sent: "Icyifuzo cyoherejwe kwa {m}",
     noChange: "Hitamo nibura impinduka imwe.",
     pendingOne:
-      "Icyifuzo kimwe gusa icyarimwe — banza uhagarike ikiri gutegereza.",
+      "Icyifuzo kimwe gusa icyarimwe, banza uhagarike ikiri gutegereza.",
   },
   avail: {
     title: "Kuboneka mu cyumweru",
@@ -282,7 +282,7 @@ const rw: ProfileCopy = {
     on: "Ndaboneka",
     off: "Simboneka",
     saved: "Kuboneka kwabitswe",
-    failed: "Ntibyabitswe — impinduka yasubijwe inyuma.",
+    failed: "Ntibyabitswe, impinduka yasubijwe inyuma.",
   },
   leave: {
     title: "Saba ikiruhuko",
@@ -294,7 +294,7 @@ const rw: ProfileCopy = {
     range:
       "Itariki yo kurangiza igomba kuba ingana cyangwa irenze iyo gutangira.",
     conflicts:
-      "Dosiye {n} zawe zigomba kurangira muri icyo gihe — {m} azazisubiranya.",
+      "Dosiye {n} zawe zigomba kurangira muri icyo gihe, {m} azazisubiranya.",
     noConflicts: "Nta dosiye yawe igomba kurangira muri icyo gihe.",
     history: "Amateka y'ibiruhuko",
     none: "Nta cyifuzo cy'ikiruhuko kirasabwa.",
@@ -308,12 +308,12 @@ const rw: ProfileCopy = {
     cancelled: "Icyifuzo cy'ikiruhuko cyahagaritswe",
     simApprove: "Igereranya: {m} yemeje ikiruhuko",
     simDecline: "Igereranya: {m} aranze",
-    approved: "Ikiruhuko cyemejwe — ibyifuzo bihagaritswe muri iyo minsi.",
+    approved: "Ikiruhuko cyemejwe, ibyifuzo bihagaritswe muri iyo minsi.",
     pendingOnly: "Usanzwe ufite icyifuzo gitegereje.",
   },
   contract: {
     title: "Amakuru y'amasezerano",
-    readOnly: "Gusoma gusa — bicungwa na HEBUZA. Vugana na {m} ku mpinduka.",
+    readOnly: "Gusoma gusa, bicungwa na HEBUZA. Vugana na {m} ku mpinduka.",
     type: "Ubwoko",
     share: "Umugabane w'inyungu",
     start: "Gutangira",
@@ -334,13 +334,13 @@ const rw: ProfileCopy = {
       reviews: "Isuzuma",
       payouts: "Kwishyurwa",
     },
-    locked: "Birasabwa — ntibishobora kuzimywa",
+    locked: "Birasabwa, ntibishobora kuzimywa",
     saved: "Byabitswe",
-    failed: "Ntibyabitswe — impinduka yasubijwe inyuma.",
+    failed: "Ntibyabitswe, impinduka yasubijwe inyuma.",
   },
   security: {
     mfa: "Kwemeza mu ntambwe 2",
-    mfaOn: "Birakora — birasabwa ku bakozi",
+    mfaOn: "Birakora, birasabwa ku bakozi",
     mfaBody:
       "Konti z'abakozi zikoresha buri gihe kwemeza mu ntambwe 2. Guhindura igikoresho, vugana na IT.",
   },

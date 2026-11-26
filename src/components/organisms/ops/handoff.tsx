@@ -129,7 +129,7 @@ function BriefForm({
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
       <Panel title={fill(t.title, { name: lead.name })}>
         <div className="grid gap-4">
-          <label className="grid gap-1 text-label">
+          <label data-guide="ops-brief-template" className="grid gap-1 text-label">
             {t.template}
             <select
               className={inp}
@@ -208,7 +208,7 @@ function BriefForm({
             </Button>
           </fieldset>
           <div className="grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1 text-label">
+            <label data-guide="ops-brief-deadline" className="grid gap-1 text-label">
               {t.deadline}
               <input
                 type="date"
@@ -378,7 +378,7 @@ function BriefForm({
             </ul>
           )}
         </section>
-        <Button
+        <Button data-guide="ops-send-offer"
           dots
           className="justify-center max-xl:sticky max-xl:bottom-16"
           loading={save.isPending || offer.isPending}
@@ -487,7 +487,7 @@ function ScopeForm({
   const save = useSaveScope();
   const toast = useToast();
   const toggle = (k: (typeof SCOPE_KEYS)[number], r: ScopeRole) =>
-    setS({ ...s, [k]: { ...s[k], [r]: !s[k][r] } });
+    setS({ ...s, [k]: { ...s[k], [r]: !s[k]?.[r] } });
   const masked = (k: string) =>
     k === "phone"
       ? maskPhone(data.phone)
@@ -511,7 +511,7 @@ function ScopeForm({
         </p>
       }
     >
-      <div
+      <div data-guide="ops-scope-matrix"
         tabIndex={0}
         role="region"
         aria-label={t.region}
@@ -551,7 +551,7 @@ function ScopeForm({
                     <input
                       type="checkbox"
                       className="size-4 accent-navy-700"
-                      checked={s[k][r]}
+                      checked={!!s[k]?.[r]}
                       onChange={() => toggle(k, r)}
                       aria-label={fill(t.allowFor, {
                         item: t.rows[k],
@@ -585,7 +585,7 @@ function ScopeForm({
                   <input
                     type="checkbox"
                     className="size-5 accent-navy-700"
-                    checked={s[k][r]}
+                    checked={!!s[k]?.[r]}
                     onChange={() => toggle(k, r)}
                   />
                   {t.cols[r]}
@@ -596,7 +596,7 @@ function ScopeForm({
         ))}
       </ul>
       <div className="mt-4 flex justify-end">
-        <Button
+        <Button data-guide="ops-scope-save"
           dots
           loading={save.isPending}
           onClick={() =>
@@ -686,7 +686,7 @@ export function OfferStep({ c }: { c: CaseDetailVM }) {
       <Panel
         title={t.title}
         action={
-          <Button
+          <Button data-guide="ops-reassign"
             size="sm"
             variant="outline"
             onClick={() => setReassigning(true)}
@@ -1067,7 +1067,7 @@ function RulesForm({
     <Panel title={fill(t.title, { service: c.service })}>
       <div className="grid gap-5">
         <fieldset>
-          <legend className="mb-2 text-label">{t.mode}</legend>
+          <legend data-guide="ops-rules-mode" className="mb-2 text-label">{t.mode}</legend>
           <div className="grid gap-2 sm:grid-cols-3">
             {(Object.keys(t.modes) as RuleMode[]).map((m) => (
               <label
@@ -1164,7 +1164,7 @@ function RulesForm({
         </p>
         <div className="flex items-center justify-between gap-2">
           <span />
-          <Button
+          <Button data-guide="ops-rules-save"
             dots
             disabled={!pool.length}
             loading={save.isPending}

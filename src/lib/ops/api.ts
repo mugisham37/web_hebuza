@@ -77,7 +77,7 @@ export function toCaseVM(r: Raw): CaseVM {
     status: normalizeStatus(String(r.status)),
     subStatus: s(x.subStatus),
     previous: x.previous ? normalizeStatus(String(x.previous)) : null,
-    client: s(r.client_name) ?? "—",
+    client: s(r.client_name) ?? "",
     clientId: s(x.clientId) ?? "",
     clientType: (x.clientType as CaseVM["clientType"]) ?? "individual",
     clientPhone: s(r.client_phone),

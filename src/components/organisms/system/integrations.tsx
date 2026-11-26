@@ -120,7 +120,7 @@ function OutagePanel({ bad, payLater }: { bad: IntegrationVM[]; payLater: boolea
           </div>
           <div className="min-w-0 bg-surface/70 p-3">
             <p className="text-eyebrow uppercase text-fg-subtle">{c.outage.fallback}</p>
-            {i.fallback?.length ? <p className="mt-1 text-small font-medium">{[i.name, ...i.fallback].join(" → ")}</p> : <p className="mt-1 text-small text-fg-muted">—</p>}
+            {i.fallback?.length ? <p className="mt-1 text-small font-medium">{[i.name, ...i.fallback].join(" → ")}</p> : <p className="mt-1 text-small text-fg-muted"></p>}
             <p className="mt-1 text-eyebrow text-fg-subtle">{c.outage.fallbackNote} <Link href={localHref(locale, "/system/notifications?tab=rules")} className="underline underline-offset-2">{c.outage.editChains}</Link></p>
           </div>
         </div>

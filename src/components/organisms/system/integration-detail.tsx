@@ -139,7 +139,7 @@ function Overview({ i, c, su }: { i: IntegrationDetail; c: C; su: SU }) {
         </dl>
         {i.health === "untested" && <p className="bg-bg-subtle px-3 py-2 text-small text-fg-muted">{c.overview.untestedWhy}</p>}
         <div className="flex flex-wrap items-center gap-3 border-t border-border pt-4">
-          <Button onClick={runTest} loading={test.isPending} disabled={!online}><Icon name="zap" size={15} aria-hidden />{test.isPending ? c.overview.testing : c.overview.tests[i.group]}</Button>
+          <Button data-guide="system-int-test" onClick={runTest} loading={test.isPending} disabled={!online}><Icon name="zap" size={15} aria-hidden />{test.isPending ? c.overview.testing : c.overview.tests[i.group]}</Button>
           {i.lastTest && !test.isPending && (
             <p role="status" className={cx("inline-flex items-center gap-1.5 px-3 py-1.5 text-small", i.lastTest.ok ? "bg-success-bg text-success" : "bg-danger-bg text-danger m-shake")}>
               <Icon name={i.lastTest.ok ? "check" : "x"} size={14} aria-hidden />{i.lastTest.ok ? c.overview.testOk : c.overview.testFail} · {formatDateTime(i.lastTest.at, locale)}

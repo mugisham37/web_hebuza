@@ -252,7 +252,7 @@ export function Workbench({ refId }: { refId: string }) {
         aria-label={w.tabsLabel}
         className="-mx-4 mt-4 overflow-x-auto px-4 sm:mx-0 sm:px-0"
       >
-        <ul className="flex min-w-max gap-1 border-b border-border max-sm:gap-1.5 max-sm:border-0 max-sm:py-2">
+        <ul data-guide="case-tabs" className="flex min-w-max gap-1 border-b border-border max-sm:gap-1.5 max-sm:border-0 max-sm:py-2">
           {tabs.map((t, i) => {
             const count =
               t === "documents"
@@ -426,12 +426,13 @@ function Header({
               small && "max-sm:hidden",
             )}
           >
-            <Button size="sm" onClick={() => onOpen("status")}>
+            <Button size="sm" data-guide="case-status" onClick={() => onOpen("status")}>
               {w.actions.status}
             </Button>
             <Button
               size="sm"
               variant="outline"
+              data-guide="case-propose"
               onClick={() => onOpen("propose")}
             >
               <Icon name="calendar" size={14} aria-hidden />
@@ -484,6 +485,7 @@ function Header({
         <button
           type="button"
           disabled={locked || c.status !== "awaiting_external_institution"}
+          data-guide="case-outcome"
           onClick={() => onOpen("outcome")}
           aria-label={`${w.outcome.label}: ${o ? w.outcome[o.state] : w.outcome.none}`}
           className={cx(

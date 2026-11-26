@@ -14,7 +14,7 @@ const en = {
     payout: "Last payout (net)",
     noPayout: "No payout yet",
   },
-  offers: { title: "Offers for you", all: "View all offers", respond: "Respond in time — unanswered offers lower your match score." },
+  offers: { title: "Offers for you", all: "View all offers", respond: "Respond in time, unanswered offers lower your match score." },
   nextSteps: "Your next steps",
   step: { offers: "Review new offers", contract: "Renew your contract", licence: "Settle your licence fee", credentials: "Renew an expired credential" },
   empty: {
@@ -49,7 +49,7 @@ const en = {
     simAccept: "SM accepts",
     simDecline: "SM declines",
   },
-  serviceNotCleared: "Not cleared for this service — renew the credential to accept.",
+  serviceNotCleared: "Not cleared for this service, renew the credential to accept.",
 };
 type Copy = typeof en;
 
@@ -66,7 +66,7 @@ const fr: Copy = {
     payout: "Dernier versement (net)",
     noPayout: "Aucun versement",
   },
-  offers: { title: "Offres pour vous", all: "Voir toutes les offres", respond: "Répondez à temps — les offres sans réponse baissent votre score." },
+  offers: { title: "Offres pour vous", all: "Voir toutes les offres", respond: "Répondez à temps, les offres sans réponse baissent votre score." },
   nextSteps: "Prochaines étapes",
   step: { offers: "Examiner les nouvelles offres", contract: "Renouveler votre contrat", licence: "Régler la redevance", credentials: "Renouveler un justificatif expiré" },
   empty: {
@@ -101,7 +101,7 @@ const fr: Copy = {
     simAccept: "Le responsable accepte",
     simDecline: "Le responsable refuse",
   },
-  serviceNotCleared: "Non habilité pour ce service — renouvelez le justificatif pour accepter.",
+  serviceNotCleared: "Non habilité pour ce service, renouvelez le justificatif pour accepter.",
 };
 
 const rw: Copy = {
@@ -117,7 +117,7 @@ const rw: Copy = {
     payout: "Ubwishyu buheruka (net)",
     noPayout: "Nta bwishyu buraba",
   },
-  offers: { title: "Akazi wahawe", all: "Reba akazi kose", respond: "Subiza ku gihe — akazi udasubije kagabanya amanota yawe." },
+  offers: { title: "Akazi wahawe", all: "Reba akazi kose", respond: "Subiza ku gihe, akazi udasubije kagabanya amanota yawe." },
   nextSteps: "Intambwe zikurikira",
   step: { offers: "Reba akazi gashya", contract: "Vugurura amasezerano", licence: "Ishyura uruhushya", credentials: "Vugurura icyangombwa cyarangiye" },
   empty: {
@@ -152,7 +152,7 @@ const rw: Copy = {
     simAccept: "Umuyobozi yemeye",
     simDecline: "Umuyobozi yanze",
   },
-  serviceNotCleared: "Ntiwemerewe iyi serivisi — vugurura icyangombwa kugira ngo wakire.",
+  serviceNotCleared: "Ntiwemerewe iyi serivisi, vugurura icyangombwa kugira ngo wakire.",
 };
 
 const ALL: Record<Locale, Copy> = { en, rw, fr };

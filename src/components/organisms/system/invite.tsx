@@ -90,7 +90,7 @@ export function InviteDialog({ open, onClose }: { open: boolean; onClose: () => 
         ) : (
           <>
             <Button variant="outline" onClick={tryClose}>{s.common.cancel}</Button>
-            <Button dots loading={busy} disabled={!online || conflicts.length > 0} onClick={submit}>{priv ? c.inv.sendApproval : c.inv.send}</Button>
+            <Button dots data-guide="system-invite-send" loading={busy} disabled={!online || conflicts.length > 0} onClick={submit}>{priv ? c.inv.sendApproval : c.inv.send}</Button>
           </>
         )}>
         {done ? (

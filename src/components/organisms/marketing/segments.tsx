@@ -27,7 +27,7 @@ export function SegmentsView() {
   const items = q.data?.items ?? [];
   return (
     <>
-      <PageHead title={c.seg.title} sub={c.seg.sub} actions={<ButtonLink href={localHref(locale, "/marketing/segments/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.seg.new}</ButtonLink>} />
+      <PageHead title={c.seg.title} sub={c.seg.sub} actions={<ButtonLink data-guide="marketing-new-segment" href={localHref(locale, "/marketing/segments/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.seg.new}</ButtonLink>} />
       <QueryState q={q} what={c.seg.title} empty={!items.length && c.seg.empty}>
         <ul className="grid gap-2 m-stagger">
           {items.map((s, i) => (
@@ -82,7 +82,7 @@ function Builder({ seg }: { seg?: Segment }) {
   const p = useSegmentPreview(debounced, channel);
   const save = useCmpMutation(() => seg ? unwrap<Segment>(api.PATCH("/api/admin/crm/segments/{id}", { params: { path: { id: seg.id } }, body: { name, definition: def }, headers: hdr({ ifMatch: seg.version }) })) : unwrap<Segment>(api.POST("/api/admin/crm/segments", { body: { name, definition: def } })));
   const [ask, setAsk] = useState(false);
-  const del = useCmpMutation(() => unwrap(api.DELETE("/api/admin/crm/segments/{id}", { params: { path: { id: seg!.id } } })));
+  const del = useCmpMutation(() => unwrap(api.DELETE("/api/admin/crm/segments/{id}", { params: { path: { id: seg?.id ?? "" } } })));
   const d = p.data;
   const totalLang = d ? d.languages.rw + d.languages.en + d.languages.fr || 1 : 1;
   return (
@@ -103,7 +103,7 @@ function Builder({ seg }: { seg?: Segment }) {
             }) : setAsk(true)}>{ask ? c.seg.delConfirm : c.seg.del}</Button>}
           </div>
         </div>
-        <aside className="grid content-start gap-4">
+        <aside data-guide="marketing-seg-preview" className="grid content-start gap-4">
           <Field label={c.seg.previewFor}>{(a) => (
             <Select {...fa(a)} value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
               {(["whatsapp", "email", "sms"] as Channel[]).map((x) => <option key={x} value={x}>{c.common.channel[x]}</option>)}
@@ -151,7 +151,7 @@ function GroupEditor({ g, depth, onChange, onRemove }: { g: SegGroup; depth: num
         ? <GroupEditor key={i} g={r} depth={depth + 1} onChange={(x) => set(i, x)} onRemove={() => del(i)} />
         : <RuleRow key={i} r={r} onChange={(x) => set(i, x)} onRemove={() => del(i)} />)}
       <div className="flex flex-wrap gap-2">
-        <Button size="sm" variant="secondary" onClick={() => onChange({ ...g, rules: [...g.rules, { field: "sector", op: "is", value: "retail" }] })}><Icon name="plus" size={14} aria-hidden />{c.seg.addRule}</Button>
+        <Button data-guide="marketing-add-rule" size="sm" variant="secondary" onClick={() => onChange({ ...g, rules: [...g.rules, { field: "sector", op: "is", value: "retail" }] })}><Icon name="plus" size={14} aria-hidden />{c.seg.addRule}</Button>
         {depth < 1 && <Button size="sm" variant="outline" onClick={() => onChange({ ...g, rules: [...g.rules, { join: "or", rules: [{ field: "province", op: "is", value: "Kigali" }] }] })}>{c.seg.addGroup}</Button>}
       </div>
     </fieldset>

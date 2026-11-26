@@ -46,7 +46,7 @@ export function OutboxView() {
   return (
     <div className="grid gap-4">
       <FieldHeader title={d.outboxTitle} sub={<>{online ? d.sentenceOnline : d.sentence}{live.length > 0 && <span className="block tabular">{fill(d.total, { n: live.length, size: kb(total) })}</span>}</>}
-        action={<NeedsConnection online={online}><Button onClick={() => void syncNow()} disabled={!online || !!eng.syncing || !live.length} loading={!!eng.syncing}><Icon name="refresh" size={16} aria-hidden />{d.syncNow}</Button></NeedsConnection>} />
+        action={<NeedsConnection online={online}><Button data-guide="field-sync" onClick={() => void syncNow()} disabled={!online || !!eng.syncing || !live.length} loading={!!eng.syncing}><Icon name="refresh" size={16} aria-hidden />{d.syncNow}</Button></NeedsConnection>} />
 
       {eng.syncing && (
         <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={fill(c.syncing, { done: eng.syncing.done, total: eng.syncing.total })} className="h-2 overflow-hidden bg-ink-100">
@@ -157,7 +157,7 @@ function Detail({ op, all }: { op: Op; all: Op[] }) {
     [d.detail.id, <code key="id" className="break-all text-eyebrow normal-case">{op.opId}</code>],
     [d.detail.created, `${formatDateTime(op.createdAt, locale)} (${formatRelative(op.createdAt, locale)})`],
     [d.detail.attempts, op.attempts],
-    [d.detail.error, op.error ?? "—"],
+    [d.detail.error, op.error ?? ""],
     [d.detail.size, kb(op.bytes)],
     [d.detail.deps, deps.length ? deps.map((x) => `${d.kinds[x.kind]} · ${d.state[x.state]}`).join(", ") : d.detail.none],
   ];

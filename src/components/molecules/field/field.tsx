@@ -30,9 +30,9 @@ import { useToast } from "@/components/atoms/toast";
 // PhotoCapture (plan §5.3): hidden <input capture=environment> (works offline, no permission dance, testable with
 // setInputFiles), compressed + EXIF-free via processImage, optional timestamp band. Lite: no thumbnail.
 const T = {
-  en: { retake: "Retake", processing: "Processing photo…", failed: "Couldn't read that photo. Try again.", full: "Phone storage is almost full — photos are paused. Sync or remove a scan." },
-  fr: { retake: "Reprendre", processing: "Traitement de la photo…", failed: "Photo illisible. Réessayez.", full: "Stockage presque plein — photos suspendues. Synchronisez ou retirez un scan." },
-  rw: { retake: "Ongera ufotore", processing: "Ifoto iri gutunganywa…", failed: "Ntitwashoboye gusoma iyo foto. Ongera ugerageze.", full: "Ububiko bwenda kuzura — amafoto yahagaritswe. Ohereza cyangwa ukureho scan." },
+  en: { retake: "Retake", processing: "Processing photo…", failed: "Couldn't read that photo. Try again.", full: "Phone storage is almost full, photos are paused. Sync or remove a scan." },
+  fr: { retake: "Reprendre", processing: "Traitement de la photo…", failed: "Photo illisible. Réessayez.", full: "Stockage presque plein, photos suspendues. Synchronisez ou retirez un scan." },
+  rw: { retake: "Ongera ufotore", processing: "Ifoto iri gutunganywa…", failed: "Ntitwashoboye gusoma iyo foto. Ongera ugerageze.", full: "Ububiko bwenda kuzura, amafoto yahagaritswe. Ohereza cyangwa ukureho scan." },
 };
 
 export function PhotoCapture({ label, onCapture, value, stamp, enhance, disabled, blocked, variant = "card", className }: {

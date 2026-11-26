@@ -62,9 +62,9 @@ export function KbSources({ base }: { base: "/ops" | "/marketing" }) {
             <td className="px-3 py-2.5">{c.staff.kbTabs[k.kind]}</td>
             <td className="px-3 py-2.5 uppercase">{k.locale}</td>
             <td className="px-3 py-2.5"><KbStatusPill status={k.status} /></td>
-            <td className="px-3 py-2.5 text-fg-muted">{k.factsBy ?? "—"}</td>
-            <td className={cx("px-3 py-2.5 tabular-nums", k.reviewBy && Date.parse(k.reviewBy) < now && "text-warning")}>{k.reviewBy ? formatDay(`${k.reviewBy}T10:00:00Z`, locale) : "—"}</td>
-            <td className="px-3 py-2.5 tabular-nums text-fg-muted">{k.lastIndexedAt ? formatDay(k.lastIndexedAt, locale) : "—"}</td>
+            <td className="px-3 py-2.5 text-fg-muted">{k.factsBy ?? ""}</td>
+            <td className={cx("px-3 py-2.5 tabular-nums", k.reviewBy && Date.parse(k.reviewBy) < now && "text-warning")}>{k.reviewBy ? formatDay(`${k.reviewBy}T10:00:00Z`, locale) : ""}</td>
+            <td className="px-3 py-2.5 tabular-nums text-fg-muted">{k.lastIndexedAt ? formatDay(k.lastIndexedAt, locale) : ""}</td>
           </tr>
         ))}</tbody>
       </table>
@@ -140,7 +140,7 @@ export function KbReview({ id, base }: { id: string; base: "/ops" | "/marketing"
           <dl className="grid gap-1 text-small">
             <div className="flex justify-between"><dt>{c.staff.facts}</dt><dd>{k.factsBy ?? c.staff.pending}</dd></div>
             <div className="flex justify-between"><dt>{c.staff.tone}</dt><dd>{k.toneBy ?? c.staff.pending}</dd></div>
-            <div className="flex justify-between"><dt>{c.staff.reviewByDate}</dt><dd className="tabular-nums">{k.reviewBy || "—"}</dd></div>
+            <div className="flex justify-between"><dt>{c.staff.reviewByDate}</dt><dd className="tabular-nums">{k.reviewBy || ""}</dd></div>
           </dl>
           {k.comment && <p className="bg-bg-subtle p-3 text-small">{k.comment}</p>}
           {!canFacts && !canTone ? <p className="text-small text-fg-muted">{c.staff.noApprove}</p> : (
@@ -230,7 +230,7 @@ function Sessions() {
         {sel("outcome", c.staff.sCols.outcome, Object.entries(c.staff.outcome))}
         {sel("lang", c.staff.sCols.lang, [["rw", "RW"], ["en", "EN"], ["fr", "FR"]])}
         {sel("rating", c.staff.sCols.rating, [["1", "👍"], ["-1", "👎"]])}
-        {sel("handoff", c.staff.cTabs.handoffs, [["true", "✓"], ["false", "—"]])}
+        {sel("handoff", c.staff.cTabs.handoffs, [["true", "✓"], ["false", ""]])}
       </div>
       {q.isPending ? <SkeletonList n={5} h="h-12" /> : q.isError ? <StatePanel title={errorCopy(q.error, locale)} /> : !q.data.length ? <StatePanel title={c.staff.noSessions} /> : (
         <div className="overflow-x-auto border border-border bg-surface">
@@ -242,7 +242,7 @@ function Sessions() {
                 <td className="max-w-[18rem] truncate px-3 py-2.5"><Link className="underline-offset-4 hover:underline" href={localHref(locale, `/ops/assistant/sessions/${s.id}`)}>{s.title}</Link></td>
                 <td className="px-3 py-2.5 uppercase">{s.lang}</td>
                 <td className="px-3 py-2.5">{c.staff.outcome[s.outcome]}</td>
-                <td className="px-3 py-2.5">{s.rating === 1 ? "👍" : s.rating === -1 ? "👎" : "—"}</td>
+                <td className="px-3 py-2.5">{s.rating === 1 ? "👍" : s.rating === -1 ? "👎" : ""}</td>
                 <td className="px-3 py-2.5 tabular-nums">{s.turns}</td>
                 <td className="px-3 py-2.5 text-fg-muted">{s.context}</td>
               </tr>

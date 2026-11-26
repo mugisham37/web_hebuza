@@ -60,7 +60,7 @@ const en = {
     confirmedOtp: "Client confirmed by OTP",
     confirmedSig: "Client confirmed by signature",
     confirmed: "Client confirmed",
-    assistedOffline: "Needs a connection — capture documents now, finish the application when online.",
+    assistedOffline: "Needs a connection, capture documents now, finish the application when online.",
     nextReceipt: "Next: receipt",
     nextCheckout: "Next: check out",
     checkinFirst: "Check in first to start the work.",
@@ -88,7 +88,7 @@ const en = {
     enhance: "Enhance",
     apply: "Use this crop",
     processing: "Preparing page…",
-    blocked: "Storage almost full — sync or remove a scan before scanning more.",
+    blocked: "Storage almost full, sync or remove a scan before scanning more.",
     sync: { queued: "Waiting", sending: "Sending", sent: "Sent", failed: "Will retry", blocked: "Waiting for check-in", conflict: "Needs review", rejected: "Rejected" },
   },
   checkout: {
@@ -146,7 +146,7 @@ const fr: CopyB = {
     assistedBody: "Aidez le client à remplir la demande sur son téléphone, puis demandez-lui de confirmer.", openWizard: "Ouvrir la demande",
     wizardNote: "Ouvre la demande client en mode assisté (étape 2).", askConfirm: "Demander la confirmation du client", otp: "Code SMS", sign: "Signature",
     confirmedOtp: "Client confirmé par code SMS", confirmedSig: "Client confirmé par signature", confirmed: "Client confirmé",
-    assistedOffline: "Nécessite une connexion — scannez les documents maintenant, terminez la demande une fois en ligne.",
+    assistedOffline: "Nécessite une connexion, scannez les documents maintenant, terminez la demande une fois en ligne.",
     nextReceipt: "Suivant : reçu", nextCheckout: "Suivant : départ", checkinFirst: "Pointez d'abord votre arrivée.", goCheckin: "Aller au pointage",
   },
   scan: {
@@ -155,7 +155,7 @@ const fr: CopyB = {
     done: "Terminé ({n} pages)", saved: "Scan enregistré sur ce téléphone", labelRequired: "Nommez le document.", cropTitle: "Ajuster le cadrage",
     cropHelp: "Faites glisser les coins, ou choisissez un coin et utilisez les flèches.",
     corner: { tl: "Coin haut gauche", tr: "Coin haut droit", bl: "Coin bas gauche", br: "Coin bas droit" }, auto: "Auto", enhance: "Améliorer",
-    apply: "Utiliser ce cadrage", processing: "Préparation de la page…", blocked: "Stockage presque plein — synchronisez ou retirez un scan avant de continuer.",
+    apply: "Utiliser ce cadrage", processing: "Préparation de la page…", blocked: "Stockage presque plein, synchronisez ou retirez un scan avant de continuer.",
     sync: { queued: "En attente", sending: "Envoi", sent: "Envoyé", failed: "Nouvel essai", blocked: "Attend l'arrivée", conflict: "À vérifier", rejected: "Refusé" },
   },
   checkout: {
@@ -192,7 +192,7 @@ const rw: CopyB = {
     scanned: "Ibyakozwe scan", noScans: "Nta scan iraba.", assisted: "Gufasha gusaba", assistedBody: "Fasha umukiriya kuzuza ubusabe kuri telefoni ye, hanyuma umusabe kwemeza.",
     openWizard: "Fungura ubusabe", wizardNote: "Bifungura ubusabe bw'umukiriya mu buryo bwo gufashwa (Icyiciro cya 2).", askConfirm: "Saba umukiriya kwemeza",
     otp: "Kode ya SMS", sign: "Umukono", confirmedOtp: "Umukiriya yemeje akoresheje kode", confirmedSig: "Umukiriya yemeje akoresheje umukono", confirmed: "Umukiriya yemeje",
-    assistedOffline: "Bikeneye interineti — fata inyandiko ubu, urangize ubusabe ugeze kuri interineti.",
+    assistedOffline: "Bikeneye interineti, fata inyandiko ubu, urangize ubusabe ugeze kuri interineti.",
     nextReceipt: "Ibikurikira: inyemezabwishyu", nextCheckout: "Ibikurikira: gusoza", checkinFirst: "Banza wemeze ko wageze.", goCheckin: "Jya ku kugera",
   },
   scan: {
@@ -201,7 +201,7 @@ const rw: CopyB = {
     done: "Byarangiye (impapuro {n})", saved: "Scan yabitswe kuri iyi telefoni", labelRequired: "Ita inyandiko izina.", cropTitle: "Hindura igice",
     cropHelp: "Kurura impande, cyangwa uhitemo impande ukoreshe utumenyetso tw'icyerekezo.",
     corner: { tl: "Impande yo hejuru ibumoso", tr: "Impande yo hejuru iburyo", bl: "Impande yo hasi ibumoso", br: "Impande yo hasi iburyo" }, auto: "Ubwayo", enhance: "Kunoza",
-    apply: "Koresha iki gice", processing: "Urupapuro ruri gutegurwa…", blocked: "Ububiko bwenda kuzura — ohereza cyangwa ukureho scan mbere yo gukomeza.",
+    apply: "Koresha iki gice", processing: "Urupapuro ruri gutegurwa…", blocked: "Ububiko bwenda kuzura, ohereza cyangwa ukureho scan mbere yo gukomeza.",
     sync: { queued: "Bitegereje", sending: "Biroherezwa", sent: "Byoherejwe", failed: "Bizongera", blocked: "Bitegereje kugera", conflict: "Bikeneye isuzuma", rejected: "Byanzwe" },
   },
   checkout: {

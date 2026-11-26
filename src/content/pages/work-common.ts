@@ -24,14 +24,14 @@ const en = {
     cleared: "Cleared",
     pending: "Under review",
     not_cleared: "Not cleared",
-    reason: { credentialExpired: "Credential expired — upload a renewal", missingCredential: "Add a credential for this service" },
+    reason: { credentialExpired: "Credential expired, upload a renewal", missingCredential: "Add a credential for this service" },
   },
   why: {
     notCleared: "Finish verification to unlock this.",
     pending: "Available once HEBUZA verifies your documents.",
     suspended: "Your access is suspended.",
     terminated: "Your engagement has ended.",
-    contractExpired: "Your contract has expired — renew to receive new offers.",
+    contractExpired: "Your contract has expired, renew to receive new offers.",
     serviceNotCleared: "You're not cleared for this service.",
     accessEnded: "Access to this job has ended.",
     clientLaneOff: "Client contact isn't enabled for this job.",
@@ -111,7 +111,7 @@ const en = {
   mockOnly: "Mock mode only",
   retry: "Retry",
   loadFailed: "Couldn't load this. Try again.",
-  offline: "You're offline — we'll send this when you're back.",
+  offline: "You're offline, we'll send this when you're back.",
 };
 type Copy = typeof en;
 
@@ -138,14 +138,14 @@ const fr: Copy = {
     cleared: "Habilité",
     pending: "En examen",
     not_cleared: "Non habilité",
-    reason: { credentialExpired: "Justificatif expiré — téléversez le renouvellement", missingCredential: "Ajoutez un justificatif pour ce service" },
+    reason: { credentialExpired: "Justificatif expiré, téléversez le renouvellement", missingCredential: "Ajoutez un justificatif pour ce service" },
   },
   why: {
     notCleared: "Terminez la vérification pour débloquer.",
     pending: "Disponible après vérification par HEBUZA.",
     suspended: "Votre accès est suspendu.",
     terminated: "Votre collaboration a pris fin.",
-    contractExpired: "Votre contrat a expiré — renouvelez pour recevoir des offres.",
+    contractExpired: "Votre contrat a expiré, renouvelez pour recevoir des offres.",
     serviceNotCleared: "Vous n'êtes pas habilité pour ce service.",
     accessEnded: "L'accès à ce dossier est terminé.",
     clientLaneOff: "Le contact client n'est pas activé pour ce dossier.",
@@ -225,7 +225,7 @@ const fr: Copy = {
   mockOnly: "Mode maquette uniquement",
   retry: "Réessayer",
   loadFailed: "Chargement impossible. Réessayez.",
-  offline: "Vous êtes hors ligne — envoi à la reconnexion.",
+  offline: "Vous êtes hors ligne, envoi à la reconnexion.",
 };
 
 const rw: Copy = {
@@ -251,14 +251,14 @@ const rw: Copy = {
     cleared: "Yemejwe",
     pending: "Biri gusuzumwa",
     not_cleared: "Ntiyemejwe",
-    reason: { credentialExpired: "Icyangombwa cyarangiye — ohereza icyavuguruwe", missingCredential: "Ongeraho icyangombwa cy'iyi serivisi" },
+    reason: { credentialExpired: "Icyangombwa cyarangiye, ohereza icyavuguruwe", missingCredential: "Ongeraho icyangombwa cy'iyi serivisi" },
   },
   why: {
     notCleared: "Rangiza isuzuma kugira ngo ubifungure.",
     pending: "Bizaboneka HEBUZA imaze gusuzuma inyandiko zawe.",
     suspended: "Uburenganzira bwawe bwahagaritswe.",
     terminated: "Amasezerano yawe yarangiye.",
-    contractExpired: "Amasezerano yarangiye — yavugurure kugira ngo uhabwe akazi gashya.",
+    contractExpired: "Amasezerano yarangiye, yavugurure kugira ngo uhabwe akazi gashya.",
     serviceNotCleared: "Ntiwemerewe iyi serivisi.",
     accessEnded: "Uburenganzira kuri aka kazi bwarangiye.",
     clientLaneOff: "Kuvugana n'umukiriya ntibyemewe kuri aka kazi.",
@@ -338,7 +338,7 @@ const rw: Copy = {
   mockOnly: "Ku igerageza gusa",
   retry: "Ongera ugerageze",
   loadFailed: "Ntibyafunguye. Ongera ugerageze.",
-  offline: "Nta interineti — bizoherezwa nugaruka.",
+  offline: "Nta interineti, bizoherezwa nugaruka.",
 };
 
 const ALL: Record<Locale, Copy> = { en, rw, fr };

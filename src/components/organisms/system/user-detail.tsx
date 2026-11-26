@@ -66,7 +66,7 @@ export function UserDetailView({ id }: { id: string }) {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <IdentityBlock name={u.name} email={u.email} roles={u.roles.map((r) => r.role)} status={u.status} mfa={u.mfa} lastActiveAt={u.lastActiveAt} you={you} />
           <div className="flex flex-wrap gap-2">
-            {live && !you && u.kind !== "client" && <Button variant="danger" size="sm" onClick={() => setCmp(true)}><Icon name="shield" size={14} aria-hidden />{c.d.respond}</Button>}
+            {live && !you && u.kind !== "client" && <Button variant="danger" size="sm" data-guide="system-respond" onClick={() => setCmp(true)}><Icon name="shield" size={14} aria-hidden />{c.d.respond}</Button>}
             <UserActions user={u} lastSysadmin={u.lastSysadmin} />
           </div>
         </div>
@@ -99,9 +99,9 @@ function Profile({ u }: { u: UserDetail }) {
       <dl className="border border-border bg-surface px-4 sm:px-6">
         <Row k={c.name}>{u.name}</Row>
         <Row k={c.email}>{u.email}</Row>
-        <Row k={c.phone}>{u.phone ? <span className="inline-flex flex-wrap items-center gap-2"><span className="font-mono tabular">{u.phone}</span><span className="text-eyebrow text-fg-subtle">{c.phoneHidden}</span></span> : "—"}</Row>
-        <Row k={c.locale}>{u.locale ? LANG[u.locale] : "—"}</Row>
-        {u.kind === "client" ? <Row k={c.customer}><span className="font-mono">{u.customerNo ?? "—"}</span></Row> : <Row k={c.terms}>{u.termsVersion ? fill(c.termsVal, { v: u.termsVersion }) : c.termsNone}</Row>}
+        <Row k={c.phone}>{u.phone ? <span className="inline-flex flex-wrap items-center gap-2"><span className="font-mono tabular">{u.phone}</span><span className="text-eyebrow text-fg-subtle">{c.phoneHidden}</span></span> : ""}</Row>
+        <Row k={c.locale}>{u.locale ? LANG[u.locale] : ""}</Row>
+        {u.kind === "client" ? <Row k={c.customer}><span className="font-mono">{u.customerNo ?? ""}</span></Row> : <Row k={c.terms}>{u.termsVersion ? fill(c.termsVal, { v: u.termsVersion }) : c.termsNone}</Row>}
         {u.managerName && <Row k={c.manager}>{u.managerName}</Row>}
       </dl>
       {(u.kind === "agent" || u.kind === "staff") && <p className="flex items-start gap-2 bg-ink-100 p-3 text-small"><Icon name="lock" size={15} aria-hidden className="mt-0.5 shrink-0" />{c.worker}</p>}
@@ -126,7 +126,7 @@ function RolesTab({ u, you, onReload }: { u: UserDetail; you: boolean; onReload:
       <div className="border border-border bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3 sm:px-6">
           <h2 className="text-label-lg">{c.d.roles.current}</h2>
-          {canEdit && <Button size="sm" onClick={() => setGrant(true)}><Icon name="plus" size={14} aria-hidden />{c.d.roles.grant}</Button>}
+          {canEdit && <Button size="sm" data-guide="system-grant-role" onClick={() => setGrant(true)}><Icon name="plus" size={14} aria-hidden />{c.d.roles.grant}</Button>}
         </div>
         {!u.roles.length ? <div className="p-4"><EmptyPanel compact title={c.d.roles.none} /></div> : (
           <ul className="divide-y divide-border m-stagger">
@@ -141,7 +141,7 @@ function RolesTab({ u, you, onReload }: { u: UserDetail; you: boolean; onReload:
                   </span>
                   {canEdit && (last
                     ? <span className="text-eyebrow text-fg-subtle">{c.d.roles.lastSys}</span>
-                    : <Button size="sm" variant="outline" onClick={() => setRm(r.role)}>{c.d.roles.revoke}</Button>)}
+                    : <Button size="sm" variant="outline" data-guide="system-role-remove" onClick={() => setRm(r.role)}>{c.d.roles.revoke}</Button>)}
                 </li>
               );
             })}
@@ -153,7 +153,7 @@ function RolesTab({ u, you, onReload }: { u: UserDetail; you: boolean; onReload:
         options={Object.entries(c.reasonOpts.revokeRole).map(([value, label]) => ({ value, label }))} noteLabel={c.reasonNote} confirmLabel={c.d.roles.revoke} destructive audited
         onConfirm={async (v) => {
           try {
-            await run({ req: (h) => api.POST("/api/staff/users/{id}/roles", { params: { path: { id: u.id } }, body: { action: "revoke", role: rm!, reason: [c.reasonOpts.revokeRole[v.reason as keyof typeof c.reasonOpts.revokeRole], v.note].filter(Boolean).join(" — ") }, headers: h }), version: u.version });
+            await run({ req: (h) => api.POST("/api/staff/users/{id}/roles", { params: { path: { id: u.id } }, body: { action: "revoke", role: rm!, reason: [c.reasonOpts.revokeRole[v.reason as keyof typeof c.reasonOpts.revokeRole], v.note].filter(Boolean).join(", ") }, headers: h }), version: u.version });
           } catch (e) { const ce = causeOf(e); if (ce instanceof ApiError && ce.errorType === "stale") setConflict(new Date().toISOString()); throw e; }
           toast({ title: fill(c.toast.roleRevoked, { role: role(rm!) }), tone: "success" });
         }} />
@@ -193,7 +193,7 @@ function AllWorkspaces({ u }: { u: UserDetail }) {
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
   return (
-    <div className="flex flex-wrap items-start gap-4 border border-border bg-surface p-4 sm:p-6">
+    <div data-guide="system-all-workspaces" className="flex flex-wrap items-start gap-4 border border-border bg-surface p-4 sm:p-6">
       <Icon name="layers" size={20} aria-hidden className="mt-0.5 shrink-0 text-navy-700" />
       <div className="grid min-w-0 flex-1 basis-64 gap-1">
         <h2 className="flex flex-wrap items-center gap-2 text-label-lg">{a.title}{has && <span className="bg-success-bg px-2 py-0.5 text-eyebrow text-success">{a.active}</span>}</h2>
@@ -247,13 +247,13 @@ function GrantDialog({ u, open, onClose, onConflict }: { u: UserDetail; open: bo
   return (
     <>
       <Dialog open={open} onClose={close} side={phone ? "bottom" : undefined} title={fill(c.d.roles.grantTitle, { name: u.name })}
-        footer={<><Button variant="outline" onClick={close}>{s.common.cancel}</Button><Button dots loading={busy} disabled={!online || conflicts.length > 0} onClick={submit}>{priv ? c.inv.sendApproval : c.d.roles.grant}</Button></>}>
+        footer={<><Button variant="outline" onClick={close}>{s.common.cancel}</Button><Button dots data-guide="system-grant-submit" loading={busy} disabled={!online || conflicts.length > 0} onClick={submit}>{priv ? c.inv.sendApproval : c.d.roles.grant}</Button></>}>
         <div className="grid gap-4">
           {err && <p role="alert" className="bg-danger-bg p-3 text-small font-medium text-danger m-shake">{err}</p>}
           <Field label={c.d.roles.role}>
             {(f) => (
               <Select id={f.id} value={r} onChange={(e) => setR(e.target.value)}>
-                <option value="">—</option>
+                <option value=""></option>
                 {ASSIGNABLE.filter((x) => !have.includes(x)).map((x) => <option key={x} value={x}>{role(x)}{PRIVILEGED_GRANT.has(x) ? " ★" : ""}</option>)}
               </Select>
             )}
@@ -293,17 +293,17 @@ function Security({ u, you }: { u: UserDetail; you: boolean }) {
         <h2 className="mb-3 text-label-lg">{c.d.sec.mfa}</h2>
         <dl>
           <Row k={c.cols.mfa}><MfaBadge state={u.mfa.state} methods={u.mfa.methods} /></Row>
-          <Row k={c.d.sec.methods}>{u.mfa.methods.length ? u.mfa.methods.map((m) => s.mfa[m]).join(" · ") : "—"}</Row>
+          <Row k={c.d.sec.methods}>{u.mfa.methods.length ? u.mfa.methods.map((m) => s.mfa[m]).join(" · ") : ""}</Row>
           <Row k={c.d.sec.backup}>{u.mfa.backupCodesLeft ?? c.d.sec.backupNone}</Row>
         </dl>
         <div className="mt-4 grid gap-3 border-t border-border pt-4">
           <Action title={c.d.sec.reset} body={c.d.sec.resetBody} icon="refresh">
-            <Button size="sm" variant="outline" disabled={off} onClick={() => setReset(true)}>{c.d.sec.reset}</Button>
+            <Button size="sm" variant="outline" data-guide="system-reset-password" disabled={off} onClick={() => setReset(true)}>{c.d.sec.reset}</Button>
           </Action>
           <Action title={c.d.sec.mfaReset} body={approved ? c.d.sec.mfaResetHint : c.d.sec.noCheck} icon="shield">
             {approved
-              ? <Button size="sm" variant="outline" disabled={off} onClick={() => attempt({ req: (h) => api.POST("/api/staff/users/{id}/mfa-reset", { params: { path: { id: u.id } }, body: { accessRequestId: approved.id }, headers: h }) }, { stepUp: c.d.sec.mfaReset, ok: c.d.sec.mfaReset })}>{c.d.sec.mfaReset}</Button>
-              : <ButtonLink size="sm" variant="outline" href={localHref(locale, `/system/identity?q=${encodeURIComponent(u.name)}`)}>{c.d.sec.openCheck}</ButtonLink>}
+              ? <Button size="sm" variant="outline" data-guide="system-mfa-reset" disabled={off} onClick={() => attempt({ req: (h) => api.POST("/api/staff/users/{id}/mfa-reset", { params: { path: { id: u.id } }, body: { accessRequestId: approved.id }, headers: h }) }, { stepUp: c.d.sec.mfaReset, ok: c.d.sec.mfaReset })}>{c.d.sec.mfaReset}</Button>
+              : <ButtonLink size="sm" variant="outline" data-guide="system-mfa-reset" href={localHref(locale, `/system/identity?q=${encodeURIComponent(u.name)}`)}>{c.d.sec.openCheck}</ButtonLink>}
           </Action>
           {u.status === "locked" && (
             <Action title={c.d.sec.unlock} body={c.d.sec.unlockBody} icon="lock">

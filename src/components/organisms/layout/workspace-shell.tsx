@@ -17,6 +17,7 @@ import { waLink } from "@/content/marketing";
 import { useOpsShell } from "@/components/organisms/layout/ops-shell";
 import { WorkspaceTabs } from "@/components/molecules/layout/workspace-tabs";
 import { LocaleSwitcher } from "@/components/organisms/layout/locale-switcher";
+import { GuidesWelcome, HelpPanel } from "@/components/organisms/layout/help-panel";
 import { SessionExpiryModal } from "@/components/organisms/layout/session-expiry";
 import { MfaSuggest } from "@/components/organisms/auth/mfa-suggest";
 import { PhoneSuggest } from "@/components/organisms/auth/phone-suggest";
@@ -148,7 +149,7 @@ const NAV_ICON: Record<string, IconName> = {
   system: "layers", users: "users", roles: "briefcase", "access-reviews": "check", sod: "refresh", identity: "user", "break-glass": "zap",
   integrations: "globe", audit: "file", privacy: "lock", // Stage 6 (later keys win for shared names like approvals/settings)
   dashboard: "layers", requests: "file", messages: "message", documents: "fileCheck", billing: "wallet", history: "clock",
-  bookings: "calendar", orgs: "building", notifications: "zap", help: "search", settings: "user",
+  bookings: "calendar", orgs: "building", notifications: "zap", help: "search", settings: "user", guides: "info",
   ops: "layers", intake: "upload", cases: "file", workload: "users", sla: "clock", reviews: "fileCheck", tickets: "shield",
   conversations: "message", catalogue: "briefcase", workforce: "graduation", knowledge: "search", statuses: "refresh",
   agent: "layers", offers: "sparkle", inbox: "message", calendar: "calendar", clients: "users", earnings: "wallet", performance: "chart", profile: "user",
@@ -239,6 +240,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
           <WorkspaceLabel current={workspace} />
           {ops?.headerExtra}
           <div className="ml-auto flex items-center gap-0.5 sm:gap-2">
+            <HelpPanel workspace={workspace} />
             <CommandPalette workspace={workspace} />
             <span className="hidden xl:block"><LocaleSwitcher /></span>
             {ops?.bell ?? (
@@ -253,6 +255,7 @@ export function WorkspaceShell({ workspace, children }: { workspace: Workspace; 
         <main id="main" className="min-w-0 flex-1 px-gutter py-8 lg:px-8">
           <WorkerBanner />
           {ops?.banner}
+          <GuidesWelcome workspace={workspace} />
           {status === "loading" ? <Spinner /> : children}
         </main>
       </div>

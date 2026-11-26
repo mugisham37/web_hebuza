@@ -134,7 +134,7 @@ const en = {
         deadlines: "Deadline reminders",
         news: "News and tips",
       },
-      required: "Always on — we must tell you about this.",
+      required: "Always on, we must tell you about this.",
       quiet: "Quiet hours",
       quietLede:
         "No SMS or WhatsApp between these times (urgent items still arrive).",
@@ -530,7 +530,7 @@ const rw: C4Copy = {
         deadlines: "Kwibutsa igihe ntarengwa",
         news: "Amakuru n'inama",
       },
-      required: "Buri gihe birakora — tugomba kubikumenyesha.",
+      required: "Buri gihe birakora, tugomba kubikumenyesha.",
       quiet: "Amasaha y'ituze",
       quietLede:
         "Nta SMS cyangwa WhatsApp hagati y'aya masaha (ibyihutirwa biraza).",
@@ -936,7 +936,7 @@ const fr: C4Copy = {
         deadlines: "Rappels d'échéance",
         news: "Actualités et conseils",
       },
-      required: "Toujours actif — nous devons vous en informer.",
+      required: "Toujours actif, nous devons vous en informer.",
       quiet: "Heures calmes",
       quietLede:
         "Pas de SMS ni WhatsApp entre ces heures (l'urgent passe quand même).",

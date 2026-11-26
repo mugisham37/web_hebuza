@@ -100,7 +100,7 @@ export function OverviewView() {
                   {hhmm(b.lastAt, locale)}
                   <Icon name={b.ok ? "check" : "x"} size={20} aria-label={b.ok ? s.posture.pass : s.posture.fail} className={b.ok ? "text-success" : "text-danger"} />
                 </p>
-              ) : <p className="text-fg-muted">—</p>}
+              ) : <p className="text-fg-muted"></p>}
               {!b.ok && b.lastAt && <p className="font-medium text-danger">{c.backup.failed}</p>}
               {b.nextAt && <p className="text-fg-muted">{fill(c.backup.next, { t: hhmm(b.nextAt, locale) })}</p>}
               <p className="border-t border-border pt-2 text-fg-muted">{b.drillAt ? fill(c.backup.drill, { t: formatDate(b.drillAt, locale) }) : c.backup.noDrill}</p>

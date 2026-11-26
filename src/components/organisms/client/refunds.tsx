@@ -99,7 +99,7 @@ export function RefundsView() {
           </ButtonLink>
         }
       />
-      <p className="mb-8 flex flex-wrap items-start gap-3 bg-bg-tint px-4 py-3 text-body">
+      <p data-guide="client-refund-policy" className="mb-8 flex flex-wrap items-start gap-3 bg-bg-tint px-4 py-3 text-body">
         <Icon
           name="shield"
           aria-hidden
@@ -156,6 +156,7 @@ export function RefundsView() {
                       {p.eligible ? r.eligible : r.notEligible}
                     </Badge>
                     <Button
+                      data-guide="client-refund-request"
                       size="sm"
                       disabled={!can}
                       onClick={() => setPicked(p)}
@@ -210,7 +211,7 @@ function RefundCard({ x }: { x: Refund }) {
         {x.status === "declined" ? (
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-body">
-              {fill(r.declinedReason, { r: x.note ?? "—" })}
+              {fill(r.declinedReason, { r: x.note ?? "" })}
             </p>
             <ButtonLink
               href={localHref(locale, "/help")}

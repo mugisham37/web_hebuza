@@ -30,7 +30,7 @@ export function CustomersView() {
   return (
     <div className="grid gap-5">
       <PageHead title={c.customers.title} sub={c.customers.sub} />
-      <label className="relative sm:max-w-sm"><span className="sr-only">{c.customers.search}</span>
+      <label data-guide="marketing-customer-search" className="relative sm:max-w-sm"><span className="sr-only">{c.customers.search}</span>
         <Icon name="search" size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-fg-subtle" aria-hidden />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={c.customers.search} className="pl-9" />
       </label>
@@ -39,7 +39,7 @@ export function CustomersView() {
         onRowClick={(r) => window.location.assign(localHref(locale, `/marketing/customers/${r.id}`))}
         columns={[
           { key: "name", header: c.customers.cols.name, sortValue: (r) => r.name, cell: (r) => <Link href={localHref(locale, `/marketing/customers/${r.id}`)} className="block max-w-60 truncate font-medium hover:underline" title={r.name}>{r.name}</Link> },
-          { key: "id", header: c.customers.cols.id, cell: (r) => <span className="tabular text-fg-muted">{r.customerId ?? "—"}</span> },
+          { key: "id", header: c.customers.cols.id, cell: (r) => <span className="tabular text-fg-muted">{r.customerId ?? ""}</span> },
           { key: "lang", header: c.customers.cols.lang, cell: (r) => m.locale[r.language] },
           { key: "sector", header: c.customers.cols.sector, cell: (r) => r.sector },
           { key: "lifetime", header: c.customers.cols.lifetime, sortValue: (r) => r.lifetime, cell: (r) => <span className="tabular">{formatMoney(r.lifetime, "RWF", locale)}</span> },

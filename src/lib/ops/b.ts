@@ -87,7 +87,7 @@ export const SCOPE_KEYS = [
   "answers",
   "phone",
   "email",
-  "plan",
+  "history", // must match server/src/modules/ops/ops.cases.ts SCOPE_KEYS
   "bank",
   "payment",
 ] as const;

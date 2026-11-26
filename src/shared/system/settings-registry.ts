@@ -1,6 +1,6 @@
 // Mirror of server/src/domain/system/settings-registry.ts — UI display only; the server enforces.
 // Typed settings registry (plan 06 §7 U12, SET F-SET-01/14). Every key names what enforces it; dead keys never render.
-import type { Role } from "@/shared/auth/roles";
+import { ROLES, type Role } from "@/shared/auth/roles";
 import { locales } from "@/shared/i18n/config";
 import { POLICY } from "@/shared/policy";
 import type { I18nText, MaintenanceWindow, SettingGroup, SettingType } from "./types";
@@ -81,7 +81,7 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "company.invoice_footer", group: "general", type: "text", default: "", enforcedBy: "Invoice & legal renderers (invoiceDocPdf)", editableBy: [...SYS_EXE, "staff:finance"], requiresApproval: false, ownedBy: "staff:finance", validate: validText(300) },
   // X-3: refunds above this need an executive. A setting owned by Finance (set.tax); shown read-only here.
   { key: "finance.refund_exec_limit", group: "general", type: "readonly", default: POLICY.refundExecLimit, enforcedBy: "Refund approval chain (rfd.approve.exec)", editableBy: [], requiresApproval: true, ownedBy: "staff:finance", validate: none },
-  { key: "general.branches", group: "general", type: "readonly", default: "Sonatube / Kicukiro", enforcedBy: "— (single branch, D-10 PLACEHOLDER)", editableBy: [], requiresApproval: false, validate: none },
+  { key: "general.branches", group: "general", type: "readonly", default: "Sonatube / Kicukiro", enforcedBy: " (single branch, D-10 PLACEHOLDER)", editableBy: [], requiresApproval: false, validate: none },
   // Security (IAM F-IAM-11/12/16)
   { key: "security.idle_minutes.staff", group: "security", type: "int", unit: "min", default: 30, enforcedBy: "API session middleware (idle)", editableBy: SYS, requiresApproval: true, validate: validMinutes(5, 480) },
   { key: "security.idle_minutes.sysadmin", group: "security", type: "int", unit: "min", default: 30, enforcedBy: "API session middleware (idle)", editableBy: SYS, requiresApproval: true, validate: validMinutes(5, 480) },
@@ -89,6 +89,8 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "security.absolute_hours.sysadmin", group: "security", type: "readonly", unit: "h", default: 4, enforcedBy: "Refresh-token lifetime (roles.ts ROLE_META)", editableBy: [], requiresApproval: false, validate: none },
   { key: "security.absolute_hours.staff", group: "security", type: "readonly", unit: "h", default: 8, enforcedBy: "Refresh-token lifetime (roles.ts ROLE_META)", editableBy: [], requiresApproval: false, validate: none },
   { key: "security.absolute_hours.client", group: "security", type: "readonly", unit: "h", default: 24, enforcedBy: "Refresh-token lifetime (roles.ts ROLE_META)", editableBy: [], requiresApproval: false, validate: none },
+  // Google sign-in: comma-separated roles that may sign in with Google (empty = nobody).
+  { key: "auth.google_roles", group: "security", type: "text", default: ROLES.join(","), enforcedBy: "Google sign-in callback (auth.google.ts)", editableBy: SYS, requiresApproval: true, validate: (v) => String(v ?? "").split(",").map((x) => x.trim()).filter(Boolean).every((x) => (ROLES as readonly string[]).includes(x)) ? null : "roles" },
   { key: "security.ip_allowlist.sysadmin", group: "security", type: "cidr[]", default: [], enforcedBy: "API auth middleware (IP check)", editableBy: SYS, requiresApproval: true, validate: validCidrs },
   { key: "security.ip_allowlist.finance", group: "security", type: "cidr[]", default: [], enforcedBy: "API auth middleware (IP check)", editableBy: SYS, requiresApproval: true, validate: validCidrs },
   { key: "security.mfa_staff", group: "security", type: "readonly", default: "suggested", enforcedBy: "Opt-in for every role: dashboard suggestion popup; code asked at sign-in only after the user turns 2FA on", editableBy: [], requiresApproval: false, validate: none },

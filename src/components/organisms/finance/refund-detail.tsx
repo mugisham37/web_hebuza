@@ -296,7 +296,7 @@ function AdjustDialog({ d, initial, onClose, onConflict }: { d: RefundDetail; in
           </Select>
         )}</Field>
         {method !== "credit" && (
-          <Field label={c.adjustDlg.dest} hint={c.adjustDlg.destHint} optional="—">
+          <Field label={c.adjustDlg.dest} hint={c.adjustDlg.destHint} optional="">
             {(a) => <Input id={a.id} aria-describedby={a.describedBy} inputMode="tel" autoComplete="off" value={dest} onChange={(e) => setDest(e.target.value)} />}
           </Field>
         )}
@@ -358,7 +358,7 @@ function ExecutePanel({ d, moneyBlocked }: { d: RefundDetail; moneyBlocked: stri
           )}
           {r.status === "refunded" && (
             <p className="flex items-center gap-2 bg-success-bg px-3 py-2.5 text-small text-success m-rise">
-              <Icon name="check" size={16} aria-hidden className="m-tick" />{r.proofDocId ? c.exec.proofDone : fill(c.exec.done, { ref: r.providerRef ?? "—" })}{r.executedBy && <span className="text-fg-muted">· {r.executedBy.name}</span>}
+              <Icon name="check" size={16} aria-hidden className="m-tick" />{r.proofDocId ? c.exec.proofDone : fill(c.exec.done, { ref: r.providerRef ?? "" })}{r.executedBy && <span className="text-fg-muted">· {r.executedBy.name}</span>}
             </p>
           )}
           {r.status === "execution_failed" && (

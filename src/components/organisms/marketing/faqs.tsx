@@ -27,7 +27,7 @@ export function FaqsView() {
   const rows = list.data?.items ?? [];
   return (
     <div>
-      <PageHead title={c.titles.faqs} sub={c.subs.faqs} actions={<Button onClick={() => setCreating(true)}><Icon name="plus" size={16} aria-hidden />{c.faq.new}</Button>} />
+      <PageHead title={c.titles.faqs} sub={c.subs.faqs} actions={<Button data-guide="marketing-new-faq" onClick={() => setCreating(true)}><Icon name="plus" size={16} aria-hidden />{c.faq.new}</Button>} />
       <SavedViewTabs views={[{ key: "all", label: c.faq.tabs.all, count: rows.length }, { key: "unanswered", label: c.faq.tabs.unanswered }]} active={tab} onChange={(k) => setUrlParams({ tab: k === "all" ? null : k })} />
       <div className="mt-4">
         {tab === "unanswered" ? (
@@ -42,7 +42,7 @@ export function FaqsView() {
               <thead className="bg-ink-100 text-ink-700"><tr><th scope="col" className="p-3">{c.faq.question}</th><th scope="col" className="p-3">{c.cols.locales}</th><th scope="col" className="p-3">{c.cols.status}</th><th scope="col" className="p-3">{c.cols.ai}</th></tr></thead>
               <tbody>{rows.map((r) => (
                 <tr key={r.id} className="border-t border-border hover:bg-navy-50">
-                  <th scope="row" className="max-w-md p-3 font-normal"><button type="button" className="truncate text-left underline-offset-4 hover:underline" title={r.title} onClick={() => setOpen(r.id)}>{r.title}</button></th>
+                  <th scope="row" className="max-w-md p-3 font-normal"><button data-guide="marketing-faq-open" type="button" className="truncate text-left underline-offset-4 hover:underline" title={r.title} onClick={() => setOpen(r.id)}>{r.title}</button></th>
                   <td className="p-3"><LocaleCoverage coverage={r.coverage} /></td>
                   <td className="p-3"><WorkflowChip status={r.status} at={r.scheduledAt} /></td>
                   <td className="p-3"><KbChip state={r.kb} /></td>

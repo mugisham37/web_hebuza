@@ -57,7 +57,7 @@ function TsCard({ ts }: { ts: Testimonial }) {
   const [excerpt, setExcerpt] = useState(ts.excerpt ?? ts.quote);
   const run = (action: Parameters<typeof act.mutate>[0]["action"], body?: unknown, done?: string) =>
     act.mutateAsync({ id: ts.id, action, body }).then(() => { if (done) toast({ title: done, tone: "success" }); setDlg(null); }).catch((e) => toast({ title: errorCopy(e, locale), tone: "danger" }));
-  const approve = <Button size="sm" disabled={!ts.consent || act.isPending} onClick={() => setDlg("place")}>{t.ts.approve}</Button>;
+  const approve = <Button data-guide="marketing-ts-approve" size="sm" disabled={!ts.consent || act.isPending} onClick={() => setDlg("place")}>{t.ts.approve}</Button>;
   return (
     <article className="grid gap-3 border border-border bg-white p-4 md:grid-cols-[1fr_auto]">
       <div className="min-w-0">
@@ -128,8 +128,8 @@ export function FeedbackView() {
         : (
           <div className="grid gap-4 m-rise">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-              <KpiTile label={t.fb.avg} value={d.avg == null ? "—" : `${d.avg} ★`} icon="sparkle" />
-              <KpiTile label={t.fb.nps} value={d.nps == null ? "—" : d.nps} note={d.nps == null ? fill(t.fb.npsLow, { n: d.npsMin }) : undefined} />
+              <KpiTile label={t.fb.avg} value={d.avg == null ? "" : `${d.avg} ★`} icon="sparkle" />
+              <KpiTile label={t.fb.nps} value={d.nps == null ? "" : d.nps} note={d.nps == null ? fill(t.fb.npsLow, { n: d.npsMin }) : undefined} />
               <KpiTile label={t.fb.total} value={formatNumber(d.total, locale)} />
             </div>
             <div className="grid gap-4 lg:grid-cols-3">
@@ -191,7 +191,7 @@ function Programme() {
           <fieldset className="grid gap-2"><legend className="mb-1 text-small font-medium">{t.rf.channels}</legend>
             {(["client", "agent"] as const).map((c) => <Checkbox key={c} label={t.rf[c]} checked={v.channels.includes(c)} onChange={(e) => setDraft({ ...draft, channels: e.target.checked ? [...v.channels, c] : v.channels.filter((x) => x !== c) })} />)}
           </fieldset>
-          <Button className="w-fit" loading={save.isPending} disabled={!Object.keys(draft).length || !Number.isInteger(reward)}
+          <Button data-guide="marketing-rf-save" className="w-fit" loading={save.isPending} disabled={!Object.keys(draft).length || !Number.isInteger(reward)}
             onClick={() => save.mutate({ active: v.active, reward, channels: v.channels }, { onSuccess: () => { setDraft({}); toast({ title: t.rf.saved, tone: "success" }); }, onError: (e) => toast({ title: errorCopy(e, locale), tone: "danger" }) })}>{t.rf.save}</Button>
         </div>
       </Panel>

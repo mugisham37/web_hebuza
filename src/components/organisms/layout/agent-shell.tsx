@@ -221,6 +221,7 @@ function DutyMenu() {
         type="button"
         aria-expanded={open}
         aria-haspopup="menu"
+        data-guide="duty"
         disabled={state === "leave"}
         title={state === "leave" ? a.duty.lockedLeave : undefined}
         onClick={() => setOpen((o) => !o)}
@@ -342,7 +343,7 @@ function AgentBanner() {
         }
       >
         {data.awayUntil
-          ? `${fill(a.duty.awayUntil, { t: formatRelative(data.awayUntil, locale) })} — `
+          ? `${fill(a.duty.awayUntil, { t: formatRelative(data.awayUntil, locale) })}, `
           : ""}
         {a.duty.awayBanner}
       </Bar>,
@@ -432,6 +433,7 @@ function AgentBell() {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        data-guide="bell"
         aria-label={`${a.shell.notifications}${unread ? ` (${unread})` : ""}`}
         className="relative flex size-10 items-center justify-center hover:bg-navy-50 m-press"
       >

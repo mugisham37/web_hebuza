@@ -3,8 +3,8 @@ import { useI18n } from "@/lib/i18n/provider";
 import type { L3 } from "@/shared/field/types";
 
 const en = {
-  title: "Field — Today",
-  titleTomorrow: "Field — Tomorrow",
+  title: "Field, Today",
+  titleTomorrow: "Field, Tomorrow",
   hello: "Good morning, {name}",
   summary: "{n} visits · about {time} travel (estimate)",
   summaryNoDist: "{n} visits",
@@ -42,7 +42,7 @@ const en = {
   declineReasons: { too_far: "Too far", busy: "Already fully booked", skills: "Not the right skills", personal: "Personal reason", other: "Other" },
   declineOnline: "Declining needs a connection so your manager knows right away.",
   declined: "Visit declined",
-  acceptedToast: "Accepted — will be confirmed when you're online",
+  acceptedToast: "Accepted, will be confirmed when you're online",
   cancelled: "Cancelled by office",
   changed: "Changed: was {from}",
   inProgress: "In progress",
@@ -67,7 +67,7 @@ const en = {
   continueVisit: "Continue visit",
   visitDone: "Visit finished",
   cancelledBody: "The office cancelled this visit. Nothing to do.",
-  notOnPhone: "Not on this phone — download today's tasks",
+  notOnPhone: "Not on this phone, download today's tasks",
   notOnPhoneBody: "Connect to the internet to open this visit.",
   notFound: "We couldn't find that visit.",
   required: "Required",
@@ -75,8 +75,8 @@ const en = {
 export type CopyA = typeof en;
 
 const fr: CopyA = {
-  title: "Terrain — Aujourd'hui",
-  titleTomorrow: "Terrain — Demain",
+  title: "Terrain, Aujourd'hui",
+  titleTomorrow: "Terrain, Demain",
   hello: "Bonjour, {name}",
   summary: "{n} visites · environ {time} de trajet (estimation)",
   summaryNoDist: "{n} visites",
@@ -114,7 +114,7 @@ const fr: CopyA = {
   declineReasons: { too_far: "Trop loin", busy: "Déjà complet", skills: "Compétences inadaptées", personal: "Raison personnelle", other: "Autre" },
   declineOnline: "Le refus nécessite une connexion pour prévenir votre responsable tout de suite.",
   declined: "Visite refusée",
-  acceptedToast: "Acceptée — confirmée dès que vous serez en ligne",
+  acceptedToast: "Acceptée, confirmée dès que vous serez en ligne",
   cancelled: "Annulée par le bureau",
   changed: "Modifiée : avant {from}",
   inProgress: "En cours",
@@ -138,15 +138,15 @@ const fr: CopyA = {
   continueVisit: "Continuer la visite",
   visitDone: "Visite terminée",
   cancelledBody: "Le bureau a annulé cette visite. Rien à faire.",
-  notOnPhone: "Pas sur ce téléphone — téléchargez les tâches du jour",
+  notOnPhone: "Pas sur ce téléphone, téléchargez les tâches du jour",
   notOnPhoneBody: "Connectez-vous à internet pour ouvrir cette visite.",
   notFound: "Visite introuvable.",
   required: "Obligatoire",
 };
 
 const rw: CopyA = {
-  title: "Mu murima — Uyu munsi",
-  titleTomorrow: "Mu murima — Ejo",
+  title: "Mu murima, Uyu munsi",
+  titleTomorrow: "Mu murima, Ejo",
   hello: "Mwaramutse, {name}",
   summary: "Gusura {n} · urugendo rugera kuri {time} (ikigereranyo)",
   summaryNoDist: "Gusura {n}",
@@ -184,7 +184,7 @@ const rw: CopyA = {
   declineReasons: { too_far: "Ni kure cyane", busy: "Mfite akazi kenshi", skills: "Si ubumenyi bwanjye", personal: "Impamvu bwite", other: "Indi" },
   declineOnline: "Kwanga bikeneye interineti kugira ngo umuyobozi abimenye ako kanya.",
   declined: "Uruzinduko rwanzwe",
-  acceptedToast: "Wemeye — bizemezwa ugeze kuri interineti",
+  acceptedToast: "Wemeye, bizemezwa ugeze kuri interineti",
   cancelled: "Byahagaritswe n'ibiro",
   changed: "Byahinduwe: byari {from}",
   inProgress: "Birakorwa",
@@ -208,7 +208,7 @@ const rw: CopyA = {
   continueVisit: "Komeza uruzinduko",
   visitDone: "Uruzinduko rwarangiye",
   cancelledBody: "Ibiro byahagaritse uru ruzinduko. Nta cyo gukora.",
-  notOnPhone: "Ntibiri kuri iyi telefoni — kurura imirimo y'uyu munsi",
+  notOnPhone: "Ntibiri kuri iyi telefoni, kurura imirimo y'uyu munsi",
   notOnPhoneBody: "Jya kuri interineti kugira ngo ufungure uru ruzinduko.",
   notFound: "Ntitwabonye uru ruzinduko.",
   required: "Birakenewe",

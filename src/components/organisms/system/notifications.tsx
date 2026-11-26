@@ -77,7 +77,7 @@ function Rules() {
 
   return (
     <div className="grid gap-4">
-      {conflict && <ConflictBanner by="—" at={new Date(q.dataUpdatedAt).toISOString()} onReload={() => { setConflict(false); setDraft(null); q.refetch(); }} />}
+      {conflict && <ConflictBanner by="" at={new Date(q.dataUpdatedAt).toISOString()} onReload={() => { setConflict(false); setDraft(null); q.refetch(); }} />}
       <div className="flex flex-wrap gap-x-6 gap-y-1 text-small text-fg-muted">
         <p className="flex items-center gap-1.5"><Icon name="shield" size={14} aria-hidden />{c.security}</p>
         <p className="flex items-center gap-1.5"><Icon name="clock" size={14} aria-hidden />{c.quiet}</p>

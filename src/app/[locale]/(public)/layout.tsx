@@ -4,8 +4,8 @@ import { getFamilies, getServices } from "@/lib/catalogue";
 import { getSite } from "@/lib/marketing/cms/read";
 import { getCopy } from "@/content/marketing";
 import { SiteHeader } from "@/components/organisms/site/site-header";
-import { Fade } from "@/components/atoms/brand";
 import { SiteFooter } from "@/components/organisms/site/sections";
+import { ZigzagBand } from "@/components/atoms/brand";
 import { BackToTop } from "@/components/organisms/site/interactive";
 import { LazyAssistantLauncher } from "@/components/organisms/booking/launcher-lazy";
 import { PreviewBanner } from "@/components/molecules/site/preview-banner";
@@ -31,11 +31,10 @@ export default async function PublicLayout({ children, params }: LayoutProps<"/[
         links={site.nav.header.map((n) => ({ href: n.href, label: n.label[locale] ?? n.label.en ?? n.id }))}
         mobileLinks={site.nav.mobile.map((n) => ({ href: n.href, label: n.label[locale] ?? n.label.en ?? n.id }))}
         families={families.map((f) => ({ slug: f.slug, name: f.name, short: f.short, icon: f.icon, count: f.count, subAreas: f.subAreas }))}
-        copy={{ search: m.hero.search, searchUi: m.hero.searchUi, ticker: m.hero.ticker, utility: m.utility, how: m.common.howItWorks, unsure: m.catalogue.unsure, unsureBody: m.catalogue.unsureBody, consult: m.hero.secondary, whatsapp: m.cta.whatsapp, all: m.services.all, count: `{n} ${m.services.countLabel}`, viewAll: m.catalogue.viewArea }}
+        copy={{ search: m.hero.search, searchUi: m.hero.searchUi, utility: m.utility, how: m.common.howItWorks, unsure: m.catalogue.unsure, unsureBody: m.catalogue.unsureBody, consult: m.hero.secondary, whatsapp: m.cta.whatsapp, all: m.services.all, count: `{n} ${m.services.countLabel}`, viewAll: m.catalogue.viewArea }}
       />
       <main id="main" className="min-h-dvh"><ViewTransition>{children}</ViewTransition></main>
-      {/* Soft fade from the page's last colour (--color-page-end: white unless the last section sets data-page-end) into the footer's ramp-8 blue. */}
-      <Fade from="page-end" to="ramp-8" />
+      <ZigzagBand from="var(--color-white)" to="var(--color-hero)" />
       <SiteFooter locale={locale} families={families} site={site} />
       <BackToTop top={m.utility.top} />
       <LazyAssistantLauncher />

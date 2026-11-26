@@ -44,15 +44,15 @@ export function ContractsView() {
     { key: "ref", label: c.cols.ref, sort: (r) => r.ref, cell: (r) => <DocNo kind="CT" no={r.ref} /> },
     { key: "name", label: c.cols.name, wrap: true, sort: (r) => r.title, cell: (r) => <span className="grid"><span className="font-medium">{r.title}</span><span className="text-eyebrow text-fg-subtle">{r.vendorName}</span></span> },
     { key: "amount", label: c.cols.amount, align: "right", sort: (r) => r.amount, cell: (r) => <span className="grid justify-items-end"><Amount value={r.amount} className="font-semibold" /><span className="text-eyebrow text-fg-subtle">{c.freq[r.frequency]}</span></span> },
-    { key: "esc", label: c.cols.escalation, card: false, cell: (r) => <span className="tabular text-small">{r.escalationPercent ? `+${r.escalationPercent}%` : "—"}</span> },
+    { key: "esc", label: c.cols.escalation, card: false, cell: (r) => <span className="tabular text-small">{r.escalationPercent ? `+${r.escalationPercent}%` : ""}</span> },
     { key: "notice", label: c.cols.notice, card: false, cell: (r) => <span className="tabular text-small">{fill(c.days, { n: r.noticeDays })}</span> },
     { key: "end", label: c.cols.end, sort: (r) => r.endOn, wrap: true, cell: (r) => <span className="grid gap-1"><span className="tabular text-small">{formatDate(r.endOn, locale)}</span>{["active", "expiring"].includes(r.status) && <ExpiryChip date={r.endOn} today={todayIso()} />}</span> },
-    { key: "next", label: c.cols.next, card: false, cell: (r) => <span className="tabular text-small text-fg-muted">{r.nextReminder ? formatDate(r.nextReminder, locale) : "—"}</span> },
+    { key: "next", label: c.cols.next, card: false, cell: (r) => <span className="tabular text-small text-fg-muted">{r.nextReminder ? formatDate(r.nextReminder, locale) : ""}</span> },
     { key: "status", label: c.cols.status, cell: (r) => <ProcPill state={r.status} machine="contract" /> },
   ];
   return (
     <div className="grid gap-5">
-      <PageHead title={c.title} sub={c.sub} actions={<Button variant="primary" dots disabled={!online} onClick={() => setUrlParams({ sheet: "new" })} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
+      <PageHead title={c.title} sub={c.sub} actions={<Button data-guide="procurement-add-contract" variant="primary" dots disabled={!online} onClick={() => setUrlParams({ sheet: "new" })} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
       <div className="grid gap-3 m-rise">
         <SavedViewTabs active={status} onChange={(k) => setUrlParams({ status: k === "all" ? null : k })} views={STATUSES.map((s) => ({ key: s, label: s === "all" ? p.common.all : p.status[s], count: counts[s] }))} />
         <label className="relative w-full max-w-sm">
@@ -116,12 +116,12 @@ export function ContractForm({ contract, onClose, onDone }: { contract?: Contrac
         {err.form && <p role="alert" className="bg-danger-bg px-3 py-2 text-small text-danger">{err.form}</p>}
         <Field label={c.form.supplier} error={err.vendorId}>{(a) => (
           <Select id={a.id} aria-invalid={a.invalid} value={f.vendorId} disabled={!!contract} onChange={(e) => set({ vendorId: e.target.value })}>
-            <option value="">—</option>{(vendors.data?.items ?? []).map((v) => <option key={v.id} value={v.id}>{v.legalName} · {v.code}</option>)}
+            <option value=""></option>{(vendors.data?.items ?? []).map((v) => <option key={v.id} value={v.id}>{v.legalName} · {v.code}</option>)}
           </Select>
         )}</Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={c.form.kind}>{(a) => <Select id={a.id} value={f.kind} disabled={!!contract} onChange={(e) => set({ kind: e.target.value as ContractKind })}>{(["lease", "service", "supply", "other"] as const).map((k) => <option key={k} value={k}>{c.kinds[k]}</option>)}</Select>}</Field>
-          <Field label={c.form.category} error={err.budgetCategory}>{(a) => <Select id={a.id} aria-invalid={a.invalid} value={f.budgetCategory} onChange={(e) => set({ budgetCategory: e.target.value })}><option value="">—</option>{budgets.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}</Select>}</Field>
+          <Field label={c.form.category} error={err.budgetCategory}>{(a) => <Select id={a.id} aria-invalid={a.invalid} value={f.budgetCategory} onChange={(e) => set({ budgetCategory: e.target.value })}><option value=""></option>{budgets.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}</Select>}</Field>
         </div>
         <TextField label={c.form.title} value={f.title} maxLength={120} error={err.title} onChange={(x) => set({ title: x })} />
         <div className="grid gap-4 sm:grid-cols-2">

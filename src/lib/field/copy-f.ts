@@ -31,7 +31,7 @@ const en = {
   create: {
     title: "Request field visit", caseRef: "Case reference", purpose: "Purpose", vtitle: "Title", todo: "What to do", institution: "Institution (optional)", address: "Address",
     lat: "Latitude (optional)", lng: "Longitude (optional)", start: "From (Kigali time)", end: "To", checklist: "Checklist (one per line)", assignee: "Field agent",
-    save: "Request visit", created: "Visit {ref} requested — the agent is notified.", invalid: "Fill in purpose, title, address and a future window.",
+    save: "Request visit", created: "Visit {ref} requested, the agent is notified.", invalid: "Fill in purpose, title, address and a future window.",
   },
   cash: {
     title: "Cash to confirm", empty: "No cash waiting", emptyBody: "Cash collected in the field appears after the agent records it.", agent: "Agent", amount: "Amount", visit: "Visit",
@@ -75,7 +75,7 @@ const fr: CopyF = {
   create: {
     title: "Demander une visite terrain", caseRef: "Référence du dossier", purpose: "Objet", vtitle: "Titre", todo: "À faire", institution: "Institution (facultatif)", address: "Adresse",
     lat: "Latitude (facultatif)", lng: "Longitude (facultatif)", start: "De (heure de Kigali)", end: "À", checklist: "Liste (une ligne par élément)", assignee: "Agent terrain",
-    save: "Demander la visite", created: "Visite {ref} demandée — l'agent est prévenu.", invalid: "Renseignez objet, titre, adresse et un créneau futur.",
+    save: "Demander la visite", created: "Visite {ref} demandée, l'agent est prévenu.", invalid: "Renseignez objet, titre, adresse et un créneau futur.",
   },
   cash: {
     title: "Espèces à confirmer", empty: "Aucune espèce en attente", emptyBody: "Les espèces encaissées apparaissent après enregistrement par l'agent.", agent: "Agent", amount: "Montant", visit: "Visite",
@@ -118,7 +118,7 @@ const rw: CopyF = {
   create: {
     title: "Saba uruzinduko", caseRef: "Nomero ya dosiye", purpose: "Intego", vtitle: "Umutwe", todo: "Icyo gukora", institution: "Ikigo (bitari ngombwa)", address: "Aderesi",
     lat: "Latitude (bitari ngombwa)", lng: "Longitude (bitari ngombwa)", start: "Kuva (isaha ya Kigali)", end: "Kugeza", checklist: "Urutonde (kimwe ku murongo)", assignee: "Umukozi wo mu murima",
-    save: "Saba", created: "Uruzinduko {ref} rwasabwe — umukozi yamenyeshejwe.", invalid: "Uzuza intego, umutwe, aderesi n'igihe kiri imbere.",
+    save: "Saba", created: "Uruzinduko {ref} rwasabwe, umukozi yamenyeshejwe.", invalid: "Uzuza intego, umutwe, aderesi n'igihe kiri imbere.",
   },
   cash: {
     title: "Amafaranga yo kwemeza", empty: "Nta mafaranga ategereje", emptyBody: "Amafaranga yakiriwe mu murima agaragara hano.", agent: "Umukozi", amount: "Amafaranga", visit: "Uruzinduko",

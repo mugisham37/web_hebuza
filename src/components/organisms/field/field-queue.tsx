@@ -49,13 +49,13 @@ export function FieldQueue() {
     <div className="grid gap-5">
       <header className="m-rise flex flex-wrap items-start gap-3">
         <div className="min-w-0 flex-1"><h1 className="text-h2">{t.title}</h1><p className="mt-1 text-small text-fg-muted">{t.sub}</p></div>
-        <Button onClick={() => setCreating(true)}>{t.request}</Button>
+        <Button data-guide="ops-field-request" onClick={() => setCreating(true)}>{t.request}</Button>
       </header>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiTile label={t.kpi.flags} value={n.flags ?? "—"} icon="mapPin" tone={n.flags ? "warning" : "neutral"} />
-        <KpiTile label={t.kpi.conflicts} value={n.conflicts ?? "—"} icon="refresh" tone={n.conflicts ? "attention" : "neutral"} />
-        <KpiTile label={t.kpi.expenses} value={n.expenses ?? "—"} icon="wallet" />
-        <KpiTile label={t.kpi.custody} value={n.custody ?? "—"} icon="lock" />
+        <KpiTile label={t.kpi.flags} value={n.flags ?? ""} icon="mapPin" tone={n.flags ? "warning" : "neutral"} />
+        <KpiTile label={t.kpi.conflicts} value={n.conflicts ?? ""} icon="refresh" tone={n.conflicts ? "attention" : "neutral"} />
+        <KpiTile label={t.kpi.expenses} value={n.expenses ?? ""} icon="wallet" />
+        <KpiTile label={t.kpi.custody} value={n.custody ?? ""} icon="lock" />
       </div>
       {visit ? (
         <div className="grid gap-3">
@@ -115,7 +115,7 @@ function ConflictsTab({ q }: { q: ReturnType<typeof useQueue<ConflictRow>> }) {
   return <div className="grid gap-3">{q.data.map((c) => <ConflictCard key={c.opId} c={c} />)}</div>;
 }
 
-const show = (v: unknown) => (v === undefined || v === null ? "—" : Array.isArray(v) ? v.join(" · ") : typeof v === "object" ? JSON.stringify(v) : String(v));
+const show = (v: unknown) => (v === undefined || v === null ? "" : Array.isArray(v) ? v.join(" · ") : typeof v === "object" ? JSON.stringify(v) : String(v));
 function ConflictCard({ c }: { c: ConflictRow }) {
   const { locale } = useFieldCopy();
   const t = copyF(locale).conflicts;

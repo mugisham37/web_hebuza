@@ -39,7 +39,7 @@ const en = {
     toCases: "Go to my cases",
     reassigned:
       "This case was reassigned. You can still read it, but changes are off.",
-    onHold: "On hold — the SLA clock is paused until your manager resumes it.",
+    onHold: "On hold, the SLA clock is paused until your manager resumes it.",
     completed: "Completed and delivered. This case is read-only now.",
     viewEarnings: "View earnings",
     offline:
@@ -48,7 +48,7 @@ const en = {
     error: "Couldn't load this case.",
   },
   dispute: {
-    title: "Client raised a dispute — {m} is mediating",
+    title: "Client raised a dispute, {m} is mediating",
     body: "Ticket {id}: {t}",
     respond: "Add internal response",
     dialog: "Internal response",
@@ -57,7 +57,7 @@ const en = {
     sent: "Internal response added",
   },
   brief: {
-    from: "From {m} — Service Manager",
+    from: "From {m}, Service Manager",
     instructions: "Manager instructions",
     checklist: "Service checklist",
     progress: "{d} of {n} · visible to your manager",
@@ -119,7 +119,7 @@ const en = {
     schedule: "Reminder schedule",
     t2: "In 2 days (if no response)",
     t5: "In 5 days (if no response)",
-    t7: "In 7 days — final reminder, then on hold",
+    t7: "In 7 days, final reminder, then on hold",
     move: "Also move case to Awaiting client documents",
     slaPause: "The SLA clock pauses while you wait for the client.",
     moveConfirm: "I understand the case will wait on the client",
@@ -298,7 +298,7 @@ const fr: Copy = {
     toCases: "Mes dossiers",
     reassigned: "Ce dossier a été réattribué. Lecture seule.",
     onHold:
-      "En pause — le délai SLA est suspendu jusqu'à reprise par votre manager.",
+      "En pause, le délai SLA est suspendu jusqu'à reprise par votre manager.",
     completed: "Terminé et livré. Ce dossier est en lecture seule.",
     viewEarnings: "Voir les revenus",
     offline:
@@ -307,7 +307,7 @@ const fr: Copy = {
     error: "Impossible de charger ce dossier.",
   },
   dispute: {
-    title: "Le client a ouvert un litige — {m} assure la médiation",
+    title: "Le client a ouvert un litige, {m} assure la médiation",
     body: "Ticket {id} : {t}",
     respond: "Ajouter une réponse interne",
     dialog: "Réponse interne",
@@ -316,7 +316,7 @@ const fr: Copy = {
     sent: "Réponse interne ajoutée",
   },
   brief: {
-    from: "De {m} — Service Manager",
+    from: "De {m}, Service Manager",
     instructions: "Instructions du manager",
     checklist: "Liste de contrôle",
     progress: "{d} sur {n} · visible par votre manager",
@@ -378,7 +378,7 @@ const fr: Copy = {
     schedule: "Calendrier des rappels",
     t2: "Dans 2 jours (sans réponse)",
     t5: "Dans 5 jours (sans réponse)",
-    t7: "Dans 7 jours — dernier rappel, puis pause",
+    t7: "Dans 7 jours, dernier rappel, puis pause",
     move: "Passer aussi le dossier en Attente des documents du client",
     slaPause: "Le délai SLA est suspendu pendant l'attente du client.",
     moveConfirm: "Je comprends que le dossier attendra le client",
@@ -556,7 +556,7 @@ const rw: Copy = {
     toCases: "Dosiye zanjye",
     reassigned: "Iyi dosiye yahawe undi. Urashobora kuyisoma gusa.",
     onHold:
-      "Yahagaritswe — igihe cya SLA cyahagaze kugeza umuyobozi ayisubukuye.",
+      "Yahagaritswe, igihe cya SLA cyahagaze kugeza umuyobozi ayisubukuye.",
     completed: "Yarangiye kandi yatanzwe. Isomwa gusa.",
     viewEarnings: "Reba amafaranga",
     offline:
@@ -565,7 +565,7 @@ const rw: Copy = {
     error: "Ntibyashobotse gufungura iyi dosiye.",
   },
   dispute: {
-    title: "Umukiriya yatanze ikirego — {m} ari kunga",
+    title: "Umukiriya yatanze ikirego, {m} ari kunga",
     body: "Itike {id}: {t}",
     respond: "Ongeraho igisubizo cy'imbere",
     dialog: "Igisubizo cy'imbere",
@@ -574,7 +574,7 @@ const rw: Copy = {
     sent: "Igisubizo cy'imbere cyongewemo",
   },
   brief: {
-    from: "Bivuye kuri {m} — Umuyobozi wa serivisi",
+    from: "Bivuye kuri {m}, Umuyobozi wa serivisi",
     instructions: "Amabwiriza y'umuyobozi",
     checklist: "Intambwe za serivisi",
     progress: "{d} kuri {n} · bibonwa n'umuyobozi wawe",
@@ -636,7 +636,7 @@ const rw: Copy = {
     schedule: "Gahunda yo kwibutsa",
     t2: "Mu minsi 2 (nta gisubizo)",
     t5: "Mu minsi 5 (nta gisubizo)",
-    t7: "Mu minsi 7 — kwibutsa kwa nyuma, hanyuma igahagarikwa",
+    t7: "Mu minsi 7, kwibutsa kwa nyuma, hanyuma igahagarikwa",
     move: "Shyira na dosiye muri Itegereje inyandiko z'umukiriya",
     slaPause: "Igihe cya SLA kirahagarara mu gihe utegereje umukiriya.",
     moveConfirm: "Ndumva ko dosiye izategereza umukiriya",

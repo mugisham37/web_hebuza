@@ -1,8 +1,8 @@
 {
   "meta": {
-    "siteName": "HEBUZA",
-    "title": "HEBUZA — Business, tax & investment services online",
-    "description": "Your business paperwork and advice, handled by verified professionals — track every step, pay by MoMo, get your documents online."
+    "siteName": "Hebuza",
+    "title": "Hebuza · Business, tax & investment services online",
+    "description": "Your business paperwork and advice, handled by verified professionals, track every step, pay by MoMo, get your documents online."
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -42,7 +42,7 @@
     "services": "Services",
     "pricing": "Pricing",
     "about": "About",
-    "knowledge": "Guides",
+    "guides": "Guides",
     "contact": "Contact",
     "track": "Track a request",
     "login": "Sign in",
@@ -168,8 +168,8 @@
     "startRequest": "Start a new request"
   },
   "footer": {
-    "tagline": "Private One-Stop Investment and Business Advisory Centre",
-    "address": "Sonatube, Kicukiro — Kigali, Rwanda",
+    "tagline": "Private One Stop Investment and Business Advisory Centre",
+    "address": "Sonatube, Kicukiro, Kigali, Rwanda",
     "legal": "Legal",
     "terms": "Terms",
     "privacy": "Privacy",
@@ -279,7 +279,8 @@
     "feedback": "Feedback",
     "seo": "SEO & tracking",
     "assistant": "Assistant",
-    "targets": "Targets"
+    "targets": "Targets",
+    "guides": "Guides"
   },
   "sessionExpiry": {
     "title": "Still there?",

@@ -146,7 +146,7 @@ function RequestForm({ d }: { d: BreakGlassViewVM }) {
         </div>
         <Approvers d={d} />
         <div className="flex justify-end">
-          <Button type="submit" variant="danger" loading={act.isPending} disabled={!online}><Icon name="shield" size={15} aria-hidden />{c.requestBtn}</Button>
+          <Button type="submit" variant="danger" data-guide="system-bg-request" loading={act.isPending} disabled={!online}><Icon name="shield" size={15} aria-hidden />{c.requestBtn}</Button>
         </div>
         {!online && <p className="text-small text-fg-muted">{s.states.offlineAction}</p>}
       </form>

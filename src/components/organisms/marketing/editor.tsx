@@ -180,7 +180,7 @@ export function ContentEditor({ id }: { id: string }) {
     catch (e) { toast({ title: errorCopy(e, ui), tone: "danger" }); }
   };
   async function copyPreview() {
-    try { const t = await previewToken(entry!.id, lang); await navigator.clipboard?.writeText(new URL(t.url, location.origin).toString()); toast({ title: c.editor.previewCopied, tone: "success" }); }
+    try { const t = await previewToken(entry?.id ?? "", lang); await navigator.clipboard?.writeText(new URL(t.url, location.origin).toString()); toast({ title: c.editor.previewCopied, tone: "success" }); }
     catch (e) { toast({ title: errorCopy(e, ui), tone: "danger" }); }
   }
 
@@ -203,7 +203,7 @@ export function ContentEditor({ id }: { id: string }) {
           {lock && me && lock.holder !== me.name && <span className="inline-flex items-center gap-1.5 bg-warning-bg px-2.5 py-1 text-eyebrow text-warning"><Icon name="user" size={12} aria-hidden />{fill(c.editor.presence, { who: lock.holder })}</span>}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div role="tablist" aria-label={m.shell.language} className="flex bg-ink-100 p-1">
+          <div data-guide="marketing-lang" role="tablist" aria-label={m.shell.language} className="flex bg-ink-100 p-1">
             {LOCALES.map((l) => (
               <button key={l} role="tab" aria-selected={l === lang} type="button" onClick={async () => { await flush(); setUrlParams({ locale: l }); }}
                 className={cx("inline-flex h-8 items-center gap-1.5 px-3 text-small uppercase", l === lang ? "bg-white font-medium shadow-sm" : "text-fg-muted")}>
@@ -212,9 +212,9 @@ export function ContentEditor({ id }: { id: string }) {
               </button>
             ))}
           </div>
-          <button type="button" aria-pressed={compare} onClick={() => setUrlParams({ compare: compare ? null : "1" })} className="hidden h-9 items-center px-3 text-small hover:bg-ink-100 lg:inline-flex">{c.editor.compare}</button>
+          <button data-guide="marketing-compare" type="button" aria-pressed={compare} onClick={() => setUrlParams({ compare: compare ? null : "1" })} className="hidden h-9 items-center px-3 text-small hover:bg-ink-100 lg:inline-flex">{c.editor.compare}</button>
           <div className="ml-auto flex flex-wrap items-center gap-2">
-            <Button size="sm" variant="ghost" onClick={copyPreview}><Icon name="file" size={14} aria-hidden />{c.editor.previewLink}</Button>
+            <Button data-guide="marketing-preview-link" size="sm" variant="ghost" onClick={copyPreview}><Icon name="file" size={14} aria-hidden />{c.editor.previewLink}</Button>
             {path && status === "published" && <a href={path} target="_blank" rel="noopener" className="inline-flex h-9 items-center gap-1.5 px-3 text-small hover:bg-ink-100">{c.editor.viewSite}<Icon name="arrowUpRight" size={14} aria-hidden /></a>}
             <WorkflowActions entryStatus={status} isMember={isMember} rule={rule} online={online} errors={errors.length} onOpen={setDialog}
               onApprove={() => act(() => wf.approve.mutateAsync({ langs: [lang] }), c.workflow.approved)}
@@ -242,8 +242,8 @@ export function ContentEditor({ id }: { id: string }) {
         <div className="grid gap-4 xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
           {/* ---- structure */}
           <aside className="hidden min-w-0 md:block">
-            <Panel title={c.editor.structure} action={canEdit && <Button size="sm" variant="secondary" onClick={() => setDialog("palette")}><Icon name="plus" size={14} aria-hidden />{c.editor.addBlock}</Button>}>
-              <ol className="grid gap-1" aria-label={c.editor.structure}>
+            <Panel title={c.editor.structure} action={canEdit && <Button data-guide="marketing-add-block" size="sm" variant="secondary" onClick={() => setDialog("palette")}><Icon name="plus" size={14} aria-hidden />{c.editor.addBlock}</Button>}>
+              <ol data-guide="marketing-structure" className="grid gap-1" aria-label={c.editor.structure}>
                 {blocks.map((b, i) => (
                   <li key={b.id}>
                     <div className={cx("group flex items-center gap-1 px-2 py-1.5 text-small", selected === b.id ? "bg-navy-50 text-navy-700" : "hover:bg-navy-50", b.hidden && "opacity-60")}
@@ -267,7 +267,7 @@ export function ContentEditor({ id }: { id: string }) {
           </aside>
 
           {/* ---- canvas */}
-          <section aria-label={c.editor.canvas} className="min-w-0">
+          <section data-guide="marketing-canvas" aria-label={c.editor.canvas} className="min-w-0">
             <div className="mb-2 flex items-center gap-1" role="group" aria-label={c.editor.canvas}>
               {(["desktop", "phone", "live"] as const).map((x) => <button key={x} type="button" aria-pressed={view === x} onClick={() => setUrlParams({ view: x === "desktop" ? null : x })} className={cx("h-8 px-3 text-small", view === x ? "bg-secondary text-on-secondary" : "hover:bg-ink-100")}>{c.editor[x]}</button>)}
             </div>
@@ -294,7 +294,7 @@ export function ContentEditor({ id }: { id: string }) {
 
           {/* ---- settings panel */}
           <aside className="min-w-0">
-            <div role="tablist" aria-label={c.panel.settings} className="no-scrollbar mb-3 flex gap-1 overflow-x-auto border-b border-border">
+            <div data-guide="marketing-panels" role="tablist" aria-label={c.panel.settings} className="no-scrollbar mb-3 flex gap-1 overflow-x-auto border-b border-border">
               {panels.map((x) => <button key={x.id} role="tab" type="button" aria-selected={panel === x.id} onClick={() => setUrlParams({ panel: x.id === "settings" ? null : x.id })} className={cx("-mb-px h-10 shrink-0 border-b-2 px-3 text-small", panel === x.id ? "border-navy-700 font-medium" : "border-transparent text-fg-muted")}>{x.label}</button>)}
             </div>
             <div className="grid gap-4">
@@ -368,7 +368,7 @@ function MissingVariant({ lang, canEdit, onCopy, onBlank }: { lang: Locale; canE
     <div className="grid place-items-center gap-3 border border-dashed border-border-strong bg-white px-6 py-14 text-center m-rise">
       <p className="text-h3">{c.editor.missingVariant} · {m.locale[lang]}</p>
       <p className="max-w-sm text-small text-fg-muted">{c.editor.copyNote}</p>
-      {canEdit && <div className="flex flex-wrap justify-center gap-2"><Button onClick={onCopy}>{c.editor.copyFrom}</Button><Button variant="secondary" onClick={onBlank}>{c.editor.startBlank}</Button></div>}
+      {canEdit && <div className="flex flex-wrap justify-center gap-2"><Button data-guide="marketing-copy-en" onClick={onCopy}>{c.editor.copyFrom}</Button><Button variant="secondary" onClick={onBlank}>{c.editor.startBlank}</Button></div>}
     </div>
   );
 }
@@ -381,17 +381,17 @@ function WorkflowActions({ entryStatus, isMember, rule, online, errors, onOpen, 
   const why = !online ? c.workflow.offlineOff : rule.reason ? c.workflow[rule.reason] : undefined;
   return (
     <>
-      {isMember && entryStatus === "draft" && <Button size="sm" disabled={!online || errors > 0} title={errors ? c.publish.blocked : undefined} onClick={() => onOpen("submit")}>{c.workflow.submit}</Button>}
+      {isMember && entryStatus === "draft" && <Button data-guide="marketing-submit" size="sm" disabled={!online || errors > 0} title={errors ? c.publish.blocked : undefined} onClick={() => onOpen("submit")}>{c.workflow.submit}</Button>}
       {entryStatus === "in_review" && <>
-        <Button size="sm" variant="secondary" disabled={!online} onClick={() => onOpen("changes")}>{c.workflow.requestChanges}</Button>
-        <span title={why}><Button size="sm" disabled={!online || !rule.can} onClick={onApprove}>{c.workflow.approve}</Button></span>
+        <Button data-guide="marketing-request-changes" size="sm" variant="secondary" disabled={!online} onClick={() => onOpen("changes")}>{c.workflow.requestChanges}</Button>
+        <span title={why}><Button data-guide="marketing-approve" size="sm" disabled={!online || !rule.can} onClick={onApprove}>{c.workflow.approve}</Button></span>
         {!rule.can && why && <span className="max-w-56 text-eyebrow text-fg-subtle">{why}</span>}
       </>}
-      {entryStatus === "approved" && <Button size="sm" variant="primary" disabled={!online} onClick={() => onOpen("publish")}>{c.workflow.publish}</Button>}
-      {entryStatus === "scheduled" && <Button size="sm" variant="secondary" disabled={!online} onClick={onUnschedule}>{c.workflow.unschedule}</Button>}
+      {entryStatus === "approved" && <Button data-guide="marketing-publish" size="sm" variant="primary" disabled={!online} onClick={() => onOpen("publish")}>{c.workflow.publish}</Button>}
+      {entryStatus === "scheduled" && <Button data-guide="marketing-unschedule" size="sm" variant="secondary" disabled={!online} onClick={onUnschedule}>{c.workflow.unschedule}</Button>}
       {isMember && (entryStatus === "published" || entryStatus === "stale") && <>
         <Button size="sm" variant="secondary" disabled={!online} onClick={onUnpublish}>{c.workflow.unpublish}</Button>
-        <Button size="sm" variant="ghost" disabled={!online} onClick={() => onOpen("archive")}>{c.workflow.archive}</Button>
+        <Button data-guide="marketing-archive" size="sm" variant="ghost" disabled={!online} onClick={() => onOpen("archive")}>{c.workflow.archive}</Button>
       </>}
     </>
   );
@@ -426,13 +426,13 @@ function BlockPreview({ b, t }: { b: BlockShape; t: BlockText }) {
     case "heading": return b.props?.level === 3 ? <span className="block text-h3">{s("text")}</span> : <span className="block text-h2">{s("text")}</span>;
     case "rich_text": return <span className="block whitespace-pre-line text-body">{docToText(t.doc as RichDoc)}</span>;
     case "callout": case "tip": return <span className={cx("block p-4 text-body", b.type === "tip" ? "border-l-3 border-gold-400 bg-gold-50 text-fg" : b.props?.tone === "warn" ? "bg-warning-bg" : "bg-info-bg")}>{s("text")}</span>;
-    case "quote": return <span className="block border-l-4 border-navy-700 pl-4 text-lead italic">“{s("text")}”{s("cite") && <span className="mt-1 block text-small not-italic text-fg-subtle">— {s("cite")}</span>}</span>;
+    case "quote": return <span className="block border-l-4 border-navy-700 pl-4 text-lead italic">“{s("text")}”{s("cite") && <span className="mt-1 block text-small not-italic text-fg-subtle">{s("cite")}</span>}</span>;
     case "cta": return <span className="inline-flex h-11 items-center bg-primary px-5 text-button text-on-gold">{s("label") || "…"}</span>;
     case "steps": return <ol className="grid gap-2">{(items as { title: string; body?: string }[]).map((x, i) => <li key={i} className="flex gap-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gold-400 text-small text-on-gold">{i + 1}</span><span>{x.title}{x.body && <span className="block text-small text-fg-muted">{x.body}</span>}</span></li>)}</ol>;
     case "requirements": return <ul className="grid gap-1">{(items as string[]).map((x, i) => <li key={i} className="flex gap-2"><Icon name="fileCheck" size={18} className="text-link" aria-hidden />{x}</li>)}</ul>;
     case "stats": return <span className="grid grid-cols-2 gap-3 sm:grid-cols-4">{(items as { value: string; label: string }[]).map((x, i) => <span key={i}><span className="block text-h3">{x.value}</span><span className="text-small text-fg-muted">{x.label}</span></span>)}</span>;
     case "table": return <span className="block overflow-x-auto text-small">{[(t.head as string[]) ?? [], ...((t.rows as string[][]) ?? [])].map((r, i) => <span key={i} className={cx("grid grid-flow-col gap-2 border-b border-border py-1", i === 0 && "font-medium")}>{r.map((x, j) => <span key={j}>{x}</span>)}</span>)}</span>;
-    case "image": return <span className="block aspect-[16/9] bg-bg-subtle text-center text-small leading-[8rem] text-fg-subtle">{String(b.props?.assetId ?? "—")}{s("caption") && ` · ${s("caption")}`}</span>;
+    case "image": return <span className="block aspect-[16/9] bg-bg-subtle text-center text-small leading-[8rem] text-fg-subtle">{String(b.props?.assetId ?? "")}{s("caption") && ` · ${s("caption")}`}</span>;
     case "video": return <span className="block aspect-video bg-ink-900 p-4 text-small text-white">▶ {s("title")} · {String(b.props?.videoId ?? "")}</span>;
     case "divider": return <hr className="border-border" />;
     default:
@@ -510,13 +510,13 @@ function PageSettings({ e, v, canEdit, onV, onE }: { e: EntryDetail; v: CmsVaria
         )}
         <Lbl label={c.editor.excerpt}><Textarea disabled={dis} rows={3} value={v.excerpt ?? ""} onChange={(x) => onV({ excerpt: x.target.value })} /></Lbl>
         {e.type === "regulatory_update" && <>
-          <Lbl label={c.reg.authority}><Select disabled={dis} value={reg?.authority ?? ""} onChange={(x) => setReg({ authority: x.target.value })}><option value="">—</option>{["RRA", "RDB", "BNR", "RSSB", "RURA", "MINICOM"].map((a) => <option key={a}>{a}</option>)}</Select></Lbl>
+          <Lbl label={c.reg.authority}><Select disabled={dis} value={reg?.authority ?? ""} onChange={(x) => setReg({ authority: x.target.value })}><option value=""></option>{["RRA", "RDB", "BNR", "RSSB", "RURA", "MINICOM"].map((a) => <option key={a}>{a}</option>)}</Select></Lbl>
           <Lbl label={c.reg.effective}><Input type="date" disabled={dis} value={reg?.effectiveAt?.slice(0, 10) ?? ""} onChange={(x) => setReg({ effectiveAt: x.target.value })} /></Lbl>
           <Lbl label={c.reg.source}><Input type="url" disabled={dis} placeholder="https://" aria-invalid={!!reg?.sourceUrl && !reg.sourceUrl.startsWith("https://")} value={reg?.sourceUrl ?? ""} onChange={(x) => setReg({ sourceUrl: x.target.value })} /></Lbl>
           <Lbl label={c.reg.deadline}><Input type="date" disabled={dis} value={reg?.deadline?.slice(0, 10) ?? ""} onChange={(x) => setReg({ deadline: x.target.value || undefined })} /></Lbl>
           <fieldset className="grid gap-2"><legend className="text-label">{c.reg.affects}</legend>
             {(["companies", "individuals"] as const).map((a) => <Checkbox key={a} disabled={dis} label={c.reg[a]} checked={reg?.affects.includes(a) ?? false} onChange={(x) => setReg({ affects: x.target.checked ? [...(reg?.affects ?? []), a] : (reg?.affects ?? []).filter((y) => y !== a) })} />)}</fieldset>
-          <Lbl label={c.reg.urgency}><Select disabled={dis} value={reg?.urgency ?? ""} onChange={(x) => setReg({ urgency: (x.target.value || undefined) as "high" })}><option value="">—</option><option value="high">{c.reg.high}</option><option value="medium">{c.reg.medium}</option><option value="low">{c.reg.low}</option></Select></Lbl>
+          <Lbl label={c.reg.urgency}><Select disabled={dis} value={reg?.urgency ?? ""} onChange={(x) => setReg({ urgency: (x.target.value || undefined) as "high" })}><option value=""></option><option value="high">{c.reg.high}</option><option value="medium">{c.reg.medium}</option><option value="low">{c.reg.low}</option></Select></Lbl>
           <Lbl label={c.reg.services}><Input disabled={dis} value={e.serviceSlugs.join(", ")} onChange={(x) => onE({ serviceSlugs: x.target.value.split(",").map((y) => y.trim()).filter(Boolean) })} /></Lbl>
           <NotifyCard entryId={e.id} published={v.status === "published"} />
           {v.status === "published" && <div className="grid gap-1 text-small" role="status">
@@ -592,7 +592,7 @@ function UtmBuilder({ path, slug }: { path: string; slug: string }) {
     <fieldset className="grid gap-2 border border-border p-3"><legend className="px-1 text-label">{c.landing.utm}</legend>
       <p className="text-eyebrow text-fg-subtle">{c.landing.utmHint}</p>
       {(["source", "medium", "campaign"] as const).map((k) => <Lbl key={k} label={k === "campaign" ? c.landing.name : c.landing[k]}><Input value={u[k]} onChange={(e) => setU({ ...u, [k]: e.target.value })} /></Lbl>)}
-      <p className="break-all bg-bg-subtle p-2 text-eyebrow tabular">{url || "—"}</p>
+      <p className="break-all bg-bg-subtle p-2 text-eyebrow tabular">{url || ""}</p>
       <Button size="sm" variant="secondary" disabled={!ok} onClick={async () => { try { await navigator.clipboard.writeText(url); toast({ title: m.common.copied, tone: "success" }); } catch { /* clipboard blocked */ } }}>{c.landing.copy}</Button>
     </fieldset>
   );
@@ -680,7 +680,7 @@ function HistoryPanel({ id, lang, current, blocks, canEdit, onRestore }: { id: s
                 {open === x.version && (
                   <div className="mt-2 grid gap-1 m-rise">
                     <p className="text-eyebrow uppercase text-fg-subtle">{c.history.diff}</p>
-                    {!diff.length ? <p className="text-small text-fg-muted">—</p> : diff.map((d) => (
+                    {!diff.length ? <p className="text-small text-fg-muted"></p> : diff.map((d) => (
                       <p key={d.bid} className="text-small"><span className={cx("mr-2 px-1.5 text-eyebrow", d.kind === "added" ? "bg-success-bg text-success" : d.kind === "removed" ? "bg-danger-bg text-danger" : "bg-warning-bg text-warning")}>{c.history[d.kind]}</span>
                         <span className="line-through opacity-60">{d.kind !== "added" && d.before.slice(0, 80)}</span> {d.kind !== "removed" && d.after.slice(0, 80)}</p>
                     ))}
@@ -731,7 +731,7 @@ function PerformancePanel({ id }: { id: string }) {
   if (q.isPending) return <div className="h-48 m-shimmer" />;
   if (q.isError) return <PanelError what={c.landing.perf} onRetry={() => q.refetch()} />;
   const d = q.data;
-  const conv = d.visits ? `${((d.submissions / d.visits) * 100).toFixed(1)}%` : "—";
+  const conv = d.visits ? `${((d.submissions / d.visits) * 100).toFixed(1)}%` : "";
   return (
     <Panel title={c.landing.perf}>
       <dl className="grid grid-cols-2 gap-3">
@@ -741,7 +741,7 @@ function PerformancePanel({ id }: { id: string }) {
       <p className="mt-4 text-label">{c.landing.events}</p>
       <ul className="mt-1 grid gap-1 text-small">{d.events.map((x) => <li key={x.name} className="flex items-center gap-2"><Icon name={x.wired ? "check" : "clock"} size={14} className={x.wired ? "text-success" : "text-fg-subtle"} aria-hidden /><code>{x.name}</code> · {x.wired ? c.landing.wired : c.landing.notWired}</li>)}</ul>
       <p className="mt-4 text-label">{c.landing.bySource}</p>
-      {!d.bySource.length ? <p className="text-small text-fg-muted">—</p> : <ul className="grid gap-1 text-small">{d.bySource.map((s) => <li key={s.source} className="flex justify-between"><span>{s.source}</span><span className="tabular">{s.visits} · {s.leads}</span></li>)}</ul>}
+      {!d.bySource.length ? <p className="text-small text-fg-muted"></p> : <ul className="grid gap-1 text-small">{d.bySource.map((s) => <li key={s.source} className="flex justify-between"><span>{s.source}</span><span className="tabular">{s.visits} · {s.leads}</span></li>)}</ul>}
       <p className="mt-4 text-label">{c.landing.leads}</p>
       {!d.leads.length ? <p className="text-small text-fg-muted">{c.landing.noLeads}</p> : <ul className="grid gap-1 text-small">{d.leads.map((l) => <li key={l.id}><Link className="underline" href={localHref(locale, `/marketing/leads?lead=${l.id}`)}>{l.id}</Link> · {l.name}</li>)}</ul>}
     </Panel>

@@ -118,7 +118,7 @@ const groupBy = <T,>(xs: T[], k: (x: T) => string) => xs.reduce<Record<string, T
 function Loc({ v, c }: { v: string; c: SystemPrivacy }) {
   const unverified = /PLACEHOLDER/.test(v);
   const base = v.replace(/\s*\(?PLACEHOLDER\)?/, "").trim();
-  return <span className="inline-flex flex-wrap items-center gap-1.5">{base || "—"}{unverified && <Pill tone="warning">{c.processors.toConfirm}</Pill>}</span>;
+  return <span className="inline-flex flex-wrap items-center gap-1.5">{base || ""}{unverified && <Pill tone="warning">{c.processors.toConfirm}</Pill>}</span>;
 }
 
 // ---------------------------------------------------------------- processors
@@ -135,7 +135,7 @@ function Processors() {
         <div className="grid gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-label-lg">{c.processors.title} <span className="text-fg-muted tabular">({d.items.length})</span></h2>
-            <Button size="sm" className="m-press" disabled={!online} onClick={() => setEdit("new")}><Icon name="plus" size={15} aria-hidden />{c.processors.add}</Button>
+            <Button size="sm" data-guide="system-processor-add" className="m-press" disabled={!online} onClick={() => setEdit("new")}><Icon name="plus" size={15} aria-hidden />{c.processors.add}</Button>
           </div>
           {d.items.length === 0 ? <EmptyPanel title={c.processors.empty} body={c.processors.emptyBody} action={<Button size="sm" disabled={!online} onClick={() => setEdit("new")}>{c.processors.add}</Button>} /> : (
             <STable label={c.processors.title} head={[c.processors.name, c.processors.purpose, c.processors.data, c.processors.location, c.processors.dpa, c.processors.review, ""]}>
@@ -145,8 +145,8 @@ function Processors() {
                   <tr key={p.id}>
                     <td data-label={c.processors.name} className="font-medium">{p.name}</td>
                     <td data-label={c.processors.purpose}>{p.purpose}</td>
-                    <td data-label={c.processors.data} className="text-fg-muted">{p.data.join(", ") || "—"}</td>
-                    <td data-label={c.processors.location}>{p.placeholder ? <span className="inline-flex flex-wrap gap-1.5">{p.location.replace("PLACEHOLDER", "").trim() || "—"}<Pill tone="warning">{c.processors.toConfirm}</Pill></span> : p.location}</td>
+                    <td data-label={c.processors.data} className="text-fg-muted">{p.data.join(", ") || ""}</td>
+                    <td data-label={c.processors.location}>{p.placeholder ? <span className="inline-flex flex-wrap gap-1.5">{p.location.replace("PLACEHOLDER", "").trim() || ""}<Pill tone="warning">{c.processors.toConfirm}</Pill></span> : p.location}</td>
                     <td data-label={c.processors.dpa}>{p.dpaSignedAt ? formatDate(p.dpaSignedAt, locale) : <Pill tone="warning">{c.processors.notRecorded}</Pill>}</td>
                     <td data-label={c.processors.review} className="whitespace-nowrap">
                       {formatDate(p.reviewDue, locale)}{" "}

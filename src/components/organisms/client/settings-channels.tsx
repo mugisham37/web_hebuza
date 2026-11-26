@@ -143,7 +143,7 @@ function Editor({
     <div className="grid gap-5">
       <Panel icon="message" title={k.title} body={k.lede}>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] text-left">
+          <table data-guide="client-channels-table" className="w-full min-w-[32rem] text-left">
             <caption className="sr-only">{k.title}</caption>
             <thead>
               <tr className="text-small text-fg-subtle">
@@ -171,7 +171,7 @@ function Editor({
                     <td key={ch} className="px-2 py-3 text-center">
                       <Switch
                         label={
-                          <span className="sr-only">{`${k.cats[cat]} — ${k.channels[ch]}`}</span>
+                          <span className="sr-only">{`${k.cats[cat]}, ${k.channels[ch]}`}</span>
                         }
                         checked={LOCKED(cat, ch) || m[cat][ch]}
                         disabled={LOCKED(cat, ch)}
@@ -197,6 +197,7 @@ function Editor({
         body={k.quietLede}
         action={
           <Switch
+            data-guide="client-channels-quiet"
             label={<span className="sr-only">{k.quiet}</span>}
             checked={quiet.on}
             onChange={() => setQuiet((x) => ({ ...x, on: !x.on }))}
@@ -233,7 +234,7 @@ function Editor({
         </div>
       </Panel>
       <div>
-        <Button dots loading={save.isPending} onClick={() => save.mutate()}>
+        <Button data-guide="client-channels-save" dots loading={save.isPending} onClick={() => save.mutate()}>
           {k.save}
         </Button>
       </div>

@@ -192,7 +192,7 @@ export function TicketQueue() {
           <h1 className="text-h2">{c.title}</h1>
           <p className="text-body text-fg-muted">{c.lede}</p>
         </div>
-        <Button onClick={() => setCreating(true)}>
+        <Button data-guide="ops-new-ticket" onClick={() => setCreating(true)}>
           <Icon name="plus" size={16} aria-hidden />
           {c.newTicket}
         </Button>
@@ -463,7 +463,7 @@ function EnquiryDialog({ row, onClose }: { row: RegRow; onClose: () => void }) {
         <Field label={r.assign}>{(f) => (
           <div className="flex gap-2">
             <Select id={f.id} aria-describedby={f.describedBy} value={agentId} onChange={(e) => setAgentId(e.target.value)} className="min-w-0 flex-1">
-              <option value="">—</option>
+              <option value=""></option>
               {(agents.data?.agents ?? []).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </Select>
             <Button size="sm" variant="outline" disabled={!agentId} loading={m.isPending && m.variables?.action === "assign"} onClick={() => m.mutate({ action: "assign", agentId })}>{r.assignBtn}</Button>
@@ -694,13 +694,13 @@ function TicketBody({ t }: { t: TicketDetail }) {
       {/* PK2: the three phone actions sit under the header */}
       {open && (
         <div className="flex gap-2 md:hidden">
-          <Button size="sm" onClick={respond}>
+          <Button data-guide="ops-ticket-respond" size="sm" onClick={respond}>
             {c.respond}
           </Button>
           <Button size="sm" variant="outline" onClick={() => setModal("call")}>
             {c.logCall}
           </Button>
-          <Button
+          <Button data-guide="ops-ticket-resolve"
             size="sm"
             variant="outline"
             disabled={!!resolveBlocked}

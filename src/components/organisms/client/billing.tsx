@@ -109,7 +109,7 @@ export function BillingPage() {
         <ErrorState error={inv.error} onRetry={() => inv.refetch()} />
       ) : (
         <>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <ul data-guide="client-billing-tiles" className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <Tile
               icon="wallet"
               tone="border-l-3 border-l-gold-400 bg-gold-50"
@@ -118,6 +118,7 @@ export function BillingPage() {
               action={
                 toPay[0] && (
                   <a
+                    data-guide="client-billing-paynow"
                     href={localHref(locale, `/pay/${toPay[0].requestCode ?? toPay[0].number}`)}
                     className={buttonClass({
                       size: "sm",
@@ -203,7 +204,7 @@ export function BillingPage() {
         </>
       )}
 
-      <aside className="flex flex-wrap items-center gap-3 bg-bg-tint p-4">
+      <aside data-guide="client-billing-help" className="flex flex-wrap items-center gap-3 bg-bg-tint p-4">
         <Icon name="message" aria-hidden />
         <span className="font-medium">{c.help}</span>
         <a
@@ -282,6 +283,7 @@ function ToPay({
             <Icon name="file" size={18} />
           </span>
           <button
+            data-guide="client-billing-row"
             type="button"
             onClick={() => onOpen(i)}
             className="min-w-0 flex-1 basis-48 text-left"
@@ -298,6 +300,7 @@ function ToPay({
           </button>
           <StatusBadge s={i.status} />
           <a
+            data-guide="client-billing-pay"
             href={localHref(locale, `/pay/${i.number}`)}
             className={buttonClass({ size: "sm" })}
           >
@@ -330,6 +333,7 @@ function Invoices({
       header: c.cols.no,
       cell: (i) => (
         <button
+          data-guide="client-billing-invno"
           type="button"
           onClick={() => onOpen(i)}
           className="font-medium underline underline-offset-4"
@@ -368,7 +372,7 @@ function Invoices({
   ];
   return (
     <div className="grid gap-3">
-      <label className="relative max-w-sm">
+      <label data-guide="client-billing-search" className="relative max-w-sm">
         <span className="sr-only">{c3Copy(locale).common.search}</span>
         <Icon
           name="search"
@@ -596,7 +600,7 @@ function ChangePlan({ s }: { s: Sub }) {
           <Field label={c.changePick}>
             {(a) => (
               <Select id={a.id} aria-describedby={a.describedBy} value={planId} onChange={(e) => setPlanId(e.target.value)}>
-                <option value="">—</option>
+                <option value=""></option>
                 {plans.data.map((p) => (
                   <option key={p.planId} value={p.planId}>{p.name} · {formatMoney(p.amountRwf, "RWF", locale)}</option>
                 ))}
@@ -774,6 +778,7 @@ function InvoiceDrawer({
         inv && (
           <>
             <a
+              data-guide="client-billing-pdf"
               href={pdf(inv.number)}
               download
               className={buttonClass({ variant: "outline" })}
@@ -883,7 +888,7 @@ function Quotes() {
                 {fill(expired ? q4.expiredOn : q4.expires, { date: formatDate(x.expiresAt, locale) })}
               </p>
               {status === "pending" && (
-                <div className="flex flex-wrap gap-2">
+                <div data-guide="client-billing-quote-actions" className="flex flex-wrap gap-2">
                   <Button
                     size="sm"
                     loading={act.isPending && act.variables?.no === x.number && act.variables.action === "accept"}
@@ -972,7 +977,7 @@ function Statements({ loading }: { invoices?: Invoice[]; receipts?: Receipt[]; l
         )}
       </Field>
       <p className="text-small" aria-live="polite">{fill(s.count, { n: rows.length })}</p>
-      <Button className="justify-self-start" disabled={!rows.length} onClick={download}>
+      <Button data-guide="client-billing-csv" className="justify-self-start" disabled={!rows.length} onClick={download}>
         <Icon name="file" size={16} aria-hidden /> {s.download}
       </Button>
     </div>

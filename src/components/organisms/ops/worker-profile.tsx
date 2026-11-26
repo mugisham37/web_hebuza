@@ -81,12 +81,12 @@ function Overview({ w, admin }: { w: WorkerFull; admin: boolean }) {
     <div className="mt-4 grid gap-4 lg:grid-cols-2">
       <Panel title={c.profile.contract}>
         <dl className="grid grid-cols-2 gap-3 text-small">
-          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.contractEnd}</dt><dd>{w.contractEnd ? formatDate(w.contractEnd, locale) : "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.contractEnd}</dt><dd>{w.contractEnd ? formatDate(w.contractEnd, locale) : ""}</dd></div>
           <div><dt className="text-eyebrow text-fg-subtle">{c.profile.lastLogin}</dt><dd>{w.lastLoginAt ? formatRelative(w.lastLoginAt, locale) : c.profile.never}</dd></div>
-          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.languages}</dt><dd>{w.languages.join(", ").toUpperCase() || "—"}</dd></div>
-          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.districts}</dt><dd>{w.districts.join(", ") || "—"}</dd></div>
-          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.services}</dt><dd>{w.services.map(svc).join(", ") || "—"}</dd></div>
-          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.expertise}</dt><dd>{w.expertise.join(", ") || "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.languages}</dt><dd>{w.languages.join(", ").toUpperCase() || ""}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.profile.districts}</dt><dd>{w.districts.join(", ") || ""}</dd></div>
+          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.services}</dt><dd>{w.services.map(svc).join(", ") || ""}</dd></div>
+          <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.profile.expertise}</dt><dd>{w.expertise.join(", ") || ""}</dd></div>
           <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.cols.load}</dt><dd className="flex items-center gap-2"><CapacityBar load={w.load.open} cap={w.load.cap} className="w-32" /><span className="tabular">{w.load.open}/{w.load.cap}</span></dd></div>
         </dl>
       </Panel>
@@ -118,7 +118,7 @@ function Performance({ w }: { w: WorkerFull }) {
       {w.kpis.map((k) => <KpiTile key={k.key} label={c.kpi[k.key as keyof typeof c.kpi] ?? k.key} value={fmt(k)} tone={k.unit === "pct" && k.value < 80 ? "warning" : "neutral"} />)}
       {w.outcomes && (["completed90d", "firstPassPct", "reassignmentPct", "revenue90d"] as const).map((k) => {
         const v = w.outcomes![k];
-        return <KpiTile key={k} label={c.kpi[k]} value={v == null ? "—" : k.endsWith("Pct") ? `${v}%` : v.toLocaleString()} tone="neutral" />;
+        return <KpiTile key={k} label={c.kpi[k]} value={v == null ? "" : k.endsWith("Pct") ? `${v}%` : v.toLocaleString()} tone="neutral" />;
       })}
       <Cv w={w} />
     </div>
@@ -201,7 +201,7 @@ function ReviewForm({ w, onDone }: { w: WorkerFull; onDone: () => void }) {
       {err.form && <p role="alert" className="bg-danger-bg px-3 py-2 text-small text-danger">{err.form}</p>}
       <Field label={c.review.period}>{(a) => <Input id={a.id} value={period} onChange={(e) => setPeriod(e.target.value)} />}</Field>
       <div className="grid gap-1"><p className="text-label">{c.review.kpis}</p>
-        <p className="text-small text-fg-muted">{c.kpi.onTime}: {w.onTimePct ?? "—"}% · {c.kpi.rating}: {w.rating?.toFixed(1) ?? "—"} · {c.kpi.open}: {w.load.open}</p></div>
+        <p className="text-small text-fg-muted">{c.kpi.onTime}: {w.onTimePct ?? ""}% · {c.kpi.rating}: {w.rating?.toFixed(1) ?? ""} · {c.kpi.open}: {w.load.open}</p></div>
       <fieldset className="grid gap-1"><legend className="text-label">{c.review.rating}</legend>
         {err.rating && <p className="text-small font-medium text-danger">{err.rating}</p>}
         <div className="flex gap-1" role="radiogroup" aria-label={c.review.rating}>
@@ -272,8 +272,8 @@ function WorkContacts({ w, admin }: { w: WorkerFull; admin: boolean }) {
     <Panel title={c.title} action={admin && !edit ? <Button size="sm" variant="secondary" onClick={() => setEdit(true)}>{c.edit}</Button> : null}>
       {!edit ? (
         <dl className="grid gap-3 text-small">
-          <div><dt className="text-eyebrow text-fg-subtle">{c.email}</dt><dd>{wc.email || "—"}</dd></div>
-          <div><dt className="text-eyebrow text-fg-subtle">{c.phone}</dt><dd className="tabular">{wc.phone || "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.email}</dt><dd>{wc.email || ""}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.phone}</dt><dd className="tabular">{wc.phone || ""}</dd></div>
           {Object.entries(wc.links).map(([k, v]) => <div key={k}><dt className="text-eyebrow text-fg-subtle">{c.links[k] ?? k}</dt><dd><a className="underline" href={v} rel="noopener noreferrer" target="_blank">{v}</a></dd></div>)}
         </dl>
       ) : (

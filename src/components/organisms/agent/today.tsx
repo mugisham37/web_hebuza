@@ -187,7 +187,7 @@ function OfferStrip({
   else if (!offers?.length)
     body = (
       <p className="text-small text-fg-muted">
-        {t.offers.none} — {t.offers.noneBody}
+        {t.offers.none}, {t.offers.noneBody}
       </p>
     );
   else
@@ -207,6 +207,7 @@ function OfferStrip({
 
   return (
     <section
+      data-guide="agent-today-offers"
       aria-label={a.nav.offers}
       className={cx(
         " p-4 m-rise",
@@ -292,7 +293,7 @@ function OfferCard({
             size="sm"
             href={href("accept")}
             className="flex-1 justify-center"
-            aria-label={`${t.offers.accept} — ${o.service}, ${o.client}`}
+            aria-label={`${t.offers.accept}, ${o.service}, ${o.client}`}
           >
             {t.offers.accept}
           </ButtonLink>
@@ -302,7 +303,7 @@ function OfferCard({
           variant="outline"
           href={href("decline")}
           className="flex-1 justify-center"
-          aria-label={`${t.offers.decline} — ${o.service}, ${o.client}`}
+          aria-label={`${t.offers.decline}, ${o.service}, ${o.client}`}
         >
           {t.offers.decline}
         </ButtonLink>
@@ -679,6 +680,7 @@ function Kpis() {
   return (
     <Link
       href={localHref(locale, wsHref("/agent/performance"))}
+      data-guide="agent-today-kpis"
       className="grid gap-3 border border-border bg-white p-4 m-rise m-lift"
     >
       <span className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -710,7 +712,7 @@ function Kpis() {
             {t.kpi.earnings}
           </span>
           <span className="text-card-title tabular">
-            {bar ? formatMoney(bar.paid + bar.scheduled + bar.pending, "RWF", locale) : "—"}
+            {bar ? formatMoney(bar.paid + bar.scheduled + bar.pending, "RWF", locale) : ""}
           </span>
         </span>
       </span>

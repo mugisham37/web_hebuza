@@ -44,7 +44,7 @@ export function TeamQueue() {
               <p className="text-small">{r.bio}</p>
               <Input aria-label={c.note} placeholder={c.note} maxLength={500} value={notes[r.id] ?? ""} onChange={(e) => setNotes({ ...notes, [r.id]: e.target.value })} />
               <div className="flex gap-2">
-                <Button size="sm" disabled={r.status === "approved"} loading={m.isPending && m.variables?.id === r.id && m.variables.approve} onClick={() => m.mutate({ id: r.id, approve: true })}>{c.approve}</Button>
+                <Button data-guide="marketing-team-approve" size="sm" disabled={r.status === "approved"} loading={m.isPending && m.variables?.id === r.id && m.variables.approve} onClick={() => m.mutate({ id: r.id, approve: true })}>{c.approve}</Button>
                 <Button size="sm" variant="outline" disabled={r.status === "rejected"} loading={m.isPending && m.variables?.id === r.id && !m.variables.approve} onClick={() => m.mutate({ id: r.id, approve: false })}>{c.reject}</Button>
               </div>
             </li>

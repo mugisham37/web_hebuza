@@ -57,7 +57,7 @@ export function PayoutsView() {
     { key: "wht", label: p.cols.wht, align: "right", cell: (b) => <Amount value={b.totals.wht} size="sm" />, card: false },
     { key: "net", label: p.cols.net, align: "right", cell: (b) => <Amount value={b.totals.net} size="sm" className="font-medium" />, sort: (b) => b.totals.net },
     { key: "prepared", label: p.cols.prepared, cell: (b) => b.preparedBy.name, card: false },
-    { key: "authorised", label: p.cols.authorised, cell: (b) => b.authorisedBy?.name ?? "—", card: false },
+    { key: "authorised", label: p.cols.authorised, cell: (b) => b.authorisedBy?.name ?? "", card: false },
     { key: "state", label: p.cols.state, cell: (b) => <FinStatus status={b.status} kind="batch" /> },
   ];
   const payDay = list.data?.payoutDay;
@@ -139,12 +139,12 @@ function useLineColumns(extra?: OpsColumn<LineView>) {
     { key: "worker", label: p.line.worker, cell: (l) => <span className="grid"><span className="font-medium">{l.name}</span><span className="text-eyebrow text-fg-muted">{p.line[l.kind]}</span></span>, sort: (l) => l.name },
     { key: "gross", label: p.line.gross, align: "right", cell: (l) => <Amount value={l.gross} size="sm" />, sort: (l) => l.gross },
     { key: "adjustments", label: p.line.adjustments, align: "right", cell: (l) => <Amount value={l.adjustments} sign="always" size="sm" />, card: false },
-    { key: "carried", label: p.line.carried, align: "right", cell: (l) => (l.carriedIn ? <Amount value={l.carriedIn} sign="always" size="sm" /> : "—"), card: false },
+    { key: "carried", label: p.line.carried, align: "right", cell: (l) => (l.carriedIn ? <Amount value={l.carriedIn} sign="always" size="sm" /> : ""), card: false },
     { key: "taxable", label: p.line.taxable, align: "right", cell: (l) => <Amount value={l.taxable} size="sm" />, card: false },
-    { key: "wht", label: p.line.wht, align: "right", cell: (l) => (l.wht ? <Amount value={-l.wht} size="sm" /> : "—") },
-    { key: "fees", label: p.line.fees, align: "right", cell: (l) => (l.fees ? <Amount value={-l.fees} size="sm" /> : "—"), card: false },
+    { key: "wht", label: p.line.wht, align: "right", cell: (l) => (l.wht ? <Amount value={-l.wht} size="sm" /> : "") },
+    { key: "fees", label: p.line.fees, align: "right", cell: (l) => (l.fees ? <Amount value={-l.fees} size="sm" /> : ""), card: false },
     { key: "net", label: p.line.net, align: "right", cell: (l) => <span key={l.net} className="m-rise"><Amount value={l.net} size="sm" className="font-medium" /></span>, sort: (l) => l.net },
-    { key: "carry", label: p.line.carry, align: "right", cell: (l) => (l.carryForward ? <Amount value={l.carryForward} size="sm" /> : "—"), card: false },
+    { key: "carry", label: p.line.carry, align: "right", cell: (l) => (l.carryForward ? <Amount value={l.carryForward} size="sm" /> : ""), card: false },
     { key: "method", label: p.line.method, wrap: true, cell: (l) => (
       <span className="grid gap-1"><MethodTag method={l.method} />
         <span className={cx("text-eyebrow tabular", !l.destination.verified ? "text-danger" : l.destination.coolingUntil ? "text-warning" : "text-fg-muted")}>
@@ -422,7 +422,7 @@ export function BatchRecord({ no }: { no: string }) {
           label={lineDlg.kind === "failed" ? p.batch.failReason : p.batch.excludeReason} confirm={lineDlg.kind === "failed" ? p.batch.markFailed : p.builder.exclude}
           onConfirm={async (reason) => !!(await lineAct(lineDlg.l, lineDlg.kind, { reason }, { success: lineDlg.kind === "failed" ? p.batch.failed : p.batch.excludedT }))} />
       )}
-      <ConflictDialog open={run.conflict} who={last?.by ?? "—"} when={last?.at ?? bt.period} onClose={run.closeConflict} onRefresh={() => { run.closeConflict(); void b.refetch(); }} />
+      <ConflictDialog open={run.conflict} who={last?.by ?? ""} when={last?.at ?? bt.period} onClose={run.closeConflict} onRefresh={() => { run.closeConflict(); void b.refetch(); }} />
       {run.dialog}
     </div>
   );

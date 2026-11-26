@@ -66,7 +66,7 @@ export function ReceiptsView() {
   ];
   return (
     <div className="grid gap-5">
-      <PageHead title={c.grn.title} sub={c.grn.sub} actions={<Button variant="primary" onClick={() => setUrlParams({ sheet: "grn" })} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.grn.record}</Button>} />
+      <PageHead title={c.grn.title} sub={c.grn.sub} actions={<Button data-guide="procurement-record-grn" variant="primary" onClick={() => setUrlParams({ sheet: "grn" })} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.grn.record}</Button>} />
       <SavedViewTabs active={tab} onChange={(k) => setUrlParams({ tab: k === "all" ? null : k })}
         views={[{ key: "all", label: c.grn.all, count: all.data?.items.length }, { key: "ni", label: c.grn.ni, count: ni.data?.items.length }]} />
       <div className="border border-border bg-surface m-rise">

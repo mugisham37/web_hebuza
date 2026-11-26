@@ -67,7 +67,7 @@ export function LockedCount({ n, onRequest }: { n: number; onRequest?: () => voi
       <Icon name="lock" size={16} aria-hidden className="text-fg-muted" />
       <span className="flex-1">{text}</span>
       {onRequest && (
-        <button type="button" onClick={onRequest} className="font-medium text-navy-700 underline underline-offset-4" aria-label={`${w.requestAccess} — ${text}`}>
+        <button type="button" onClick={onRequest} className="font-medium text-navy-700 underline underline-offset-4" aria-label={`${w.requestAccess}, ${text}`}>
           {w.requestAccess}
         </button>
       )}

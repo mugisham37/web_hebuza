@@ -72,7 +72,7 @@ export function SubscriptionsView() {
                     {r.pausedUntil && <span className="block text-eyebrow normal-case text-fg-subtle">{fill(t.pausedUntil, { date: formatDate(r.pausedUntil, locale) })}</span>}
                   </td>
                   <td className="p-3 tabular">{formatDate(r.periodEnd, locale)}</td>
-                  <td className="p-3">{r.status === "active" && <Button size="sm" variant="outline" onClick={() => setOpen(r)}>{t.pause}</Button>}</td>
+                  <td className="p-3">{r.status === "active" && <Button data-guide="finance-sub-pause" size="sm" variant="outline" onClick={() => setOpen(r)}>{t.pause}</Button>}</td>
                 </tr>
               ))}
             </tbody>

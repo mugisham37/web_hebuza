@@ -39,12 +39,12 @@ export function CampaignsView() {
   const b = q.data?.budget;
   return (
     <>
-      <PageHead title={c.list.title} sub={c.list.sub} actions={<ButtonLink href={localHref(locale, "/marketing/campaigns/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.wiz.title}</ButtonLink>} />
+      <PageHead title={c.list.title} sub={c.list.sub} actions={<ButtonLink data-guide="marketing-new-campaign" href={localHref(locale, "/marketing/campaigns/new")} size="sm"><Icon name="plus" size={16} aria-hidden />{c.wiz.title}</ButtonLink>} />
       {b && <p className="mb-4 text-small text-fg-muted">{c.list.budget}: <strong className="tabular">{fill(c.list.budgetOf, { spent: m(b.spent), cap: m(b.cap) })}</strong></p>}
       <SavedViewTabs views={VIEWS.map((v) => ({ key: v, label: v === "all" ? c.seq.tabs.all : mc.campaign[v] }))} active={status} onChange={(k) => setUrlParams({ status: k === "all" ? null : k })} />
       <div className="mt-4">
         <QueryState q={q} what={c.list.title} empty={!items.length && c.list.empty} emptyAction={<ButtonLink href={localHref(locale, "/marketing/campaigns/new")} size="sm">{c.wiz.title}</ButtonLink>}>
-          <ul className="grid gap-2 m-stagger">
+          <ul data-guide="marketing-campaign-list" className="grid gap-2 m-stagger">
             {items.map((x, i) => (
               <li key={x.id} style={{ ["--i" as string]: i }}>
                 <Link href={localHref(locale, x.status === "draft" ? `/marketing/campaigns/new?id=${x.id}&step=audience` : `/marketing/campaigns/${x.id}`)} className="grid gap-2 border border-border bg-white p-4 hover:border-navy-300 sm:grid-cols-[1fr_9rem_8rem_7rem] sm:items-center">
@@ -155,10 +155,10 @@ function Overview({ x }: { x: CampaignView }) {
           {x.approvedByName ? <p className="text-small">{fill(c.det.approvedBy, { who: x.approvedByName, d: x.approvedAt ? formatDateTime(x.approvedAt, locale) : "" })}</p>
             : x.status === "pending_approval" ? (
               <div className="grid gap-3">
-                <p className="text-small">{fill(c.det.awaiting, { who: x.approverName ?? "—" })}</p>
+                <p className="text-small">{fill(c.det.awaiting, { who: x.approverName ?? "" })}</p>
                 {self ? <p className="bg-bg-subtle p-3 text-small text-fg-muted">{c.det.selfBlocked}</p> : null}
                 <div className="flex gap-2">
-                  <Button size="sm" disabled={self || !online || !me} title={self ? c.det.selfBlocked : !me ? c.det.roleBlocked : undefined} loading={act.isPending} onClick={() => run("approve")}>{c.det.approve}</Button>
+                  <Button data-guide="marketing-campaign-approve" size="sm" disabled={self || !online || !me} title={self ? c.det.selfBlocked : !me ? c.det.roleBlocked : undefined} loading={act.isPending} onClick={() => run("approve")}>{c.det.approve}</Button>
                   <Button size="sm" variant="outline" disabled={self || !online || !me} onClick={() => setReject(true)}>{c.det.reject}</Button>
                 </div>
               </div>

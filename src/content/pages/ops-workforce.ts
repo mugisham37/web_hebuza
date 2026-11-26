@@ -15,9 +15,9 @@ const en = {
     blocks: { title: "Never assign to", lede: "Clients this person must never be assigned to (conflict of interest).", client: "Client customer ID", reason: "Reason", add: "Add restriction", remove: "Remove", none: "No restrictions.", added: "Restriction added", removed: "Restriction removed", failed: "Could not save. Check the customer ID." },
   profile: {
     private: "Private details", address: "Address", phone: "Private phone", nationalId: "National ID", reveal: "Reveal", revealTitle: "Reveal private details",
-    revealReason: "Why do you need to see this? It's recorded.", revealed: "Revealed — this view was recorded", contract: "Contract", contractEnd: "Ends", lastLogin: "Last sign-in",
+    revealReason: "Why do you need to see this? It's recorded.", revealed: "Revealed, this view was recorded", contract: "Contract", contractEnd: "Ends", lastLogin: "Last sign-in",
     never: "Never", languages: "Languages", districts: "Districts", expertise: "Expertise", services: "Services", certs: "Certifications", openCases: "Open cases",
-    sessionsRevoked: "Sessions revoked — this person is signed out everywhere.", noDocs: "No documents yet.", noHistory: "No history yet.", cases: "View cases",
+    sessionsRevoked: "Sessions revoked, this person is signed out everywhere.", noDocs: "No documents yet.", noHistory: "No history yet.", cases: "View cases",
   },
   kpi: { onTime: "On time (30 d)", rating: "Client rating", open: "Open cases", firstResponse: "First response (h)", completed90d: "Completed (90 d)", firstPassPct: "First-pass approval", reassignmentPct: "Reassigned away", revenue90d: "Earned share (90 d, RWF)" },
   work: { title: "Work contacts", edit: "Edit", email: "Work email", phone: "Work phone", links: { linkedin: "LinkedIn", website: "Website", x: "X", facebook: "Facebook" } as Record<string, string>, save: "Save", cancel: "Cancel", saved: "Work contacts saved." },
@@ -44,7 +44,7 @@ const en = {
     pick: "Choose new assignee", noCases: "No open cases.", offersTitle: "Pending offers are withdrawn", noOffers: "No pending offers.",
     accessTitle: "Revoke access", accessBody: "Status becomes Terminated, sessions are revoked and the system admin is notified to close the account.",
     reason: "Reason for offboarding", optional: "Optional items", equipment: "Equipment returned", exit: "Exit interview done",
-    summary: "Earnings stay payable — finance notified.", finish: "Finish offboarding", unresolved: "{n} cases still need a decision.", done: "{name} has been offboarded.",
+    summary: "Earnings stay payable, finance notified.", finish: "Finish offboarding", unresolved: "{n} cases still need a decision.", done: "{name} has been offboarded.",
   },
   apps: {
     link: "Applications", title: "Agent applications", sub: "People who applied at /join. Approve, decline or ask for more information.",
@@ -72,7 +72,7 @@ const rw: Copy = {
     blocks: { title: "Ntazahabwa", lede: "Abakiriya uyu muntu atagomba guhabwa (inyungu zivuguruzanya).", client: "Nimero y'umukiriya", reason: "Impamvu", add: "Ongeraho ikibuza", remove: "Kuraho", none: "Nta kibuza.", added: "Ikibuza cyongeweho", removed: "Ikibuza cyakuweho", failed: "Ntibyabitswe. Reba nimero y'umukiriya." },
   profile: {
     private: "Amakuru bwite", address: "Aderesi", phone: "Telefone bwite", nationalId: "Indangamuntu", reveal: "Erekana", revealTitle: "Erekana amakuru bwite",
-    revealReason: "Kuki ukeneye kubibona? Biranditswe.", revealed: "Byagaragajwe — byanditswe", contract: "Amasezerano", contractEnd: "Birangira", lastLogin: "Yinjiye bwa nyuma",
+    revealReason: "Kuki ukeneye kubibona? Biranditswe.", revealed: "Byagaragajwe, byanditswe", contract: "Amasezerano", contractEnd: "Birangira", lastLogin: "Yinjiye bwa nyuma",
     never: "Ntarinjira", languages: "Indimi", districts: "Uturere", expertise: "Ubuhanga", services: "Serivisi", certs: "Impamyabushobozi", openCases: "Amadosiye afunguye",
     sessionsRevoked: "Yasohowe muri konti hose.", noDocs: "Nta nyandiko.", noHistory: "Nta mateka.", cases: "Reba amadosiye",
   },
@@ -101,7 +101,7 @@ const rw: Copy = {
     pick: "Hitamo uzayakora", noCases: "Nta madosiye afunguye.", offersTitle: "Ibyifuzo bitegereje birakurwaho", noOffers: "Nta byifuzo bitegereje.",
     accessTitle: "Kuraho uburenganzira", accessBody: "Aba Yasezerewe, asohorwa hose kandi ushinzwe sisitemu amenyeshwa gufunga konti.",
     reason: "Impamvu yo gusezerera", optional: "Ibitari ngombwa", equipment: "Ibikoresho byasubijwe", exit: "Ikiganiro cyo gusoza cyakozwe",
-    summary: "Amafaranga yakoreye aracyishyurwa — imari yamenyeshejwe.", finish: "Soza", unresolved: "Amadosiye {n} aracyakeneye icyemezo.", done: "{name} yasezerewe.",
+    summary: "Amafaranga yakoreye aracyishyurwa, imari yamenyeshejwe.", finish: "Soza", unresolved: "Amadosiye {n} aracyakeneye icyemezo.", done: "{name} yasezerewe.",
   },
   apps: {
     link: "Abasabye", title: "Abasaba kuba abakozi", sub: "Abasabye kuri /join. Emeza, wange cyangwa usabe andi makuru.",
@@ -128,9 +128,9 @@ const fr: Copy = {
     blocks: { title: "Ne jamais affecter à", lede: "Clients auxquels cette personne ne doit jamais être affectée (conflit d'intérêts).", client: "N° client", reason: "Motif", add: "Ajouter une restriction", remove: "Retirer", none: "Aucune restriction.", added: "Restriction ajoutée", removed: "Restriction retirée", failed: "Enregistrement impossible. Vérifiez le n° client." },
   profile: {
     private: "Données privées", address: "Adresse", phone: "Téléphone privé", nationalId: "Pièce d'identité", reveal: "Afficher", revealTitle: "Afficher les données privées",
-    revealReason: "Pourquoi devez-vous les voir ? C'est journalisé.", revealed: "Affiché — consultation journalisée", contract: "Contrat", contractEnd: "Fin", lastLogin: "Dernière connexion",
+    revealReason: "Pourquoi devez-vous les voir ? C'est journalisé.", revealed: "Affiché, consultation journalisée", contract: "Contrat", contractEnd: "Fin", lastLogin: "Dernière connexion",
     never: "Jamais", languages: "Langues", districts: "Districts", expertise: "Expertise", services: "Services", certs: "Certifications", openCases: "Dossiers ouverts",
-    sessionsRevoked: "Sessions révoquées — déconnecté partout.", noDocs: "Aucun document.", noHistory: "Aucun historique.", cases: "Voir les dossiers",
+    sessionsRevoked: "Sessions révoquées, déconnecté partout.", noDocs: "Aucun document.", noHistory: "Aucun historique.", cases: "Voir les dossiers",
   },
   kpi: { onTime: "À l'heure (30 j)", rating: "Note clients", open: "Dossiers ouverts", firstResponse: "Première réponse (h)", completed90d: "Terminés (90 j)", firstPassPct: "Validés du premier coup", reassignmentPct: "Réattribués", revenue90d: "Part gagnée (90 j, RWF)" },
   work: { title: "Coordonnées professionnelles", edit: "Modifier", email: "E-mail pro", phone: "Téléphone pro", links: { linkedin: "LinkedIn", website: "Site web", x: "X", facebook: "Facebook" }, save: "Enregistrer", cancel: "Annuler", saved: "Coordonnées enregistrées." },
@@ -157,7 +157,7 @@ const fr: Copy = {
     pick: "Choisir un nouvel affecté", noCases: "Aucun dossier ouvert.", offersTitle: "Les offres en attente sont retirées", noOffers: "Aucune offre en attente.",
     accessTitle: "Révoquer l'accès", accessBody: "Le statut passe à Résilié, les sessions sont révoquées et l'admin système est prévenu.",
     reason: "Motif du départ", optional: "Éléments optionnels", equipment: "Matériel restitué", exit: "Entretien de sortie fait",
-    summary: "Les gains restent payables — la finance est prévenue.", finish: "Terminer le départ", unresolved: "{n} dossiers attendent une décision.", done: "Départ de {name} enregistré.",
+    summary: "Les gains restent payables, la finance est prévenue.", finish: "Terminer le départ", unresolved: "{n} dossiers attendent une décision.", done: "Départ de {name} enregistré.",
   },
   apps: {
     link: "Candidatures", title: "Candidatures d'agents", sub: "Personnes ayant postulé sur /join. Approuver, refuser ou demander des informations.",

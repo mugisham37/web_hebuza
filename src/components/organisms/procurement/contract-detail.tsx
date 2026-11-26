@@ -68,7 +68,7 @@ export function ContractDetail({ id }: { id: string }) {
             {ct.noticeOn < today && live && <p role="alert" className="bg-warning-bg px-3 py-2 text-small text-warning">{c.alert.noticePassed}</p>}
             <dl className="grid gap-4 sm:grid-cols-3">
               <Fact label={c.cols.amount}><Amount value={ct.amount} className="font-semibold" /> · {c.freq[ct.frequency]}</Fact>
-              <Fact label={c.overview.escalated}>{ct.escalationPercent ? <Amount value={escalated} /> : "—"}</Fact>
+              <Fact label={c.overview.escalated}>{ct.escalationPercent ? <Amount value={escalated} /> : ""}</Fact>
               <Fact label={c.cols.notice}>{fill(c.days, { n: ct.noticeDays })}</Fact>
               <Fact label={c.overview.noticeOn}><span className="tabular">{formatDate(ct.noticeOn, locale)}</span></Fact>
               <Fact label={c.cols.end}><span className="flex flex-wrap items-center gap-2 tabular">{formatDate(ct.endOn, locale)}{live && <ExpiryChip date={ct.endOn} today={today} />}</span></Fact>
@@ -79,14 +79,14 @@ export function ContractDetail({ id }: { id: string }) {
           </section>
           <div className="grid content-start gap-3">
             <h2 className="text-card-title">{c.overview.deposit}</h2>
-            {deposit ? <DepositCard deposit={deposit} today={today} href={`/procurement/deposits?q=${deposit.no}`} /> : <p className="text-small text-fg-muted">—</p>}
+            {deposit ? <DepositCard deposit={deposit} today={today} href={`/procurement/deposits?q=${deposit.no}`} /> : <p className="text-small text-fg-muted"></p>}
           </div>
         </div>
       )}
       {tab === "documents" && (
         <ul className="grid gap-2 m-rise">
           {ct.documents.length ? ct.documents.map((d) => <li key={d.id} className="flex items-center gap-2 border border-border bg-surface p-3 text-small"><Icon name="file" size={16} aria-hidden className="text-navy-700" />{d.name}</li>)
-            : <li className="border border-dashed border-border-strong p-8 text-center text-small text-fg-muted">—</li>}
+            : <li className="border border-dashed border-border-strong p-8 text-center text-small text-fg-muted"></li>}
         </ul>
       )}
       {tab === "reminders" && (

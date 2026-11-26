@@ -44,7 +44,7 @@ export function OffboardView({ id }: { id: string }) {
   }
   const u = q.data;
   const blocked = u.id === me ? c.d.you : u.lastSysadmin ? c.lastSysadmin : u.status === "deactivated" && !done ? c.off.already : null;
-  const reasonText = [c.off.reasons[reason as keyof typeof c.off.reasons], note.trim()].filter(Boolean).join(" — ");
+  const reasonText = [c.off.reasons[reason as keyof typeof c.off.reasons], note.trim()].filter(Boolean).join(", ");
   const accountOnly = u.kind === "client" || u.kind === "service";
 
   const submit = async () => {
@@ -85,7 +85,7 @@ export function OffboardView({ id }: { id: string }) {
                 <Field label={c.off.reason}>
                   {(f) => (
                     <Select id={f.id} value={reason} onChange={(e) => setReason(e.target.value)}>
-                      <option value="">—</option>
+                      <option value=""></option>
                       {Object.entries(c.off.reasons).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </Select>
                   )}
@@ -107,7 +107,7 @@ export function OffboardView({ id }: { id: string }) {
                 <p className="text-body"><span className="block text-label-lg">{fill(c.off.confirm, { name: u.name })}</span><span className="text-fg-muted">{fill(c.off.confirmBody, { name: u.name })}</span></p>
                 <dl className="grid gap-2 bg-bg-subtle p-3 text-small">
                   <div className="flex flex-wrap gap-2"><dt className="text-fg-muted">{c.off.summaryReason}:</dt><dd className="font-medium">{reasonText}</dd></div>
-                  <div className="flex flex-wrap gap-2"><dt className="text-fg-muted">{c.off.summaryHandoff}:</dt><dd className="font-medium tabular">{accountOnly || !u.openCases ? "—" : u.openCases}</dd></div>
+                  <div className="flex flex-wrap gap-2"><dt className="text-fg-muted">{c.off.summaryHandoff}:</dt><dd className="font-medium tabular">{accountOnly || !u.openCases ? "" : u.openCases}</dd></div>
                   <div className="flex flex-wrap gap-2"><dt className="text-fg-muted">{c.off.summarySessions}:</dt><dd className="font-medium">{revoke ? c.off.yes : c.off.no}</dd></div>
                 </dl>
               </>

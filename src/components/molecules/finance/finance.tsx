@@ -154,7 +154,7 @@ export function LineEditor({ lines, onChange, readOnly, errors = {}, vatBps }: {
                 <td className="p-2 text-right">{readOnly ? <Amount value={l.unit} size="sm" /> : <input aria-label={f.lines.unit} inputMode="numeric" value={l.unit} onChange={(e) => set(i, { unit: Number(e.target.value.replace(/\D/g, "")) || 0 })} className={num} />}</td>
                 <td className="p-3 text-right"><Amount value={lineVat(l, vatBps)} size="sm" /></td>
                 <td className="p-3 text-center">
-                  {isTaxable(l) ? <Icon name="check" size={16} className="inline text-success" aria-label={f.lines.eligible} /> : <span aria-label="—" className="text-fg-subtle">—</span>}
+                  {isTaxable(l) ? <Icon name="check" size={16} className="inline text-success" aria-label={f.lines.eligible} /> : <span aria-label="" className="text-fg-subtle"></span>}
                 </td>
                 {!readOnly && (
                   <td className="p-2">
@@ -282,13 +282,13 @@ export function AgeingBar({ buckets, onPick }: { buckets: Record<Bucket, number>
 }
 
 // ---------------------------------------------------------------- History (FK8, F-AUD-03)
-const show = (v: unknown) => (v == null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v));
+const show = (v: unknown) => (v == null ? "" : typeof v === "object" ? JSON.stringify(v) : String(v));
 /** Before → after for changed keys only. */
 export function DiffList({ before, after }: { before: unknown; after: unknown }) {
   const f = useF();
   const b = (before ?? {}) as Record<string, unknown>, a = (after ?? {}) as Record<string, unknown>;
   const keys = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter((k) => show(b[k]) !== show(a[k]));
-  if (!keys.length) return <p className="text-small text-fg-subtle">—</p>;
+  if (!keys.length) return <p className="text-small text-fg-subtle"></p>;
   return (
     <dl className="grid gap-2 text-small">
       {keys.map((k) => (
@@ -472,7 +472,7 @@ export function useBError(who: () => { name: string; at: string } | null, refres
     else toast({ title: errorCopy(e, locale), tone: "danger" });
   };
   const dialog = (
-    <ConflictDialog open={conflict} who={w?.name ?? "—"} when={w?.at ?? new Date(0).toISOString()}
+    <ConflictDialog open={conflict} who={w?.name ?? ""} when={w?.at ?? new Date(0).toISOString()}
       onClose={() => setConflict(false)} onRefresh={() => { setConflict(false); refresh(); }} />
   );
   return { onError, dialog };

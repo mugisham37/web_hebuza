@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { Fade } from "@/components/atoms/brand";
+import { ZigzagBand } from "@/components/atoms/brand";
 
 /** Section edge tones used by the inner pages (services, how-it-works); token = var(--color-<tone>). */
 export type Tone =
@@ -13,14 +13,10 @@ export type Tone =
   | "navy-700"
   | "navy-800"
   | "navy-900"
-  | "ink-950";
-/** `paint` = this section draws its own top→bottom gradient (home ramp); edges then always meet, so no fade is added. */
-export type Paint = {
-  from: string;
-  to: string;
-  mid?: { color: string; at: number };
-  light: boolean;
-};
+  | "ink-950"
+  | "hero";
+/** `paint` = this section has one flat colour (home ramp); `light` = navy text, else white text. */
+export type Paint = { color: string; light: boolean };
 export type StackEntry = {
   key: string;
   node: ReactNode;
@@ -29,49 +25,35 @@ export type StackEntry = {
   paint?: Paint;
 };
 
-/** Sections in order. Painted sections join seamlessly; plain sections with different edge tones get a soft Fade. */
+/** Sections in order, each a flat colour; wherever two neighbours differ, a ZigzagBand joins them. */
 export function SectionStack({ sections }: { sections: StackEntry[] }) {
+  const edge = (e: StackEntry, side: "top" | "bottom") => e.paint?.color ?? e[side];
   return (
     <>
       {sections.map((s, i) => {
         const prev = sections[i - 1];
-        const fade =
-          prev &&
-          !prev.paint &&
-          !s.paint &&
-          prev.bottom &&
-          s.top &&
-          prev.bottom !== s.top;
+        const from = prev && edge(prev, "bottom"), to = edge(s, "top");
         return (
           <Fragment key={s.key}>
-            {fade && <Fade from={prev.bottom!} to={s.top!} />}
-            {s.paint ? (
-              <div
-                className={s.paint.light ? "ramp-light" : "ramp-dark"}
-                style={{ backgroundImage: gradient(s.paint) }}
-              >
-                {s.node}
-              </div>
-            ) : (
-              s.node
-            )}
+            {from && to && from !== to && <ZigzagBand from={from} to={to} />}
+            {s.paint ? <div className={s.paint.light ? "ramp-light" : "ramp-dark"} style={{ backgroundColor: s.paint.color }}>{s.node}</div> : s.node}
           </Fragment>
         );
       })}
     </>
   );
 }
-const gradient = (p: Paint) =>
-  `linear-gradient(in oklab to bottom, ${p.from}${p.mid ? `, ${p.mid.color} ${Math.round(p.mid.at * 100)}%` : ""}, ${p.to})`;
 
 // ---------------------------------------------------------------- home ramp
 /**
- * White → the footer blue (ramp-8 = 60% of the old navy-900 depth) in 8 equal OKLab-lightness steps along the brand
+ * White → the footer blue (ramp-8 = 80% of the old navy-900 depth) in 8 equal OKLab-lightness steps along the brand
  * blues; position r = i/8. Navy-900 text clears 4.5:1 up to NAVY_MAX, white text from WHITE_MIN; nothing readable sits
  * between, so the section crossing each threshold reaches it inside its padding (see homePaint).
  */
 export const HOME_STOPS = Array.from({ length: 9 }, (_, i) => `var(--color-ramp-${i})`);
-export const NAVY_MAX = 0.83, WHITE_MIN = 0.94;
+/** Hero background: deep brand navy (white text). */
+export const HERO_BG = "var(--color-hero)";
+export const NAVY_MAX = 0.62, WHITE_MIN = 0.71;
 /** Ramp colour at r ∈ [0,1] (exact stop, or an OKLab mix of its two neighbours). */
 export function stopAt(t: number): string {
   const x = Math.min(1, Math.max(0, t)) * (HOME_STOPS.length - 1), i = Math.floor(x + 1e-9), f = x - i;
@@ -79,17 +61,10 @@ export function stopAt(t: number): string {
   return `color-mix(in oklab, ${HOME_STOPS[i + 1]} ${Math.round(f * 100)}%, ${HOME_STOPS[i]})`;
 }
 /**
- * Each visible section spans an equal slice of the ramp (a CMS reorder or hidden section keeps it white → footer blue).
- * Navy text while the section starts below NAVY_MAX: if it ends past it, it reaches NAVY_MAX 88% down (its bottom
- * padding/opaque cards) and finishes the step there. White text otherwise: if it starts below WHITE_MIN it reaches
- * it 15% down (the home CTA has top padding for this).
- * shortcut: assumes the default order puts the CTA last; make sections tone-aware if the CMS moves white-text sections up.
+ * Home page: a deep navy hero, "Our services" and "Guides" on a light blue (sky-100), every other section plain white (no bands between them). The zigzag therefore only
+ * appears where the colour changes: under the hero here, and above it (HomeHero draws that one under the header).
  */
 export function homePaint(keys: string[]): Record<string, Paint> {
-  const n = keys.length;
-  return Object.fromEntries(keys.map((k, i) => {
-    const a = i / n, b = (i + 1) / n, light = a < NAVY_MAX;
-    const mid = light ? (b > NAVY_MAX ? { color: stopAt(NAVY_MAX), at: 0.88 } : undefined) : a < WHITE_MIN ? { color: stopAt(WHITE_MIN), at: 0.15 } : undefined;
-    return [k, { from: stopAt(a), to: stopAt(b), light, ...(mid && { mid }) }];
-  }));
+  const [first, ...rest] = keys;
+  return Object.fromEntries([...(first ? [[first, { color: HERO_BG, light: false }]] : []), ...rest.map((k) => [k, { color: k === "services" || k === "guides" ? "var(--color-sky-100)" : "var(--color-white)", light: true }])]);
 }

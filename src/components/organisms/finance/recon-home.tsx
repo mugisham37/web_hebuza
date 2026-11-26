@@ -53,7 +53,7 @@ export function ReconHome() {
   return (
     <div className="grid gap-6">
       <PageHead title={r.title} sub={r.sub} actions={<>
-        <Button variant="outline" loading={verify.isPending} disabled={!guard.can} className="m-press" onClick={async () => {
+        <Button data-guide="finance-recon-verify" variant="outline" loading={verify.isPending} disabled={!guard.can} className="m-press" onClick={async () => {
           try { const x = await verify.mutateAsync(undefined); toast({ title: x.confirmed ? fill(r.home.verified, { n: x.confirmed }) : r.home.verifiedNone, tone: x.confirmed ? "success" : "info" }); }
           catch (e) { toast({ title: errorCopy(e, locale), tone: "danger" }); }
         }}><Icon name="refresh" size={16} aria-hidden />{r.home.verify}</Button>
@@ -134,7 +134,7 @@ function DayButton({ c, active }: { c: DayCell; active: boolean }) {
         <span className="text-eyebrow text-fg-muted">{formatDate(c.day, locale, { weekday: "short" })}</span>
         <span className="text-small font-medium tabular">{formatDate(c.day, locale, { day: "numeric", month: "short" })}</span>
         <span aria-hidden className="flex h-4 items-center gap-1 text-eyebrow">
-          {c.lock === "closed" ? <Icon name="lock" size={12} className="text-navy-600" /> : !c.lines ? <span className="text-fg-subtle">—</span>
+          {c.lock === "closed" ? <Icon name="lock" size={12} className="text-navy-600" /> : !c.lines ? <span className="text-fg-subtle"></span>
             : c.needs ? <><span className="size-2 rounded-full bg-danger" /><span className="tabular">{c.needs}</span></> : <Icon name="check" size={12} className="text-success" />}
         </span>
       </button>
@@ -187,7 +187,7 @@ function SelectedDay({ d, dayText, onClose, onReopen }: { d: ReconOverview; dayT
           {bench && <ButtonLink href={bench} variant="outline" size="sm" className="m-press">{r.home.open}</ButtonLink>}
           {s.lock === "closed"
             ? <Button size="sm" variant="secondary" disabled={!guard.can} onClick={onReopen}>{r.home.reopen}</Button>
-            : <Button size="sm" dots disabled={!guard.can || !s.lines || s.needs > 0} title={s.needs ? fill(r.close.blocked, { n: s.needs }) : undefined} onClick={onClose} className="m-press">{r.home.close}</Button>}
+            : <Button data-guide="finance-close-day" size="sm" dots disabled={!guard.can || !s.lines || s.needs > 0} title={s.needs ? fill(r.close.blocked, { n: s.needs }) : undefined} onClick={onClose} className="m-press">{r.home.close}</Button>}
         </div>
         <p className="flex items-start gap-2 text-small text-fg-muted md:hidden"><Icon name="laptop" size={14} aria-hidden className="mt-0.5" />{r.home.phone} {r.home.openDesktop}.</p>
       </div>

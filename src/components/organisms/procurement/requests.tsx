@@ -56,7 +56,7 @@ export function RequestsView() {
 
   return (
     <div className="grid gap-5">
-      <PageHead title={c.board.title} sub={c.board.sub} actions={<Button variant="primary" onClick={() => setUrlParams({ pr: "new" })} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{p.shell.requestPurchase}</Button>} />
+      <PageHead title={c.board.title} sub={c.board.sub} actions={<Button data-guide="procurement-request-purchase" variant="primary" onClick={() => setUrlParams({ pr: "new" })} dots className="m-press"><Icon name="plus" size={16} aria-hidden />{p.shell.requestPurchase}</Button>} />
       <div className="flex flex-wrap items-center justify-between gap-3 m-rise">
         <label className="relative w-full max-w-sm">
           <span className="sr-only">{c.board.search}</span>

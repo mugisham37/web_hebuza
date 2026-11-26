@@ -14,7 +14,7 @@ export const FAMILIES: FamilyMeta[] = [
     name: { en: "Online & Government Services", rw: "Serivisi za Leta kuri murandasi", fr: "Services administratifs en ligne" },
     short: { en: "Online & Government", rw: "Serivisi za Leta", fr: "Démarches en ligne" },
     blurb: { en: "RRA, RDB, Irembo, RSSB, RURA and RICA applications handled for you.", rw: "Ubusabe bwa RRA, RDB, Irembo, RSSB, RURA na RICA tubukora mu mwanya wawe.", fr: "Vos démarches RRA, RDB, Irembo, RSSB, RURA et RICA, prises en charge." },
-    promise: { en: "Government paperwork, done online — without the queues.", rw: "Impapuro za Leta zikorwa kuri murandasi — nta mirongo.", fr: "Vos démarches administratives, en ligne — sans file d'attente." },
+    promise: { en: "Government paperwork, done online, without the queues.", rw: "Impapuro za Leta zikorwa kuri murandasi, nta mirongo.", fr: "Vos démarches administratives, en ligne, sans file d'attente." },
   },
   {
     slug: "taxes-and-business-support", icon: "chart", tone: "cream", photo: "/hebuza/photos/family-tax.jpg",

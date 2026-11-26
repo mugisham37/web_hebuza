@@ -2,7 +2,7 @@
 import { readAttribution } from "@/lib/marketing/use-attribution";
 import { api, unwrap } from "@/lib/api/client";
 import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent , type ReactNode } from "react";
 import { buildIndex, searchServices, type SearchItem } from "@/lib/site/service-search";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/provider";
@@ -54,7 +54,7 @@ export type SearchCopy = { popular: string; results: string; result: string; see
 
 /** Splits a name by highlight ranges into plain / <mark> parts. */
 const Highlight = ({ text, ranges }: { text: string; ranges: [number, number][] }) => {
-  const out: React.ReactNode[] = [];
+  const out: ReactNode[] = [];
   let at = 0;
   ranges.forEach(([a, b], i) => { if (a > at) out.push(text.slice(at, a)); out.push(<mark key={i} className="bg-gold-200 text-navy-900">{text.slice(a, b)}</mark>); at = b; });
   out.push(text.slice(at));
@@ -95,7 +95,7 @@ export function ServiceSearch({ items, placeholder, copy }: { items: Suggest[]; 
   const optId = (i: number) => `${id}-opt-${i}`;
   return (
     <form role="search" className="relative w-full" onSubmit={(e) => { e.preventDefault(); if (term || hits.length) pick(Math.min(active, rows - 1)); }}>
-      <Icon name="search" size={17} aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-white" />
+      <Icon name="search" size={17} aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-ink-950" />
       <input ref={input} value={q} type="search" enterKeyHint="search" autoComplete="off" spellCheck={false}
         onChange={(e) => { setQ(e.target.value); setOpen(true); setActive(0); }} onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 150)}
         onKeyDown={(e) => {
@@ -105,12 +105,12 @@ export function ServiceSearch({ items, placeholder, copy }: { items: Suggest[]; 
         }}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-label={placeholder}
         aria-activedescendant={open && rows ? optId(active) : undefined} placeholder={placeholder}
-        className="h-10 w-full border-2 border-gold-400 bg-(--color-ramp-8) pr-10 pl-10 text-small font-medium text-white shadow-[0_6px_18px_-8px_color-mix(in_oklab,var(--color-ramp-8)_70%,transparent)] transition-[border-color,box-shadow] placeholder:text-white hover:border-gold-300 focus:border-white focus:shadow-[0_0_0_3px_var(--color-gold-400)] focus:outline-none lg:h-11 [&::-webkit-search-cancel-button]:hidden" />
+        className="h-10 w-full border-2 border-gold-500 bg-white pr-10 pl-10 text-small font-medium text-ink-950 shadow-[0_6px_18px_-10px_color-mix(in_oklab,var(--color-gold-700)_60%,transparent)] transition-[border-color,box-shadow] placeholder:text-ink-600 hover:border-gold-600 focus:border-ink-950 focus:shadow-[0_0_0_3px_var(--color-gold-300)] focus:outline-none lg:h-11 [&::-webkit-search-cancel-button]:hidden" />
       {q ? (
         <button type="button" aria-label="Clear" onMouseDown={(e) => e.preventDefault()} onClick={() => { setQ(""); setActive(0); input.current?.focus(); }}
-          className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center text-white hover:bg-white/15"><Icon name="x" size={16} /></button>
+          className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center text-ink-950 hover:bg-ink-100"><Icon name="x" size={16} /></button>
       ) : (
-        <kbd aria-hidden className="absolute top-1/2 right-2.5 hidden -translate-y-1/2 border border-white/40 px-1.5 text-eyebrow text-white lg:block">/</kbd>
+        <kbd aria-hidden className="absolute top-1/2 right-2.5 hidden -translate-y-1/2 border border-ink-950/30 px-1.5 text-eyebrow text-ink-700 lg:block">/</kbd>
       )}
       {open && (
         // Lives inside the fixed header (z-50), so it floats above the hero and everything else on the page.
@@ -155,47 +155,43 @@ export function ServiceSearch({ items, placeholder, copy }: { items: Suggest[]; 
 type FeeTier = { key: string; label: string; fee: number; governmentFee: number; days: number };
 
 /** Standard/Urgent toggle + fee breakdown (F-CAT-05/06). Totals are display; the server re-prices on apply. */
-export function FeeBreakdown({ tiers, slug, copy, compact }: {
-  tiers: FeeTier[]; slug: string; compact?: boolean;
-  copy: { standard: string; urgent: string; serviceFee: string; govFee: string; vat: string; included: string; total: string; ready: string; apply: string; trust: string };
+export function FeeBreakdown({ tiers, slug, copy, side }: {
+  tiers: FeeTier[]; slug: string; side?: React.ReactNode;
+  copy: { standard: string; urgent: string; serviceFee: string; govFee: string; total: string; apply: string };
 }) {
   const { locale } = useI18n();
   const [i, setI] = useState(0);
   const t = tiers[i] ?? tiers[0];
   if (!t) return null;
   const row = (k: string, v: string, strong?: boolean) => (
-    <div className={cx("flex items-baseline gap-2", strong ? "text-label-lg" : "text-body")}>
+    <div className={cx("flex items-baseline gap-2", strong ? "text-label-lg" : "text-small")}>
       <span className={strong ? "" : "text-fg-muted"}>{k}</span><span aria-hidden className="mb-1 flex-1 border-b border-dotted border-border-strong" /><span className="tabular">{v}</span>
     </div>
   );
+  // Horizontal: fee lines on the left, actions on the right (stacks on narrow screens).
   return (
-    <div className="grid gap-4">
-      {tiers.length > 1 && (
-        <div role="radiogroup" aria-label={`${copy.standard} / ${copy.urgent}`} className="grid grid-cols-2 bg-ink-100 p-1">
-          {tiers.map((x, idx) => (
-            <button key={x.key} type="button" role="radio" aria-checked={idx === i} onClick={() => setI(idx)}
-              className={cx("h-10 text-button transition-colors", idx === i ? "bg-secondary text-on-secondary" : "text-fg-muted hover:text-fg-heading")}>
-              {x.key === "urgent" ? copy.urgent : copy.standard}
-            </button>
-          ))}
-        </div>
-      )}
-      <div className="grid gap-2.5">
+    <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid content-start gap-2">
+        {tiers.length > 1 && (
+          <div role="radiogroup" aria-label={`${copy.standard} / ${copy.urgent}`} className="mb-1 grid grid-cols-2 bg-ink-100 p-1">
+            {tiers.map((x, idx) => (
+              <button key={x.key} type="button" role="radio" aria-checked={idx === i} onClick={() => setI(idx)}
+                className={cx("h-8 text-small font-semibold transition-colors", idx === i ? "bg-secondary text-on-secondary" : "text-fg-muted hover:text-fg-heading")}>
+                {x.key === "urgent" ? copy.urgent : copy.standard}
+              </button>
+            ))}
+          </div>
+        )}
         {row(copy.serviceFee, formatMoney(t.fee, "RWF", locale))}
-        {row(copy.govFee, t.governmentFee ? formatMoney(t.governmentFee, "RWF", locale) : "—")}
-        {row(copy.vat, copy.included)}
-        <div className="my-1 border-t border-border" />
-        {row(copy.total, formatMoney(t.fee + t.governmentFee, "RWF", locale), true)}
+        {t.governmentFee > 0 && row(copy.govFee, formatMoney(t.governmentFee, "RWF", locale))}
+        <div className="border-t border-border pt-2">{row(copy.total, formatMoney(t.fee + t.governmentFee, "RWF", locale), true)}</div>
       </div>
-      <p className="flex items-center gap-2 text-small text-fg-muted"><Icon name="clock" size={16} />{copy.ready.replace("{days}", String(t.days))}</p>
-      {!compact && (
-        <>
-          <Link href={localHref(locale, `/apply/${slug}?tier=${t.key}`)} className="group/btn inline-flex h-14 items-center justify-center gap-3 bg-primary text-label font-semibold text-on-gold transition-colors hover:bg-primary-hover active:bg-primary-active">
-            {copy.apply}<span className="inline-flex gap-[3px]"><span className="btn-dot size-[6px] rounded-full bg-navy-900" /><span className="btn-dot size-[6px] rounded-full bg-navy-900/45" /><span className="btn-dot size-[6px] rounded-full bg-navy-900/20" /></span>
-          </Link>
-          <p className="flex items-center gap-2 text-small text-fg-subtle"><Icon name="lock" size={14} />{copy.trust}</p>
-        </>
-      )}
+      <div className="grid content-start gap-2">
+        <Link href={localHref(locale, `/apply/${slug}?tier=${t.key}`)} className="group/btn inline-flex h-12 items-center justify-center gap-3 bg-primary text-label font-semibold text-on-gold transition-colors hover:bg-primary-hover active:bg-primary-active">
+          {copy.apply}<span className="inline-flex gap-[3px]"><span className="btn-dot size-[6px] rounded-full bg-navy-900" /><span className="btn-dot size-[6px] rounded-full bg-navy-900/45" /><span className="btn-dot size-[6px] rounded-full bg-navy-900/20" /></span>
+        </Link>
+        {side}
+      </div>
     </div>
   );
 }

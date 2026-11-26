@@ -33,7 +33,7 @@ export function Reminders() {
   return (
     <div className="grid gap-5">
       <div><h1 className="text-h2">{c.title}</h1><p className="text-body text-fg-muted">{c.lede}</p></div>
-      <div role="tablist" aria-label={c.title} className="flex flex-wrap gap-1">
+      <div data-guide="client-reminders-tabs" role="tablist" aria-label={c.title} className="flex flex-wrap gap-1">
         {(["open", "snoozed", "done"] as const).map((t) => (
           <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
             className={tab === t ? "h-9 bg-secondary px-3 text-small text-on-secondary" : "h-9 border border-border bg-white px-3 text-small hover:bg-navy-50"}>
@@ -52,8 +52,8 @@ export function Reminders() {
               </span>
               {i.state === "open" ? (
                 <span className="flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={() => set.mutate({ id: i.id, state: "snoozed" })}>{c.snooze}</Button>
-                  <Button size="sm" variant="outline" onClick={() => set.mutate({ id: i.id, state: "done" })}>{c.done}</Button>
+                  <Button data-guide="client-reminders-snooze" size="sm" variant="ghost" onClick={() => set.mutate({ id: i.id, state: "snoozed" })}>{c.snooze}</Button>
+                  <Button data-guide="client-reminders-done" size="sm" variant="outline" onClick={() => set.mutate({ id: i.id, state: "done" })}>{c.done}</Button>
                 </span>
               ) : (
                 <Button size="sm" variant="ghost" onClick={() => set.mutate({ id: i.id, state: "open" })}>{c.reopen}</Button>

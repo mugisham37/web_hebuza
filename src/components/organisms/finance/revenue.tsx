@@ -165,7 +165,7 @@ function AllocationDrawer({ a, onClose, refetch, stale }: { a: AllocView; onClos
   const reasons = Object.entries(r.act.reasons).map(([value, label]) => ({ value, label }));
   useShortcut("a", r.act.approve, () => { if (a.can.approve && online) void act("approve", {}, r.act.approved); }, "case", a.can.approve);
   const last = a.last;
-  const ruleText = `${r.scope[a.rule.scope]} · ${fill(r.drawer.effective, { from: a.rule.from ? formatDate(a.rule.from, locale) : "—" })} ${a.rule.to ? fill(r.drawer.until, { to: formatDate(a.rule.to, locale) }) : `· ${r.drawer.openEnded}`}`;
+  const ruleText = `${r.scope[a.rule.scope]} · ${fill(r.drawer.effective, { from: a.rule.from ? formatDate(a.rule.from, locale) : "" })} ${a.rule.to ? fill(r.drawer.until, { to: formatDate(a.rule.to, locale) }) : `· ${r.drawer.openEnded}`}`;
   const disabled = !online;
   const footer = (
     <>
@@ -243,13 +243,13 @@ function AllocationDrawer({ a, onClose, refetch, stale }: { a: AllocView; onClos
       <ReasonDialog open={dlg === "hold" || dlg === "void"} onClose={() => setDlg(null)} title={dlg === "void" ? r.act.voidTitle : r.act.holdTitle} options={reasons}
         notice={dlg === "void" ? r.act.voidNotice : undefined} destructive={dlg === "void"} audited confirmLabel={dlg === "void" ? r.act.void : r.act.hold}
         onConfirm={async ({ reason, note }) => {
-          const res = await act(dlg!, { reason: [r.act.reasons[reason] ?? reason, note].filter(Boolean).join(" — ") }, dlg === "void" ? r.act.voided : r.act.held);
+          const res = await act(dlg!, { reason: [r.act.reasons[reason] ?? reason, note].filter(Boolean).join(", ") }, dlg === "void" ? r.act.voided : r.act.held);
           if (!res) throw new Error(r.load.allocations);
           setDlg(null);
         }} />
       <TextDialog open={dlg === "query"} onClose={() => setDlg(null)} title={r.act.queryTitle} label={r.act.queryNote} confirm={r.act.query}
         onConfirm={async (note) => !!(await act("query", { note }, r.act.queried))} />
-      <ConflictDialog open={run.conflict} who={last?.by ?? "—"} when={last?.at ?? new Date(0).toISOString()} onClose={run.closeConflict} onRefresh={() => { run.closeConflict(); refetch(); }} />
+      <ConflictDialog open={run.conflict} who={last?.by ?? ""} when={last?.at ?? new Date(0).toISOString()} onClose={run.closeConflict} onRefresh={() => { run.closeConflict(); refetch(); }} />
       {run.dialog}
     </Sheet>
   );
@@ -270,11 +270,11 @@ function RulesTab() {
   const def = rules.data?.defaultBps ?? 0;
   const cols: OpsColumn<RuleView>[] = [
     { key: "scope", label: r.rules.cols.scope, cell: (x) => <span className="inline-flex h-6 items-center bg-navy-50 px-2.5 text-eyebrow text-navy-800">{r.scope[x.scope]}</span>, sort: (x) => SCOPE_ORDER.indexOf(x.scope) },
-    { key: "key", label: r.rules.cols.key, wrap: true, cell: (x) => x.label || "—" },
+    { key: "key", label: r.rules.cols.key, wrap: true, cell: (x) => x.label || "" },
     { key: "pct", label: r.rules.cols.pct, align: "right", cell: (x) => <span className={cx("tabular", x.agentPct !== def && "font-medium text-navy-800")}>{pctText(x.agentPct)}</span>, sort: (x) => x.agentPct },
     { key: "applies", label: r.rules.cols.applies, cell: (x) => r.applies[x.appliesTo], card: false },
     { key: "from", label: r.rules.cols.from, cell: (x) => formatDate(x.from, locale), sort: (x) => x.from },
-    { key: "to", label: r.rules.cols.to, cell: (x) => (x.to ? formatDate(x.to, locale) : "—") },
+    { key: "to", label: r.rules.cols.to, cell: (x) => (x.to ? formatDate(x.to, locale) : "") },
     { key: "status", label: r.rules.cols.status, wrap: true, cell: (x) => <span className="inline-flex flex-wrap items-center gap-1.5"><FinStatus status={x.status} kind="rule" />{x.status === "pending_approval" && <span className="text-eyebrow text-fg-muted">{r.rules.needsExec}</span>}</span> },
     { key: "act", label: "", align: "right", card: false, cell: (x) => (
       <span className="inline-flex gap-1.5">
@@ -352,7 +352,7 @@ function AdjustmentsTab() {
   const cols: OpsColumn<AdjView>[] = [
     { key: "at", label: r.adj.cols.at, cell: (a) => <span className="tabular">{a.at.slice(0, 10)}</span>, sort: (a) => a.at },
     { key: "worker", label: r.adj.cols.worker, cell: (a) => a.workerName, sort: (a) => a.workerName },
-    { key: "case", label: r.adj.cols.case, cell: (a) => <span className="tabular">{a.caseRef ?? a.refundNo ?? "—"}</span>, card: false },
+    { key: "case", label: r.adj.cols.case, cell: (a) => <span className="tabular">{a.caseRef ?? a.refundNo ?? ""}</span>, card: false },
     { key: "reason", label: r.adj.cols.reason, cell: (a) => r.adj.reasons[a.reason] ?? a.reason },
     { key: "amount", label: r.adj.cols.amount, align: "right", cell: (a) => <Amount value={a.amount} sign="always" size="sm" />, sort: (a) => a.amount },
     { key: "note", label: r.adj.cols.note, wrap: true, card: false, cell: (a) => <span className="line-clamp-2 max-w-64 text-small text-fg-muted">{a.note}</span> },

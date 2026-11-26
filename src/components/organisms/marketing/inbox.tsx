@@ -53,7 +53,7 @@ export function InboxView() {
         : !all.length ? <EmptyPanel title={c.inbox.empty} />
         : (
         <div className="grid gap-4 lg:grid-cols-[20rem_1fr_16rem]">
-          <ul className={cx("grid content-start gap-1.5", active && "max-lg:hidden")}>
+          <ul data-guide="marketing-threads" className={cx("grid content-start gap-1.5", active && "max-lg:hidden")}>
             {!list.length && <li className="p-4 text-small text-fg-muted">{m.states.filteredEmpty}</li>}
             {list.map((t) => (
               <li key={t.id}>
@@ -122,7 +122,7 @@ function Conversation({ t, now }: { t: InboxThread; now: number | null }) {
             </div>
           </div>
         ) : (
-          <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); if (body.trim()) send({ body }); }}>
+          <form data-guide="marketing-reply" className="flex gap-2" onSubmit={(e) => { e.preventDefault(); if (body.trim()) send({ body }); }}>
             <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={2} placeholder={c.inbox.reply} aria-label={c.inbox.reply}
               className="min-w-0 flex-1 border border-border-strong p-2.5 text-small focus-visible:outline-2 focus-visible:outline-focus" />
             <Button type="submit" disabled={!online || !body.trim()} loading={reply.isPending}>{c.inbox.send}</Button>
@@ -141,7 +141,7 @@ function LeadRail({ t }: { t: InboxThread }) {
   const toast = useToast();
   const [tag, setTag] = useState("");
   return (
-    <aside aria-label={c.inbox.actions} className="grid content-start gap-3 border border-border bg-white p-3">
+    <aside data-guide="marketing-lead-actions" aria-label={c.inbox.actions} className="grid content-start gap-3 border border-border bg-white p-3">
       <h2 className="text-label">{c.inbox.actions}</h2>
       {t.leadId ? (
         <Link href={localHref(locale, `/marketing/leads?lead=${t.leadId}`)} className="inline-flex h-9 items-center justify-center bg-ink-100 px-4 text-small font-medium m-press">{fill(c.inbox.openLead, { id: t.leadId })}</Link>
@@ -153,7 +153,7 @@ function LeadRail({ t }: { t: InboxThread }) {
       )}
       <label className="grid gap-1 text-small">{c.inbox.assign}
         <Select value={t.assigneeId ?? ""} onChange={(e) => e.target.value && act.mutate({ id: t.id, action: "assign", value: e.target.value })}>
-          <option value="">—</option>{staff.list.filter((s) => s.role === "marketing").map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          <option value=""></option>{staff.list.filter((s) => s.role === "marketing").map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </Select>
       </label>
       <form className="grid gap-1 text-small" onSubmit={(e) => { e.preventDefault(); if (tag.trim()) { act.mutate({ id: t.id, action: "tag", value: tag.trim() }); setTag(""); } }}>

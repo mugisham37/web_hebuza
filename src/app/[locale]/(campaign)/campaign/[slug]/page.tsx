@@ -47,7 +47,7 @@ export default async function CampaignPage({ params }: Props) {
   const t = cp.t[locale];
   const c = getLd(locale).campaign;
   const price = `${formatMoney(cp.price, "RWF", locale)} (${PROVISIONAL[locale]})`;
-  const wa = waLink(`Muraho HEBUZA — ${t.l1} ${t.hl}`);
+  const wa = waLink(`Muraho HEBUZA, ${t.l1} ${t.hl}`);
 
   return (
     <div className="pb-24 md:pb-0">

@@ -268,7 +268,7 @@ export function diffDrafts(a: Draft, b: Draft): Change[] {
         kind: "changed",
         area: "sla",
         label: k,
-        detail: `${a.sla.days[k] ?? "—"} → ${b.sla.days[k] ?? "—"}`,
+        detail: `${a.sla.days[k] ?? ""} → ${b.sla.days[k] ?? ""}`,
       });
   });
   return out;

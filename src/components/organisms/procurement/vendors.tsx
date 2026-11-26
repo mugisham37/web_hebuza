@@ -51,7 +51,7 @@ export function VendorsView() {
     { key: "status", label: c.cols.status, wrap: true, cell: (r) => <span className="flex flex-wrap gap-1"><ProcPill state={r.status} machine="vendor" />{r.locked && <LockChip until={r.lockUntil ?? null} compact />}</span> },
     { key: "bills", label: c.cols.openBills, align: "right", sort: (r) => r.openBills, cell: (r) => <span className="tabular">{r.openBills}</span> },
     { key: "balance", label: c.cols.balance, align: "right", sort: (r) => r.balance, cell: (r) => <Amount value={r.balance} className="font-semibold" /> },
-    { key: "last", label: c.cols.lastPayment, sort: (r) => r.lastPaymentAt ?? "", cell: (r) => <span className="text-small text-fg-muted">{r.lastPaymentAt ? formatDate(r.lastPaymentAt, locale) : "—"}</span> },
+    { key: "last", label: c.cols.lastPayment, sort: (r) => r.lastPaymentAt ?? "", cell: (r) => <span className="text-small text-fg-muted">{r.lastPaymentAt ? formatDate(r.lastPaymentAt, locale) : ""}</span> },
   ];
   const sel = (key: keyof typeof f, label: string, opts: [string, string][]) => (
     <label className="grid gap-1 text-eyebrow text-fg-subtle">{label}
@@ -68,7 +68,7 @@ export function VendorsView() {
   );
   return (
     <div className="grid gap-5">
-      <PageHead title={c.title} sub={c.sub} actions={<Button variant="primary" dots disabled={!online} onClick={() => setUrlParams({ sheet: "new" })} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
+      <PageHead title={c.title} sub={c.sub} actions={<Button data-guide="procurement-add-supplier" variant="primary" dots disabled={!online} onClick={() => setUrlParams({ sheet: "new" })} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
       <div className="flex flex-wrap items-end gap-3 m-rise">
         <label className="relative w-full max-w-xs">
           <span className="sr-only">{p.common.search}</span>
@@ -113,7 +113,7 @@ export function VendorForm({ vendor, onClose, onDone }: { vendor?: Vendor; onClo
   const set = (patch: Partial<Draft>) => setV((x) => ({ ...x, ...patch }));
   const dupCheck = async () => {
     if (!v.legalName && !v.tin) return;
-    try { setDups((await checkDuplicate(v.tin, v.legalName, vendor?.id)).matches); } catch { /* hint only — never blocks saving */ }
+    try { setDups((await checkDuplicate(v.tin, v.legalName, vendor?.id)).matches); } catch { /* hint only, never blocks saving */ }
   };
   async function submit() {
     const e: Record<string, string> = {};

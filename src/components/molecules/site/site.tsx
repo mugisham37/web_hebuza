@@ -55,26 +55,6 @@ export function PhotoFrame({ src, alt, rotate = 0, caption, meta, tag, badge, cl
   );
 }
 
-/** Three fanned photo cards + badge (landing1 hero "Visual": −7° / 4° / −4° at .96). */
-export function CardFan({ back1, back2, front, alt, caption, meta, tag, badge, priority }: {
-  back1: string; back2: string; front: string; alt: string; caption: string; meta: string; tag: string; badge: string; priority?: boolean;
-}) {
-  return (
-    <div data-hero="visual" className="relative mx-auto aspect-[1.05] w-full max-w-[34rem]">
-      <div data-hero="card" className="absolute top-[4%] left-[2%] w-[48%]" style={{ rotate: "-7deg" }}>
-        <PhotoFrame src={back1} alt="" ratio="aspect-[3/4]" sizes="20vw" />
-      </div>
-      <div data-hero="card" className="absolute top-0 right-[1%] w-[46%]" style={{ rotate: "4deg" }}>
-        <PhotoFrame src={back2} alt="" ratio="aspect-[3/4]" sizes="20vw" />
-      </div>
-      <div data-hero="card" className="absolute top-[13%] left-[22%] w-[58%]" style={{ rotate: "-4deg", scale: ".96" }}>
-        <PhotoFrame src={front} alt={alt} caption={caption} meta={meta} tag={tag} ratio="aspect-[4/3.6]" priority={priority} sizes="(min-width: 1200px) 32vw, 70vw" />
-      </div>
-      <div data-hero="badge" className="absolute bottom-[4%] left-[8%] md:left-[12%]"><CircleBadge text={badge} /></div>
-    </div>
-  );
-}
-
 export type FamilyRow = { name: string; href: string; popular?: boolean };
 const CARD = {
   large: "theme-dark bg-navy-700 text-white md:col-span-2 lg:col-span-1",
@@ -169,10 +149,10 @@ export function ServiceCard({ s, locale, familyName, tone }: { s: ServiceVM; loc
 }
 
 /** Landing1 approach card: colour tile or photo, tag pill at bottom, 2-line text. */
-export function StepCard({ tag, text, kind, photo, tagVariant = "navy" }: { tag: string; text: string; kind: "dots" | "bars" | "photo" | "doc"; photo?: string; tagVariant?: "navy" | "glass" | "new" | "selected" }) {
-  const bg = kind === "dots" ? "bg-navy-700" : kind === "bars" ? "bg-navy-900" : kind === "doc" ? "border border-sky-100 bg-sky-50" : "bg-ink-950";
+export function StepCard({ tag, text, kind, photo, tagVariant = "navy", short }: { tag: string; text: string; kind: "dots" | "bars" | "photo" | "doc"; photo?: string; tagVariant?: "navy" | "glass" | "new" | "selected"; /** half-height strip (service pages) */ short?: boolean }) {
+  const bg = kind === "dots" ? "bg-navy-700" : kind === "bars" ? "bg-navy-900" : kind === "doc" ? "bg-gold-200" : "bg-ink-950";
   return (
-    <div data-reveal className={cx("relative flex aspect-[3/4] lg:aspect-square min-w-[15rem] snap-start flex-col justify-end overflow-hidden p-4 text-white md:min-w-0", bg)}>
+    <div data-reveal className={cx("relative flex min-w-[15rem]", short ? "h-44 lg:h-48" : "aspect-[3/4] lg:aspect-square", " snap-start flex-col justify-end overflow-hidden p-4 text-white md:min-w-0", bg)}>
       {kind === "photo" && photo && (
         <>
           <Parallax><Image src={photo} alt="" fill sizes="(min-width: 1200px) 18vw, 60vw" className="object-cover" /></Parallax>
@@ -181,54 +161,23 @@ export function StepCard({ tag, text, kind, photo, tagVariant = "navy" }: { tag:
       )}
       {kind === "dots" && (
         <div aria-hidden className="absolute top-4 left-4 grid grid-cols-5 gap-2">
-          {Array.from({ length: 10 }, (_, i) => <span key={i} className={cx("size-6 rounded-full", i < 3 ? "bg-gold-400" : "bg-white/20")} />)}
+          {Array.from({ length: 10 }, (_, i) => <span key={i} className={cx(short ? "size-4 rounded-full" : "size-6 rounded-full", i < 3 ? "bg-gold-400" : "bg-white/20")} />)}
         </div>
       )}
       {kind === "bars" && (
         <div aria-hidden className="absolute top-4 left-4 flex gap-2">
-          {Array.from({ length: 12 }, (_, i) => <span key={i} className={cx("h-9 w-1", i === 5 || i === 6 ? "bg-gold-400" : "bg-white/20")} />)}
+          {Array.from({ length: 12 }, (_, i) => <span key={i} className={cx(short ? "h-6 w-1" : "h-9 w-1", i === 5 || i === 6 ? "bg-gold-400" : "bg-white/20")} />)}
         </div>
       )}
-      {kind === "doc" && <Icon name="fileCheck" size={64} strokeWidth={1.5} className="absolute top-5 left-5 text-navy-700" />}
+      {kind === "doc" && <Icon name="fileCheck" size={short ? 40 : 64} strokeWidth={1.5} className="absolute top-4 left-4 text-navy-800" />}
       <div className="relative">
         <Tag variant={tagVariant} className={cx("h-7 text-eyebrow", kind === "doc" && "border-0 bg-navy-700 text-white")}>{tag}</Tag>
-        <p className={cx("mt-3 text-small font-medium", kind === "doc" ? "text-navy-800" : "text-white")}>{text}</p>
+        <p className={cx("mt-3 text-small font-medium", kind === "doc" ? "text-ink-900" : "text-white")}>{text}</p>
       </div>
     </div>
   );
 }
 
-/** Guide / journal card. */
-export function GuideCard({ img, tag, date, read, title, excerpt, href, compact }: { img: string; tag: string; date: string; read: string; title: string; excerpt: string; href: string; compact?: boolean }) {
-  if (compact) {
-    // Horizontal card: square photo left, text right (~1/3 the height of the stacked card).
-    return (
-      <Link data-reveal href={href} className="group flex min-w-[17rem] snap-start gap-3 overflow-hidden border border-border bg-surface p-1.5 transition-[translate,box-shadow,border-color] duration-(--duration-slow) hover:-translate-y-0.5 hover:border-navy-300 hover:shadow-md md:min-w-0">
-        <div className="relative aspect-square w-28 shrink-0 overflow-hidden lg:w-32">
-          <Image src={img} alt="" fill sizes="128px" className="object-cover transition-transform duration-(--duration-reveal) ease-(--ease-out-expo) group-hover:scale-105" />
-        </div>
-        <div className="flex min-w-0 flex-1 flex-col justify-center py-1.5 pr-2">
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-eyebrow text-fg-subtle"><span className="font-medium text-navy-700">{tag}</span><Star className="size-2 text-gold-600" />{date}<Star className="size-2 text-gold-600" />{read}</p>
-          <h3 className="mt-1.5 line-clamp-2 text-label-lg text-fg-heading">{title}</h3>
-          <p className="mt-1 line-clamp-1 text-small text-fg-subtle">{excerpt}</p>
-        </div>
-      </Link>
-    );
-  }
-  return (
-    <Link data-reveal href={href} className="group flex min-w-[17rem] snap-start flex-col overflow-hidden border border-border bg-surface p-1.5 transition-[translate,box-shadow,border-color] duration-(--duration-slow) hover:-translate-y-1 hover:border-navy-300 hover:shadow-md md:min-w-0">
-      <div className="relative aspect-[3/2] overflow-hidden">
-        <Image src={img} alt="" fill sizes="(min-width: 1200px) 28vw, 80vw" className="object-cover transition-transform duration-(--duration-reveal) ease-(--ease-out-expo) group-hover:scale-105" />
-        <Tag variant="outline" className="absolute top-3 left-3 h-7 text-eyebrow">{tag}</Tag>
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <p className="flex items-center gap-2 text-eyebrow text-fg-subtle">{date}<Star className="size-2.5 text-gold-600" />{read}</p>
-        <h3 className="mt-2 text-card-title">{title}</h3>
-        <p className="mt-1.5 text-small text-fg-subtle">{excerpt}</p>
-      </div>
-    </Link>
-  );
-}
 
 /** Two cards: HEBUZA's work vs institution decision (F-REQ-09). */
 export function HebuzaVsInstitution({ hebuza, institution, done, outcome, caption, dark }: { hebuza: string; institution: string; done: string; outcome: string; caption: string; dark?: boolean }) {
@@ -304,7 +253,7 @@ export function BlockRenderer({ blocks, variant, assetUrl, slot }: {
           case "rich_text": return <RichText key={b.id} doc={t.doc} />;
           case "callout": return <p key={b.id} className={`flex gap-3 border-l-4 p-5 text-body text-fg ${p.tone === "warn" ? "border-warning bg-warning-bg" : "border-info bg-info-bg"}`}><Icon name="sparkle" size={18} className="mt-1 shrink-0" aria-hidden />{t.text}</p>;
           case "tip": return <p key={b.id} className="flex gap-3 border-l-4 border-gold-400 bg-gold-50 p-5 text-body text-fg"><Star className="mt-1 size-4 shrink-0 text-gold-600" />{t.text}</p>;
-          case "quote": return <blockquote key={b.id} className="border-l-4 border-rule pl-5 text-lead text-fg-heading">“{t.text}”{t.cite && <footer className="mt-2 text-small text-fg-muted">— {t.cite}</footer>}</blockquote>;
+          case "quote": return <blockquote key={b.id} className="border-l-4 border-rule pl-5 text-lead text-fg-heading">“{t.text}”{t.cite && <footer className="mt-2 text-small text-fg-muted">{t.cite}</footer>}</blockquote>;
           case "requirements": return <ul key={b.id} className="grid gap-2">{strs(t.items).map((r, i) => <li key={i} className="flex gap-3"><Icon name="fileCheck" size={20} className="mt-0.5 shrink-0 text-navy-700" aria-hidden />{r}</li>)}</ul>;
           case "steps": return <ol key={b.id} className="grid gap-3">{strs(t.items).map((s, i) => <li key={i} className="flex items-center gap-3"><span className="flex size-7 shrink-0 items-center justify-center bg-navy-700 text-small font-medium text-white">{i + 1}</span>{s}</li>)}</ol>;
           case "stats": return <dl key={b.id} className="grid grid-cols-2 gap-4 md:grid-cols-4">{((t.items ?? []) as { value: string; label: string }[]).map((s, i) => <div key={i} className="border border-border bg-surface p-5"><dt className="text-small text-fg-muted">{s.label}</dt><dd className="text-h3 tabular text-fg-heading">{s.value}</dd></div>)}</dl>;
@@ -353,63 +302,21 @@ export function TrackHero({ c, children }: { c: LcCopy["track"]; children: React
   );
 }
 
-export const DIRECTIONS_URL =
-  "https://www.google.com/maps/search/?api=1&query=HEBUZA%20Kigali%20Rwanda";
+export const OFFICE_PLACE = "Silverback Mall, Kigali";
+export const DIRECTIONS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(OFFICE_PLACE)}`;
 
-/** Static map card (no embed, no third-party request): drawn streets + pin. shortcut: swap for a real static map image once the address is confirmed. */
-export function MapArt({
-  className,
-  children,
-}: {
-  className?: string;
-  children?: React.ReactNode;
-}) {
+/** Real map of the office (Google Maps embed), toned to the brand: desaturated with a light navy wash. Children overlay it. */
+export function MapArt({ className, children }: { className?: string; children?: React.ReactNode }) {
   return (
-    <div
-      className={cx(
-        "relative overflow-hidden border border-border bg-ink-50",
-        className,
-      )}
-    >
-      <svg
-        aria-hidden
-        viewBox="0 0 400 240"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 size-full text-white"
-      >
-        <path
-          d="M-10 170 C80 150 140 190 220 160 S360 110 420 130"
-          className="stroke-sky-200"
-          strokeWidth="26"
-          fill="none"
-        />
-        <g stroke="currentColor" fill="none" strokeLinecap="round">
-          <path d="M-10 60 L420 110" strokeWidth="9" />
-          <path d="M120 -10 L180 260" strokeWidth="7" />
-          <path d="M300 -10 L250 260" strokeWidth="9" />
-          <path d="M-10 200 L420 180" strokeWidth="5" />
-          <path d="M40 -10 L90 260" strokeWidth="3" />
-          <path d="M360 -10 L390 260" strokeWidth="3" />
-          <path d="M-10 130 C100 120 200 140 420 60" strokeWidth="4" />
-        </g>
-        <circle cx="70" cy="40" r="26" className="fill-sky-100" />
-        <circle cx="330" cy="200" r="34" className="fill-sky-100" />
-      </svg>
-      <span
-        aria-hidden
-        className="absolute top-[52%] left-[64%] flex -translate-x-1/2 -translate-y-full flex-col items-center"
-      >
-        <span className="flex size-10 items-center justify-center rounded-full bg-navy-700 text-white shadow-lg" data-round>
-          <Icon name="mapPin" size={20} />
-        </span>
-        <span className="h-3 w-0.5 bg-navy-700" />
-      </span>
-      <span
-        aria-hidden
-        className="absolute bottom-4 left-1/3 font-display text-h3 text-navy-700/70"
-      >
-        Kigali
-      </span>
+    <div className={cx("relative overflow-hidden border border-border bg-ink-50", className)}>
+      <iframe
+        title={OFFICE_PLACE}
+        src={`https://www.google.com/maps?q=${encodeURIComponent(OFFICE_PLACE)}&z=16&output=embed`}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        className="absolute inset-0 size-full border-0 grayscale-[0.6] contrast-[1.05]"
+      />
+      <span aria-hidden className="pointer-events-none absolute inset-0 bg-navy-700/10 mix-blend-multiply" />
       {children}
     </div>
   );

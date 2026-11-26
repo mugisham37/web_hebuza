@@ -86,7 +86,7 @@ export function DocViewer({
     );
   return (
     <div className="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)_18rem]">
-      <nav
+      <nav data-guide="ops-doc-rail"
         aria-label={t.rail}
         className="max-lg:-mx-1 max-lg:overflow-x-auto max-lg:px-1"
       >
@@ -150,7 +150,7 @@ function Preview({ doc, refId }: { doc: DocVM; refId: string }) {
         >
           {zoom}%
         </output>
-        <button
+        <button data-guide="ops-doc-zoom"
           type="button"
           className={tool}
           aria-label={t.zoomIn}
@@ -307,7 +307,7 @@ function Precheck({
       aria-labelledby="pc-h"
       className="grid content-start gap-3 border border-border bg-white p-4"
     >
-      <h2 id="pc-h" className="text-label-lg">
+      <h2 data-guide="ops-precheck" id="pc-h" className="text-label-lg">
         {t.precheck}
       </h2>
       <ul className="grid gap-2">
@@ -343,7 +343,7 @@ function Precheck({
         </p>
       )}
       <div className="grid grid-cols-2 gap-2" hidden={readOnly}>
-        <Button
+        <Button data-guide="ops-doc-accept"
           className="justify-center max-sm:h-12"
           disabled={locked || doc.state === "accepted"}
           loading={dec.isPending && dec.variables?.decision === "accepted"}
@@ -356,7 +356,7 @@ function Precheck({
           <Icon name="check" size={16} aria-hidden />
           {t.accept}
         </Button>
-        <Button
+        <Button data-guide="ops-doc-reject"
           variant="outline"
           className="justify-center max-sm:h-12"
           disabled={locked}
@@ -382,7 +382,7 @@ function Precheck({
         destructive
         audited
         onConfirm={({ reason, note }) =>
-          decide("rejected", note ? `${reason} — ${note}` : reason)
+          decide("rejected", note ? `${reason}, ${note}` : reason)
         }
       />
     </section>

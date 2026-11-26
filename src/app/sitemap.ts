@@ -2,9 +2,10 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/shared/i18n/config";
 import { SITE_URL } from "@/lib/site";
 import { getFamilies, getServices } from "@/lib/catalogue";
+import { CLIENT_GUIDES } from "@/content/guides";
 import { getManifest } from "@/lib/marketing/cms/read";
 
-const STATIC = ["", "/services", "/pricing", "/about", "/faq", "/contact", "/track", "/knowledge", "/updates", "/book", "/join-us", "/how-it-works", "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility"];
+const STATIC = ["", "/services", "/pricing", "/about", "/faq", "/contact", "/track", "/updates", "/guides", "/book", "/join-us", "/how-it-works", "/legal/terms", "/legal/privacy", "/legal/cookies", "/legal/disclaimers", "/accessibility"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages use generation time; services use their catalogue updated_at.
@@ -12,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: [string, Date][] = [
     ...STATIC.map((p): [string, Date] => [p, now]),
     ...(await getFamilies("en")).map((f): [string, Date] => [`/services/c/${f.slug}`, now]),
+    ...CLIENT_GUIDES.map((g): [string, Date] => [`/guides/${g.slug}`, new Date(g.updated)]),
   ];
   // F-CAT-07: each locale lists its own service slug; hreflang points at the sibling slugs.
   const svc = (await getServices("en")).flatMap((s) => locales.map((l) => ({
@@ -20,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })));
   // CMS-fed pages: only locales with a live variant are listed (plan 10 §2.6, spec §13).
   const cms = await getManifest();
-  const cmsUrls = (["knowledge", "updates"] as const).flatMap((k) => cms[k].map((e) => ({ path: `/${k}/${e.slug}`, at: new Date(e.at), ls: e.locales as readonly string[] })));
+  const cmsUrls = (["updates"] as const).flatMap((k) => cms[k].map((e) => ({ path: `/${k}/${e.slug}`, at: new Date(e.at), ls: e.locales as readonly string[] })));
   return [...svc, ...[...entries.map(([path, at]) => ({ path, at, ls: locales as readonly string[] })), ...cmsUrls].flatMap(({ path, at: lastModified, ls }) =>
     ls.map((l) => ({
       url: `${SITE_URL}/${l}${path}`,

@@ -188,7 +188,7 @@ export function CatalogueView() {
       sort: (r) => r.version,
       cell: (r) => (
         <span className="grid tabular">
-          <span>{r.publishedVersion ? `v${r.publishedVersion}` : "—"}</span>
+          <span>{r.publishedVersion ? `v${r.publishedVersion}` : ""}</span>
           {r.hasUnpublishedChanges && (
             <span className="text-eyebrow text-link">
               {fill(c.list.draftOf, { v: r.version })}
@@ -202,7 +202,7 @@ export function CatalogueView() {
       label: c.list.cols.pricing,
       className: "min-w-20",
       cell: (r) =>
-        c.pricingMode[r.svc?.pricing_mode ?? ""] ?? r.svc?.pricing_mode ?? "—",
+        c.pricingMode[r.svc?.pricing_mode ?? ""] ?? r.svc?.pricing_mode ?? "",
     },
     {
       key: "sla",
@@ -215,7 +215,7 @@ export function CatalogueView() {
         return (
           <span className="inline-flex items-center gap-1 tabular">
             <Icon name="calendar" size={14} aria-hidden />
-            {d ? fill(c.list.days, { n: d }) : "—"}
+            {d ? fill(c.list.days, { n: d }) : ""}
           </span>
         );
       },
@@ -244,7 +244,7 @@ export function CatalogueView() {
       className: "min-w-80",
       cell: (r) => (
         <span className="flex flex-wrap items-center gap-2">
-        <Select
+        <Select data-guide="ops-service-status"
           aria-label={fill(c.taxonomy.status, { name: r.name })}
           value={r.serviceStatus}
           disabled={status.isPending}
@@ -302,10 +302,10 @@ export function CatalogueView() {
           <p className="text-small text-fg-subtle">{c.list.lede}</p>
         </div>
         <span className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => setTaxonomy(true)}>
+          <Button data-guide="ops-categories" variant="outline" onClick={() => setTaxonomy(true)}>
             {c.taxonomy.manage}
           </Button>
-          <Button onClick={() => setCreating(true)} dots>
+          <Button data-guide="ops-new-service" onClick={() => setCreating(true)} dots>
             {c.list.newService} <Kbd>N</Kbd>
           </Button>
         </span>

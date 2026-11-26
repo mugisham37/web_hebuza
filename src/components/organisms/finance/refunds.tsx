@@ -68,7 +68,7 @@ export function RefundsView() {
     { key: "no", label: c.cnCols.no, sort: (r) => r.no, cell: (r) => <DocNumber no={r.no} /> },
     { key: "client", label: c.cnCols.client, wrap: true, cell: (r) => <span className="font-medium">{r.clientName}</span> },
     { key: "invoice", label: c.cnCols.invoice, cell: (r) => <span className="tabular text-small">{r.invoiceNo}</span> },
-    { key: "refund", label: c.cnCols.refund, cell: (r) => <span className="tabular text-small text-fg-muted">{r.refundNo ?? "—"}</span> },
+    { key: "refund", label: c.cnCols.refund, cell: (r) => <span className="tabular text-small text-fg-muted">{r.refundNo ?? ""}</span> },
     { key: "total", label: c.cnCols.total, align: "right", sort: (r) => r.totals.total, cell: (r) => <Amount value={r.totals.total} className="font-semibold" /> },
     { key: "issued", label: c.cnCols.issued, sort: (r) => r.issuedAt, cell: (r) => <span className="text-small text-fg-muted">{formatDate(r.issuedAt, locale)}</span> },
   ];
@@ -83,7 +83,7 @@ export function RefundsView() {
     <div className="grid gap-5">
       <PageHead title={c.title} sub={c.sub} actions={
         <div className="grid justify-items-end gap-1">
-          <Button onClick={() => setCreate(true)} disabled={!online} variant="primary" dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.create.open}</Button>
+          <Button data-guide="finance-refund-create" onClick={() => setCreate(true)} disabled={!online} variant="primary" dots className="m-press"><Icon name="plus" size={16} aria-hidden />{c.create.open}</Button>
           {!online && <Reason>{c.offline}</Reason>}
         </div>
       } />
@@ -164,7 +164,7 @@ function CreateDialog({ onClose, onDone, invoice = "" }: { onClose: () => void; 
           {inv && <p className="-mt-2 text-small text-fg-muted">{fill(c.create.refundable, { amount: formatMoney(items.find((i) => i.no === inv)?.refundable ?? 0, "RWF", locale) })}</p>}
           <Field label={c.create.reason} error={err.reason}>{(a) => (
             <Select id={a.id} aria-describedby={a.describedBy} aria-invalid={a.invalid} value={reason} onChange={(ev) => setReason(ev.target.value as RefundReason)}>
-              <option value="">—</option>
+              <option value=""></option>
               {REASONS.map((r) => <option key={r} value={r}>{c.reasons[r]}</option>)}
             </Select>
           )}</Field>

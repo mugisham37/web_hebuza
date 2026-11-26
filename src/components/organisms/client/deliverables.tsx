@@ -140,6 +140,7 @@ function Group({ g, canDownload }: { g: DlvGroup; canDownload: boolean }) {
                 })}
               </p>
               <a
+                data-guide="client-dlv-pay"
                 href={localHref(locale, `/pay/${g.code}`)}
                 className={buttonClass({ size: "sm" })}
               >
@@ -179,7 +180,7 @@ function Group({ g, canDownload }: { g: DlvGroup; canDownload: boolean }) {
                       .join(" · ")}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div data-guide="client-dlv-actions" className="flex flex-wrap gap-2">
                   <Button
                     size="sm"
                     variant="outline"
@@ -279,7 +280,7 @@ function Review({ g }: { g: DlvGroup }) {
     );
 
   return (
-    <div className="grid gap-3 border-t border-border pt-4">
+    <div data-guide="client-dlv-review" className="grid gap-3 border-t border-border pt-4">
       <p className="text-card-title">{c.gotAll}</p>
       {!asking ? (
         <div className="flex flex-wrap gap-2">

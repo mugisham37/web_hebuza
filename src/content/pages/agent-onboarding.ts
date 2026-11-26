@@ -3,7 +3,7 @@ import type { Locale } from "@/shared/i18n/config";
 
 const en = {
   title: "Onboarding",
-  sub: "Profile, CV, certificates, payout and agreements — get cleared to receive tasks.",
+  sub: "Profile, CV, certificates, payout and agreements, get cleared to receive tasks.",
   steps: {
     profile: "Profile",
     cv: "CV",
@@ -38,7 +38,7 @@ const en = {
     phone: "Phone number",
     phoneErr: "Enter a Rwandan mobile number, e.g. 788 123 456.",
     email: "Work email",
-    emailLocked: "Set by HEBUZA — contact your manager to change it.",
+    emailLocked: "Set by HEBUZA, contact your manager to change it.",
     links: "Professional links",
     linkedin: "LinkedIn",
     website: "Website",
@@ -64,7 +64,7 @@ const en = {
     role: "Role",
     org: "Organisation",
     from: "From (year)",
-    to: "To (year — empty if current)",
+    to: "To (year, empty if current)",
     present: "Present",
     description: "What you did",
     emptyEdu: "No education added yet.",
@@ -93,9 +93,9 @@ const en = {
     title: "Certificates",
     upload: "Upload certificates",
     expiry: "Expiry date",
-    expiryReq: "Add the expiry date — it's required.",
+    expiryReq: "Add the expiry date, it's required.",
     expires: "Expires {d}",
-    expired: "Expired {d} — upload a renewed copy",
+    expired: "Expired {d}, upload a renewed copy",
     verified: "Verified",
     pending: "Pending check",
     remove: "Remove {n}",
@@ -165,7 +165,7 @@ const en = {
     cleared: "You're cleared",
     clearedBody:
       "Offers are unlocked. Your profile is editable from Profile & settings.",
-    clearedToast: "You're cleared — offers are unlocked.",
+    clearedToast: "You're cleared, offers are unlocked.",
     simApprove: "Simulate {m} approves",
     simChanges: "Simulate {m} requests changes",
     simNew: "Simulate a new agent",
@@ -176,7 +176,7 @@ export type OnboardingCopy = typeof en;
 
 const fr: OnboardingCopy = {
   title: "Intégration",
-  sub: "Profil, CV, certificats, paiement et accords — obtenez votre habilitation pour recevoir des tâches.",
+  sub: "Profil, CV, certificats, paiement et accords, obtenez votre habilitation pour recevoir des tâches.",
   steps: {
     profile: "Profil",
     cv: "CV",
@@ -212,7 +212,7 @@ const fr: OnboardingCopy = {
     phoneErr: "Entrez un numéro mobile rwandais, ex. 788 123 456.",
     email: "E-mail professionnel",
     emailLocked:
-      "Défini par HEBUZA — contactez votre responsable pour le modifier.",
+      "Défini par HEBUZA, contactez votre responsable pour le modifier.",
     links: "Liens professionnels",
     linkedin: "LinkedIn",
     website: "Site web",
@@ -238,7 +238,7 @@ const fr: OnboardingCopy = {
     role: "Poste",
     org: "Organisation",
     from: "De (année)",
-    to: "À (année — vide si actuel)",
+    to: "À (année, vide si actuel)",
     present: "Aujourd'hui",
     description: "Ce que vous avez fait",
     emptyEdu: "Aucune formation ajoutée.",
@@ -267,9 +267,9 @@ const fr: OnboardingCopy = {
     title: "Certificats",
     upload: "Téléverser des certificats",
     expiry: "Date d'expiration",
-    expiryReq: "Ajoutez la date d'expiration — elle est obligatoire.",
+    expiryReq: "Ajoutez la date d'expiration, elle est obligatoire.",
     expires: "Expire le {d}",
-    expired: "Expiré le {d} — téléversez une copie renouvelée",
+    expired: "Expiré le {d}, téléversez une copie renouvelée",
     verified: "Vérifié",
     pending: "Vérification en cours",
     remove: "Retirer {n}",
@@ -340,7 +340,7 @@ const fr: OnboardingCopy = {
     cleared: "Vous êtes habilité",
     clearedBody:
       "Les offres sont débloquées. Votre profil se modifie dans Profil et paramètres.",
-    clearedToast: "Vous êtes habilité — les offres sont débloquées.",
+    clearedToast: "Vous êtes habilité, les offres sont débloquées.",
     simApprove: "Simuler l'approbation de {m}",
     simChanges: "Simuler une demande de modifications de {m}",
     simNew: "Simuler un nouvel agent",
@@ -350,7 +350,7 @@ const fr: OnboardingCopy = {
 
 const rw: OnboardingCopy = {
   title: "Kwinjira mu kazi",
-  sub: "Umwirondoro, CV, impamyabumenyi, kwishyurwa n'amasezerano — wemererwe guhabwa imirimo.",
+  sub: "Umwirondoro, CV, impamyabumenyi, kwishyurwa n'amasezerano, wemererwe guhabwa imirimo.",
   steps: {
     profile: "Umwirondoro",
     cv: "CV",
@@ -386,7 +386,7 @@ const rw: OnboardingCopy = {
     phoneErr: "Andika nimero ya telefoni yo mu Rwanda, urugero 788 123 456.",
     email: "Imeli y'akazi",
     emailLocked:
-      "Yashyizweho na HEBUZA — vugana n'umuyobozi wawe kugira ngo uyihindure.",
+      "Yashyizweho na HEBUZA, vugana n'umuyobozi wawe kugira ngo uyihindure.",
     links: "Imiyoboro y'umwuga",
     linkedin: "LinkedIn",
     website: "Urubuga",
@@ -417,7 +417,7 @@ const rw: OnboardingCopy = {
     role: "Umwanya",
     org: "Ikigo",
     from: "Kuva (umwaka)",
-    to: "Kugeza (umwaka — siga ubusa niba ukihari)",
+    to: "Kugeza (umwaka, siga ubusa niba ukihari)",
     present: "Kugeza ubu",
     description: "Ibyo wakoze",
     emptyEdu: "Nta mashuri arashyirwamo.",
@@ -446,9 +446,9 @@ const rw: OnboardingCopy = {
     title: "Impamyabumenyi",
     upload: "Shyiraho impamyabumenyi",
     expiry: "Itariki irangiriraho",
-    expiryReq: "Shyiraho itariki irangiriraho — irasabwa.",
+    expiryReq: "Shyiraho itariki irangiriraho, irasabwa.",
     expires: "Irangira {d}",
-    expired: "Yarangiye {d} — shyiraho iyavuguruwe",
+    expired: "Yarangiye {d}, shyiraho iyavuguruwe",
     verified: "Yemejwe",
     pending: "Iracyasuzumwa",
     remove: "Kuraho {n}",
@@ -518,7 +518,7 @@ const rw: OnboardingCopy = {
     cleared: "Wemerewe gukora",
     clearedBody:
       "Ibyifuzo by'imirimo byafunguwe. Umwirondoro uhindurirwa muri Umwirondoro n'igenamiterere.",
-    clearedToast: "Wemerewe gukora — ibyifuzo byafunguwe.",
+    clearedToast: "Wemerewe gukora, ibyifuzo byafunguwe.",
     simApprove: "Igereranya: {m} aremeje",
     simChanges: "Igereranya: {m} asabye impinduka",
     simNew: "Igereranya: umukozi mushya",

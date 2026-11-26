@@ -127,7 +127,7 @@ export function SecuritySettings() {
       <TwoStepCard />
       <SignInMethods next="/settings/security" />
       {ids.data?.hasPassword !== false && <Panel icon="lock" title={s.password} body={s.passwordLede}>
-        <form noValidate onSubmit={onSubmit} className="grid max-w-md gap-5">
+        <form data-guide="client-security-password" noValidate onSubmit={onSubmit} className="grid max-w-md gap-5">
           <ErrorSummary
             title={c.fixErrors}
             errors={Object.entries(errors).map(([field, message]) => ({
@@ -157,6 +157,7 @@ export function SecuritySettings() {
         action={
           others.length > 0 && (
             <Button
+              data-guide="client-security-signout-all"
               size="sm"
               variant="outline"
               loading={revoke.isPending && revoke.variables === "others"}

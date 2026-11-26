@@ -131,7 +131,7 @@ export function PendingChangeBanner({ changes, href }: { changes: Pick<ChangeReq
         {changes.map((c) => (
           <li key={c.id}>
             {href ? <Link href={localHref(locale, `${href}?id=${c.id}`)} className="text-link underline underline-offset-4 hover:text-link-hover">{c.title}</Link> : c.title}
-            {" — "}{c.approvers.map((a) => role(a.role)).join(` ${s.approver.and} `)}
+            {", "}{c.approvers.map((a) => role(a.role)).join(` ${s.approver.and} `)}
             {c.effectiveAt && ` · ${fill(s.pending.effective, { t: formatDateTime(c.effectiveAt, locale) })}`}
           </li>
         ))}
@@ -166,7 +166,7 @@ export function SettingField({ def, label, description, value, onChange, disable
         </select>
       );
       default: return (
-        <p className="flex items-center gap-2 text-small"><span className="tabular">{Array.isArray(value) ? value.join(", ") || "—" : String(value ?? "—")}{def.unit ? ` ${def.unit}` : ""}</span>{def.type === "readonly" && <span className="inline-flex h-6 items-center gap-1 bg-ink-100 px-2 text-eyebrow text-ink-700"><Icon name="lock" size={11} aria-hidden />{s.enforced.readonly}</span>}</p>
+        <p className="flex items-center gap-2 text-small"><span className="tabular">{Array.isArray(value) ? value.join(", ") || "" : String(value ?? "")}{def.unit ? ` ${def.unit}` : ""}</span>{def.type === "readonly" && <span className="inline-flex h-6 items-center gap-1 bg-ink-100 px-2 text-eyebrow text-ink-700"><Icon name="lock" size={11} aria-hidden />{s.enforced.readonly}</span>}</p>
       );
     }
   })();
@@ -317,7 +317,7 @@ export function IntegrationCard({ integration: i, href }: { integration: Integra
       </div>
       <div className="flex flex-wrap items-center gap-2"><HealthPill health={i.health} />{!i.configured && <span className="text-small text-fg-muted">{s.notSetUp}</span>}</div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-small">
-        <dt className="text-fg-subtle">{fill(s.lastTest, { t: "" }).trim()}</dt><dd className="text-right tabular">{i.lastTest ? formatRelative(i.lastTest.at, locale) : "—"}</dd>
+        <dt className="text-fg-subtle">{fill(s.lastTest, { t: "" }).trim()}</dt><dd className="text-right tabular">{i.lastTest ? formatRelative(i.lastTest.at, locale) : ""}</dd>
         <dt className="text-fg-subtle">{fill(s.errorRate, { p: "" }).trim()}</dt><dd className={cx("text-right tabular", i.errorRate1h >= 0.05 && "font-medium text-warning")}>{(i.errorRate1h * 100).toFixed(1)}%</dd>
         {i.usage && <><dt className="text-fg-subtle">Usage</dt><dd className="text-right tabular">{fill(s.usage, { used: i.usage.used.toLocaleString(), limit: i.usage.limit.toLocaleString() })}</dd></>}
       </dl>
@@ -374,7 +374,7 @@ export function EmailPreview({ body }: { body: TemplateBody }) {
   const s = useS().preview;
   return (
     <figure aria-label={s.email} className="overflow-hidden border border-border bg-surface">
-      <p className="border-b border-border bg-bg-subtle px-4 py-2 text-small"><span className="text-fg-subtle">{s.subject}: </span>{body.subject ?? "—"}</p>
+      <p className="border-b border-border bg-bg-subtle px-4 py-2 text-small"><span className="text-fg-subtle">{s.subject}: </span>{body.subject ?? ""}</p>
       <div className="grid gap-3 p-5 text-small">
         <p className="text-label text-fg-heading">HEBUZA</p>
         <p className="whitespace-pre-wrap">{body.body}</p>
@@ -392,7 +392,7 @@ export function PostureCheck({ check }: { check: PostureVM }) {
         <Icon name={check.status === "pass" ? "check" : check.status === "warn" ? "clock" : "x"} size={13} aria-hidden />
       </span>
       <span className="min-w-0 flex-1 text-small">
-        <span className="block font-medium">{check.label} <span className="sr-only">— {s[check.status]}</span></span>
+        <span className="block font-medium">{check.label} <span className="sr-only">{s[check.status]}</span></span>
         {check.detail && <span className="block break-words font-mono text-[0.78rem] text-fg-muted">{check.detail}</span>}
         <span className="block text-eyebrow text-fg-subtle">{fill(s.source, { s: check.source })}</span>
       </span>
@@ -543,7 +543,7 @@ export function UserActions({ user: u, lastSysadmin, compact }: { user: SystemUs
     if (next.deactivate && u.kind !== "client") items.push({ key: "offboard", label: c.actions.offboard, icon: "briefcase", danger: true, disabled: off ?? (lastSysadmin ? c.lastSysadmin : undefined), href: L(`/system/users/${u.id}/offboard`) });
   }
   const opts = (o: Record<string, string>) => Object.entries(o).map(([value, label]) => ({ value, label }));
-  const reasonText = (o: Record<string, string>, v: { reason: string; note: string }) => [o[v.reason], v.note].filter(Boolean).join(" — ");
+  const reasonText = (o: Record<string, string>, v: { reason: string; note: string }) => [o[v.reason], v.note].filter(Boolean).join(", ");
 
   return (
     <>

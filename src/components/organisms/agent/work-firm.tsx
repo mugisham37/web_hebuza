@@ -56,7 +56,7 @@ export function FirmTeam() {
         title={d ? `${f.title} · ${d.org}` : f.title}
         sub={f.sub}
         actions={
-          <Button onClick={() => setInvite(true)}>
+          <Button data-guide="work-invite" onClick={() => setInvite(true)}>
             <Icon name="plus" size={16} aria-hidden /> {f.invite}
           </Button>
         }

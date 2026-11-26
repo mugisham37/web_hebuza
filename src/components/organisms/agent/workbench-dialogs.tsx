@@ -601,7 +601,7 @@ export function FlagDialog({
         m
           .mutateAsync({
             kind: reason === "conflict" ? "reassign" : "attention",
-            note: `${w.flag.reasons[reason as (typeof FLAGS)[number]]}${note ? ` — ${note}` : ""}`,
+            note: `${w.flag.reasons[reason as (typeof FLAGS)[number]]}${note ? `, ${note}` : ""}`,
           })
           .then(() =>
             toast({

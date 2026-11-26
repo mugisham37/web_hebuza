@@ -356,7 +356,7 @@ export function ContactForm({
           </option>
           {(Object.entries(copy.topics) as [Topic, string][]).map(([k, v]) => (
             <option key={k} value={k}>
-              {k === "pricing" && planName ? `${v} — ${planName}` : v}
+              {k === "pricing" && planName ? `${v}, ${planName}` : v}
             </option>
           ))}
         </select>

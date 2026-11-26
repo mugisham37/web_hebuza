@@ -78,7 +78,7 @@ export function ExecOverview() {
         <PanelError what={c.failed} onRetry={() => q.refetch()} />
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-guide="exec-money" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <MoneyTile
               label={c.revenue}
               value={s?.revenue}
@@ -106,7 +106,7 @@ export function ExecOverview() {
             />
           </div>
           {s && (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div data-guide="exec-counts" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <CountTile
                 label={c.sla}
                 value={num(s.slaBreaches)}
@@ -143,7 +143,7 @@ export function ExecOverview() {
             </div>
           )}
           {s && (
-            <div className="grid gap-3 lg:grid-cols-2">
+            <div data-guide="exec-panels" className="grid gap-3 lg:grid-cols-2">
               <Panel title={c.ageing}>
                 <AgeingBar buckets={s.ageing} />
               </Panel>

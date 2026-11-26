@@ -18,6 +18,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/notifications", label: "wsnav.notifications" },
     { href: "/help", label: "wsnav.help" },
     { href: "/settings", label: "wsnav.settings" },
+    { href: "/dashboard/guides", label: "wsnav.guides" },
   ] },
   agent: { stage: 4, items: [
     { href: "/agent", label: "wsnav.today" },
@@ -30,6 +31,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/agent/performance", label: "wsnav.performance" },
     { href: "/agent/profile", label: "wsnav.profile" },
     { href: "/agent/field", label: "wsnav.field" }, // Stage 9: page denies non-field agents
+    { href: "/agent/guides", label: "wsnav.guides" },
   ] },
   work: { stage: 8, items: [
     // Stage 8 §7.1. Onboarding is reached through WorkGate, not the nav; Team is hidden for firm members.
@@ -42,6 +44,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/work/profile", label: "wsnav.profile" },
     { href: "/work/team", label: "wsnav.team" },
     { href: "/work/field", label: "wsnav.field" }, // Stage 9 field tab; FieldShell gates non-field agents
+    { href: "/work/guides", label: "wsnav.guides" },
   ] },
   ops: { stage: 3, items: [
     { href: "/ops", label: "wsnav.today" },
@@ -63,6 +66,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/ops/settings/statuses", label: "wsnav.statuses" },
     { href: "/ops/compliance-rules", label: "wsnav.complianceRules" }, // F-CAL-01
     { href: "/ops/field", label: "wsnav.field" }, // Stage 9 field review queue
+    { href: "/ops/guides", label: "wsnav.guides" },
   ] },
   finance: { stage: 5, items: [
     { href: "/finance", label: "wsnav.overview" },
@@ -80,6 +84,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/finance/payables", label: "wsnav.payables" }, // Stage 12 supplier bills
     { href: "/finance/reports", label: "wsnav.reports" },
     { href: "/finance/settings", label: "wsnav.settings" },
+    { href: "/finance/guides", label: "wsnav.guides" },
   ] },
   marketing: { stage: 10, items: [
     // Stage 10 §U2 grouped nav: Content ▸ (Pages…Media), Campaigns ▸ (Campaigns…Templates). SM/exec get granted items only.
@@ -103,6 +108,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/marketing/feedback", label: "wsnav.feedback" },
     { href: "/marketing/reports", label: "wsnav.reports", grant: ["staff:executive"] },
     { href: "/marketing/seo", label: "wsnav.seo" },
+    { href: "/marketing/guides", label: "wsnav.guides" },
   ] },
   procurement: { stage: 12, items: [
     { href: "/procurement", label: "wsnav.overview" },
@@ -116,16 +122,19 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/procurement/deposits", label: "wsnav.deposits" },
     { href: "/procurement/reports", label: "wsnav.reports" },
     { href: "/procurement/settings", label: "wsnav.settings" },
+    { href: "/procurement/guides", label: "wsnav.guides" },
   ] },
   partners: { stage: 13, items: [
     { href: "/partners", label: "wsnav.overview" },
     { href: "/partners/commissions", label: "wsnav.commissions" },
+    { href: "/partners/guides", label: "wsnav.guides" },
   ] },
   exec: { stage: 14, items: [
     { href: "/exec", label: "wsnav.overview" },
     { href: "/exec/reports", label: "wsnav.reports" },
     { href: "/exec/approvals", label: "wsnav.approvals" },
     { href: "/exec/targets", label: "wsnav.targets" },
+    { href: "/exec/guides", label: "wsnav.guides" },
   ] },
   system: { stage: 6, items: [
     { href: "/system", label: "wsnav.overview" },
@@ -142,6 +151,7 @@ export const WORKSPACE_NAV: Record<Workspace, { stage: number; items: NavItem[] 
     { href: "/system/audit", label: "wsnav.audit" },
     { href: "/system/privacy", label: "wsnav.privacy" },
     { href: "/system/ops", label: "wsnav.operations" },
+    { href: "/system/guides", label: "wsnav.guides" },
   ] },
 };
 

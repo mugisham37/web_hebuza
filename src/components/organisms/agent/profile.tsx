@@ -135,7 +135,7 @@ export function ProfileView({
               </div>
             </div>
           )}
-          <ul className="grid overflow-hidden border border-border bg-white lg:border-0 lg:bg-transparent">
+          <ul data-guide="profile-sections" className="grid overflow-hidden border border-border bg-white lg:border-0 lg:bg-transparent">
             {sections.map((x) => (
               <li
                 key={x}

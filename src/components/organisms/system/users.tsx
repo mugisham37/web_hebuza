@@ -54,7 +54,7 @@ export function UsersView() {
   return (
     <div className="grid gap-5 pb-24">
       <SysPageHead title={c.title} sub={c.sub} actions={tab !== "service" && tab !== "clients" ? (
-        <Button dots onClick={() => setQ({ dialog: "invite" })}><Icon name="plus" size={16} aria-hidden />{c.invite}</Button>
+        <Button dots data-guide="system-invite" onClick={() => setQ({ dialog: "invite" })}><Icon name="plus" size={16} aria-hidden />{c.invite}</Button>
       ) : undefined} />
       <SavedViewTabs active={tab} onChange={(k) => setQ({ tab: k === "staff" ? null : k, role: null, status: null, mfa: null, last: null, q: null })}
         views={TABS.map((t) => ({ key: t, label: c.tabs[t], count: counts?.[t === "service" ? "service" : KIND[t]] }))} />
@@ -168,7 +168,7 @@ function UserList({ kind, sp, setQ }: { kind: UserKind; sp: URLSearchParams; set
                   <tr key={u.id} className={cx("border-b border-border last:border-0 hover:bg-navy-50", sel.has(u.id) && "bg-navy-100")}>
                     {!clients && <td className="px-4 py-3"><input type="checkbox" aria-label={fill(c.bulk.select, { name: u.name })} className="size-4 accent-navy-700" checked={sel.has(u.id)} onChange={() => toggle(u.id)} /></td>}
                     <td className="px-4 py-3"><NameCell u={u} you={u.id === me} /></td>
-                    <td className="px-4 py-3">{clients ? <span className="font-mono tabular">{u.customerNo ?? "—"}</span> : <Roles u={u} />}</td>
+                    <td className="px-4 py-3">{clients ? <span className="font-mono tabular">{u.customerNo ?? ""}</span> : <Roles u={u} />}</td>
                     <td className="px-4 py-3"><StatusDot status={u.status} />{u.status === "invited" && u.invitation && <span className="block text-eyebrow text-fg-subtle tabular">{fill(c.expires, { t: now ? formatRelative(u.invitation.expiresAt, locale, now) : formatDate(u.invitation.expiresAt, locale) })}</span>}</td>
                     <td className="px-4 py-3"><MfaBadge state={u.mfa.state} methods={u.mfa.methods} /></td>
                     <td className="px-4 py-3 whitespace-nowrap text-fg-muted tabular">{last(u)}</td>
@@ -211,7 +211,7 @@ function UserList({ kind, sp, setQ }: { kind: UserKind; sp: URLSearchParams; set
       <ReasonDialog open={ask === "suspend"} onClose={() => setAsk(null)} title={fill(c.toast.bulkSuspended, { n: selected.length - privSel.length })} description={c.suspendBody}
         notice={privSel.length ? <p className="bg-warning-bg p-3 text-small">{fill(c.bulk.privilegedSkipped, { n: privSel.length })}</p> : undefined}
         options={Object.entries(c.reasonOpts.suspend).map(([value, label]) => ({ value, label }))} noteLabel={c.reasonNote} confirmLabel={c.bulk.suspend} destructive audited
-        onConfirm={(v) => bulkSuspend([c.reasonOpts.suspend[v.reason as keyof typeof c.reasonOpts.suspend], v.note].filter(Boolean).join(" — "))} />
+        onConfirm={(v) => bulkSuspend([c.reasonOpts.suspend[v.reason as keyof typeof c.reasonOpts.suspend], v.note].filter(Boolean).join(", "))} />
       <ConfirmDialog open={ask === "sessions"} onClose={() => setAsk(null)} title={c.bulk.revoke} body={c.d.sess.revokeAllBody} confirm={c.d.sess.revokeAll} danger onConfirm={bulkSessions} />
       {dialog}
     </section>

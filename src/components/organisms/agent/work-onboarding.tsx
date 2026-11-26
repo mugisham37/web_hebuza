@@ -99,7 +99,7 @@ function Shell({ vm, step }: { vm: ObVM; step: ObStep }) {
       </ol>
       <div className="grid items-start gap-6 lg:grid-cols-[18rem_1fr]">
         <aside className="grid gap-4 lg:sticky lg:top-4">
-          <nav aria-label={o.title} className="border border-border bg-white p-4">
+          <nav aria-label={o.title} data-guide="work-onb-steps" className="border border-border bg-white p-4">
             <p className="mb-3 text-small text-fg-muted">{fill(o.progress, { n: doneN, t: 5 })}</p>
             <div className="mb-3 h-1.5 overflow-hidden bg-ink-100">
               <div className="h-full bg-navy-700 transition-[width] duration-(--dur-3)"style={{ width: `${(doneN / 5) * 100}%` }} />
@@ -214,7 +214,7 @@ function SaveState({ save }: { save: ReturnType<typeof useSaveStep> }) {
   if (save.isError)
     return (
       <p role="alert"className="text-small text-danger">
-        {errorCopy(save.error, locale)} — {o.saveFailed}
+        {errorCopy(save.error, locale)}, {o.saveFailed}
       </p>
     );
   return null;

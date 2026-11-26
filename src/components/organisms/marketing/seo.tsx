@@ -69,7 +69,7 @@ function Tracking({ tab }: { tab: "seo" | "analytics" | "conversions" }) {
       {tab === "analytics" && <>
         <Panel title={c.ga4}>
           <div className="grid gap-3">
-            <Lbl label={c.ga4} hint={ga4Bad ? c.ga4Bad : t.ga4Id ? undefined : c.notConnected}><Input aria-invalid={ga4Bad} value={t.ga4Id} placeholder="G-XXXXXXX" onChange={(e) => setD({ ...d, ga4Id: e.target.value.trim().toUpperCase() })} /></Lbl>
+            <Lbl label={c.ga4} hint={ga4Bad ? c.ga4Bad : t.ga4Id ? undefined : c.notConnected}><Input data-guide="marketing-ga4" aria-invalid={ga4Bad} value={t.ga4Id} placeholder="G-XXXXXXX" onChange={(e) => setD({ ...d, ga4Id: e.target.value.trim().toUpperCase() })} /></Lbl>
             <Lbl label={c.pixel}><Input value={t.pixelId} onChange={(e) => setD({ ...d, pixelId: e.target.value.replace(/\D/g, "") })} /></Lbl>
             <Switch label={c.pixelConsent} checked readOnly disabled />
             <p className="text-eyebrow text-fg-subtle">{c.pixelLocked}</p>
@@ -118,7 +118,7 @@ function Redirects() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
       <Panel title={c.tabs.redirects}>
-        <form className="mb-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]" onSubmit={(e) => { e.preventDefault(); if (!loops) add(); }}>
+        <form data-guide="marketing-redirect-form" className="mb-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]" onSubmit={(e) => { e.preventDefault(); if (!loops) add(); }}>
           <Input aria-label={c.redirects.from} placeholder="/old-path" value={form.from} onChange={(e) => setForm({ ...form, from: e.target.value.trim() })} />
           <Input aria-label={c.redirects.to} placeholder="/new-path" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value.trim() })} />
           <Select aria-label={c.redirects.code} value={form.code} onChange={(e) => setForm({ ...form, code: Number(e.target.value) as 301 })} className="w-auto"><option value={301}>301</option><option value={302}>302</option></Select>
@@ -159,7 +159,7 @@ function Health() {
         )}
       </Panel>
       <Panel title={c.health.speed} action={<form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); run.mutate(page); }}><Input aria-label={c.health.page} value={page} onChange={(e) => setPage(e.target.value)} className="h-9 w-40" /><Button size="sm" type="submit" loading={run.isPending}>{c.health.run}</Button></form>}>
-        {!q.data.speed.length ? <p className="text-small text-fg-muted">—</p> : (
+        {!q.data.speed.length ? <p className="text-small text-fg-muted"></p> : (
           <div className="overflow-x-auto"><table className="w-full text-left text-small"><thead><tr className="text-fg-subtle"><th scope="col" className="p-1">{c.health.page}</th><th scope="col" className="p-1">{c.health.lcp}</th><th scope="col" className="p-1">{c.health.cls}</th><th scope="col" className="p-1">{c.health.inp}</th></tr></thead>
             <tbody>{q.data.speed.map((s) => <tr key={s.id} className="border-t border-border"><td className="p-1">{s.page}<span className="block text-eyebrow text-fg-subtle">{formatRelative(s.at, locale)}</span></td><td className="p-1 tabular">{(s.lcp / 1000).toFixed(1)} s</td><td className="p-1 tabular">{s.cls}</td><td className="p-1 tabular">{s.inp} ms</td></tr>)}</tbody></table></div>
         )}

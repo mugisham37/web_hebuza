@@ -84,7 +84,7 @@ export function DashboardView({ recs }: { recs: Rec[] }) {
             {formatDate(new Date(), locale)}
           </p>
         </div>
-        <ButtonLink href={localHref(locale, "/services")} variant="primary" dots>
+        <ButtonLink data-guide="client-dash-start" href={localHref(locale, "/services")} variant="primary" dots>
           {c.start}
         </ButtonLink>
       </header>
@@ -119,7 +119,7 @@ export function DashboardView({ recs }: { recs: Rec[] }) {
         )}
       </section>
 
-      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <ul data-guide="client-dash-stats" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s) => (
           <li key={s.label}>
             <Link

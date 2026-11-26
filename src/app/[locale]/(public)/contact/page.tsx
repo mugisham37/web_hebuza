@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import Image from "next/image";
 import Link from "next/link";
 import { getI18n } from "@/lib/i18n/server";
 import { localHref } from "@/shared/i18n/config";
 import { getPlans, getServices } from "@/lib/catalogue";
-import { images } from "@/lib/assets";
 import { cx } from "@/shared/format";
 import { CONTACT, waLink } from "@/content/marketing";
 import { getLB, LB_FLAGS } from "@/content/pages/lb";
@@ -14,7 +12,7 @@ import { Icon, WhatsAppGlyph, type IconName } from "@/components/atoms/icon";
 import { GridLines, HighlightWord, Star } from "@/components/atoms/brand";
 import { HeroIntro, Reveal } from "@/components/atoms/motion";
 import { ContactForm, CopyPill } from "@/components/organisms/site/contact";
-import { DIRECTIONS_URL, MapArt } from "@/components/molecules/site/site";
+import { DIRECTIONS_URL, MapArt, OFFICE_PLACE } from "@/components/molecules/site/site";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -39,7 +37,7 @@ export default async function ContactPage({ params }: Props) {
     getPlans(),
     getServices(locale),
   ]);
-  const address = LB_FLAGS.addressConfirmed ? "Kigali" : c.addressTbc;
+  const address = LB_FLAGS.addressConfirmed ? OFFICE_PLACE : c.addressTbc;
   const rows: {
     icon: IconName;
     label: string;
@@ -83,9 +81,9 @@ export default async function ContactPage({ params }: Props) {
   ];
   return (
     <>
-      <section className="relative overflow-hidden px-gutter pt-[var(--spacing-hero-top)] pb-12">
+      <section className="relative overflow-hidden px-gutter pt-[calc(var(--header-h)+2rem)] pb-8">
         <GridLines />
-        <HeroIntro className="container-page relative grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
+        <HeroIntro className="container-page relative">
           <div>
             <span data-hero="eyebrow">
               <Tag variant="neutral" className="gap-2">
@@ -93,28 +91,15 @@ export default async function ContactPage({ params }: Props) {
                 {c.tag}
               </Tag>
             </span>
-            <h1 data-hero="line" className="mt-5 text-display">
+            <h1 data-hero="line" className="mt-4 text-[clamp(2.25rem,1.6rem+2.6vw,3.75rem)] leading-[1.05] tracking-[-0.04em]">
               {c.l1} <HighlightWord>{c.hl}</HighlightWord>
             </h1>
             <p
               data-hero="copy"
-              className="mt-6 max-w-lg text-lead text-fg-muted"
+              className="mt-4 max-w-lg text-lead text-fg-muted"
             >
               {c.sub}
             </p>
-          </div>
-          <div
-            data-hero="visual"
-            className="relative mx-auto aspect-[4/3] w-full max-w-md overflow-hidden border-[6px] border-navy-700 rotate-2 shadow-lg max-lg:hidden"
-          >
-            <Image
-              src={images.studioPortraitTeal}
-              alt={c.photoAlt}
-              fill
-              priority
-              sizes="28rem"
-              className="object-cover"
-            />
           </div>
         </HeroIntro>
       </section>
@@ -172,10 +157,10 @@ export default async function ContactPage({ params }: Props) {
 
       <section className="px-gutter pb-[var(--spacing-section-sm)]">
         <Reveal className="container-page grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-          <MapArt className="min-h-72">
-            <div className="absolute top-5 left-5 right-5 max-w-sm theme-dark bg-bg p-5 text-fg shadow-lg">
+          <MapArt className="min-h-80">
+            <div className="absolute bottom-4 left-4 max-w-[16rem] theme-dark bg-bg p-4 text-fg shadow-lg">
               <p className="text-label">
-                {c.mapTitle} — {address}
+                {c.mapTitle}, {address}
               </p>
               <p className="text-small text-fg-muted">{c.hoursValue}</p>
               <a

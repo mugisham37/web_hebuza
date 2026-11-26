@@ -149,7 +149,7 @@ const en = {
   },
   suggest: {
     title: "Add an extra layer of protection",
-    body: "Use an authenticator app for a one-time code when you sign in. It's optional — you can turn it on anytime in Settings.",
+    body: "Use an authenticator app for a one-time code when you sign in. It's optional, you can turn it on anytime in Settings.",
     setup: "Set up now",
     later: "Not now",
     done: "Done",
@@ -342,7 +342,7 @@ const fr: TeamCopy = {
   },
   suggest: {
     title: "Ajoutez une protection supplémentaire",
-    body: "Utilisez une application d'authentification pour un code à usage unique à la connexion. C'est facultatif — vous pouvez l'activer à tout moment dans les Paramètres.",
+    body: "Utilisez une application d'authentification pour un code à usage unique à la connexion. C'est facultatif, vous pouvez l'activer à tout moment dans les Paramètres.",
     setup: "Configurer maintenant",
     later: "Plus tard",
     done: "Terminé",
@@ -532,7 +532,7 @@ const rw: TeamCopy = {
   },
   suggest: {
     title: "Ongeraho urundi rwego rw'umutekano",
-    body: "Koresha porogaramu yo kwemeza ubone kode ikoreshwa rimwe igihe winjira. Si ngombwa — ushobora kubifungura igihe icyo ari cyo cyose muri Igenamiterere.",
+    body: "Koresha porogaramu yo kwemeza ubone kode ikoreshwa rimwe igihe winjira. Si ngombwa, ushobora kubifungura igihe icyo ari cyo cyose muri Igenamiterere.",
     setup: "Bitunganye ubu",
     later: "Si ubu",
     done: "Byarangiye",

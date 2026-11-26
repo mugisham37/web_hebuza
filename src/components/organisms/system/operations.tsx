@@ -59,7 +59,7 @@ function Kpis() {
   const lastFailed = bk.data?.items.slice().sort((a, b) => b.at.localeCompare(a.at))[0]?.ok === false;
   const open = inc.data?.items.filter((i) => i.status !== "resolved" && i.status !== "postmortem_done").length;
   const pass = pos.data?.items.filter((p) => p.status === "pass").length;
-  const dash = (q: { isError: boolean }) => (q.isError ? "—" : <span className="inline-block h-8 w-20 m-shimmer" aria-hidden />);
+  const dash = (q: { isError: boolean }) => (q.isError ? "" : <span className="inline-block h-8 w-20 m-shimmer" aria-hidden />);
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 m-stagger">
       <div style={{ ["--i" as string]: 0 }}><KpiTile icon="chart" label={c.kpi.uptime} value={avg !== null ? `${(avg * 100).toFixed(2)}%` : dash(mon)} spark={mon.data?.p95.slice(-24)} /></div>
@@ -260,7 +260,7 @@ function Backups() {
                     <td data-label={c.backups.when} className="whitespace-nowrap">{formatDateTime(b.at, locale)}</td>
                     <td data-label={c.backups.tier}>{c.backups.tierNames[b.tier]}</td>
                     <td data-label={c.backups.size} className="tabular">{b.sizeMb.toLocaleString()} MB</td>
-                    <td data-label={c.backups.encryption}>{b.encrypted ? "age" : "—"}</td>
+                    <td data-label={c.backups.encryption}>{b.encrypted ? "age" : ""}</td>
                     <td data-label={c.backups.offsite}>{b.location}</td>
                     <td data-label={c.backups.result}><Pill tone={b.ok ? "success" : "danger"}>{b.ok ? c.backups.ok : c.backups.failed}</Pill></td>
                   </tr>
@@ -360,7 +360,7 @@ function Incidents() {
           <div className="grid gap-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-label-lg">{c.incidents.open} <span className="text-fg-muted tabular">({open.length})</span></h2>
-              <Button size="sm" variant="danger" className="m-press" disabled={!online} onClick={() => setCreating(true)}><Icon name="plus" size={14} aria-hidden />{c.incidents.new}</Button>
+              <Button size="sm" variant="danger" data-guide="system-new-incident" className="m-press" disabled={!online} onClick={() => setCreating(true)}><Icon name="plus" size={14} aria-hidden />{c.incidents.new}</Button>
             </div>
             {open.length === 0 ? (
               <div className="grid place-items-center gap-3 border border-border bg-surface px-6 py-12 text-center">
@@ -449,7 +449,7 @@ function Security() {
             <ul className="grid gap-2">
               {rows.map(({ h, v }) => (
                 <li key={h} className="grid gap-0.5 bg-bg-subtle p-3">
-                  <span className="flex items-center justify-between gap-2"><code className="font-mono text-[0.78rem] font-medium">{h}</code><Pill tone={v ? "success" : "warning"}>{v ? "✓" : "—"}</Pill></span>
+                  <span className="flex items-center justify-between gap-2"><code className="font-mono text-[0.78rem] font-medium">{h}</code><Pill tone={v ? "success" : "warning"}>{v ? "✓" : ""}</Pill></span>
                   <span className="break-all font-mono text-[0.72rem] text-fg-muted">{v ? v.slice(0, 160) : c.security.liveMissing}</span>
                 </li>
               ))}

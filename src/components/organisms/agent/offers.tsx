@@ -180,11 +180,11 @@ function OfferCard({
           <p className="mr-auto text-small text-warning">{baseBlock ? o.blocked[baseBlock] : block}</p>
         )}
         {external && pending && !x.counter && (
-          <Button size="sm" variant="ghost" onClick={() => onAct("counter")}>
+          <Button size="sm" variant="ghost" data-guide="offer-counter" onClick={() => onAct("counter")}>
             {h.counter.open}
           </Button>
         )}
-        <Button size="sm" variant="outline" onClick={onOpen}>
+        <Button size="sm" variant="outline" data-guide="offer-details" onClick={onOpen}>
           {o.viewDetails}
         </Button>
         {offer.status === "accepted" && (
@@ -200,6 +200,7 @@ function OfferCard({
             <Button
               size="sm"
               variant="secondary"
+              data-guide="offer-decline"
               onClick={() => onAct("decline")}
             >
               {o.decline}
@@ -208,6 +209,7 @@ function OfferCard({
               size="sm"
               dots
               disabled={!!block}
+              data-guide="offer-accept"
               onClick={() => onAct("accept")}
             >
               {o.accept}

@@ -182,7 +182,7 @@ export function IntakeView() {
             tone: "danger",
             title:
               e instanceof ApiError && e.status === 409
-                ? t.claimedBy.replace("{name}", x.claimedBy ?? "—")
+                ? t.claimedBy.replace("{name}", x.claimedBy ?? "")
                 : errMsg(e),
           }),
       },
@@ -368,7 +368,7 @@ export function IntakeView() {
       align: "right",
       card: false,
       cell: (r) => (
-        <Button
+        <Button data-guide="ops-intake-review"
           size="sm"
           variant="outline"
           onClick={(e) => {
@@ -583,7 +583,7 @@ export function IntakeView() {
           >
             <Icon name="file" size={14} aria-hidden />
             {t.bulk.request}
-            <span className="sr-only">— {t.bulk.oneAtATime}</span>
+            <span className="sr-only">{t.bulk.oneAtATime}</span>
           </span>
         )}
         <BulkAction icon="clock" onClick={() => setHoldFor(selected)}>
@@ -800,7 +800,7 @@ function QuickLookBody({ x, onTriage, onHold, claimPending }: QLProps) {
         )}
       </section>
       {x.flags.includes("duplicate") && (
-        <Button
+        <Button data-guide="ops-compare"
           variant="secondary"
           size="sm"
           onClick={() => setUrlParams({ dup: x.ref })}
@@ -810,7 +810,7 @@ function QuickLookBody({ x, onTriage, onHold, claimPending }: QLProps) {
         </Button>
       )}
       <div className="grid gap-2 sm:grid-cols-2">
-        <Button
+        <Button data-guide="ops-open-triage"
           className="sm:col-span-2"
           dots
           loading={claimPending}
@@ -819,7 +819,7 @@ function QuickLookBody({ x, onTriage, onHold, claimPending }: QLProps) {
         >
           {t.openTriage}
         </Button>
-        <Button
+        <Button data-guide="ops-claim"
           variant="outline"
           loading={claim.isPending}
           disabled={!!x.claimedBy}
@@ -837,7 +837,7 @@ function QuickLookBody({ x, onTriage, onHold, claimPending }: QLProps) {
                     tone: "danger",
                     title:
                       e instanceof ApiError && e.status === 409
-                        ? t.claimedBy.replace("{name}", x.claimedBy ?? "—")
+                        ? t.claimedBy.replace("{name}", x.claimedBy ?? "")
                         : errorCopy(e, locale),
                   }),
               },
@@ -937,7 +937,7 @@ function DuplicateDialog({
     ],
     [
       t.dup.rows.amount,
-      (d) => (d.amount !== null ? formatMoney(d.amount, "RWF", locale) : "—"),
+      (d) => (d.amount !== null ? formatMoney(d.amount, "RWF", locale) : ""),
     ],
     [
       t.dup.rows.payment,

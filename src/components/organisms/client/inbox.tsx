@@ -52,7 +52,7 @@ export function Inbox() {
           }
         />
       ) : (
-        <ul className="overflow-hidden border border-border bg-surface">
+        <ul data-guide="client-inbox-list" className="overflow-hidden border border-border bg-surface">
           {convs.map((cv) => (
             <li
               key={cv.conversation_id}

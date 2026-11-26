@@ -152,7 +152,7 @@ export function OrgDetail({ id }: { id: string }) {
   const row = (k: string, v: string | null) => (
     <div key={k}>
       <dt className="text-small text-fg-muted">{k}</dt>
-      <dd>{v || "—"}</dd>
+      <dd>{v || ""}</dd>
     </div>
   );
   return (
@@ -190,7 +190,7 @@ export function OrgDetail({ id }: { id: string }) {
             t !== tab ? null : t === "profile" ? (
               <>
               {manage && (
-                <Button size="sm" variant="outline" className="mt-4" onClick={() => setEditing(true)}>
+                <Button data-guide="client-org-edit" size="sm" variant="outline" className="mt-4" onClick={() => setEditing(true)}>
                   {o.edit}
                 </Button>
               )}
@@ -246,6 +246,7 @@ export function OrgDetail({ id }: { id: string }) {
                       }}
                     />
                     <Button
+                      data-guide="client-org-upload"
                       size="sm"
                       dots
                       loading={up.isPending}
@@ -428,7 +429,7 @@ function BuyPlan({ orgId }: { orgId: string }) {
                   value={planId}
                   onChange={(e) => setPlanId(e.target.value)}
                 >
-                  <option value="">—</option>
+                  <option value=""></option>
                   {plans.data.plans.map((p) => (
                     <option key={p.planId} value={p.planId}>
                       {p.name}

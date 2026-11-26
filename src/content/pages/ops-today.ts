@@ -30,8 +30,8 @@ const en = {
   needs: {
     review: "Deliverable ready for review",
     reupload: "Document re-upload ready",
-    declined: "Offer declined — reassign",
-    quote: "Quotation accepted — awaiting payment",
+    declined: "Offer declined, reassign",
+    quote: "Quotation accepted, awaiting payment",
     dispute: "Client raised a dispute",
   },
   act: {
@@ -127,8 +127,8 @@ const fr: OpsTodayCopy = {
   needs: {
     review: "Livrable prêt pour revue",
     reupload: "Document renvoyé, à vérifier",
-    declined: "Offre refusée — réattribuer",
-    quote: "Devis accepté — paiement attendu",
+    declined: "Offre refusée, réattribuer",
+    quote: "Devis accepté, paiement attendu",
     dispute: "Le client a ouvert un litige",
   },
   act: {
@@ -223,8 +223,8 @@ const rw: OpsTodayCopy = {
   needs: {
     review: "Igikorwa cyiteguye gusuzumwa",
     reupload: "Inyandiko yongeye koherezwa",
-    declined: "Ubusabe bwanzwe — shaka undi",
-    quote: "Igiciro cyemewe — gitegereje kwishyurwa",
+    declined: "Ubusabe bwanzwe, shaka undi",
+    quote: "Igiciro cyemewe, gitegereje kwishyurwa",
     dispute: "Umukiriya yatanze ikirego",
   },
   act: {

@@ -168,6 +168,7 @@ export function EarningsView({
             <Button
               variant="outline"
               size="sm"
+              data-guide="agent-earn-export"
               onClick={exportCsv}
               disabled={!shown.length}
             >

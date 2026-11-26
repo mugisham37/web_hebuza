@@ -84,9 +84,9 @@ export function VendorProfile({ id }: { id: string }) {
             <Fact label={c.overview.contact}>
               {contact ? <span className="grid"><span className="font-medium">{contact.name}{contact.role ? ` · ${contact.role}` : ""}</span>
                 {contact.phone && <span className="tabular">{contact.phone} <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-link underline underline-offset-4 hover:text-link-hover">{c.actions.call}</a></span>}
-                {contact.email && <span className="break-all">{contact.email}</span>}</span> : "—"}
+                {contact.email && <span className="break-all">{contact.email}</span>}</span> : ""}
             </Fact>
-            <Fact label={c.overview.address}>{v.address ?? "—"}</Fact>
+            <Fact label={c.overview.address}>{v.address ?? ""}</Fact>
             <Fact label={c.cols.tin}>
               <span className="tabular">{v.tinMasked}</span>{" "}
               {tin ? <span className="tabular font-medium">· {tin}</span> : <button type="button" className="text-link underline underline-offset-4 hover:text-link-hover" onClick={() => setTinAsk((x) => !x)}>{p.bank.reveal}</button>}
@@ -105,13 +105,13 @@ export function VendorProfile({ id }: { id: string }) {
                 </form>
               )}
             </Fact>
-            <Fact label={c.overview.rdb}>{v.rdbNumber ?? "—"}</Fact>
+            <Fact label={c.overview.rdb}>{v.rdbNumber ?? ""}</Fact>
             <Fact label={c.overview.terms}>{fill(c.overview.termsVal, { n: v.paymentTermsDays })}</Fact>
             <Fact label={c.overview.vat}>{v.vatRegistered ? c.overview.yes : c.overview.no}</Fact>
-            <Fact label={c.cols.categories}>{v.categories.map((k) => budgets.find((b) => b.code === k)?.name ?? k).join(", ") || "—"}</Fact>
-            <Fact label={c.overview.rating}>{v.rating ? <span aria-label={`${v.rating} / 5`} className="text-warning">{"★".repeat(v.rating)}<span className="text-border-strong">{"★".repeat(5 - v.rating)}</span></span> : "—"}</Fact>
+            <Fact label={c.cols.categories}>{v.categories.map((k) => budgets.find((b) => b.code === k)?.name ?? k).join(", ") || ""}</Fact>
+            <Fact label={c.overview.rating}>{v.rating ? <span aria-label={`${v.rating} / 5`} className="text-warning">{"★".repeat(v.rating)}<span className="text-border-strong">{"★".repeat(5 - v.rating)}</span></span> : ""}</Fact>
             <Fact label={c.overview.openBills}><span className="tabular">{v.openBills}</span></Fact>
-            <Fact label={c.overview.lastPayment}>{v.lastPaymentAt ? formatDate(v.lastPaymentAt, locale) : "—"}</Fact>
+            <Fact label={c.overview.lastPayment}>{v.lastPaymentAt ? formatDate(v.lastPaymentAt, locale) : ""}</Fact>
           </dl>
           <BankDetailsCard vendor={v} lastChange={bankChange} onRequest={() => setDialog("bank")}
             onReveal={async (reason) => (await reveal.mutateAsync({ id: v.id, field: "bank", reason, idempotencyKey: newIdempotencyKey() })).value} />

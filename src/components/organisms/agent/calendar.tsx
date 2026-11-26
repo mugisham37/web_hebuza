@@ -108,7 +108,7 @@ export function CalendarView() {
       <PageHead
         title={c.title}
         actions={
-          <Button variant="primary" onClick={() => setIcs(true)}>
+          <Button variant="primary" data-guide="agent-cal-sync" onClick={() => setIcs(true)}>
             <Icon name="calendar" size={16} aria-hidden />
             <span className="max-sm:hidden">{c.sync}</span>
             <span className="sm:hidden">{c.syncShort}</span>
@@ -457,7 +457,7 @@ function Row({
       <span className="min-w-0 flex-1">
         <span className="block truncate text-label">
           {e.title}
-          {e.client ? ` — ${e.client}` : ""}
+          {e.client ? `, ${e.client}` : ""}
         </span>
         <span className="block text-small text-fg-subtle tabular">
           {e.at === null
@@ -804,7 +804,7 @@ function EventDrawer({
         </span>
         <h3 className="text-card-title">
           {e.title}
-          {e.client ? ` — ${e.client}` : ""}
+          {e.client ? `, ${e.client}` : ""}
         </h3>
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-small">
           <dt>

@@ -32,7 +32,7 @@ const en = {
   guard: {
     missingItems: "List at least one missing item first",
     notQuoteService: "Only for services priced by quote",
-    nothingToPay: "Nothing to pay — already paid or covered",
+    nothingToPay: "Nothing to pay, already paid or covered",
     incomplete: "Finish the completeness check first",
     unpaid: "Waiting for payment",
     noAssignee: "Choose an assignee first",
@@ -61,7 +61,7 @@ const en = {
     mismatch: "Name mismatch",
     blurry: "Blurry",
   },
-  internal: "Internal — not visible to client",
+  internal: "Internal, not visible to client",
   auditNote:
     "This action is recorded in the audit log with your name and time.",
   density: { label: "Density", comfortable: "Comfortable", compact: "Compact" },
@@ -76,7 +76,7 @@ const en = {
   retry: "Retry",
   undo: "Undo",
   loadFailed: "Couldn't load {what}",
-  tryAgainAt: "Try again — last attempt {t}",
+  tryAgainAt: "Try again, last attempt {t}",
   shortcuts: {
     title: "Keyboard shortcuts",
     palette: "Command palette",
@@ -135,7 +135,7 @@ const fr: OpsCommon = {
   guard: {
     missingItems: "Indiquez d'abord au moins un élément manquant",
     notQuoteService: "Uniquement pour les services sur devis",
-    nothingToPay: "Rien à payer — déjà payé ou inclus",
+    nothingToPay: "Rien à payer, déjà payé ou inclus",
     incomplete: "Terminez d'abord la vérification de complétude",
     unpaid: "En attente de paiement",
     noAssignee: "Choisissez d'abord un responsable",
@@ -164,7 +164,7 @@ const fr: OpsCommon = {
     mismatch: "Nom différent",
     blurry: "Flou",
   },
-  internal: "Interne — invisible pour le client",
+  internal: "Interne, invisible pour le client",
   auditNote:
     "Cette action est enregistrée dans le journal d'audit avec votre nom et l'heure.",
   density: {
@@ -183,7 +183,7 @@ const fr: OpsCommon = {
   retry: "Réessayer",
   undo: "Annuler",
   loadFailed: "Impossible de charger {what}",
-  tryAgainAt: "Réessayez — dernière tentative {t}",
+  tryAgainAt: "Réessayez, dernière tentative {t}",
   shortcuts: {
     title: "Raccourcis clavier",
     palette: "Palette de commandes",
@@ -241,7 +241,7 @@ const rw: OpsCommon = {
   guard: {
     missingItems: "Banza werekane nibura ikintu kimwe kibura",
     notQuoteService: "Ni iz'amaserivisi agenerwa igiciro",
-    nothingToPay: "Nta cyo kwishyura — byishyuwe cyangwa biri mu ifatabuguzi",
+    nothingToPay: "Nta cyo kwishyura, byishyuwe cyangwa biri mu ifatabuguzi",
     incomplete: "Banza urangize igenzura ry'ibisabwa",
     unpaid: "Hategerejwe kwishyura",
     noAssignee: "Banza uhitemo ushinzwe",
@@ -270,7 +270,7 @@ const rw: OpsCommon = {
     mismatch: "Izina ntirihura",
     blurry: "Ntigaragara neza",
   },
-  internal: "Imbere — umukiriya ntabibona",
+  internal: "Imbere, umukiriya ntabibona",
   auditNote:
     "Iki gikorwa cyandikwa mu bubiko bw'igenzura n'izina ryawe n'igihe.",
   density: {
@@ -289,7 +289,7 @@ const rw: OpsCommon = {
   retry: "Ongera ugerageze",
   undo: "Subiza inyuma",
   loadFailed: "Ntibyashobotse gufungura {what}",
-  tryAgainAt: "Ongera ugerageze — igerageza riheruka {t}",
+  tryAgainAt: "Ongera ugerageze, igerageza riheruka {t}",
   shortcuts: {
     title: "Utubuto twihuse",
     palette: "Ishakiro ry'amabwiriza",

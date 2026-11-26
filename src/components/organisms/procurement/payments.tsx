@@ -31,7 +31,7 @@ export function PaymentsView() {
     { key: "supplier", label: c.pay.cols.supplier, wrap: true, cell: (b) => <span className="grid gap-0.5"><span className="font-medium">{b.vendorName}</span>{b.locked && <LockChip until={b.lockUntil} compact />}</span> },
     { key: "due", label: c.bills.cols.due, sort: (b) => b.dueOn, cell: (b) => <DueChip due={b.dueOn} today={today} status={b.status} /> },
     { key: "amount", label: c.pay.cols.amount, align: "right", sort: (b) => b.payable - b.amountPaid, cell: (b) => <Amount value={b.payable - b.amountPaid} className="font-semibold" /> },
-    { key: "by", label: c.pay.cols.by, cell: (b) => <span className="text-small">{b.authorisedBy?.name ?? "—"}</span> },
+    { key: "by", label: c.pay.cols.by, cell: (b) => <span className="text-small">{b.authorisedBy?.name ?? ""}</span> },
     { key: "state", label: c.pay.cols.state, cell: (b) => <ProcPill state={b.status} machine="bill" /> },
   ];
   const pCols: OpsColumn<PayRow>[] = [

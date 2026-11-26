@@ -9,7 +9,6 @@ import { A11Y } from "@/content/pages/accessibility";
 import type { FamilyVM } from "@/lib/catalogue";
 import type { PublicSite } from "@/lib/marketing/cms/read";
 import { ButtonLink } from "@/components/atoms/button";
-import { Tag } from "@/components/atoms/tag";
 import { Icon, WhatsAppGlyph } from "@/components/atoms/icon";
 import { Faces } from "@/components/atoms/brand";
 import { Reveal, RiseOnScroll } from "@/components/atoms/motion";
@@ -37,38 +36,6 @@ export function CTACard({ locale, title, body, className, pad = "pb-10 md:pb-12"
   );
 }
 
-/** FAQ: heading column + accordion (native <details>, keyboard and SR friendly). Emits FAQPage JSON-LD. */
-export function FAQBlock({ locale, title, items, side, tag }: { locale: Locale; title: string; items: { q: string; a: string }[]; side?: string; tag?: string }) {
-  const f = getCopy(locale).faq;
-  const ld = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })) };
-  return (
-    <section className="px-gutter py-10 md:py-12">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <Reveal className="container-page grid items-start gap-8 md:grid-cols-[1fr_1.4fr]">
-        <div className="grid content-start gap-3">
-          <span data-reveal><Tag className="eyebrow normal-case">{tag ?? f.tag}</Tag></span>
-          <h2 data-reveal className="text-h2 text-fg-heading">{title}</h2>
-          <p data-reveal className="text-lead text-fg-muted">{side ?? f.side}</p>
-          <span data-reveal><ButtonLink href={localHref(locale, "/faq")} dots>{f.cta}</ButtonLink></span>
-        </div>
-        <div className="divide-y divide-border border-y border-border">
-          {items.map((it) => (
-            <details key={it.q} data-reveal className="group">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-label text-fg-heading [&::-webkit-details-marker]:hidden">
-                {it.q}
-                <span className="relative flex size-7 shrink-0 items-center justify-center bg-ink-100 text-navy-700 transition-colors group-open:bg-secondary group-open:text-on-secondary">
-                  <Icon name="plus" size={16} className="transition-transform duration-(--duration-base) group-open:rotate-45" />
-                </span>
-              </summary>
-              <p className="max-w-2xl pb-4 text-body text-fg-muted">{it.a}</p>
-            </details>
-          ))}
-        </div>
-      </Reveal>
-    </section>
-  );
-}
-
 /** Landing1 footer: marquee notch → wordmark/star + statement + email + faces → columns → newsletter → giant wordmark with floating pills. */
 export function SiteFooter({ locale, families, site }: { locale: Locale; families: Pick<FamilyVM, "slug" | "name">[]; site?: PublicSite }) {
   const f = getCopy(locale).footer;
@@ -81,7 +48,7 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
   const phone = site?.settings?.phone || CONTACT.phone;
   const social = site?.settings?.social?.length ? site.settings.social : null;
   return (
-    <footer className="theme-dark ramp-dark overflow-hidden bg-(--color-ramp-8) text-fg">
+    <footer className="theme-dark ramp-dark overflow-hidden bg-hero text-fg">{/* same deep navy as the home hero */}
       <div className="container-page px-gutter">
         <div className="grid gap-10 pt-16 pb-12 sm:grid-cols-2 md:pt-20 lg:grid-cols-4">
           <div>
@@ -106,6 +73,9 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
         </div>
         <div className="border-t border-border py-8"><NewsletterForm label={f.newsletter} placeholder={f.newsletterPlaceholder} done={f.subscribed} error={f.newsletterError} /></div>
       </div>
+      {/* Wordmark + legal line share one block: a dark wash rises from the bottom (letters fade to a hint under it) and the
+          copyright links sit on top of it, instead of a separate bar below. */}
+      <div className="relative">
       <RiseOnScroll className="relative mx-auto mt-4 max-w-[96rem] overflow-hidden px-gutter">
         <p aria-hidden className="-mb-[0.16em] text-center font-display text-[clamp(5rem,22vw,22rem)] leading-[0.9] tracking-[-0.06em] text-white uppercase select-none">Hebuza</p>
         {f.pills.map((p, i) => (
@@ -114,9 +84,11 @@ export function SiteFooter({ locale, families, site }: { locale: Locale; familie
             style={{ rotate: `${i === 1 ? 4 : -4}deg` }}>{p}<span className="opacity-50">•••</span></span>
         ))}
       </RiseOnScroll>
-      <div className="relative z-10 border-t border-border bg-(--color-ramp-8) px-gutter py-6 text-center text-small text-fg-muted">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-3/4 bg-linear-to-t from-navy-950/90 via-navy-950/45 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 z-20 px-gutter py-5 text-center text-small text-white [&_a]:underline-offset-4 [&_a:hover]:underline [&_button:hover]:underline">
         © <CopyrightYear /> HEBUZA BUSINESS GROUP LTD ·{" "}
         <Link href={L("/legal/terms")} className="hover:text-fg-heading">Terms</Link> · <Link href={L("/legal/privacy")} className="hover:text-fg-heading">Privacy</Link> · <Link href={L("/legal/cookies")} className="hover:text-fg-heading">Cookies</Link> · <Link href={L("/accessibility")} className="hover:text-fg-heading">{A11Y[locale].eyebrow}</Link> · <CookieSettingsButton>{m.consent.settings}</CookieSettingsButton>
+      </div>
       </div>
     </footer>
   );

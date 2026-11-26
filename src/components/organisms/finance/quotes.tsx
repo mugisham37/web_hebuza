@@ -58,7 +58,7 @@ export function QuotesView() {
   return (
     <div className="grid gap-5">
       <PageHead title={c.title} sub={c.sub} actions={
-        <Button onClick={() => setUrlParams({ new: "1" })} disabled={!online} title={online ? undefined : c.blockers.offline} dots className="m-press">
+        <Button data-guide="finance-new-quote" onClick={() => setUrlParams({ new: "1" })} disabled={!online} title={online ? undefined : c.blockers.offline} dots className="m-press">
           <Icon name="plus" size={16} aria-hidden />{c.newQuote}
         </Button>
       } />

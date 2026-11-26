@@ -32,7 +32,7 @@ export function SegregationStrip({ steps, me, compact, selfNote }: { steps: SegS
   const { locale } = useI18n();
   if (compact)
     return (
-      <span className="inline-flex items-center gap-0.5" aria-label={steps.map((s) => `${p.seg[s.role]}: ${s.who?.name ?? p.seg.waitingRole.replace("{role}", s.waitingFor ?? "—")}`).join(", ")}>
+      <span className="inline-flex items-center gap-0.5" aria-label={steps.map((s) => `${p.seg[s.role]}: ${s.who?.name ?? p.seg.waitingRole.replace("{role}", s.waitingFor ?? "")}`).join(", ")}>
         {steps.map((s, i) => (
           <span key={i} className="flex items-center">
             {s.who && s.state !== "pending" ? <Avatar name={s.who.name} size="sm" className={cx("ring-2", s.state === "override" ? "ring-warning" : "ring-success")} />
@@ -55,7 +55,7 @@ export function SegregationStrip({ steps, me, compact, selfNote }: { steps: SegS
               {i < steps.length - 1 && <span aria-hidden className={cx("hidden h-px flex-1 sm:block", s.state === "done" ? "bg-success" : "bg-border-strong")} />}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-small font-medium">{s.who && s.state !== "pending" ? s.who.name : s.state === "skipped" ? p.seg.skipped : fill(p.seg.waiting, { name: s.waitingFor ?? "—" })}</p>
+              <p className="truncate text-small font-medium">{s.who && s.state !== "pending" ? s.who.name : s.state === "skipped" ? p.seg.skipped : fill(p.seg.waiting, { name: s.waitingFor ?? "" })}</p>
               <p className="text-eyebrow text-fg-subtle">{s.state === "override" ? p.seg.override : p.seg[s.role]}{s.at ? ` · ${formatDateTime(s.at, locale)}` : ""}</p>
             </div>
           </li>
@@ -106,7 +106,7 @@ export function MatchIndicator({ po, grn, bill, result, lines, compact }: {
         <ul className="grid gap-2 sm:grid-cols-3">
           {docs.map(([label, no, kind]) => (
             <li key={kind} className="flex items-center justify-between gap-2 border border-border bg-surface px-3 py-2">
-              <span className="min-w-0"><span className="block text-eyebrow text-fg-subtle">{label}</span>{no ? <DocNo kind={kind} no={no} /> : <span className="text-small text-fg-subtle">—</span>}</span>
+              <span className="min-w-0"><span className="block text-eyebrow text-fg-subtle">{label}</span>{no ? <DocNo kind={kind} no={no} /> : <span className="text-small text-fg-subtle"></span>}</span>
               {kind === "BL" && bad.length ? <Icon name="zap" size={16} className="text-warning" aria-hidden /> : no ? <Icon name="check" size={16} className="text-success m-tick" aria-hidden /> : null}
             </li>
           ))}

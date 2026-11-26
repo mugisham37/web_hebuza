@@ -25,6 +25,6 @@ export function WorkerBanner() {
     return () => clearInterval(id);
   }, [show]);
   if (!show || !down) return null;
-  const t = down.since ? new Date(down.since).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : "—";
+  const t = down.since ? new Date(down.since).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : "";
   return <p role="status" className="mb-4 bg-warning-bg px-3 py-2 text-small text-warning">{fill(systemCommon(locale).banners.workerOffline, { t })}</p>;
 }

@@ -53,7 +53,7 @@ export function DepositsView() {
     { key: "status", label: c.cols.status, wrap: true, cell: (r) => <span className="flex flex-wrap gap-1"><ProcPill state={r.status} machine="deposit" />{r.forfeit?.status === "requested" && <Pill tone="warning" icon="clock">{c.forfeit.pending}</Pill>}</span> },
     { key: "due", label: c.cols.due, sort: (r) => r.returnDueOn ?? "", wrap: true, cell: (r) => r.returnDueOn ? (
       <span className={cx("grid text-small", r.overdueDays > 0 && "font-medium text-danger")}><span className="tabular">{formatDate(r.returnDueOn, locale)}</span>{r.overdueDays > 0 && <span>{fill(p.deposit.overdue, { n: r.overdueDays })}</span>}</span>
-    ) : <span className="text-fg-subtle">—</span> },
+    ) : <span className="text-fg-subtle"></span> },
     { key: "act", label: p.shell.actions, card: false, cell: (r) => OPEN.includes(r.status) && r.remaining > 0 && online ? (
       <MenuButton label={p.shell.actions} align="right">{(close) => (
         <ul className="grid text-small">
@@ -66,7 +66,7 @@ export function DepositsView() {
   ];
   return (
     <div className="grid gap-5">
-      <PageHead title={c.title} sub={c.sub} actions={<Button variant="primary" dots disabled={!online} onClick={() => setCreate(true)} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
+      <PageHead title={c.title} sub={c.sub} actions={<Button data-guide="procurement-record-deposit" variant="primary" dots disabled={!online} onClick={() => setCreate(true)} className="m-press"><Icon name="plus" size={16} aria-hidden />{c.add}</Button>} />
       <div className="grid gap-3 m-rise">
         <SavedViewTabs active={tab} onChange={(k) => setUrlParams({ tab: k === "all" ? null : k })} views={TABS.map((t) => ({ key: t, label: c.tabs[t], count: (q.data?.items ?? []).filter((r) => t === "all" || (t === "credit" ? r.kind === "refund" || r.kind === "credit_note" : r.kind === t)).length }))} />
         <label className="relative w-full max-w-sm">
@@ -108,9 +108,9 @@ function CreateDialog({ onClose }: { onClose: () => void }) {
       <div className="grid gap-4">
         {err && <p role="alert" className="bg-danger-bg px-3 py-2 text-small text-danger">{err}</p>}
         <label className="grid gap-1 text-small">{c.form.kind}<Select value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value as AdvanceKind })}>{KINDS.map((k) => <option key={k} value={k}>{c.kinds[k]}</option>)}</Select></label>
-        <label className="grid gap-1 text-small">{c.form.supplier}<Select value={f.vendorId} onChange={(e) => setF({ ...f, vendorId: e.target.value, contractRef: "" })}><option value="">—</option>{(vendors.data?.items ?? []).map((v) => <option key={v.id} value={v.id}>{v.legalName}</option>)}</Select></label>
+        <label className="grid gap-1 text-small">{c.form.supplier}<Select value={f.vendorId} onChange={(e) => setF({ ...f, vendorId: e.target.value, contractRef: "" })}><option value=""></option>{(vendors.data?.items ?? []).map((v) => <option key={v.id} value={v.id}>{v.legalName}</option>)}</Select></label>
         <label className="grid gap-1 text-small">{c.form.amount}<Input type="number" min={0} inputMode="numeric" value={f.amount} onChange={(e) => setF({ ...f, amount: e.target.value })} /></label>
-        <label className="grid gap-1 text-small">{c.form.contract}<Select value={f.contractRef} onChange={(e) => setF({ ...f, contractRef: e.target.value })}><option value="">—</option>{(contracts.data?.items ?? []).filter((x) => x.vendorId === f.vendorId).map((x) => <option key={x.id} value={x.ref}>{x.ref} · {x.title}</option>)}</Select></label>
+        <label className="grid gap-1 text-small">{c.form.contract}<Select value={f.contractRef} onChange={(e) => setF({ ...f, contractRef: e.target.value })}><option value=""></option>{(contracts.data?.items ?? []).filter((x) => x.vendorId === f.vendorId).map((x) => <option key={x.id} value={x.ref}>{x.ref} · {x.title}</option>)}</Select></label>
         {f.kind === "deposit" && <label className="grid gap-1 text-small">{c.form.returnDue}<DateInput value={f.returnDueOn} onChange={(e) => setF({ ...f, returnDueOn: e.target.value })} /></label>}
         <label className="grid gap-1 text-small">{c.form.note}<Textarea rows={2} maxLength={250} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} /></label>
       </div>
@@ -154,7 +154,7 @@ function ReturnDialog({ row, onClose }: { row: DepositRow; onClose: () => void }
           <Button type="button" size="sm" variant="secondary" className="w-fit" onClick={() => setDed([...ded, { reason: "", amount: "" }])}><Icon name="plus" size={14} aria-hidden />{c.ret.addDeduction}</Button>
         </fieldset>
         <p aria-live="polite" className={cx("px-3 py-2 text-small tabular", over ? "bg-danger-bg text-danger" : "bg-bg-subtle")}>
-          {fill(c.ret.summary, { received: money(received), deductions: money(dedSum), remaining: money(row.remaining) })}{over ? ` — ${c.ret.tooMuch}` : ""}
+          {fill(c.ret.summary, { received: money(received), deductions: money(dedSum), remaining: money(row.remaining) })}{over ? `, ${c.ret.tooMuch}` : ""}
         </p>
         <label className="grid gap-1 text-small">{c.ret.proof}<Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => setF({ ...f, proof: e.target.files?.[0]?.name ?? "" })} /></label>
       </div>

@@ -16,7 +16,7 @@ export function OfflineView() {
           <path d="M102 104 138 58" className="stroke-danger" strokeWidth="6" strokeLinecap="round" />
           <path d="M166 26 176 10M176 40l16-10" className="stroke-gold-400" strokeWidth="6" strokeLinecap="round" />
         </svg>
-        <h1 className="text-h2 text-balance text-fg-heading">{LC.rw.errors.offlineBanner.split(" — ")[0]} · {LC.en.errors.offlineBanner.split(" — ")[0]} · {LC.fr.errors.offlineBanner.split(" — ")[0]}</h1>
+        <h1 className="text-h2 text-balance text-fg-heading">{LC.rw.errors.offlineBanner.split(", ")[0]} · {LC.en.errors.offlineBanner.split(", ")[0]} · {LC.fr.errors.offlineBanner.split(", ")[0]}</h1>
         <div className="grid gap-1 text-fg-muted">
           <p lang="rw">{LC.rw.errors.offlineBody}</p>
           <p lang="en">{LC.en.errors.offlineBody}</p>

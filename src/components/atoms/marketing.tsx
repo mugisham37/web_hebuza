@@ -139,7 +139,7 @@ export function CostPill({ amount, perUnit, state = "ok" }: { amount: number; pe
 
 /** Staff name with a distinct colour dot; always the full name (two Graces exist, §0.2). */
 export function StaffName({ staff, className }: { staff?: Staff | null; className?: string }) {
-  if (!staff) return <span className={cx("text-fg-subtle", className)}>—</span>;
+  if (!staff) return <span className={cx("text-fg-subtle", className)}></span>;
   return (
     <span className={cx("inline-flex min-w-0 items-center gap-1.5", className)} title={staff.name}>
       <span aria-hidden className="flex size-5 shrink-0 items-center justify-center rounded-full text-[0.6rem] font-semibold text-fg" style={{ background: staff.color }}>{staff.name.split(" ").map((p) => p[0]).join("").slice(0, 2)}</span>

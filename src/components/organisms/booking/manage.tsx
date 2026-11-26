@@ -100,7 +100,7 @@ export function ConfirmationView({ reference }: { reference: string }) {
         {b.refund && <p role="status" className="mt-5 bg-info-bg p-4 text-small text-info">{c.confirmed.lateRefund}</p>}
         <div className="mt-6"><Summary b={b} /></div>
         {!pending && <div className="mt-5"><p className="mb-2 text-label">{c.confirmed.addCal}</p><AddToCalendar b={{ reference: b.reference, title: `HEBUZA · ${title}`, startsAt: b.startsAt, endsAt: b.endsAt, location: where(b, c) }} /></div>}
-        <p className="mt-6 flex items-center gap-2 text-small text-fg-muted"><Icon name="mail" size={16} aria-hidden />{fill(c.confirmed.sentLink, { masked: b.contact.phoneMasked ?? b.contact.emailMasked ?? "—" })}</p>
+        <p className="mt-6 flex items-center gap-2 text-small text-fg-muted"><Icon name="mail" size={16} aria-hidden />{fill(c.confirmed.sentLink, { masked: b.contact.phoneMasked ?? b.contact.emailMasked ?? "" })}</p>
         {ck.token && process.env.NODE_ENV !== "production" && (
           <p className="mt-2 text-eyebrow text-fg-subtle">Dev: <Link className="underline" href={localHref(locale, `/book/manage/${ck.token}`)}>manage link</Link></p>
         )}
@@ -204,7 +204,7 @@ export function ManageBooking({ b, api: target, portal }: { b: Booking; api: Man
 function StatusNotice({ b }: { b: Booking }) {
   const { c, locale } = useBkg();
   const box = (tone: string, text: React.ReactNode) => <p role="status" className={cx("p-4 text-small", tone)}>{text}</p>;
-  if (b.status === "rescheduled") return box("bg-info-bg text-info", fill(c.manage.movedTo, { ref: b.rescheduledToRef ?? "—" }));
+  if (b.status === "rescheduled") return box("bg-info-bg text-info", fill(c.manage.movedTo, { ref: b.rescheduledToRef ?? "" }));
   if (b.status === "cancelled_by_client" || b.status === "cancelled_by_staff") return box("bg-bg-subtle text-fg-muted", <>{c.manage.cancelled}{b.cancelReason && <> · {b.cancelReason}</>}{b.refund && <> · {fill(b.refund.kind === "refund" ? c.manage.refundDone : c.manage.creditDone, { ref: b.refund.ref, amount: formatMoney(b.refund.amount, "RWF", locale) })}</>}</>);
   if (b.status === "completed") return box("bg-success-bg text-success", c.manage.completed);
   if (b.status === "no_show") return box("bg-warning-bg text-warning", c.manage.noShow);

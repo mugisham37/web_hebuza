@@ -9,7 +9,7 @@ import { SITE_URL } from "@/lib/site";
 import { CTACard } from "@/components/organisms/site/sections";
 import { getHomeSections } from "@/lib/marketing/cms/read";
 import { getPublicPartners } from "@/lib/partners-public";
-import { Guides, HomeHero, HowItWorksBand, Institutions, ServicesShowcase, TrackerAndRibbon } from "@/components/organisms/site/home";
+import { HomeHero, HowItWorksBand, Institutions, ServicesShowcase, TrackerAndRibbon, LatestUpdates } from "@/components/organisms/site/home";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale, t } = await getI18n(params);
@@ -34,8 +34,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
     institutions: <Institutions locale={locale} partners={partners} />,
     services: <ServicesShowcase locale={locale} families={families} total={total} />,
     how: <HowItWorksBand locale={locale} />,
-    guides: <Guides locale={locale} />,
-    cta: <div data-page-end="ramp-8" className="theme-dark ramp-dark"><CTACard locale={locale} pad="py-[calc(var(--spacing-home)*0.6)]" /></div>, // foot of the ramp: white text, top padding carries the text-flip blend
+    guides: <LatestUpdates locale={locale} />, // CMS key stays "guides" (section order is stored by key)
+    cta: <CTACard locale={locale} pad="py-[calc(var(--spacing-home)*0.6)]" />
   };
   const keys = order.filter((k) => SECTIONS[k]);
   const paint = homePaint(keys);

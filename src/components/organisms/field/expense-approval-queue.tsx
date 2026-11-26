@@ -77,7 +77,7 @@ export function ExpenseApprovalQueue({ level }: { level: 1 | 2 }) {
                 <td className="p-3"><button type="button" className="text-left underline-offset-4 hover:underline" onClick={() => setOpen(open === x.id ? null : x.id)}>{x.claimantName}<span className="block font-mono text-eyebrow normal-case text-fg-subtle">{x.ref}</span></button>
                   {open === x.id && <div className="mt-3"><ApprovalTrail x={x} /></div>}</td>
                 <td className="p-3">{ce.cats[x.category]}{x.note && <span className="block text-fg-subtle">{x.note}</span>}<span className="mt-1 flex flex-wrap gap-1">{x.flags.map((f) => <FieldFlagChip key={f} flag={f} />)}{!x.receiptUrl && <span className="text-eyebrow normal-case text-warning">{t.noReceipt}{x.noReceiptReason ? `: ${x.noReceiptReason}` : ""}</span>}</span></td>
-                <td className="p-3">{x.visitRef ?? "—"}</td>
+                <td className="p-3">{x.visitRef ?? ""}</td>
                 <td className="p-3 tabular">{formatDate(x.createdAt, locale, { day: "numeric", month: "short" })}</td>
                 <td className="p-3 text-right tabular font-medium">{money(x.amount)}</td>
                 <td className="p-3">{actions(x)}</td>
@@ -105,7 +105,7 @@ export function ExpenseApprovalQueue({ level }: { level: 1 | 2 }) {
       </ul>
       <ReasonDialog open={!!rejecting} onClose={() => setRejecting(null)} title={t.rejectTitle} description={rejecting ? `${rejecting.ref} · ${money(rejecting.amount)}` : undefined}
         options={t.reasons.map((r) => ({ value: r, label: r }))} confirmLabel={t.reject} destructive audited
-        onConfirm={async ({ reason, note }) => { const x = rejecting!; setRejecting(null); await decide([x.id], "rejected", note ? `${reason} — ${note}` : reason); }} />
+        onConfirm={async ({ reason, note }) => { const x = rejecting!; setRejecting(null); await decide([x.id], "rejected", note ? `${reason}, ${note}` : reason); }} />
     </div>
   );
 }

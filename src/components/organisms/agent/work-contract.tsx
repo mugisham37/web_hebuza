@@ -50,7 +50,7 @@ export function ContractView() {
         title={c.title}
         sub={c.sub}
       />
-      <div role="tablist"aria-label={c.title} className="mb-5 flex gap-1 overflow-x-auto border-b border-border no-scrollbar">
+      <div role="tablist" data-guide="work-contract-tabs" aria-label={c.title} className="mb-5 flex gap-1 overflow-x-auto border-b border-border no-scrollbar">
         {TABS.map((t) => (
           <button
             key={t}
@@ -377,7 +377,7 @@ function RateChangeDialog({ open, onClose, rates, manager }: { open: boolean; on
             <select id={f.id} value={svc} onChange={(e) => setSvc(e.target.value)} className="h-12 w-full border border-border-strong bg-white px-3">
               {rates.map((r) => (
                 <option key={r.serviceId} value={r.serviceId}>
-                  {r.serviceName} — {rateText(r, c, locale)}
+                  {r.serviceName}, {rateText(r, c, locale)}
                 </option>
               ))}
             </select>
@@ -570,7 +570,7 @@ function Renewal({ v }: { v: ContractVM }) {
         <h2 className="flex items-center gap-2 text-h4">
           <Icon name="calendar"size={20} aria-hidden className="text-navy-700" /> {c.renewal.renewTitle}
         </h2>
-        <p className="text-small text-fg-muted">{fill(c.renewal.renewBody, { d: sa?.end ? formatDate(sa.end, locale) : "—" })}</p>
+        <p className="text-small text-fg-muted">{fill(c.renewal.renewBody, { d: sa?.end ? formatDate(sa.end, locale) : "" })}</p>
         {sa?.end && <ExpiryChip date={sa.end} />}
         <div className="bg-bg-subtle p-3">
           <p className="mb-2 text-label">{c.renewal.renewTerms}</p>

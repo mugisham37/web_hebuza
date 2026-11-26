@@ -41,7 +41,7 @@ const en = {
   required: "Fill this in.",
   optional: "optional",
   fixErrors: "Please fix the errors below.",
-  generic: "Something went wrong. Your answers are saved — try again.",
+  generic: "Something went wrong. Your answers are saved, try again.",
   offline:
     "You're offline. Your answers are saved on this device; submit when you're back online.",
   resume: {
@@ -72,7 +72,7 @@ const en = {
   },
   notEligible: {
     title: "This might not be the right fit yet",
-    body: "One of your answers suggests this service may not apply to you as it stands. That's not a no — an adviser can find the right route with you.",
+    body: "One of your answers suggests this service may not apply to you as it stands. That's not a no, an adviser can find the right route with you.",
     talk: "Talk to an adviser",
     retry: "Change my answers",
     browse: "Browse other services",
@@ -115,7 +115,7 @@ const en = {
     later: "Upload later",
     laterOn: "You'll upload this after submitting",
     replace: "Replace",
-    reattach: "Choose the file again — files aren't kept on this device.",
+    reattach: "Choose the file again, files aren't kept on this device.",
     none: "No documents are needed up front for this service.",
   },
   review: {
@@ -226,7 +226,7 @@ const en = {
       accountNo: "Account number",
       swift: "SWIFT",
       ref: "Reference",
-      values: { bank: "[Bank name — placeholder]", name: "[Account name — placeholder]", number: "[0000 0000 0000]", swift: "[SWIFT — placeholder]" },
+      values: { bank: "[Bank name, placeholder]", name: "[Account name, placeholder]", number: "[0000 0000 0000]", swift: "[SWIFT, placeholder]" },
       refNote: "Write {code} as the payment reference, or we can't match your transfer.",
       paid: "I've paid",
       pendingTitle: "We're checking your transfer",
@@ -260,12 +260,12 @@ const en = {
     ],
     waiting: "Waiting for approval…",
     stillWaiting:
-      "Some prompts take longer. You can leave — we'll SMS you when it's confirmed.",
+      "Some prompts take longer. You can leave, we'll SMS you when it's confirmed.",
     goRequest: "Go to my request",
     another: "Pay another way",
     cardHandoff: "Opening secure payment…",
     cardReturn: "Confirming your payment…",
-    returned: { confirmingBody: "Checking with your bank or provider. This usually takes a few seconds.", pendingTitle: "Waiting for the provider", pendingBody: "Your provider hasn't confirmed yet. You can leave — we'll SMS you, and your request continues automatically once it's confirmed.", viewReceipt: "View receipt", failedBody: "The payment was declined or cancelled. You were not charged." },
+    returned: { confirmingBody: "Checking with your bank or provider. This usually takes a few seconds.", pendingTitle: "Waiting for the provider", pendingBody: "Your provider hasn't confirmed yet. You can leave, we'll SMS you, and your request continues automatically once it's confirmed.", viewReceipt: "View receipt", failedBody: "The payment was declined or cancelled. You were not charged." },
     successTitle: "Payment received",
     failedTitle: "Payment didn't go through",
     failedBody:
@@ -304,7 +304,7 @@ const rw: FlowCopy = {
   optional: "si ngombwa",
   fixErrors: "Kosora amakosa ari hasi.",
   generic:
-    "Hari ikitagenze neza. Ibisubizo byawe byabitswe — ongera ugerageze.",
+    "Hari ikitagenze neza. Ibisubizo byawe byabitswe, ongera ugerageze.",
   offline:
     "Nta murandasi. Ibisubizo byawe byabitswe kuri iki gikoresho; uzohereze umurandasi ugarutse.",
   resume: {
@@ -335,7 +335,7 @@ const rw: FlowCopy = {
   },
   notEligible: {
     title: "Iyi serivisi ishobora kutakubera",
-    body: "Kimwe mu bisubizo byawe kigaragaza ko iyi serivisi ishobora kutakureba uko ihagaze. Si oya — umujyanama yagufasha kubona inzira ikwiye.",
+    body: "Kimwe mu bisubizo byawe kigaragaza ko iyi serivisi ishobora kutakureba uko ihagaze. Si oya, umujyanama yagufasha kubona inzira ikwiye.",
     talk: "Vugana n'umujyanama",
     retry: "Hindura ibisubizo",
     browse: "Reba izindi serivisi",
@@ -378,7 +378,7 @@ const rw: FlowCopy = {
     later: "Nzohereza nyuma",
     laterOn: "Uzayohereza umaze kohereza ubusabe",
     replace: "Gusimbuza",
-    reattach: "Ongera uhitemo dosiye — dosiye ntizibikwa kuri iki gikoresho.",
+    reattach: "Ongera uhitemo dosiye, dosiye ntizibikwa kuri iki gikoresho.",
     none: "Nta nyandiko zikenewe mbere kuri iyi serivisi.",
   },
   review: {
@@ -490,7 +490,7 @@ const rw: FlowCopy = {
       accountNo: "Nimero ya konti",
       swift: "SWIFT",
       ref: "Indango",
-      values: { bank: "[Izina rya banki — icyitegererezo]", name: "[Izina rya konti — icyitegererezo]", number: "[0000 0000 0000]", swift: "[SWIFT — icyitegererezo]" },
+      values: { bank: "[Izina rya banki, icyitegererezo]", name: "[Izina rya konti, icyitegererezo]", number: "[0000 0000 0000]", swift: "[SWIFT, icyitegererezo]" },
       refNote: "Andika {code} nk'indango y'ubwishyu, bitabaye ibyo ntitwabona ubwishyu bwawe.",
       paid: "Narishyuye",
       pendingTitle: "Turimo kugenzura ubwishyu bwawe",
@@ -524,12 +524,12 @@ const rw: FlowCopy = {
     ],
     waiting: "Dutegereje ko wemeza…",
     stillWaiting:
-      "Hari igihe bitinda. Ushobora kugenda — tuzakoherereza SMS bimaze kwemezwa.",
+      "Hari igihe bitinda. Ushobora kugenda, tuzakoherereza SMS bimaze kwemezwa.",
     goRequest: "Jya ku busabe bwanjye",
     another: "Ishyura ukundi",
     cardHandoff: "Turafungura urupapuro rwo kwishyura…",
     cardReturn: "Turemeza ubwishyu bwawe…",
-    returned: { confirmingBody: "Turimo kugenzura na banki cyangwa umutanga serivisi. Bisanzwe bifata amasegonda make.", pendingTitle: "Dutegereje umutanga serivisi", pendingBody: "Umutanga serivisi ntaremeza. Ushobora kugenda — tuzakoherereza SMS, kandi ubusabe bwawe bukomeza bwonyine bimaze kwemezwa.", viewReceipt: "Reba inyemezabwishyu", failedBody: "Ubwishyu bwanzwe cyangwa bwahagaritswe. Nta mafaranga yakuweho." },
+    returned: { confirmingBody: "Turimo kugenzura na banki cyangwa umutanga serivisi. Bisanzwe bifata amasegonda make.", pendingTitle: "Dutegereje umutanga serivisi", pendingBody: "Umutanga serivisi ntaremeza. Ushobora kugenda, tuzakoherereza SMS, kandi ubusabe bwawe bukomeza bwonyine bimaze kwemezwa.", viewReceipt: "Reba inyemezabwishyu", failedBody: "Ubwishyu bwanzwe cyangwa bwahagaritswe. Nta mafaranga yakuweho." },
     successTitle: "Ubwishyu bwakiriwe",
     failedTitle: "Ubwishyu ntibwakunze",
     failedBody:
@@ -566,7 +566,7 @@ const fr: FlowCopy = {
   optional: "facultatif",
   fixErrors: "Veuillez corriger les erreurs ci-dessous.",
   generic:
-    "Une erreur est survenue. Vos réponses sont enregistrées — réessayez.",
+    "Une erreur est survenue. Vos réponses sont enregistrées, réessayez.",
   offline:
     "Vous êtes hors ligne. Vos réponses sont enregistrées sur cet appareil ; envoyez-les une fois reconnecté.",
   resume: {
@@ -597,7 +597,7 @@ const fr: FlowCopy = {
   },
   notEligible: {
     title: "Ce service n'est peut-être pas adapté pour l'instant",
-    body: "Une de vos réponses indique que ce service ne s'applique peut-être pas à votre cas. Ce n'est pas un refus — un conseiller peut trouver la bonne voie avec vous.",
+    body: "Une de vos réponses indique que ce service ne s'applique peut-être pas à votre cas. Ce n'est pas un refus, un conseiller peut trouver la bonne voie avec vous.",
     talk: "Parler à un conseiller",
     retry: "Modifier mes réponses",
     browse: "Voir d'autres services",
@@ -641,7 +641,7 @@ const fr: FlowCopy = {
     laterOn: "Vous l'enverrez après la soumission",
     replace: "Remplacer",
     reattach:
-      "Choisissez à nouveau le fichier — les fichiers ne sont pas gardés sur cet appareil.",
+      "Choisissez à nouveau le fichier, les fichiers ne sont pas gardés sur cet appareil.",
     none: "Aucun document n'est requis au départ pour ce service.",
   },
   review: {
@@ -753,7 +753,7 @@ const fr: FlowCopy = {
       accountNo: "Numéro de compte",
       swift: "SWIFT",
       ref: "Référence",
-      values: { bank: "[Nom de la banque — exemple]", name: "[Titulaire — exemple]", number: "[0000 0000 0000]", swift: "[SWIFT — exemple]" },
+      values: { bank: "[Nom de la banque, exemple]", name: "[Titulaire, exemple]", number: "[0000 0000 0000]", swift: "[SWIFT, exemple]" },
       refNote: "Indiquez {code} comme référence du virement, sinon nous ne pourrons pas l'identifier.",
       paid: "J'ai payé",
       pendingTitle: "Nous vérifions votre virement",
@@ -787,12 +787,12 @@ const fr: FlowCopy = {
     ],
     waiting: "En attente de validation…",
     stillWaiting:
-      "Certaines demandes prennent plus de temps. Vous pouvez partir — nous vous enverrons un SMS à la confirmation.",
+      "Certaines demandes prennent plus de temps. Vous pouvez partir, nous vous enverrons un SMS à la confirmation.",
     goRequest: "Aller à ma demande",
     another: "Payer autrement",
     cardHandoff: "Ouverture du paiement sécurisé…",
     cardReturn: "Confirmation de votre paiement…",
-    returned: { confirmingBody: "Vérification auprès de votre banque ou opérateur. Cela prend généralement quelques secondes.", pendingTitle: "En attente de l'opérateur", pendingBody: "Votre opérateur n'a pas encore confirmé. Vous pouvez partir — nous vous enverrons un SMS et votre demande continuera automatiquement une fois confirmée.", viewReceipt: "Voir le reçu", failedBody: "Le paiement a été refusé ou annulé. Vous n'avez pas été débité." },
+    returned: { confirmingBody: "Vérification auprès de votre banque ou opérateur. Cela prend généralement quelques secondes.", pendingTitle: "En attente de l'opérateur", pendingBody: "Votre opérateur n'a pas encore confirmé. Vous pouvez partir, nous vous enverrons un SMS et votre demande continuera automatiquement une fois confirmée.", viewReceipt: "Voir le reçu", failedBody: "Le paiement a été refusé ou annulé. Vous n'avez pas été débité." },
     successTitle: "Paiement reçu",
     failedTitle: "Le paiement n'a pas abouti",
     failedBody:

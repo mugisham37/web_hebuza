@@ -20,7 +20,3 @@ export function prevPos({ c, s }: Pos, sizes: readonly number[]): Pos {
   return { c, s: 0 };
 }
 
-/** Hero left panel: "intro" (who we are) and "browse" (category menu) take turns. */
-export type View = "intro" | "browse";
-export const VIEW_MS: Record<View, number> = { intro: 12_000, browse: 30_000 };
-export const nextView = (v: View): View => (v === "intro" ? "browse" : "intro");

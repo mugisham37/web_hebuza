@@ -27,10 +27,10 @@ const en = {
     requestLeave: "Request leave",
     switchOn: "Switch to on duty",
     awayBanner:
-      "You're away — no new offers until you switch back. Clients see replies may be slower.",
+      "You're away, no new offers until you switch back. Clients see replies may be slower.",
     awayUntil: "Away until {t}",
     leaveBanner:
-      "On leave until {d} — offers paused; your open cases are covered by {m}.",
+      "On leave until {d}, offers paused; your open cases are covered by {m}.",
     nowAway: "You're now away. New offers are paused.",
     nowOn: "You're on duty. Offers will resume.",
     failed: "Couldn't change availability. Try again.",
@@ -38,7 +38,7 @@ const en = {
   },
   clearance: {
     new: "Complete your profile to get cleared for work.",
-    in_progress: "Finish your profile — {n} of 5 steps done.",
+    in_progress: "Finish your profile, {n} of 5 steps done.",
     submitted:
       "Your profile is with {m} for approval. You can't receive tasks or upload deliverables until you're cleared.",
     changes_requested: "{m} asked for changes to your profile.",
@@ -122,15 +122,15 @@ const en = {
     save: "Save",
     saved: "Saved {t}",
     saving: "Saving…",
-    saveFailed: "Couldn't save — we'll retry",
+    saveFailed: "Couldn't save, we'll retry",
     undo: "Undo",
     viewAll: "View all",
     openCase: "Open case",
     close: "Close",
     loading: "Loading…",
     offline:
-      "You're offline — changes are kept on this device and sent when you're back.",
-    backOnline: "Back online — sending queued changes",
+      "You're offline, changes are kept on this device and sent when you're back.",
+    backOnline: "Back online, sending queued changes",
     unknown: "Something went wrong. Try again.",
   },
   shell: {
@@ -193,10 +193,10 @@ const rw: Copy = {
     requestLeave: "Saba ikiruhuko",
     switchOn: "Subira ku kazi",
     awayBanner:
-      "Ntahari — nta byifuzo bishya kugeza ugarutse. Abakiriya babona ko ibisubizo bishobora gutinda.",
+      "Ntahari, nta byifuzo bishya kugeza ugarutse. Abakiriya babona ko ibisubizo bishobora gutinda.",
     awayUntil: "Ntahari kugeza {t}",
     leaveBanner:
-      "Mu kiruhuko kugeza {d} — ibyifuzo byahagaritswe; dosiye zawe zifitwe na {m}.",
+      "Mu kiruhuko kugeza {d}, ibyifuzo byahagaritswe; dosiye zawe zifitwe na {m}.",
     nowAway: "Ubu ntuhari. Ibyifuzo bishya byahagaritswe.",
     nowOn: "Uri ku kazi. Ibyifuzo biragaruka.",
     failed: "Ntibyakunze guhindura. Ongera ugerageze.",
@@ -204,7 +204,7 @@ const rw: Copy = {
   },
   clearance: {
     new: "Uzuza umwirondoro wawe kugira ngo wemererwe gukora.",
-    in_progress: "Rangiza umwirondoro — intambwe {n} kuri 5.",
+    in_progress: "Rangiza umwirondoro, intambwe {n} kuri 5.",
     submitted:
       "Umwirondoro wawe uri kwa {m} ngo wemezwe. Ntushobora kwakira imirimo cyangwa kohereza ibyakozwe utaremezwa.",
     changes_requested: "{m} yasabye impinduka ku mwirondoro wawe.",
@@ -288,15 +288,15 @@ const rw: Copy = {
     save: "Bika",
     saved: "Byabitswe {t}",
     saving: "Birabikwa…",
-    saveFailed: "Ntibyabitswe — tuzongera",
+    saveFailed: "Ntibyabitswe, tuzongera",
     undo: "Subiza inyuma",
     viewAll: "Reba byose",
     openCase: "Fungura dosiye",
     close: "Funga",
     loading: "Biraza…",
     offline:
-      "Nta murandasi — impinduka zibikwa kuri iki gikoresho zikoherezwa ugarutse.",
-    backOnline: "Murandasi yagarutse — turohereza",
+      "Nta murandasi, impinduka zibikwa kuri iki gikoresho zikoherezwa ugarutse.",
+    backOnline: "Murandasi yagarutse, turohereza",
     unknown: "Hari ikitagenze neza. Ongera ugerageze.",
   },
   shell: {
@@ -358,10 +358,10 @@ const fr: Copy = {
     requestLeave: "Demander un congé",
     switchOn: "Repasser en service",
     awayBanner:
-      "Vous êtes absent — aucune nouvelle offre jusqu'à votre retour. Les clients voient que les réponses peuvent être plus lentes.",
+      "Vous êtes absent, aucune nouvelle offre jusqu'à votre retour. Les clients voient que les réponses peuvent être plus lentes.",
     awayUntil: "Absent jusqu'à {t}",
     leaveBanner:
-      "En congé jusqu'au {d} — offres en pause ; vos dossiers ouverts sont couverts par {m}.",
+      "En congé jusqu'au {d}, offres en pause ; vos dossiers ouverts sont couverts par {m}.",
     nowAway: "Vous êtes absent. Les nouvelles offres sont en pause.",
     nowOn: "Vous êtes en service. Les offres reprennent.",
     failed: "Impossible de changer la disponibilité. Réessayez.",
@@ -369,7 +369,7 @@ const fr: Copy = {
   },
   clearance: {
     new: "Complétez votre profil pour être habilité.",
-    in_progress: "Terminez votre profil — {n} étapes sur 5.",
+    in_progress: "Terminez votre profil, {n} étapes sur 5.",
     submitted:
       "Votre profil est chez {m} pour approbation. Vous ne pouvez ni recevoir de tâches ni déposer de livrables avant l'habilitation.",
     changes_requested: "{m} a demandé des modifications de votre profil.",
@@ -453,15 +453,15 @@ const fr: Copy = {
     save: "Enregistrer",
     saved: "Enregistré {t}",
     saving: "Enregistrement…",
-    saveFailed: "Échec — nouvel essai automatique",
+    saveFailed: "Échec, nouvel essai automatique",
     undo: "Annuler",
     viewAll: "Tout voir",
     openCase: "Ouvrir le dossier",
     close: "Fermer",
     loading: "Chargement…",
     offline:
-      "Hors ligne — les modifications sont gardées sur cet appareil et envoyées à votre retour.",
-    backOnline: "De retour en ligne — envoi en cours",
+      "Hors ligne, les modifications sont gardées sur cet appareil et envoyées à votre retour.",
+    backOnline: "De retour en ligne, envoi en cours",
     unknown: "Un problème est survenu. Réessayez.",
   },
   shell: {

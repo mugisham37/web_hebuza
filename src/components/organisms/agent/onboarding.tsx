@@ -1023,6 +1023,7 @@ function StepNav({ ob, step }: { ob: Onboarding; step: Step }) {
   const cur = STEPS.indexOf(step);
   return (
     <nav
+      data-guide="agent-onb-steps"
       aria-label={fill(o.stepOf, { n: cur + 1 })}
       tabIndex={0}
       className="-mx-1 overflow-x-auto px-1"

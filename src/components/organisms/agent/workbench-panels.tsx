@@ -645,7 +645,7 @@ function ReuploadDialog({
           </p>
           <p className="bg-ink-100 px-3 py-2 text-small">
             <strong>{w.docs.reasons[reason]}</strong>
-            {note.trim() && ` — ${note.trim()}`}
+            {note.trim() && `, ${note.trim()}`}
           </p>
           <div>
             <h3 className="text-label">{w.docs.schedule}</h3>

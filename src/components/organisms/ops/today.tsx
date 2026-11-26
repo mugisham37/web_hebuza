@@ -370,7 +370,7 @@ export function TodayView() {
               </ul>
             )}
           </MenuButton>
-          <ButtonLink href={L("/ops/intake")} dots>
+          <ButtonLink data-guide="ops-open-intake" href={L("/ops/intake")} dots>
             {t.openIntake}
           </ButtonLink>
         </div>
@@ -406,7 +406,7 @@ export function TodayView() {
       ) : today.isError ? (
         <PanelError what={t.title} onRetry={() => today.refetch()} />
       ) : (
-        <div
+        <div data-guide="ops-kpis"
           className="-mx-gutter overflow-x-auto px-gutter sm:mx-0 sm:px-0"
           role="region"
           aria-label={t.title}
@@ -455,7 +455,7 @@ export function TodayView() {
           ) : !needs.data.items.length ? (
             <EmptyPanel compact title={t.noNeeds} body={t.noNeedsBody} />
           ) : (
-            <ul className="grid gap-2">
+            <ul data-guide="ops-needs" className="grid gap-2">
               {needs.data.items.map((n) => (
                 <li
                   key={n.id}
@@ -513,7 +513,7 @@ export function TodayView() {
           title={t.overdueRisk}
           className="xl:col-span-7"
           action={
-            <Link
+            <Link data-guide="ops-overdue-all"
               href={L(withService("/ops/cases?view=overdue"))}
               className="text-small underline underline-offset-4"
             >
@@ -830,7 +830,7 @@ function ApproveSheet({
               <Icon name="file" size={40} aria-hidden />
             </div>
             <p className="text-small">
-              {t.by.replace("{name}", x.assignees[0]?.name ?? "—")}
+              {t.by.replace("{name}", x.assignees[0]?.name ?? "")}
             </p>
             <p className="text-small text-fg-muted">{x.client}</p>
             <SlaChip due={x.dueAt} className="w-fit" />

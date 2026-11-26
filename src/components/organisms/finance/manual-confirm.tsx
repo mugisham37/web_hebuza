@@ -175,7 +175,7 @@ function Form({ onClose, onDone, prefill = {} }: { onClose: () => void; onDone: 
       <Field id="mc-reason" label={<>{p.manual.reason} <span aria-hidden className="text-danger">*</span></>} error={errors.reason}>
         {({ id, describedBy, invalid }) => (
           <Select id={id} aria-describedby={describedBy} aria-invalid={invalid} value={reason} onChange={(e) => setReason(e.target.value)}>
-            <option value="">—</option>
+            <option value=""></option>
             {Object.entries(p.manual.reasons).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </Select>
         )}

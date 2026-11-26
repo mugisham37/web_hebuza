@@ -77,7 +77,7 @@ const en = {
   },
   moved: "{n} requests moved to {status}",
   movedOne: "{ref} moved to {status}",
-  failed: "{n} couldn't move — they changed since you loaded the list",
+  failed: "{n} couldn't move, they changed since you loaded the list",
   undone: "Undone",
   dup: {
     title: "Possible duplicate",
@@ -184,7 +184,7 @@ const fr: OpsIntakeCopy = {
   moved: "{n} demandes passées à « {status} »",
   movedOne: "{ref} passé à « {status} »",
   failed:
-    "{n} n'ont pas pu changer — elles ont été modifiées depuis le chargement",
+    "{n} n'ont pas pu changer, elles ont été modifiées depuis le chargement",
   undone: "Annulé",
   dup: {
     title: "Doublon possible",
@@ -288,7 +288,7 @@ const rw: OpsIntakeCopy = {
   },
   moved: "Ubusabe {n} bwimuriwe kuri {status}",
   movedOne: "{ref} yimuriwe kuri {status}",
-  failed: "{n} ntibyashobotse — byahindutse kuva urutonde rufunguwe",
+  failed: "{n} ntibyashobotse, byahindutse kuva urutonde rufunguwe",
   undone: "Byasubijwe uko byari biri",
   dup: {
     title: "Bishobora kuba bisubiwemo",

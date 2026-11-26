@@ -42,7 +42,7 @@ export function PromoCodes() {
         <ul className="grid gap-2">{q.data.items.map((p) => (
           <li key={p.code}><button type="button" onClick={() => edit(p)} className="flex w-full flex-wrap items-center gap-3 border border-border p-3 text-left hover:bg-bg-subtle">
             <span className="font-mono text-label">{p.code}</span><span className="text-small">{p.kind === "percent" ? `${p.value}%` : `${p.value} RWF`}</span>
-            <Badge tone={p.active ? "success" : "neutral"}>{p.active ? c.active : "—"}</Badge><span className="text-small text-fg-muted">{c.uses.replace("{n}", String(p.uses))}{p.maxUses ? ` / ${p.maxUses}` : ""}</span>
+            <Badge tone={p.active ? "success" : "neutral"}>{p.active ? c.active : ""}</Badge><span className="text-small text-fg-muted">{c.uses.replace("{n}", String(p.uses))}{p.maxUses ? ` / ${p.maxUses}` : ""}</span>
           </button></li>))}</ul>
       )}
       <form onSubmit={(e) => { e.preventDefault(); save.mutate(); }} className="grid gap-3 border border-border p-4 sm:grid-cols-3">

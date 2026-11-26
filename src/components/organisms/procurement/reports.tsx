@@ -180,7 +180,7 @@ function SpendReport() {
   const d = q.data;
   const max = Math.max(1, ...(d?.months ?? []).flatMap((m) => [m.spend, m.budget]));
   const ticks = [0, 0.5, 1].map((f) => Math.round((max * f) / 1000) * 1000);
-  const top = d?.months.reduce((a, m) => (m.spend > a.spend ? m : a), { month: "—", spend: 0, budget: 0 });
+  const top = d?.months.reduce((a, m) => (m.spend > a.spend ? m : a), { month: "", spend: 0, budget: 0 });
   return (
     <section className="grid gap-4 m-rise">
       <div className="flex flex-wrap items-end gap-3">
@@ -212,7 +212,7 @@ function SpendReport() {
                 ))}
               </div>
             </div>
-            <p className="text-small text-fg-muted">{fill(c.chartSummary, { months: d.months.length, max: formatMoney(top?.spend ?? 0, "RWF", locale), month: top?.month ?? "—" })}</p>
+            <p className="text-small text-fg-muted">{fill(c.chartSummary, { months: d.months.length, max: formatMoney(top?.spend ?? 0, "RWF", locale), month: top?.month ?? "" })}</p>
             <table className="sr-only"><thead><tr><th>{c.cols.month}</th><th>{c.cols.spend}</th><th>{c.cols.budget}</th></tr></thead><tbody>{d.months.map((m) => <tr key={m.month}><td>{m.month}</td><td>{m.spend}</td><td>{m.budget}</td></tr>)}</tbody></table>
           </figure>
           <h2 className="text-card-title">{c.byCategory}</h2>

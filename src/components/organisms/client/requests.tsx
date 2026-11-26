@@ -115,12 +115,13 @@ export function RequestsList() {
           <h1 className="text-fg-heading text-h3">{c.title}</h1>
           <p className="mt-1 text-body text-fg-muted">{c.sub}</p>
         </div>
-        <ButtonLink href={localHref(locale, "/services")} dots>
+        <ButtonLink data-guide="client-requests-start" href={localHref(locale, "/services")} dots>
           {c2Copy(locale).dash.start}
         </ButtonLink>
       </header>
 
       <div
+        data-guide="client-requests-tabs"
         role="group"
         aria-label={c.cols.status}
         className="flex gap-2 overflow-x-auto pb-1"
@@ -140,7 +141,7 @@ export function RequestsList() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_14rem]">
-        <label className="relative block">
+        <label data-guide="client-requests-search" className="relative block">
           <span className="sr-only">{c.search}</span>
           <Icon
             name="search"
@@ -158,7 +159,7 @@ export function RequestsList() {
         </label>
         <label className="block">
           <span className="sr-only">{c.filterService}</span>
-          <Select value={svc} onChange={(e) => setSvc(e.target.value)}>
+          <Select data-guide="client-requests-service" value={svc} onChange={(e) => setSvc(e.target.value)}>
             <option value="">{c.allServices}</option>
             {services.map((s) => (
               <option key={s}>{s}</option>

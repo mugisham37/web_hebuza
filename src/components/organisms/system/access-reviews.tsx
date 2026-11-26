@@ -44,7 +44,7 @@ export function ReviewsView() {
       <section aria-labelledby="cur-h" className="grid gap-3">
         <h2 id="cur-h" className="text-h3">{c.current}</h2>
         {!current.length ? <EmptyPanel title={c.noCurrent} body={c.noCurrentBody} /> : current.map((x) => (
-          <Link key={x.id} href={localHref(locale, `/system/access-reviews/${x.id}`)} className="grid gap-3 border border-border bg-surface p-5 m-lift">
+          <Link key={x.id} data-guide="system-ar-open" href={localHref(locale, `/system/access-reviews/${x.id}`)} className="grid gap-3 border border-border bg-surface p-5 m-lift">
             <span className="flex flex-wrap items-center justify-between gap-2">
               <span className="flex items-center gap-2 text-label-lg"><Icon name="calendar" size={18} aria-hidden className="text-navy-700" />{x.name}</span>
               <CampaignPill status={x.status} />
@@ -297,7 +297,7 @@ const FLAG_TONE: Record<RiskFlag, string> = {
 const FLAG_ICON = { inactive: "clock", privileged: "shield", sod_waiver: "layers", no_mfa: "lock", never_signed_in: "user" } as const;
 function Flags({ flags }: { flags: RiskFlag[] }) {
   const c = useC();
-  if (!flags.length) return <span className="text-fg-subtle">—</span>;
+  if (!flags.length) return <span className="text-fg-subtle"></span>;
   return (
     <span className="flex flex-wrap gap-1">
       {flags.map((f) => <span key={f} className={cx("inline-flex h-6 items-center gap-1 px-2 text-eyebrow font-medium whitespace-nowrap", FLAG_TONE[f])}><Icon name={FLAG_ICON[f]} size={11} aria-hidden />{fill(c.flag[f], { n: INACTIVE_DAYS })}</span>)}
@@ -315,7 +315,7 @@ function DecisionCell({ it, self, busy, disabled, onPick }: { it: ReviewItemVM; 
       </span>
     );
   return (
-    <select aria-label={`${c.col.decision}: ${it.userName}`} value="" disabled={disabled || busy} onChange={(e) => onPick(e.target.value)}
+    <select data-guide="system-ar-decision" aria-label={`${c.col.decision}: ${it.userName}`} value="" disabled={disabled || busy} onChange={(e) => onPick(e.target.value)}
       className={cx("h-9 w-full min-w-32 border border-border-strong bg-surface px-2 text-small", busy && "m-shimmer")}>
       <option value="" disabled>{c.decision.pending}</option>
       <option value="kept">{c.decision.kept}</option>
@@ -375,7 +375,7 @@ function SignOffPanel({ d }: { d: ReviewCampaignVM }) {
         })}
       </ul>
       {myRole && !signed && (
-        <Button disabled={!online || pending > 0} loading={sign.isPending} onClick={go}><Icon name="shield" size={15} aria-hidden />{fill(c.signOff, { role: label(myRole) })}</Button>
+        <Button data-guide="system-ar-signoff" disabled={!online || pending > 0} loading={sign.isPending} onClick={go}><Icon name="shield" size={15} aria-hidden />{fill(c.signOff, { role: label(myRole) })}</Button>
       )}
       {pending > 0 && <p className="mt-2 text-small text-fg-muted">{fill(c.signOffBlocked, { n: pending })}</p>}
       {!online && <p className="mt-2 text-small text-fg-muted">{s.states.offlineAction}</p>}
@@ -424,7 +424,7 @@ function Completion({ d }: { d: ReviewCampaignVM }) {
           {d.signOffs.map((so) => (
             <li key={so.role} className="flex items-center gap-2.5"><Avatar name={so.by.name} size="sm" /><span className="text-small"><span className="block font-medium">{so.by.name}</span><span className="text-fg-muted">{label(so.role)}</span></span></li>
           ))}
-          {!d.signOffs.length && <li className="text-small text-fg-muted">—</li>}
+          {!d.signOffs.length && <li className="text-small text-fg-muted"></li>}
         </ul>
       </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-small text-fg-muted">

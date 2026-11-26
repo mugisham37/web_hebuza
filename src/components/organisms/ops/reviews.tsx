@@ -715,11 +715,11 @@ function ActionBar({ r, own }: { r: ReviewDetail; own: boolean }) {
         </p>
       )}
       <div className="flex flex-wrap items-center justify-end gap-2">
-        <Button variant="outline" disabled={own} onClick={() => setRet(true)}>
+        <Button data-guide="ops-review-return" variant="outline" disabled={own} onClick={() => setRet(true)}>
           {c.returnBtn}
         </Button>
         {own || waitingSecond ? (
-          <Button disabled aria-describedby={own ? undefined : "second-note"}>
+          <Button data-guide="ops-review-approve" disabled aria-describedby={own ? undefined : "second-note"}>
             {c.approve}
           </Button>
         ) : r.gate.blocked ? (

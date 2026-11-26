@@ -128,7 +128,7 @@ function Tiles() {
   const dueSoon = now === null ? 0 : open.filter((c) => c.dueAt && Date.parse(c.dueAt) - now < 2 * 86_400_000).length;
   const sk = <span aria-hidden className="inline-block h-8 w-12 m-shimmer" />;
   return (
-    <div className="grid grid-cols-3 gap-3 max-sm:gap-2 m-stagger">
+    <div data-guide="work-home-tiles" className="grid grid-cols-3 gap-3 max-sm:gap-2 m-stagger">
       <Tile
         label={h.tiles.offers}
         href="/work/offers"
@@ -141,7 +141,7 @@ function Tiles() {
         label={h.tiles.payout}
         href="/work/earnings?tab=payouts"
         dot="bg-success"
-        value={ext?.lastPayout ? <span className="text-h4">{formatMoney(ext.lastPayout.amount, "RWF", locale)}</span> : ext ? "—" : sk}
+        value={ext?.lastPayout ? <span className="text-h4">{formatMoney(ext.lastPayout.amount, "RWF", locale)}</span> : ext ? "" : sk}
         note={ext?.lastPayout ? "" : h.tiles.noPayout}
       />
     </div>

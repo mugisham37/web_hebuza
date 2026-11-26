@@ -229,7 +229,7 @@ export function CaseView({ refId }: { refId: string }) {
           <Icon name="lock" size={18} aria-hidden className="mt-0.5" />
           <p className="text-small">
             <span className="font-medium">
-              {fill(t.claimed, { name: kase.claimedBy ?? "—" })}
+              {fill(t.claimed, { name: kase.claimedBy ?? "" })}
             </span>{" "}
             · {t.claimedBody}
           </p>
@@ -247,7 +247,7 @@ export function CaseView({ refId }: { refId: string }) {
           </p>
           <SlaChip due={kase.dueAt} paused />
           {resume && (
-            <Button
+            <Button data-guide="ops-resume"
               size="sm"
               disabled={locked}
               loading={setStatus.isPending}
@@ -359,7 +359,7 @@ export function CaseView({ refId }: { refId: string }) {
           await setStatus.mutateAsync({
             ref: kase.ref,
             status: "on_hold",
-            reason: note ? `${reason} — ${note}` : reason,
+            reason: note ? `${reason}, ${note}` : reason,
             subStatus: label,
             resumeAt,
           });
@@ -417,7 +417,7 @@ export function CaseView({ refId }: { refId: string }) {
             status: "rejected",
             reason: [reason, note, consult ? t.reject.consult : ""]
               .filter(Boolean)
-              .join(" — "),
+              .join(", "),
           });
           toast({ title: t.reject.done, tone: "success" });
         }}
@@ -439,7 +439,7 @@ export function CaseView({ refId }: { refId: string }) {
         confirmLabel={dialogTo ? opsCommon(locale).status[dialogTo] : ""}
         onConfirm={({ reason, note }) =>
           moveTo(dialogTo!, {
-            reason: note ? `${reason} — ${note}` : reason,
+            reason: note ? `${reason}, ${note}` : reason,
             subStatus: sub || undefined,
           })
         }
@@ -542,7 +542,7 @@ function Header({
         <h1 className="text-h3">
           <CopyRef value={c.ref} />
         </h1>
-        <button
+        <button data-guide="ops-status"
           type="button"
           onClick={onStatus}
           disabled={locked}
@@ -584,7 +584,7 @@ function Header({
         ))}
         <div className="ml-auto flex flex-wrap gap-2">
           {c.clientId && <MessageClient clientId={c.clientId} caseRef={c.ref} />}
-          <Button
+          <Button data-guide="ops-view-as"
             size="sm"
             variant="ghost"
             onClick={() => setAskViewAs(true)}
@@ -606,7 +606,7 @@ function Header({
               setUrlParams({ viewAs: "1", why: t.viewAs.reasons[reason] ?? reason });
             }}
           />
-          <ButtonLink
+          <ButtonLink data-guide="ops-assign"
             size="sm"
             variant="primary"
             href={localHref(locale, `/ops/assign/${c.ref}`)}
@@ -648,7 +648,7 @@ function Header({
               {t.client.call}
             </a>
           )}
-          <Link
+          <Link data-guide="ops-case-chat"
             href={localHref(locale, `/ops/conversations?case=${c.ref}`)}
             className="inline-flex h-9 items-center gap-2 border border-border-strong px-4 text-small font-medium hover:bg-navy-50"
           >
@@ -696,7 +696,7 @@ function StatusSheet({
     >
       <div className="grid gap-4">
         <p className="text-eyebrow text-fg-muted">{t.allowed}</p>
-        <ul className="grid gap-1.5">
+        <ul data-guide="ops-moves" className="grid gap-1.5">
           {c.moves.map((m) => {
             const hint = m.blocked
               ? (oc.guard[m.blocked as keyof typeof oc.guard] ?? m.blocked)
@@ -704,7 +704,7 @@ function StatusSheet({
                 ? fill(t.hints[m.to], {
                     amount: c.amount
                       ? formatMoney(c.amount, "RWF", locale)
-                      : "—",
+                      : "",
                   })
                 : m.reason
                   ? t.reasonNeeded
@@ -743,7 +743,7 @@ function StatusSheet({
         </ul>
         <label className="grid gap-1.5 text-label">
           {t.sub}
-          <select
+          <select data-guide="ops-substatus"
             value={sub}
             onChange={(e) => setSub(e.target.value)}
             className="h-10 border border-border-strong bg-white px-3 text-small focus:border-navy-700 focus:ring-3 focus:ring-gold-400/45 hover:border-ink-400 focus:outline-none"
@@ -862,7 +862,7 @@ function MessageClient({ clientId, caseRef }: { clientId: string; caseRef: strin
   };
   return (
     <>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
+      <Button data-guide="ops-message-client" size="sm" variant="ghost" onClick={() => setOpen(true)}>
         <Icon name="mail" size={15} aria-hidden />
         {k.button}
       </Button>

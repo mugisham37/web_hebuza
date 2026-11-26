@@ -47,7 +47,7 @@ export function AuditView() {
     <div className="m-rise">
       <SysPageHead title={c.title} sub={c.sub} actions={<>
         {chain ? <ChainBadge state={chain.state} entries={chain.entries} hash={chain.hash} brokenAt={chain.brokenAt} /> : <ChainBadge state="checking" />}
-        <Button size="sm" variant="primary" onClick={() => setExporting(true)} disabled={!first}><Icon name="file" size={15} aria-hidden />{c.ex.button}</Button>
+        <Button size="sm" variant="primary" data-guide="system-audit-export" onClick={() => setExporting(true)} disabled={!first}><Icon name="file" size={15} aria-hidden />{c.ex.button}</Button>
       </>} />
       <AuditNav />
       {chain?.state === "broken" && (
@@ -94,7 +94,7 @@ function FilterBar({ sp, set }: { sp: URLSearchParams; set: (p: Record<string, s
         <label className="relative min-w-0 flex-[1_1_16rem]">
           <span className="sr-only">{c.search}</span>
           <Icon name="search" size={16} aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-fg-subtle" />
-          <Input name="q" defaultValue={sp.get("q") ?? ""} placeholder={c.search} className="h-11 pl-10 font-mono text-[0.85rem]" />
+          <Input name="q" data-guide="system-audit-search" defaultValue={sp.get("q") ?? ""} placeholder={c.search} className="h-11 pl-10 font-mono text-[0.85rem]" />
         </label>
         <Select aria-label={c.f.category} value={sp.get("category") ?? ""} onChange={(e) => set({ category: e.target.value || null })} className="h-11 w-auto min-w-0 flex-[0_1_12rem]">
           <option value="">{c.f.anyCategory}</option>

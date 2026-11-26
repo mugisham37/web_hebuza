@@ -91,9 +91,9 @@ function QueueTab({ kinds, q }: { kinds: ProcApproval["kind"][]; q: ReturnType<t
   const cols: OpsColumn<ProcApproval>[] = [
     { key: "ref", label: c.payables.cols.ref, cell: (i) => <DocNo kind={i.kind === "pr" ? "PR" : "BL"} no={i.ref} /> },
     { key: "what", label: c.payables.cols.what, wrap: true, cell: (i) => <span className="grid gap-0.5"><span className="max-w-[18rem] truncate font-medium" title={i.title}>{i.title}</span>{i.locked && <LockChip until={i.locked === "pending" ? null : i.locked} compact />}</span> },
-    { key: "amount", label: c.payables.cols.amount, align: "right", sort: (i) => i.amount ?? 0, cell: (i) => (i.amount != null ? <Amount value={i.amount} className="font-semibold" /> : "—") },
+    { key: "amount", label: c.payables.cols.amount, align: "right", sort: (i) => i.amount ?? 0, cell: (i) => (i.amount != null ? <Amount value={i.amount} className="font-semibold" /> : "") },
     { key: "maker", label: c.payables.cols.maker, cell: (i) => <span className="text-small">{i.maker.name}</span> },
-    { key: "reasons", label: c.payables.cols.reasons, wrap: true, cell: (i) => <span className="flex flex-wrap gap-1">{i.blockedSelf && <Pill tone="danger" icon="lock">{p.seg.self.split(" — ")[0]}</Pill>}{i.reasons.map((r) => <Pill key={r} tone="warning" icon="zap">{p.reasons[r] ?? r}</Pill>)}</span> },
+    { key: "reasons", label: c.payables.cols.reasons, wrap: true, cell: (i) => <span className="flex flex-wrap gap-1">{i.blockedSelf && <Pill tone="danger" icon="lock">{p.seg.self.split(", ")[0]}</Pill>}{i.reasons.map((r) => <Pill key={r} tone="warning" icon="zap">{p.reasons[r] ?? r}</Pill>)}</span> },
     { key: "age", label: c.payables.cols.age, sort: (i) => i.at, cell: (i) => <span className="text-small text-fg-muted">{formatRelative(i.at, locale)}</span> },
   ];
   return (
@@ -255,7 +255,7 @@ function PayTab() {
                 return (
                   <li key={b.no} className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-1.5">
                     <span className="flex items-center gap-2"><DocNo kind="BL" no={b.no} />{b.vendorInvoiceNo}<span className="text-fg-muted">· {formatDate(b.dueOn, locale)}</span></span>
-                    <span className="flex items-center gap-2">{g === "segregation_violation" && <Pill tone="danger" icon="lock">{c.payables.selfLock.split(" — ")[0]}</Pill>}<Amount value={b.payable - b.amountPaid} size="sm" /></span>
+                    <span className="flex items-center gap-2">{g === "segregation_violation" && <Pill tone="danger" icon="lock">{c.payables.selfLock.split(", ")[0]}</Pill>}<Amount value={b.payable - b.amountPaid} size="sm" /></span>
                   </li>
                 );
               })}
@@ -423,7 +423,7 @@ function BankVerifyDialog({ change, onClose }: { change: BankChangeRow; onClose:
     } catch { /* toasted by useStepUpAction */ }
   }
   return (
-    <Dialog open onClose={onClose} title={`${c.payables.bank.title} — ${change.vendorName}`} description={c.payables.bank.sub}
+    <Dialog open onClose={onClose} title={`${c.payables.bank.title}, ${change.vendorName}`} description={c.payables.bank.sub}
       footer={<div className="flex flex-wrap gap-2">
         <Button variant="secondary" disabled={self || !reason.trim()} onClick={() => decide("reject")}>{c.payables.bank.reject}</Button>
         <Button disabled={self || !holder || !last4 || !answeredBy.trim()} loading={m.isPending} onClick={() => decide("verify")}>{c.payables.bank.verify}</Button>
@@ -433,7 +433,7 @@ function BankVerifyDialog({ change, onClose }: { change: BankChangeRow; onClose:
         {self && <p role="alert" className="text-small text-danger">{c.payables.selfLock}</p>}
         <dl className="grid grid-cols-2 gap-3 bg-bg-subtle p-3 text-small">
           <div><dt className="text-eyebrow text-fg-subtle">{p.bank.title}</dt><dd className="tabular">{change.oldMasked} → <strong>{change.newLabel} {change.newMasked}</strong></dd></div>
-          <div><dt className="text-eyebrow text-fg-subtle">{c.payables.bank.calledNumber}</dt><dd className="tabular">{change.callbackNumber ?? "—"}</dd></div>
+          <div><dt className="text-eyebrow text-fg-subtle">{c.payables.bank.calledNumber}</dt><dd className="tabular">{change.callbackNumber ?? ""}</dd></div>
           <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{p.common.reason}</dt><dd>{change.reason}</dd></div>
           {change.doc && <div className="col-span-2"><dt className="text-eyebrow text-fg-subtle">{c.payables.bank.doc}</dt><dd>{change.doc.name}</dd></div>}
         </dl>

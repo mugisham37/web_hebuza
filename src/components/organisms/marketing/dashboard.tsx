@@ -39,7 +39,7 @@ export function DashboardView() {
   const name = me?.name.split(" ")[0] ?? "";
 
   const tile = (label: string, k: Kpi | null, fmt: (n: number) => string, href: string, offNote?: string) => {
-    if (!k) return <KpiTile label={label} value="—" note={offNote} tone="warning" icon="globe" />;
+    if (!k) return <KpiTile label={label} value="" note={offNote} tone="warning" icon="globe" />;
     const d = delta(k);
     return <KpiTile label={label} value={fmt(k.value)} href={L(href)} spark={k.spark.length ? k.spark : undefined}
       note={d == null ? t.dash.kpi.noPrev : fill(t.dash.kpi.vsPrev, { d: `${d > 0 ? "+" : ""}${d}%` })} tone={d != null && d > 0 ? "attention" : "neutral"} />;
@@ -48,7 +48,7 @@ export function DashboardView() {
   return (
     <div className="grid gap-6">
       <PageHead title={me ? fill(t.greet[greeting(now)], { name }) : t.dash.title} sub={t.dash.sub}
-        actions={<><RangePicker value={range} /><ButtonLink href={L("/marketing/campaigns/new")} size="sm" dots>{t.dash.newCampaign}</ButtonLink></>} />
+        actions={<><RangePicker value={range} /><ButtonLink data-guide="marketing-new-campaign" href={L("/marketing/campaigns/new")} size="sm" dots>{t.dash.newCampaign}</ButtonLink></>} />
 
       {q.isPending ? <Skel className="h-12" /> : q.isError ? <PanelError what={t.dash.title} onRetry={() => q.refetch()} /> : s && (
         <>
@@ -57,7 +57,7 @@ export function DashboardView() {
         </>
       )}
 
-      <section aria-label={t.dash.title} className="grid grid-cols-2 gap-3 lg:grid-cols-5 m-stagger">
+      <section data-guide="marketing-kpis" aria-label={t.dash.title} className="grid grid-cols-2 gap-3 lg:grid-cols-5 m-stagger">
         {q.isPending || !s ? [0, 1, 2, 3, 4].map((i) => <Skel key={i} className="h-32" />) : (
           <>
             {tile(t.dash.kpi.visitors, s.kpis.visitors, (n) => formatNumber(n, locale), "/marketing/reports?tab=traffic", t.dash.kpi.trafficOff)}
@@ -86,7 +86,7 @@ export function DashboardView() {
                     <tr key={c.id} className="border-t border-border">
                       <td className="max-w-[12rem] truncate py-2" title={c.name}><Link href={L(`/marketing/campaigns/${c.id}`)} className="hover:underline">{c.name}</Link></td>
                       <td className="tabular">{money(c.cost)}</td><td className="tabular">{money(c.revenue)}</td>
-                      <td className={cx("tabular", c.roi != null && c.roi < 0 && "text-danger")}>{c.roi == null ? "—" : `${c.roi}%`}</td>
+                      <td className={cx("tabular", c.roi != null && c.roi < 0 && "text-danger")}>{c.roi == null ? "" : `${c.roi}%`}</td>
                     </tr>
                   ))}</tbody>
                 </table>

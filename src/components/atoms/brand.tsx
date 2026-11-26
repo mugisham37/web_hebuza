@@ -38,6 +38,23 @@ export function DotsPill({ className }: { className?: string }) {
 }
 
 /** Round faces overlapping (landing1 "Faces"); `inline` sizes them to the surrounding text. */
+/** Rwandan flag, inline in a headline (1em tall, 3:2), white border. Blue top half, yellow and green bands, 24-ray sun. */
+export function RwandaFlag({ className }: { className?: string }) {
+  const rays = Array.from({ length: 24 }, (_, i) => i * 15);
+  return (
+    <svg aria-hidden viewBox="0 0 1080 720" className={cx("inline-block h-[0.7em] w-auto translate-y-[-0.05em] align-middle shadow-[0_0_0_0.06em_var(--color-white)]", className)}>
+      <rect width="1080" height="720" fill="var(--color-rw-blue)" />
+      <rect y="360" width="1080" height="180" fill="var(--color-rw-yellow)" />
+      <rect y="540" width="1080" height="180" fill="var(--color-rw-green)" />
+      <g transform="translate(900 180)" fill="var(--color-rw-yellow)">
+        {rays.map((a) => <polygon key={a} points="-12,-60 12,-60 0,-105" transform={`rotate(${a})`} />)}
+        <circle r="66" fill="var(--color-rw-blue)" />
+        <circle r="56" />
+      </g>
+    </svg>
+  );
+}
+
 export function Faces({ srcs, inline, size = 48, className }: { srcs: string[]; inline?: boolean; size?: number; className?: string }) {
   return (
     <span aria-hidden className={cx("inline-flex align-middle", inline ? "-space-x-[0.18em] translate-y-[-0.05em]" : "-space-x-3", className)}>
@@ -102,8 +119,23 @@ export function BigNumber({ value, className, count }: { value: string | number;
   return <span data-count={count ? String(value) : undefined} className={cx("block font-display text-num text-fg-heading tabular", className)}>{value}</span>;
 }
 
-/** Soft vertical fade between two colour tokens (var(--color-<token>)); joins a page's last section to the footer. Decorative. */
-export function Fade({ from, to, className }: { from: string; to: string; className?: string }) {
-  return <div aria-hidden className={cx("pointer-events-none -my-px h-12 forced-colors:hidden print:hidden", className)}
-    style={{ backgroundImage: `linear-gradient(in oklab to bottom, var(--color-${from}), var(--color-${to}))` }} />;
+// One 48x24 tile: a filled 45° chevron stripe (10 units thick), drawn twice (y and y-24) so the stack repeats seamlessly.
+const ZIGZAG_TILE = `url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 48 24" shape-rendering="geometricPrecision"><path d="M0 0L24 24L48 0V10L24 34L0 10Z M0 -24L24 0L48 -24V-14L24 10L0 -14Z"/></svg>')}")`;
+const ROWS = {
+  2: "h-4 md:h-5 lg:h-6",
+  3: "h-6 md:h-[30px] lg:h-9",
+};
+
+/** Zigzag band that blends section colour `from` (above) into `to` (below). Tokens map to var(--color-<token>).
+ *  Slim by default: 2 rows (16 / 20 / 24px). Stripes lead toward the lower colour; `soft` = weaker lead. Vector mask, whole rows. Decorative. */
+export function ZigzagBand({ from, to, rows, soft, className }: { from: string; to: string; rows?: 2 | 3; soft?: boolean; className?: string }) {
+  const col = (c: string) => (/^(var|color-mix|#|rgb)/.test(c) ? c : `var(--color-${c})`);
+  const a = col(from), b = col(to);
+  return (
+    <div aria-hidden className={cx("pointer-events-none relative -my-px forced-colors:hidden print:hidden", ROWS[rows ?? 2], className)}
+      style={{ backgroundImage: `linear-gradient(in oklab to bottom, ${a}, ${b})` }}>
+      <div className="absolute inset-0 [mask-position:center_top] [mask-repeat:repeat] [mask-size:16px_8px] md:[mask-size:20px_10px] lg:[mask-size:24px_12px]"
+        style={{ backgroundImage: `linear-gradient(in oklab to bottom, color-mix(in oklab, ${b} ${soft ? 35 : 60}%, ${a}), ${b})`, maskImage: ZIGZAG_TILE, WebkitMaskImage: ZIGZAG_TILE }} />
+    </div>
+  );
 }

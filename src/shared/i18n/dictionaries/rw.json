@@ -1,8 +1,8 @@
 {
   "meta": {
-    "siteName": "HEBUZA",
-    "title": "HEBUZA — Serivisi z'ubucuruzi, imisoro n'ishoramari kuri murandasi",
-    "description": "Impapuro n'inama by'ubucuruzi bwawe bikorwa n'abahanga bemewe — kurikirana buri ntambwe, wishyure ukoresheje MoMo, ubone inyandiko zawe kuri murandasi."
+    "siteName": "Hebuza",
+    "title": "Hebuza · Serivisi z'ubucuruzi, imisoro n'ishoramari kuri murandasi",
+    "description": "Impapuro n'inama by'ubucuruzi bwawe bikorwa n'abahanga bemewe, kurikirana buri ntambwe, wishyure ukoresheje MoMo, ubone inyandiko zawe kuri murandasi."
   },
   "common": {
     "skipToContent": "Jya ku bikubiyemo",
@@ -42,7 +42,7 @@
     "services": "Serivisi",
     "pricing": "Ibiciro",
     "about": "Abo turi bo",
-    "knowledge": "Amabwiriza",
+    "guides": "Amabwiriza",
     "contact": "Twandikire",
     "track": "Kurikirana ubusabe",
     "login": "Injira",
@@ -169,7 +169,7 @@
   },
   "footer": {
     "tagline": "Ikigo cyigenga gitanga serivisi zose z'ishoramari n'inama ku bucuruzi ahantu hamwe",
-    "address": "Sonatube, Kicukiro — Kigali, Rwanda",
+    "address": "Sonatube, Kicukiro, Kigali, Rwanda",
     "legal": "Amategeko",
     "terms": "Amabwiriza",
     "privacy": "Ubuzima bwite",
@@ -279,7 +279,8 @@
     "feedback": "Ibitekerezo",
     "seo": "SEO n'ikurikirana",
     "assistant": "Umufasha",
-    "targets": "Intego"
+    "targets": "Intego",
+    "guides": "Amabwiriza"
   },
   "sessionExpiry": {
     "title": "Uracyahari?",

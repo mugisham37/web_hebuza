@@ -46,7 +46,7 @@ const en = {
   inv: {
     title: "Your invoices",
     required: "Required for firms and VAT-registered agents.",
-    optional: "Optional — upload one if your accountant needs it.",
+    optional: "Optional, upload one if your accountant needs it.",
     upload: "Upload invoice",
     number: "Invoice number",
     period: "Period",
@@ -110,7 +110,7 @@ const fr: Copy = {
   inv: {
     title: "Vos factures",
     required: "Obligatoire pour les cabinets et les agents assujettis à la TVA.",
-    optional: "Facultatif — téléversez-en une si votre comptable en a besoin.",
+    optional: "Facultatif, téléversez-en une si votre comptable en a besoin.",
     upload: "Téléverser une facture",
     number: "Numéro de facture",
     period: "Période",
@@ -173,7 +173,7 @@ const rw: Copy = {
   inv: {
     title: "Fagitire zawe",
     required: "Birasabwa ku bigo no ku bari ku musoro wa TVA.",
-    optional: "Si ngombwa — yohereze niba umucungamari wawe ayikeneye.",
+    optional: "Si ngombwa, yohereze niba umucungamari wawe ayikeneye.",
     upload: "Ohereza fagitire",
     number: "Nomero ya fagitire",
     period: "Igihe",
