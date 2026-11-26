@@ -28,7 +28,7 @@ jobs:
       - run: pnpm check:design
       - run: pnpm check:mirror
       - run: pnpm check:i18n
-      # Contract drift: against the deployed/staging server when SERVER_OPENAPI_URL is set (separate repos).
+      # Contract drift: against the deployed production server when SERVER_OPENAPI_URL is set (separate repos).
       - if: ${{ vars.SERVER_OPENAPI_URL != '' }}
         run: API_URL=${{ vars.SERVER_OPENAPI_URL }} pnpm api:types && git diff --exit-code src/lib/api/schema.d.ts
       - run: pnpm build

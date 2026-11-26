@@ -1,4 +1,4 @@
-# OWASP ZAP baseline (passive) scan against staging. Weekly + on demand; fails on WARN-level alerts not ignored in
+# OWASP ZAP baseline (passive, read-only) scan against production. Weekly + on demand; fails on WARN-level alerts not ignored in
 # .zap/rules.tsv. Never point it at production with active scanning (this workflow is passive only).
 name: zap-baseline
 on:
@@ -11,11 +11,11 @@ jobs:
   zap:
     runs-on: ubuntu-latest
     env:
-      TARGET: ${{ inputs.target || vars.STAGING_URL }}
+      TARGET: ${{ inputs.target || vars.PROD_URL || 'https://hebuza.rw' }}
     steps:
       - uses: actions/checkout@v4
       - name: Require a target
-        run: test -n "$TARGET" || { echo "Set vars.STAGING_URL or pass target"; exit 1; }
+        run: test -n "$TARGET" || { echo "Set vars.PROD_URL or pass target"; exit 1; }
       - uses: zaproxy/action-baseline@v0.14.0
         with:
           target: ${{ env.TARGET }}
