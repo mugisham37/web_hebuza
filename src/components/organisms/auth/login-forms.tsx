@@ -182,11 +182,11 @@ export function LoginForm() {
           {c.login.submit}
         </Button>
       </form>
-      {demoLogins && (
+      {demoLogins && DEMO_LOGINS[role] && (
         <button
           type="button"
           className="mt-3 justify-self-start text-small text-role-accent underline underline-offset-4"
-          onClick={() => { setType("email"); setDemo(DEMO_LOGINS[role]); }}
+          onClick={() => { setType("email"); setDemo(DEMO_LOGINS[role] ?? null); }}
         >
           {copy.demo}
         </button>

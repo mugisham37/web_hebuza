@@ -4,6 +4,9 @@ import { ROLE_META, type Role, type Workspace } from "@/shared/auth/roles";
 // Role-aware sign-in (?as=<slug>): slug = workspace. UI hint only — the server decides what the account may open.
 export const AUTH_ROLES = ["client", "agent", "work", "ops", "finance", "marketing", "procurement", "partners", "exec", "system"] as const satisfies readonly Workspace[];
 export type AuthRole = (typeof AUTH_ROLES)[number];
+// Sign-in picker: only roles held by real stakeholders; ops/finance/marketing/procurement/exec are run by the system admin (workspace tabs).
+export const SIGN_IN_ROLES = ["client", "agent", "work", "partners", "system"] as const satisfies readonly AuthRole[];
+export const isSignInRole = (s: string | null | undefined): s is AuthRole => !!s && (SIGN_IN_ROLES as readonly string[]).includes(s);
 export const isAuthRole = (s: string | null | undefined): s is AuthRole => !!s && (AUTH_ROLES as readonly string[]).includes(s);
 export const roleHome = (r: AuthRole) => Object.values(ROLE_META).find((m) => m.workspace === r)!.home;
 export const roleOf = (r: AuthRole) => (Object.keys(ROLE_META) as Exclude<Role, "visitor">[]).find((k) => ROLE_META[k].workspace === r)!;

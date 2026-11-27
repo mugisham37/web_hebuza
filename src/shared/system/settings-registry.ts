@@ -83,6 +83,7 @@ export const SETTINGS: readonly SettingDef[] = [
   { key: "finance.refund_exec_limit", group: "general", type: "readonly", default: POLICY.refundExecLimit, enforcedBy: "Refund approval chain (rfd.approve.exec)", editableBy: [], requiresApproval: true, ownedBy: "staff:finance", validate: none },
   { key: "general.branches", group: "general", type: "readonly", default: "Sonatube / Kicukiro", enforcedBy: " (single branch, D-10 PLACEHOLDER)", editableBy: [], requiresApproval: false, validate: none },
   // Security (IAM F-IAM-11/12/16)
+  { key: "security.demo_logins", group: "security", type: "bool", default: false, enforcedBy: "Sign-in \"Use demo account\" button (platform public settings)", editableBy: SYS, requiresApproval: false, validate: bool },
   { key: "security.idle_minutes.staff", group: "security", type: "int", unit: "min", default: 30, enforcedBy: "API session middleware (idle)", editableBy: SYS, requiresApproval: true, validate: validMinutes(5, 480) },
   { key: "security.idle_minutes.sysadmin", group: "security", type: "int", unit: "min", default: 30, enforcedBy: "API session middleware (idle)", editableBy: SYS, requiresApproval: true, validate: validMinutes(5, 480) },
   { key: "security.idle_minutes.client", group: "security", type: "int", unit: "min", default: 60, enforcedBy: "API session middleware (idle)", editableBy: SYS, requiresApproval: true, validate: validMinutes(5, 480) },

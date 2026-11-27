@@ -10,7 +10,7 @@ import { ApiError } from "@/lib/api/client";
 import { qk } from "@/lib/query/client";
 import { cx } from "@/shared/format";
 import { authCopy } from "@/content/pages/client-auth";
-import { authRolesCopy, isAuthRole, type AuthRole } from "@/content/pages/auth-roles";
+import { authRolesCopy, isSignInRole, type AuthRole } from "@/content/pages/auth-roles";
 import { HighlightWord } from "@/components/atoms/brand";
 import { Icon, type IconName } from "@/components/atoms/icon";
 import { Field, Input } from "@/components/atoms/field";
@@ -272,7 +272,7 @@ export function useAuthRole() {
   const q = sp.get("as");
   let stored: string | null = null;
   try { stored = q ? null : localStorage.getItem(ROLE_KEY); } catch {}
-  const role: AuthRole = isAuthRole(q) ? q : isAuthRole(stored) ? stored : /\/team(\/|$)/.test(path) ? "ops" : "client";
+  const role: AuthRole = isSignInRole(q) ? q : isSignInRole(stored) ? stored : /\/team(\/|$)/.test(path) ? "agent" : "client";
   const withAs = (p: string, r: AuthRole = role) => localHref(locale, `${p}${p.includes("?") ? "&" : "?"}as=${r}`);
   const setRole = (r: AuthRole) => {
     try { localStorage.setItem(ROLE_KEY, r); } catch {}

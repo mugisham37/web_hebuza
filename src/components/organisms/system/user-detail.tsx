@@ -29,7 +29,9 @@ import { causeOf, ConfirmDialog, RowsSkeleton, UserActions, useC, useRun } from 
 const TABS = ["profile", "roles", "security", "sessions", "activity"] as const;
 type Tab = (typeof TABS)[number];
 const LANG = { rw: "Ikinyarwanda", en: "English", fr: "Français" } as const;
-const ASSIGNABLE = ROLES.filter((r) => r !== "visitor" && r !== "client");
+// Mirrors server ASSIGNABLE: ops/finance/marketing/procurement/executive are system-admin only (all workspaces).
+const SYSADMIN_ONLY: readonly string[] = ["staff:service_manager", "staff:finance", "staff:marketing", "staff:procurement", "staff:executive"];
+const ASSIGNABLE = ROLES.filter((r) => r !== "visitor" && r !== "client" && !SYSADMIN_ONLY.includes(r));
 
 export function UserDetailView({ id }: { id: string }) {
   const c = useC();

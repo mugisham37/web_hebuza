@@ -21,7 +21,9 @@ import { useRoleLabel, useS, SysArt } from "@/components/atoms/system";
 import { ApproverPath, useDirtyGuard } from "@/components/molecules/system/system";
 import { causeOf, useC, useRun } from "@/components/molecules/system/system";
 
-const ASSIGNABLE = ROLES.filter((r) => r !== "visitor" && r !== "client");
+// Mirrors server ASSIGNABLE: ops/finance/marketing/procurement/executive are system-admin only (all workspaces).
+const SYSADMIN_ONLY: readonly string[] = ["staff:service_manager", "staff:finance", "staff:marketing", "staff:procurement", "staff:executive"];
+const ASSIGNABLE = ROLES.filter((r) => r !== "visitor" && r !== "client" && !SYSADMIN_ONLY.includes(r));
 type Done = { kind: "pending"; cr: ChangeRequestVM } | { kind: "sent"; userId: string; expiresAt: string; email: string };
 
 export function InviteDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
